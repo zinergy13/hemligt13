@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as OmOssRouteImport } from './routes/om-oss'
+import { Route as LoggaInRouteImport } from './routes/logga-in'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
@@ -24,6 +25,11 @@ const SokRoute = SokRouteImport.update({
 const OmOssRoute = OmOssRouteImport.update({
   id: '/om-oss',
   path: '/om-oss',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoggaInRoute = LoggaInRouteImport.update({
+  id: '/logga-in',
+  path: '/logga-in',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontaktRoute = KontaktRouteImport.update({
@@ -52,6 +58,7 @@ export interface FileRoutesByFullPath {
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
+  '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
 }
@@ -60,6 +67,7 @@ export interface FileRoutesByTo {
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
+  '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
 }
@@ -69,6 +77,7 @@ export interface FileRoutesById {
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
+  '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
 }
@@ -79,16 +88,25 @@ export interface FileRouteTypes {
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
+    | '/logga-in'
     | '/om-oss'
     | '/sok'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/hur-det-funkar' | '/hyr-ut' | '/kontakt' | '/om-oss' | '/sok'
+  to:
+    | '/'
+    | '/hur-det-funkar'
+    | '/hyr-ut'
+    | '/kontakt'
+    | '/logga-in'
+    | '/om-oss'
+    | '/sok'
   id:
     | '__root__'
     | '/'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
+    | '/logga-in'
     | '/om-oss'
     | '/sok'
   fileRoutesById: FileRoutesById
@@ -98,6 +116,7 @@ export interface RootRouteChildren {
   HurDetFunkarRoute: typeof HurDetFunkarRoute
   HyrUtRoute: typeof HyrUtRoute
   KontaktRoute: typeof KontaktRoute
+  LoggaInRoute: typeof LoggaInRoute
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
 }
@@ -116,6 +135,13 @@ declare module '@tanstack/react-router' {
       path: '/om-oss'
       fullPath: '/om-oss'
       preLoaderRoute: typeof OmOssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logga-in': {
+      id: '/logga-in'
+      path: '/logga-in'
+      fullPath: '/logga-in'
+      preLoaderRoute: typeof LoggaInRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/kontakt': {
@@ -154,6 +180,7 @@ const rootRouteChildren: RootRouteChildren = {
   HurDetFunkarRoute: HurDetFunkarRoute,
   HyrUtRoute: HyrUtRoute,
   KontaktRoute: KontaktRoute,
+  LoggaInRoute: LoggaInRoute,
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,
 }

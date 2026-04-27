@@ -2,14 +2,15 @@ import { Link } from "@tanstack/react-router";
 import { Mountain } from "lucide-react";
 
 const areas = [
+  { slug: "klappen", name: "Kläppen" },
+  { slug: "transtrand", name: "Transtrand" },
+  { slug: "salen-by", name: "Sälen By" },
   { slug: "lindvallen", name: "Lindvallen" },
+  { slug: "hogfjallet", name: "Högfjället" },
   { slug: "tandadalen", name: "Tandådalen" },
   { slug: "hundfjallet", name: "Hundfjället" },
-  { slug: "hogfjallet", name: "Högfjället" },
-  { slug: "klappen", name: "Kläppen" },
   { slug: "stoten", name: "Stöten" },
-  { slug: "gubbmyren", name: "Gubbmyren" },
-  { slug: "salfjallstorget", name: "Sälfjällstorget" },
+  { slug: "rorbacksnas", name: "Rörbäcksnäs" },
 ] as const;
 
 export function Footer() {
@@ -67,7 +68,7 @@ export function Footer() {
 
         <div className="mt-12 flex flex-col gap-2 border-t border-secondary-foreground/15 pt-6 text-xs text-secondary-foreground/60 md:flex-row md:justify-between">
           <p>© {new Date().getFullYear()} Stuga i Sälen. Alla rättigheter förbehållna.</p>
-          <p>Lindvallen · Tandådalen · Hundfjället · Högfjället · Kläppen · Stöten · Gubbmyren · Sälfjällstorget</p>
+          <p>Kläppen · Transtrand · Sälen By · Lindvallen · Högfjället · Tandådalen · Hundfjället · Stöten · Rörbäcksnäs</p>
         </div>
       </div>
     </footer>

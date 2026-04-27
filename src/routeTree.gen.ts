@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SokRouteImport } from './routes/sok'
+import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as IndexRouteImport } from './routes/index'
@@ -17,6 +18,11 @@ import { Route as IndexRouteImport } from './routes/index'
 const SokRoute = SokRouteImport.update({
   id: '/sok',
   path: '/sok',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontaktRoute = KontaktRouteImport.update({
+  id: '/kontakt',
+  path: '/kontakt',
   getParentRoute: () => rootRouteImport,
 } as any)
 const HyrUtRoute = HyrUtRouteImport.update({
@@ -39,12 +45,14 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
+  '/kontakt': typeof KontaktRoute
   '/sok': typeof SokRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
+  '/kontakt': typeof KontaktRoute
   '/sok': typeof SokRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
+  '/kontakt': typeof KontaktRoute
   '/sok': typeof SokRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/hur-det-funkar' | '/hyr-ut' | '/sok'
+  fullPaths: '/' | '/hur-det-funkar' | '/hyr-ut' | '/kontakt' | '/sok'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/hur-det-funkar' | '/hyr-ut' | '/sok'
-  id: '__root__' | '/' | '/hur-det-funkar' | '/hyr-ut' | '/sok'
+  to: '/' | '/hur-det-funkar' | '/hyr-ut' | '/kontakt' | '/sok'
+  id: '__root__' | '/' | '/hur-det-funkar' | '/hyr-ut' | '/kontakt' | '/sok'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   HurDetFunkarRoute: typeof HurDetFunkarRoute
   HyrUtRoute: typeof HyrUtRoute
+  KontaktRoute: typeof KontaktRoute
   SokRoute: typeof SokRoute
 }
 
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/sok'
       fullPath: '/sok'
       preLoaderRoute: typeof SokRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontakt': {
+      id: '/kontakt'
+      path: '/kontakt'
+      fullPath: '/kontakt'
+      preLoaderRoute: typeof KontaktRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/hyr-ut': {
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   HurDetFunkarRoute: HurDetFunkarRoute,
   HyrUtRoute: HyrUtRoute,
+  KontaktRoute: KontaktRoute,
   SokRoute: SokRoute,
 }
 export const routeTree = rootRouteImport

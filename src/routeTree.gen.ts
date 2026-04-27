@@ -10,11 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SokRouteImport } from './routes/sok'
+import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SokRoute = SokRouteImport.update({
   id: '/sok',
   path: '/sok',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HyrUtRoute = HyrUtRouteImport.update({
+  id: '/hyr-ut',
+  path: '/hyr-ut',
   getParentRoute: () => rootRouteImport,
 } as any)
 const IndexRoute = IndexRouteImport.update({
@@ -25,27 +31,31 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/hyr-ut': typeof HyrUtRoute
   '/sok': typeof SokRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hyr-ut': typeof HyrUtRoute
   '/sok': typeof SokRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/hyr-ut': typeof HyrUtRoute
   '/sok': typeof SokRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/sok'
+  fullPaths: '/' | '/hyr-ut' | '/sok'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/sok'
-  id: '__root__' | '/' | '/sok'
+  to: '/' | '/hyr-ut' | '/sok'
+  id: '__root__' | '/' | '/hyr-ut' | '/sok'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HyrUtRoute: typeof HyrUtRoute
   SokRoute: typeof SokRoute
 }
 
@@ -56,6 +66,13 @@ declare module '@tanstack/react-router' {
       path: '/sok'
       fullPath: '/sok'
       preLoaderRoute: typeof SokRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hyr-ut': {
+      id: '/hyr-ut'
+      path: '/hyr-ut'
+      fullPath: '/hyr-ut'
+      preLoaderRoute: typeof HyrUtRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/': {
@@ -70,6 +87,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HyrUtRoute: HyrUtRoute,
   SokRoute: SokRoute,
 }
 export const routeTree = rootRouteImport

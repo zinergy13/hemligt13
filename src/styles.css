@@ -62,39 +62,57 @@
 }
 
 :root {
-  --radius: 0.625rem;
-  --background: oklch(1 0 0);
-  --foreground: oklch(0.129 0.042 264.695);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.129 0.042 264.695);
-  --popover: oklch(1 0 0);
-  --popover-foreground: oklch(0.129 0.042 264.695);
-  --primary: oklch(0.208 0.042 265.755);
-  --primary-foreground: oklch(0.984 0.003 247.858);
-  --secondary: oklch(0.968 0.007 247.896);
-  --secondary-foreground: oklch(0.208 0.042 265.755);
-  --muted: oklch(0.968 0.007 247.896);
-  --muted-foreground: oklch(0.554 0.046 257.417);
-  --accent: oklch(0.968 0.007 247.896);
-  --accent-foreground: oklch(0.208 0.042 265.755);
-  --destructive: oklch(0.577 0.245 27.325);
-  --destructive-foreground: oklch(0.984 0.003 247.858);
-  --border: oklch(0.929 0.013 255.508);
-  --input: oklch(0.929 0.013 255.508);
-  --ring: oklch(0.704 0.04 256.788);
+  --radius: 0.875rem;
+
+  /* Cozy fjäll palette - cream snow, warm wood, deep pine, lingonberry red */
+  --background: oklch(0.985 0.008 80);          /* warm cream / fresh snow */
+  --foreground: oklch(0.22 0.025 50);           /* dark warm brown-black */
+  --card: oklch(0.99 0.005 80);
+  --card-foreground: oklch(0.22 0.025 50);
+  --popover: oklch(0.99 0.005 80);
+  --popover-foreground: oklch(0.22 0.025 50);
+
+  --primary: oklch(0.42 0.12 28);               /* deep lingonberry / falu red */
+  --primary-foreground: oklch(0.985 0.008 80);
+  --primary-glow: oklch(0.55 0.16 30);
+
+  --secondary: oklch(0.32 0.04 140);            /* deep pine green */
+  --secondary-foreground: oklch(0.985 0.008 80);
+
+  --accent: oklch(0.78 0.09 65);                /* warm honey wood */
+  --accent-foreground: oklch(0.22 0.025 50);
+
+  --muted: oklch(0.94 0.012 75);                /* soft sand */
+  --muted-foreground: oklch(0.45 0.02 60);
+
+  --destructive: oklch(0.55 0.22 27);
+  --destructive-foreground: oklch(0.985 0.008 80);
+
+  --border: oklch(0.88 0.018 70);
+  --input: oklch(0.92 0.015 75);
+  --ring: oklch(0.42 0.12 28);
+
+  --gradient-warm: linear-gradient(135deg, oklch(0.42 0.12 28), oklch(0.55 0.16 30));
+  --gradient-snow: linear-gradient(180deg, oklch(0.985 0.008 80) 0%, oklch(0.94 0.012 75) 100%);
+  --gradient-hero: linear-gradient(180deg, transparent 0%, oklch(0.18 0.02 50 / 0.55) 60%, oklch(0.15 0.02 50 / 0.85) 100%);
+
+  --shadow-soft: 0 4px 16px -4px oklch(0.22 0.025 50 / 0.12);
+  --shadow-warm: 0 12px 40px -12px oklch(0.42 0.12 28 / 0.35);
+  --shadow-elevated: 0 24px 60px -20px oklch(0.22 0.025 50 / 0.25);
+
   --chart-1: oklch(0.646 0.222 41.116);
   --chart-2: oklch(0.6 0.118 184.704);
   --chart-3: oklch(0.398 0.07 227.392);
   --chart-4: oklch(0.828 0.189 84.429);
   --chart-5: oklch(0.769 0.188 70.08);
-  --sidebar: oklch(0.984 0.003 247.858);
-  --sidebar-foreground: oklch(0.129 0.042 264.695);
-  --sidebar-primary: oklch(0.208 0.042 265.755);
-  --sidebar-primary-foreground: oklch(0.984 0.003 247.858);
-  --sidebar-accent: oklch(0.968 0.007 247.896);
-  --sidebar-accent-foreground: oklch(0.208 0.042 265.755);
-  --sidebar-border: oklch(0.929 0.013 255.508);
-  --sidebar-ring: oklch(0.704 0.04 256.788);
+  --sidebar: oklch(0.985 0.008 80);
+  --sidebar-foreground: oklch(0.22 0.025 50);
+  --sidebar-primary: oklch(0.42 0.12 28);
+  --sidebar-primary-foreground: oklch(0.985 0.008 80);
+  --sidebar-accent: oklch(0.94 0.012 75);
+  --sidebar-accent-foreground: oklch(0.22 0.025 50);
+  --sidebar-border: oklch(0.88 0.018 70);
+  --sidebar-ring: oklch(0.42 0.12 28);
 }
 
 .dark {
@@ -140,5 +158,13 @@
   body {
     background-color: var(--color-background);
     color: var(--color-foreground);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-feature-settings: 'ss01', 'cv11';
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: 'Fraunces', 'Playfair Display', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.015em;
   }
 }

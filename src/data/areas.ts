@@ -4,17 +4,20 @@ import klappen from "../assets/area-klappen.jpg";
 import stoten from "../assets/area-stoten.jpg";
 import hundfjallet from "../assets/area-hundfjallet.jpg";
 import hogfjallet from "../assets/area-hogfjallet.jpg";
-import salfjallstorget from "../assets/area-salfjallstorget.jpg";
+import transtrand from "../assets/area-transtrand.jpg";
+import salenBy from "../assets/area-salen-by.jpg";
+import rorbacksnas from "../assets/area-rorbacksnas.jpg";
 
 export type AreaSlug =
-  | "lindvallen"
-  | "tandadalen"
   | "klappen"
-  | "stoten"
-  | "hundfjallet"
+  | "transtrand"
+  | "salen-by"
+  | "lindvallen"
   | "hogfjallet"
-  | "gubbmyren"
-  | "salfjallstorget";
+  | "tandadalen"
+  | "hundfjallet"
+  | "stoten"
+  | "rorbacksnas";
 
 export type Area = {
   slug: AreaSlug;
@@ -28,26 +31,6 @@ export type Area = {
 
 export const areas: Area[] = [
   {
-    slug: "lindvallen",
-    name: "Lindvallen",
-    tagline: "Sälens livligaste skidområde",
-    description:
-      "Lindvallen är hjärtat av Sälen — pulserande skidbacke, Experium, Lindvallens Restaurang & Bar och ett brett utbud av ski-in/ski-out-boenden. Perfekt för familjer och kompisgäng som vill ha allt nära.",
-    highlights: ["Många ski-in/ski-out", "Experium & Spa", "Stort utbud av krogar", "Goda bussförbindelser"],
-    image: lindvallen,
-    estimatedListings: 142,
-  },
-  {
-    slug: "tandadalen",
-    name: "Tandådalen",
-    tagline: "Mysig by mellan fjäll och skog",
-    description:
-      "Tandådalen erbjuder en lugnare känsla med många träfasader, små restauranger och direkta liftförbindelser till Hundfjället. Här hittar du allt från små stugor till stora gruppboenden.",
-    highlights: ["Direkt till Hundfjället", "Familjevänligt", "Tystare läge", "Utsikt mot fjället"],
-    image: tandadalen,
-    estimatedListings: 98,
-  },
-  {
     slug: "klappen",
     name: "Kläppen",
     tagline: "Familjefavoriten med längsta säsongen",
@@ -58,24 +41,34 @@ export const areas: Area[] = [
     estimatedListings: 87,
   },
   {
-    slug: "stoten",
-    name: "Stöten",
-    tagline: "Storslagen alpin känsla",
+    slug: "transtrand",
+    name: "Transtrand",
+    tagline: "Genuin fjällby med lokal själ",
     description:
-      "Stöten i Sälen lockar de skidåkare som vill ha branta backar, riklig snö och vidsträckta vyer. Boenden i fjällkaraktär — många med bastu och eldstad.",
-    highlights: ["Branta backar", "Storslagen utsikt", "Lugn och ro", "Off-piste-möjligheter"],
-    image: stoten,
-    estimatedListings: 65,
+      "Transtrand är den klassiska fjällbyn söder om Sälen — med kyrkan, lokala krogar och korta avstånd till både Kläppen och Sälens centrum. Lugn miljö med genuin känsla.",
+    highlights: ["Genuin bykänsla", "Nära Kläppen", "Lokala krogar", "Lugnt och naturskönt"],
+    image: transtrand,
+    estimatedListings: 48,
   },
   {
-    slug: "hundfjallet",
-    name: "Hundfjället",
-    tagline: "Trolska Trollskogen för barnen",
+    slug: "salen-by",
+    name: "Sälen By",
+    tagline: "Byhjärtat med shopping och liv",
     description:
-      "Hundfjället är Sälens favorit för småbarnsfamiljer tack vare Trollskogen, breda nybörjarbackar och nära service. Många färgglada stugor och lägenheter ski-in/ski-out.",
-    highlights: ["Trollskogen", "Nybörjarvänligt", "Många ski-in/ski-out", "Restauranger på plats"],
-    image: hundfjallet,
-    estimatedListings: 110,
+      "Sälen By är navet med butiker, livsmedel, krogar och after-ski. Boenden här har gångavstånd till det mesta och bussförbindelser till alla skidområden.",
+    highlights: ["Allt inom gångavstånd", "After-ski & krogar", "Bussar till backarna", "Shopping & service"],
+    image: salenBy,
+    estimatedListings: 56,
+  },
+  {
+    slug: "lindvallen",
+    name: "Lindvallen",
+    tagline: "Sälens livligaste skidområde",
+    description:
+      "Lindvallen är hjärtat av Sälen — pulserande skidbacke, Experium, Lindvallens Restaurang & Bar och ett brett utbud av ski-in/ski-out-boenden. Perfekt för familjer och kompisgäng som vill ha allt nära.",
+    highlights: ["Många ski-in/ski-out", "Experium & Spa", "Stort utbud av krogar", "Goda bussförbindelser"],
+    image: lindvallen,
+    estimatedListings: 142,
   },
   {
     slug: "hogfjallet",
@@ -88,24 +81,44 @@ export const areas: Area[] = [
     estimatedListings: 42,
   },
   {
-    slug: "gubbmyren",
-    name: "Gubbmyren",
-    tagline: "Lugn bas mitt i Sälen",
+    slug: "tandadalen",
+    name: "Tandådalen",
+    tagline: "Mysig by mellan fjäll och skog",
     description:
-      "Gubbmyren ligger strategiskt mellan Lindvallen och Tandådalen. Lugnare område med många mysiga stugor och korta avstånd till liftar och affärer.",
-    highlights: ["Centralt läge", "Lugnare miljö", "Bra för storgrupper", "Nära allt"],
+      "Tandådalen erbjuder en lugnare känsla med många träfasader, små restauranger och direkta liftförbindelser till Hundfjället. Här hittar du allt från små stugor till stora gruppboenden.",
+    highlights: ["Direkt till Hundfjället", "Familjevänligt", "Tystare läge", "Utsikt mot fjället"],
     image: tandadalen,
-    estimatedListings: 38,
+    estimatedListings: 98,
   },
   {
-    slug: "salfjallstorget",
-    name: "Sälfjällstorget",
-    tagline: "Byhjärtat med shopping och liv",
+    slug: "hundfjallet",
+    name: "Hundfjället",
+    tagline: "Trolska Trollskogen för barnen",
     description:
-      "Sälfjällstorget är navet i Sälens by med butiker, krogar, livsmedel och after-ski. Boenden här har gångavstånd till det mesta och bussförbindelser till alla skidområden.",
-    highlights: ["Allt inom gångavstånd", "After-ski & krogar", "Bussar till backarna", "Shopping & service"],
-    image: salfjallstorget,
-    estimatedListings: 56,
+      "Hundfjället är Sälens favorit för småbarnsfamiljer tack vare Trollskogen, breda nybörjarbackar och nära service. Många färgglada stugor och lägenheter ski-in/ski-out.",
+    highlights: ["Trollskogen", "Nybörjarvänligt", "Många ski-in/ski-out", "Restauranger på plats"],
+    image: hundfjallet,
+    estimatedListings: 110,
+  },
+  {
+    slug: "stoten",
+    name: "Stöten",
+    tagline: "Storslagen alpin känsla",
+    description:
+      "Stöten i Sälen lockar de skidåkare som vill ha branta backar, riklig snö och vidsträckta vyer. Boenden i fjällkaraktär — många med bastu och eldstad.",
+    highlights: ["Branta backar", "Storslagen utsikt", "Lugn och ro", "Off-piste-möjligheter"],
+    image: stoten,
+    estimatedListings: 65,
+  },
+  {
+    slug: "rorbacksnas",
+    name: "Rörbäcksnäs",
+    tagline: "Rofylld by vid Norgegränsen",
+    description:
+      "Rörbäcksnäs ligger sydväst om Sälen, nära norska gränsen. En lugn by omgiven av skog och öppna landskap — perfekt för dig som vill ha tystnad, plats och naturen runt knuten.",
+    highlights: ["Lugn miljö", "Nära Norgegränsen", "Vidsträckt natur", "Bra för storgrupper"],
+    image: rorbacksnas,
+    estimatedListings: 22,
   },
 ];
 

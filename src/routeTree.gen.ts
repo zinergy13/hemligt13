@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
+import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as IndexRouteImport } from './routes/index'
 
 const SokRoute = SokRouteImport.update({
@@ -23,6 +24,11 @@ const HyrUtRoute = HyrUtRouteImport.update({
   path: '/hyr-ut',
   getParentRoute: () => rootRouteImport,
 } as any)
+const HurDetFunkarRoute = HurDetFunkarRouteImport.update({
+  id: '/hur-det-funkar',
+  path: '/hur-det-funkar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -31,30 +37,34 @@ const IndexRoute = IndexRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/sok': typeof SokRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/sok': typeof SokRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/sok': typeof SokRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/hyr-ut' | '/sok'
+  fullPaths: '/' | '/hur-det-funkar' | '/hyr-ut' | '/sok'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/hyr-ut' | '/sok'
-  id: '__root__' | '/' | '/hyr-ut' | '/sok'
+  to: '/' | '/hur-det-funkar' | '/hyr-ut' | '/sok'
+  id: '__root__' | '/' | '/hur-det-funkar' | '/hyr-ut' | '/sok'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  HurDetFunkarRoute: typeof HurDetFunkarRoute
   HyrUtRoute: typeof HyrUtRoute
   SokRoute: typeof SokRoute
 }
@@ -75,6 +85,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HyrUtRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/hur-det-funkar': {
+      id: '/hur-det-funkar'
+      path: '/hur-det-funkar'
+      fullPath: '/hur-det-funkar'
+      preLoaderRoute: typeof HurDetFunkarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -87,6 +104,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  HurDetFunkarRoute: HurDetFunkarRoute,
   HyrUtRoute: HyrUtRoute,
   SokRoute: SokRoute,
 }

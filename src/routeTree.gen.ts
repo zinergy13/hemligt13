@@ -17,7 +17,7 @@ import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
-import { Route as ApiPexelsFetchRouteImport } from './routes/api/_pexels-fetch'
+import { Route as ApiPublicPexelsFetchRouteImport } from './routes/api/public/pexels-fetch'
 
 const SokRoute = SokRouteImport.update({
   id: '/sok',
@@ -59,9 +59,9 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
   path: '/omrade/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPexelsFetchRoute = ApiPexelsFetchRouteImport.update({
-  id: '/api/_pexels-fetch',
-  path: '/api',
+const ApiPublicPexelsFetchRoute = ApiPublicPexelsFetchRouteImport.update({
+  id: '/api/public/pexels-fetch',
+  path: '/api/public/pexels-fetch',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -73,8 +73,8 @@ export interface FileRoutesByFullPath {
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
-  '/api': typeof ApiPexelsFetchRoute
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/api/public/pexels-fetch': typeof ApiPublicPexelsFetchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -84,8 +84,8 @@ export interface FileRoutesByTo {
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
-  '/api': typeof ApiPexelsFetchRoute
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/api/public/pexels-fetch': typeof ApiPublicPexelsFetchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -96,8 +96,8 @@ export interface FileRoutesById {
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
-  '/api/_pexels-fetch': typeof ApiPexelsFetchRoute
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/api/public/pexels-fetch': typeof ApiPublicPexelsFetchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -109,8 +109,8 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/om-oss'
     | '/sok'
-    | '/api'
     | '/omrade/$slug'
+    | '/api/public/pexels-fetch'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -120,8 +120,8 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/om-oss'
     | '/sok'
-    | '/api'
     | '/omrade/$slug'
+    | '/api/public/pexels-fetch'
   id:
     | '__root__'
     | '/'
@@ -131,8 +131,8 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/om-oss'
     | '/sok'
-    | '/api/_pexels-fetch'
     | '/omrade/$slug'
+    | '/api/public/pexels-fetch'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -143,8 +143,8 @@ export interface RootRouteChildren {
   LoggaInRoute: typeof LoggaInRoute
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
-  ApiPexelsFetchRoute: typeof ApiPexelsFetchRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
+  ApiPublicPexelsFetchRoute: typeof ApiPublicPexelsFetchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -205,11 +205,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmradeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/_pexels-fetch': {
-      id: '/api/_pexels-fetch'
-      path: '/api'
-      fullPath: '/api'
-      preLoaderRoute: typeof ApiPexelsFetchRouteImport
+    '/api/public/pexels-fetch': {
+      id: '/api/public/pexels-fetch'
+      path: '/api/public/pexels-fetch'
+      fullPath: '/api/public/pexels-fetch'
+      preLoaderRoute: typeof ApiPublicPexelsFetchRouteImport
       parentRoute: typeof rootRouteImport
     }
   }
@@ -223,8 +223,8 @@ const rootRouteChildren: RootRouteChildren = {
   LoggaInRoute: LoggaInRoute,
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,
-  ApiPexelsFetchRoute: ApiPexelsFetchRoute,
   OmradeSlugRoute: OmradeSlugRoute,
+  ApiPublicPexelsFetchRoute: ApiPublicPexelsFetchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

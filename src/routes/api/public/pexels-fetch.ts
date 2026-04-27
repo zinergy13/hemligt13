@@ -14,7 +14,7 @@ const queries: Record<string, string> = {
   'rorbacksnas': 'rural swedish village winter forest',
 }
 
-export const Route = createFileRoute('/api/_pexels-fetch')({
+export const Route = createFileRoute('/api/public/pexels-fetch')({
   server: {
     handlers: {
       GET: async () => {

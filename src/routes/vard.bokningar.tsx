@@ -1,25 +1,14 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Loader2, CalendarDays, MapPin, Inbox, Check, X, User } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
-import { formatDateRange, statusLabel, type Booking } from "@/lib/bookings";
-
-type HostBookingRow = Booking & {
-  cabins: {
-    slug: string;
-    title: string;
-    area_slug: string;
-    cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
-  } | null;
-  profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-  } | null;
-};
+import { formatDateRange, statusLabel } from "@/lib/bookings";
+import { hostBookingsQuery, type HostBookingRow } from "@/lib/queries";
 
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
@@ -31,10 +20,8 @@ export const Route = createFileRoute("/vard/bokningar")({
 function HostBookingsPage() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const [rows, setRows] = useState<HostBookingRow[] | null>(null);
+  const queryClient = useQueryClient();
   const [filter, setFilter] = useState<Filter>("all");
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -42,69 +29,57 @@ function HostBookingsPage() {
     }
   }, [loading, user, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
-    (async () => {
-      // Fetch bookings + cabins
-      const { data: bookings, error } = await supabase
-        .from("bookings")
-        .select(
-          "*, cabins(slug, title, area_slug, cabin_images(url, is_cover, sort_order))",
-        )
-        .eq("host_id", user.id)
-        .order("created_at", { ascending: false });
-      if (error) {
-        if (active) setRows([]);
-        return;
-      }
-      // Fetch guest profiles separately (no FK relationship in schema)
-      const guestIds = Array.from(
-        new Set((bookings ?? []).map((b) => b.guest_id)),
+  const bookingsQ = useQuery({
+    ...hostBookingsQuery(user?.id ?? ""),
+    enabled: !!user,
+  });
+  const rows = bookingsQ.data;
+
+  const statusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "confirmed" | "declined" }) => {
+      const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
+      if (error) throw error;
+      return { id, status };
+    },
+    onMutate: async ({ id, status }) => {
+      if (!user) return;
+      const key = hostBookingsQuery(user.id).queryKey;
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<HostBookingRow[]>(key);
+      // Optimistically update the booking status so the UI feels instant.
+      queryClient.setQueryData<HostBookingRow[]>(key, (old) =>
+        (old ?? []).map((b) => (b.id === id ? { ...b, status } : b)),
       );
-      const profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
-      if (guestIds.length > 0) {
-        const { data: profs } = await supabase
-          .from("profiles")
-          .select("id, full_name, avatar_url")
-          .in("id", guestIds);
-        for (const p of profs ?? []) {
-          profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
-        }
+      return { previous };
+    },
+    onError: (err, _vars, ctx) => {
+      if (user && ctx?.previous) {
+        queryClient.setQueryData(hostBookingsQuery(user.id).queryKey, ctx.previous);
       }
-      const merged = (bookings ?? []).map((b) => ({
-        ...b,
-        profiles: profileMap.get(b.guest_id) ?? null,
-      })) as unknown as HostBookingRow[];
-      if (active) setRows(merged);
-    })();
-    return () => {
-      active = false;
-    };
-  }, [user, refreshKey]);
+      toast.error(err instanceof Error ? err.message : "Något gick fel");
+    },
+    onSuccess: ({ status }) => {
+      toast.success(status === "confirmed" ? "Bokning bekräftad" : "Bokning avvisad");
+    },
+    onSettled: () => {
+      if (!user) return;
+      queryClient.invalidateQueries({ queryKey: hostBookingsQuery(user.id).queryKey });
+      // Status changes affect commission/balance, refresh those too.
+      queryClient.invalidateQueries({ queryKey: ["host", user.id] });
+    },
+  });
+  const busyId = statusMutation.isPending ? statusMutation.variables?.id ?? null : null;
+  const updateStatus = (id: string, status: "confirmed" | "declined") =>
+    statusMutation.mutate({ id, status });
 
-  const updateStatus = async (id: string, status: "confirmed" | "declined") => {
-    setBusyId(id);
-    const { error } = await supabase
-      .from("bookings")
-      .update({ status })
-      .eq("id", id);
-    setBusyId(null);
-    if (error) {
-      toast.error(error.message);
-      return;
-    }
-    toast.success(status === "confirmed" ? "Bokning bekräftad" : "Bokning avvisad");
-    setRefreshKey((k) => k + 1);
-  };
-
-  if (loading || !user || rows === null) {
+  if (loading || !user || (bookingsQ.isLoading && !rows)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
+  const safeRows = rows ?? [];
 
   if (!profile?.is_host) {
     return (
@@ -121,13 +96,13 @@ function HostBookingsPage() {
   }
 
   const counts = {
-    all: rows.length,
-    pending: rows.filter((r) => r.status === "pending").length,
-    confirmed: rows.filter((r) => r.status === "confirmed").length,
-    declined: rows.filter((r) => r.status === "declined" || r.status === "cancelled").length,
+    all: safeRows.length,
+    pending: safeRows.filter((r) => r.status === "pending").length,
+    confirmed: safeRows.filter((r) => r.status === "confirmed").length,
+    declined: safeRows.filter((r) => r.status === "declined" || r.status === "cancelled").length,
   };
 
-  const visible = rows.filter((r) => {
+  const visible = safeRows.filter((r) => {
     if (filter === "all") return true;
     if (filter === "declined") return r.status === "declined" || r.status === "cancelled";
     return r.status === filter;

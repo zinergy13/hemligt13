@@ -1,20 +1,12 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, CalendarDays, MapPin, Inbox } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
 import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
-import { formatDateRange, statusLabel, type Booking } from "@/lib/bookings";
-
-type BookingRow = Booking & {
-  cabins: {
-    slug: string;
-    title: string;
-    area_slug: string;
-    cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
-  } | null;
-};
+import { formatDateRange, statusLabel } from "@/lib/bookings";
+import { guestBookingsQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/mina-bokningar")({
   head: () => ({ meta: [{ title: "Mina bokningar — Fjällmys" }] }),
@@ -24,7 +16,6 @@ export const Route = createFileRoute("/mina-bokningar")({
 function MyBookingsPage() {
   const { user, loading } = useAuth();
   const navigate = useNavigate();
-  const [rows, setRows] = useState<BookingRow[] | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -32,31 +23,20 @@ function MyBookingsPage() {
     }
   }, [loading, user, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
-    (async () => {
-      const { data } = await supabase
-        .from("bookings")
-        .select(
-          "*, cabins(slug, title, area_slug, cabin_images(url, is_cover, sort_order))",
-        )
-        .eq("guest_id", user.id)
-        .order("check_in", { ascending: false });
-      if (active) setRows(((data as unknown) as BookingRow[]) ?? []);
-    })();
-    return () => {
-      active = false;
-    };
-  }, [user]);
+  const bookingsQ = useQuery({
+    ...guestBookingsQuery(user?.id ?? ""),
+    enabled: !!user,
+  });
+  const rows = bookingsQ.data;
 
-  if (loading || !user || rows === null) {
+  if (loading || !user || (bookingsQ.isLoading && !rows)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
+  const safeRows = rows ?? [];
 
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 md:px-6 md:py-16">
@@ -65,7 +45,7 @@ function MyBookingsPage() {
         Översikt av alla dina bokningar och förfrågningar.
       </p>
 
-      {rows.length === 0 ? (
+      {safeRows.length === 0 ? (
         <div className="mt-8 rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
           <Inbox className="mx-auto mb-4 h-10 w-10 text-primary" />
           <h2 className="font-serif text-2xl text-foreground">Inga bokningar ännu</h2>
@@ -81,7 +61,7 @@ function MyBookingsPage() {
         </div>
       ) : (
         <ul className="mt-8 space-y-4">
-          {rows.map((b) => {
+          {safeRows.map((b) => {
             const c = b.cabins;
             const area = c ? areaBySlug(c.area_slug) : null;
             const cover = c ? coverImage({ cabin_images: c.cabin_images }) : null;

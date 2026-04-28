@@ -5,8 +5,23 @@ import { AuthProvider } from "../hooks/useAuth";
 import { Toaster } from "../components/ui/sonner";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import appCss from "../styles.css?url";
+
+// Single QueryClient for the app. All authenticated data is keyed by user id,
+// so re-using one client between users is safe — the keys differ. We also
+// reset on auth changes via AuthProvider if needed.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 10 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
 
 function NotFoundComponent() {
   return (
@@ -182,8 +197,9 @@ function RootComponent() {
   };
 
   return (
-    <AuthProvider>
-      <div className="flex min-h-screen flex-col">
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <div className="flex min-h-screen flex-col">
         {recovering && (
           <div
             role="status"
@@ -225,7 +241,8 @@ function RootComponent() {
         </main>
         <Footer />
         <Toaster />
-      </div>
-    </AuthProvider>
+        </div>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

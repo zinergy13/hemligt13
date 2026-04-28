@@ -9,6 +9,20 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import appCss from "../styles.css?url";
 
+// Single QueryClient for the app. All authenticated data is keyed by user id,
+// so re-using one client between users is safe — the keys differ. We also
+// reset on auth changes via AuthProvider if needed.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 10 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
+    },
+  },
+});
+
 function NotFoundComponent() {
   return (
     <>

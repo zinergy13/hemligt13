@@ -37,9 +37,6 @@ export type Booking = {
   updated_at: string;
 };
 
-/** Service-avgift som procent av nightly_total + cleaning_fee. */
-export const SERVICE_FEE_PCT = 0.05;
-
 export function diffNights(checkIn: string, checkOut: string): number {
   const a = new Date(checkIn + "T00:00:00Z").getTime();
   const b = new Date(checkOut + "T00:00:00Z").getTime();
@@ -53,13 +50,11 @@ export function calcQuote(opts: {
   nights: number;
 }) {
   const nightlyTotal = opts.pricePerNight * opts.nights;
-  const subtotal = nightlyTotal + opts.cleaningFee;
-  const serviceFee = Math.round(subtotal * SERVICE_FEE_PCT);
-  const total = subtotal + serviceFee;
+  const total = nightlyTotal + opts.cleaningFee;
   return {
     nightlyTotal,
     cleaningFee: opts.cleaningFee,
-    serviceFee,
+    serviceFee: 0,
     total,
   };
 }

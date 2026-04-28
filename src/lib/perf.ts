@@ -116,7 +116,8 @@ function pushAlert(alert: Omit<PerfAlert, "id">) {
 
 function record(base: Omit<PerfEntry, "id" | "coldStart" | "slow" | "deviation">) {
   const now = Date.now();
-  const coldStart = lastCallAt > 0 && now - lastCallAt > COLD_START_IDLE_MS;
+  const idleMs = lastCallAt > 0 ? now - lastCallAt : 0;
+  const coldStart = lastCallAt > 0 && idleMs > COLD_START_IDLE_MS;
   lastCallAt = now;
 
   // Rolling baseline (median) per endpoint+method.
@@ -168,7 +169,7 @@ function record(base: Omit<PerfEntry, "id" | "coldStart" | "slow" | "deviation">
     pushAlert({
       ts: now,
       kind: "cold-start",
-      message: `Kallstart efter ${(now - (lastCallAt - (now - lastCallAt))).toString()}ms paus`,
+      message: `Kallstart efter ${(idleMs / 1000).toFixed(1)}s paus`,
       endpoint: full.endpoint,
       durationMs: full.durationMs,
     });

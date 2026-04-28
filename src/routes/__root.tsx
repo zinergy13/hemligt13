@@ -197,8 +197,9 @@ function RootComponent() {
   };
 
   return (
-    <AuthProvider>
-      <div className="flex min-h-screen flex-col">
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
+        <div className="flex min-h-screen flex-col">
         {recovering && (
           <div
             role="status"
@@ -240,7 +241,8 @@ function RootComponent() {
         </main>
         <Footer />
         <Toaster />
-      </div>
-    </AuthProvider>
+        </div>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

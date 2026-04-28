@@ -83,6 +83,15 @@ function RootShell({ children }: { children: React.ReactNode }) {
 
 function RootComponent() {
   const [recovering, setRecovering] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<{
+    message: string;
+    chunk?: string;
+    source?: string;
+    stack?: string;
+    time: string;
+  } | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [copied, setCopied] = useState(false);
 
   useEffect(() => {
     try {

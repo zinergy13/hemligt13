@@ -215,6 +215,65 @@ function HostInvoicePage() {
         </p>
       </div>
 
+      <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Fakturor</h2>
+      {invoices.length === 0 ? (
+        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
+          Inga fakturor ännu. Vi skapar en samlingsfaktura i början av varje månad.
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3 font-medium">Fakturanr</th>
+                <th className="px-4 py-3 font-medium">Period</th>
+                <th className="px-4 py-3 font-medium">Antal</th>
+                <th className="px-4 py-3 font-medium">Belopp</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium text-right">PDF</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border bg-background">
+              {invoices.map((i) => (
+                <tr key={i.id}>
+                  <td className="px-4 py-3 font-medium text-foreground">{i.invoice_number}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {new Date(i.period_start).toLocaleDateString("sv-SE")} – {new Date(i.period_end).toLocaleDateString("sv-SE")}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{i.booking_count}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">{formatOre(i.total_amount)}</td>
+                  <td className="px-4 py-3">
+                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${
+                      i.status === "paid"
+                        ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                        : i.status === "waived"
+                        ? "bg-muted text-muted-foreground"
+                        : "bg-primary/10 text-primary"
+                    }`}>
+                      {i.status === "paid" ? "Betald" : i.status === "waived" ? "Avskriven" : "Utfärdad"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => downloadInvoice(i.id, i.invoice_number)}
+                      disabled={downloadingId === i.id}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-50"
+                    >
+                      {downloadingId === i.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <FileDown className="h-3.5 w-3.5" />
+                      )}
+                      Ladda ner
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
+
       <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Avgiftshistorik</h2>
       {visibleRows.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-10 text-center text-sm text-muted-foreground">

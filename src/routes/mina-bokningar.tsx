@@ -43,7 +43,7 @@ function MyBookingsPage() {
         )
         .eq("guest_id", user.id)
         .order("check_in", { ascending: false });
-      if (active) setRows((data as BookingRow[]) ?? []);
+      if (active) setRows(((data as unknown) as BookingRow[]) ?? []);
     })();
     return () => {
       active = false;

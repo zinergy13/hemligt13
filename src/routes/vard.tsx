@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home } from "lucide-react";
+import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -89,12 +89,20 @@ function HostDashboard() {
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mina stugor</h1>
           <p className="mt-1 text-sm text-muted-foreground">Hantera dina annonser, status och bilder.</p>
         </div>
-        <Link
-          to="/vard/stugor/ny"
-          className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
-        >
-          <Plus className="h-4 w-4" /> Ny stuga
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            to="/vard/bokningar"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            <Inbox className="h-4 w-4" /> Bokningar
+          </Link>
+          <Link
+            to="/vard/stugor/ny"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          >
+            <Plus className="h-4 w-4" /> Ny stuga
+          </Link>
+        </div>
       </div>
 
       {cabins === null ? (

@@ -14,12 +14,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      app_settings: {
+        Row: {
+          commission_per_booking: number
+          currency: string
+          id: number
+          updated_at: string
+        }
+        Insert: {
+          commission_per_booking?: number
+          currency?: string
+          id?: number
+          updated_at?: string
+        }
+        Update: {
+          commission_per_booking?: number
+          currency?: string
+          id?: number
+          updated_at?: string
+        }
+        Relationships: []
+      }
       bookings: {
         Row: {
           cabin_id: string
           check_in: string
           check_out: string
           cleaning_fee: number
+          commission_amount: number
+          commission_earned_at: string | null
+          commission_invoiced_at: string | null
+          commission_paid_at: string | null
+          commission_status: string
           created_at: string
           currency: string
           guest_id: string
@@ -42,6 +68,11 @@ export type Database = {
           check_in: string
           check_out: string
           cleaning_fee?: number
+          commission_amount?: number
+          commission_earned_at?: string | null
+          commission_invoiced_at?: string | null
+          commission_paid_at?: string | null
+          commission_status?: string
           created_at?: string
           currency?: string
           guest_id: string
@@ -64,6 +95,11 @@ export type Database = {
           check_in?: string
           check_out?: string
           cleaning_fee?: number
+          commission_amount?: number
+          commission_earned_at?: string | null
+          commission_invoiced_at?: string | null
+          commission_paid_at?: string | null
+          commission_status?: string
           created_at?: string
           currency?: string
           guest_id?: string
@@ -291,8 +327,30 @@ export type Database = {
           },
         ]
       }
+      host_balances: {
+        Row: {
+          earned_amount: number | null
+          earned_count: number | null
+          host_id: string | null
+          invoiced_amount: number | null
+          invoiced_count: number | null
+          paid_amount: number | null
+          paid_count: number | null
+          total_owed: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
+      complete_past_bookings: { Args: never; Returns: number }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

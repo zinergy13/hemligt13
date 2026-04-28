@@ -6,8 +6,13 @@ import { Toaster } from "../components/ui/sonner";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { installPerfMonitor } from "../lib/perf";
+import { PerfOverlay } from "../components/PerfOverlay";
 
 import appCss from "../styles.css?url";
+
+// Install once at module load — must run before any supabase fetch happens.
+if (typeof window !== "undefined") installPerfMonitor();
 
 // Single QueryClient for the app. All authenticated data is keyed by user id,
 // so re-using one client between users is safe — the keys differ. We also
@@ -241,6 +246,7 @@ function RootComponent() {
         </main>
         <Footer />
         <Toaster />
+        <PerfOverlay />
         </div>
       </AuthProvider>
     </QueryClientProvider>

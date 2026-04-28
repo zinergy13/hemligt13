@@ -9,6 +9,7 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as VardRouteImport } from './routes/vard'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as LoggaInRouteImport } from './routes/logga-in'
@@ -20,7 +21,13 @@ import { Route as AterstallLosenordRouteImport } from './routes/aterstall-loseno
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
+import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 
+const VardRoute = VardRouteImport.update({
+  id: '/vard',
+  path: '/vard',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const SokRoute = SokRouteImport.update({
   id: '/sok',
   path: '/sok',
@@ -76,6 +83,11 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
   path: '/omrade/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VardStugorNyRoute = VardStugorNyRouteImport.update({
+  id: '/stugor/ny',
+  path: '/stugor/ny',
+  getParentRoute: () => VardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -87,8 +99,10 @@ export interface FileRoutesByFullPath {
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
+  '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
+  '/vard/stugor/ny': typeof VardStugorNyRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -100,8 +114,10 @@ export interface FileRoutesByTo {
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
+  '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
+  '/vard/stugor/ny': typeof VardStugorNyRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -114,8 +130,10 @@ export interface FileRoutesById {
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
+  '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
+  '/vard/stugor/ny': typeof VardStugorNyRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -129,8 +147,10 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/om-oss'
     | '/sok'
+    | '/vard'
     | '/omrade/$slug'
     | '/stuga/$slug'
+    | '/vard/stugor/ny'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -142,8 +162,10 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/om-oss'
     | '/sok'
+    | '/vard'
     | '/omrade/$slug'
     | '/stuga/$slug'
+    | '/vard/stugor/ny'
   id:
     | '__root__'
     | '/'
@@ -155,8 +177,10 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/om-oss'
     | '/sok'
+    | '/vard'
     | '/omrade/$slug'
     | '/stuga/$slug'
+    | '/vard/stugor/ny'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -169,12 +193,20 @@ export interface RootRouteChildren {
   LoggaInRoute: typeof LoggaInRoute
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
+  VardRoute: typeof VardRouteWithChildren
   OmradeSlugRoute: typeof OmradeSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/vard': {
+      id: '/vard'
+      path: '/vard'
+      fullPath: '/vard'
+      preLoaderRoute: typeof VardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/sok': {
       id: '/sok'
       path: '/sok'
@@ -252,8 +284,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmradeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vard/stugor/ny': {
+      id: '/vard/stugor/ny'
+      path: '/stugor/ny'
+      fullPath: '/vard/stugor/ny'
+      preLoaderRoute: typeof VardStugorNyRouteImport
+      parentRoute: typeof VardRoute
+    }
   }
 }
+
+interface VardRouteChildren {
+  VardStugorNyRoute: typeof VardStugorNyRoute
+}
+
+const VardRouteChildren: VardRouteChildren = {
+  VardStugorNyRoute: VardStugorNyRoute,
+}
+
+const VardRouteWithChildren = VardRoute._addFileChildren(VardRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
@@ -265,9 +314,19 @@ const rootRouteChildren: RootRouteChildren = {
   LoggaInRoute: LoggaInRoute,
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,
+  VardRoute: VardRouteWithChildren,
   OmradeSlugRoute: OmradeSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

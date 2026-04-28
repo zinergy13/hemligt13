@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { User, Phone, FileText, Home, Loader2, LogOut, Check } from "lucide-react";
+import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/konto")({
 });
 
 function AccountPage() {
-  const { user, profile, loading, refreshProfile, signOut } = useAuth();
+  const { user, profile, isAdmin, loading, refreshProfile, signOut } = useAuth();
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState("");
@@ -135,6 +135,25 @@ function AccountPage() {
           </div>
         )}
       </div>
+
+      {isAdmin && (
+        <div className="mb-8 rounded-2xl border border-amber-500/40 bg-amber-500/5 p-5">
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-white">
+              <ShieldCheck className="h-4 w-4" />
+            </div>
+            <div className="flex-1">
+              <h3 className="font-serif text-lg text-foreground">Administratör</h3>
+              <p className="mt-1 text-sm text-muted-foreground">
+                Hantera provisionsavgift och fakturastatus för alla värdar.
+              </p>
+              <Link to="/admin" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">
+                Till admin-panelen →
+              </Link>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* Profilformulär */}
       <form onSubmit={handleSave} className="space-y-4 rounded-2xl border border-border bg-background p-6">

@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange } from "@/lib/bookings";
 import { commissionLabel, formatOre } from "@/lib/commission";
-import { SummaryCardsSkeleton, TableSkeleton, Skeleton } from "@/components/Skeleton";
+import { SummaryCardsSkeleton, TableSkeleton } from "@/components/Skeleton";
 import {
   hostBalanceQuery,
   hostCommissionRowsQuery,

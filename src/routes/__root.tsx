@@ -5,6 +5,7 @@ import { AuthProvider } from "../hooks/useAuth";
 import { Toaster } from "../components/ui/sonner";
 import { useEffect, useState } from "react";
 import { toast } from "sonner";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
 import appCss from "../styles.css?url";
 

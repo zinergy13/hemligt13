@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { User, Phone, FileText, Home, Loader2, LogOut, Check } from "lucide-react";
+import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -11,7 +11,7 @@ export const Route = createFileRoute("/konto")({
 });
 
 function AccountPage() {
-  const { user, profile, loading, refreshProfile, signOut } = useAuth();
+  const { user, profile, isAdmin, loading, refreshProfile, signOut } = useAuth();
   const navigate = useNavigate();
 
   const [fullName, setFullName] = useState("");

@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { coverImage, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
+import { CabinGridSkeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/vard")({
   head: () => ({ meta: [{ title: "Mina stugor — Fjällmys" }] }),
@@ -112,9 +113,7 @@ function HostDashboard() {
       </div>
 
       {cabins === null ? (
-        <div className="flex min-h-[40vh] items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
+        <CabinGridSkeleton count={3} />
       ) : cabins.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
           <Home className="mx-auto mb-4 h-10 w-10 text-primary" />

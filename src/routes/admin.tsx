@@ -128,7 +128,11 @@ function AdminPage() {
     id: string,
     status: CommissionStatus,
   ) => {
-    const patch: Record<string, unknown> = { commission_status: status };
+    const patch: {
+      commission_status: CommissionStatus;
+      commission_paid_at?: string;
+      commission_invoiced_at?: string;
+    } = { commission_status: status };
     if (status === "paid") patch.commission_paid_at = new Date().toISOString();
     if (status === "invoiced") patch.commission_invoiced_at = new Date().toISOString();
     const { error } = await supabase.from("bookings").update(patch).eq("id", id);

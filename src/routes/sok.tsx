@@ -59,7 +59,7 @@ function SearchPage() {
   }, [search.omrade, search.gaster, search.prismax]);
 
   const updateSearch = (patch: Partial<SearchParams>) =>
-    navigate({ to: "/sok", search: (prev) => ({ ...prev, ...patch }) });
+    navigate({ to: "/sok", search: (prev: SearchParams) => ({ ...prev, ...patch }) });
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">

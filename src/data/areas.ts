@@ -1,10 +1,10 @@
 import lindvallen from "../assets/area-lindvallen.jpg";
 import tandadalen from "../assets/area-tandadalen.jpg";
-import klappen from "../assets/areas/klappen.jpg";
+import klappen from "../assets/area-klappen.jpg";
 import stoten from "../assets/area-stoten.jpg";
 import hundfjallet from "../assets/area-hundfjallet.jpg";
 import hogfjallet from "../assets/area-hogfjallet.jpg";
-import transtrand from "../assets/areas/transtrand.jpg";
+import transtrand from "../assets/area-transtrand.jpg";
 import salenBy from "../assets/area-salen-by.jpg";
 import rorbacksnas from "../assets/area-rorbacksnas.jpg";
 

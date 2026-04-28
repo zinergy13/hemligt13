@@ -23,7 +23,7 @@ export function Footer() {
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Mountain className="h-5 w-5" />
               </span>
-              <span>Stuga i Sälen</span>
+              <span>Fjällmys</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-secondary-foreground/75">
               Sälenfjällens samlade plats för stuguthyrning. Från värd till gäst — direkt, enkelt och tryggt.
@@ -67,7 +67,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-2 border-t border-secondary-foreground/15 pt-6 text-xs text-secondary-foreground/60 md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} Stuga i Sälen. Alla rättigheter förbehållna.</p>
+          <p>© {new Date().getFullYear()} Fjällmys. Alla rättigheter förbehållna.</p>
           <p>Kläppen · Transtrand · Sälen By · Lindvallen · Högfjället · Tandådalen · Hundfjället · Stöten · Rörbäcksnäs</p>
         </div>
       </div>

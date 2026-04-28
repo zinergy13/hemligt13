@@ -35,10 +35,10 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Stuga i Sälen — Hyr stuga i Sälenfjällen" },
+      { title: "Fjällmys — Hyr stuga i Sälenfjällen" },
       { name: "description", content: "Hitta och hyr stugor, lägenheter och ski-in/ski-out-boenden i Lindvallen, Tandådalen, Kläppen, Stöten och hela Sälenfjällen — direkt från värd till gäst." },
-      { name: "author", content: "Stuga i Sälen" },
-      { property: "og:title", content: "Stuga i Sälen — Hyr stuga i Sälenfjällen" },
+      { name: "author", content: "Fjällmys" },
+      { property: "og:title", content: "Fjällmys — Hyr stuga i Sälenfjällen" },
       { property: "og:description", content: "Sälens samlade plats för stuguthyrning. Hyr eller hyr ut din stuga, direkt och tryggt." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },

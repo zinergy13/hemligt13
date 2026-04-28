@@ -4,10 +4,10 @@ import { Search, MessageCircle, CreditCard, Key, Star } from "lucide-react";
 export const Route = createFileRoute("/hur-det-funkar")({
   head: () => ({
     meta: [
-      { title: "Hur det funkar — Stuga i Sälen" },
-      { name: "description", content: "Så fungerar Stuga i Sälen — för dig som ska hyra och för dig som ska hyra ut. Sök, boka, betala, checka in." },
-      { property: "og:title", content: "Hur det funkar — Stuga i Sälen" },
-      { property: "og:description", content: "Sök, boka, betala, checka in. Så enkelt funkar Stuga i Sälen." },
+      { title: "Hur det funkar — Fjällmys" },
+      { name: "description", content: "Så fungerar Fjällmys — för dig som ska hyra och för dig som ska hyra ut. Sök, boka, betala, checka in." },
+      { property: "og:title", content: "Hur det funkar — Fjällmys" },
+      { property: "og:description", content: "Sök, boka, betala, checka in. Så enkelt funkar Fjällmys." },
     ],
   }),
   component: HowItWorks,
@@ -27,7 +27,7 @@ function HowItWorks() {
       <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Hur det funkar</p>
       <h1 className="font-serif text-4xl text-foreground md:text-6xl">Från sök till hemresa.</h1>
       <p className="mt-4 max-w-xl text-muted-foreground">
-        Stuga i Sälen är byggt för att vara så enkelt som möjligt — både när du ska hyra och när du ska hyra ut.
+        Fjällmys är byggt för att vara så enkelt som möjligt — både när du ska hyra och när du ska hyra ut.
       </p>
 
       <div className="mt-14 space-y-4">

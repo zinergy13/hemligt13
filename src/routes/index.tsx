@@ -6,9 +6,9 @@ import { areas } from "../data/areas";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Stuga i Sälen — Hyr stuga i Sälenfjällen direkt från värd" },
+      { title: "Fjällmys — Hyr stuga i Sälenfjällen direkt från värd" },
       { name: "description", content: "Sälens samlade plats för stuguthyrning. Sök ski-in/ski-out-stugor, lägenheter och fjällboenden i Lindvallen, Tandådalen, Kläppen, Stöten och hela Sälen." },
-      { property: "og:title", content: "Stuga i Sälen — Hyr stuga i Sälenfjällen" },
+      { property: "og:title", content: "Fjällmys — Hyr stuga i Sälenfjällen" },
       { property: "og:description", content: "Sök, hyr och hyr ut stugor i Sälen — direkt mellan värd och gäst." },
     ],
   }),
@@ -141,7 +141,7 @@ function HomePage() {
       <section className="bg-muted/50 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Varför Stuga i Sälen?</p>
+            <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Varför Fjällmys?</p>
             <h2 className="font-serif text-3xl text-foreground md:text-5xl">Sälen — samlat på ett ställe</h2>
             <p className="mt-4 text-muted-foreground">
               Slipp scrolla genom tio Facebook-grupper. Här hittar du alla stugor, lägenheter och fjällboenden i Sälen — sökbara, kalenderkopplade och betalningsklara.

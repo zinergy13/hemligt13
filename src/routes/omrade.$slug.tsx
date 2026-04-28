@@ -70,7 +70,7 @@ function AreaPage() {
           <aside className="rounded-2xl bg-muted/60 p-6">
             <h3 className="font-serif text-lg text-foreground">Höjdpunkter</h3>
             <ul className="mt-4 space-y-2.5 text-sm">
-              {area.highlights.map((h) => (
+              {area.highlights.map((h: string) => (
                 <li key={h} className="flex items-start gap-2 text-foreground">
                   <Check className="mt-0.5 h-4 w-4 flex-none text-primary" /> {h}
                 </li>

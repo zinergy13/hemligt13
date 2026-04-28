@@ -35,10 +35,19 @@ function HostInvoicePage() {
   const invoicesQ = useQuery({ ...hostInvoicesQuery(user?.id ?? ""), enabled });
   const feeQ = useQuery({ ...commissionFeeQuery(), enabled });
 
-  const rows = rowsQ.data;
-  const balance = balanceQ.data;
+  const rows = rowsQ.data ?? [];
+  const balance = balanceQ.data ?? {
+    earned_count: 0,
+    earned_amount: 0,
+    invoiced_count: 0,
+    invoiced_amount: 0,
+    paid_count: 0,
+    paid_amount: 0,
+    total_owed: 0,
+  };
   const invoices = invoicesQ.data ?? [];
   const feePerBooking = feeQ.data ?? 9900;
+  const initialLoading = rowsQ.isLoading || balanceQ.isLoading;
 
   async function downloadInvoice(invId: string, invoiceNumber: string) {
     setDownloadingId(invId);
@@ -68,7 +77,7 @@ function HostInvoicePage() {
   }
 
   // Only show full-screen spinner on initial load with no cached data.
-  if (loading || !user || (rows === undefined && balance === undefined)) {
+  if (loading || !user || (initialLoading && !rowsQ.data && !balanceQ.data)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

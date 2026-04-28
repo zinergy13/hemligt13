@@ -109,7 +109,23 @@ function RootComponent() {
       const s = typeof msg === "string" ? msg : (msg as Error)?.message ?? "";
       return /Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError|Loading chunk [\d]+ failed/i.test(s);
     };
-    const recover = () => {
+    const extractChunk = (msg: string) => {
+      const m =
+        msg.match(/Loading chunk ([\w-]+) failed/i) ||
+        msg.match(/imported module:?\s*(\S+)/i) ||
+        msg.match(/chunk[:\s]+([\w./-]+)/i);
+      return m?.[1];
+    };
+    const recover = (raw: unknown, source: string) => {
+      const err = raw instanceof Error ? raw : undefined;
+      const message = err?.message ?? (typeof raw === "string" ? raw : "Okänt laddningsfel");
+      setErrorDetails({
+        message,
+        chunk: extractChunk(message),
+        source,
+        stack: err?.stack,
+        time: new Date().toISOString(),
+      });
       try {
         const key = "__chunk_reload_at";
         const last = Number(sessionStorage.getItem(key) || "0");
@@ -125,15 +141,15 @@ function RootComponent() {
       });
       const url = new URL(window.location.href);
       url.searchParams.set("_r", Date.now().toString(36));
-      setTimeout(() => window.location.replace(url.toString()), 600);
+      setTimeout(() => window.location.replace(url.toString()), 1500);
     };
     const onError = (e: ErrorEvent) => {
-      if (isChunkError(e.message) || isChunkError(e.error)) recover();
+      if (isChunkError(e.message) || isChunkError(e.error)) recover(e.error ?? e.message, "window.error");
     };
     const onRejection = (e: PromiseRejectionEvent) => {
       const reason = e.reason as { message?: string } | string | undefined;
       const msg = typeof reason === "string" ? reason : reason?.message;
-      if (isChunkError(msg)) recover();
+      if (isChunkError(msg)) recover(e.reason, "unhandledrejection");
     };
     window.addEventListener("error", onError);
     window.addEventListener("unhandledrejection", onRejection);

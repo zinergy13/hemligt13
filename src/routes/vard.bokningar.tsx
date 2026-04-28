@@ -96,13 +96,13 @@ function HostBookingsPage() {
   }
 
   const counts = {
-    all: rows.length,
-    pending: rows.filter((r) => r.status === "pending").length,
-    confirmed: rows.filter((r) => r.status === "confirmed").length,
-    declined: rows.filter((r) => r.status === "declined" || r.status === "cancelled").length,
+    all: safeRows.length,
+    pending: safeRows.filter((r) => r.status === "pending").length,
+    confirmed: safeRows.filter((r) => r.status === "confirmed").length,
+    declined: safeRows.filter((r) => r.status === "declined" || r.status === "cancelled").length,
   };
 
-  const visible = rows.filter((r) => {
+  const visible = safeRows.filter((r) => {
     if (filter === "all") return true;
     if (filter === "declined") return r.status === "declined" || r.status === "cancelled";
     return r.status === filter;

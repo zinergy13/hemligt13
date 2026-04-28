@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Receipt, Wallet, Info } from "lucide-react";
+import { Loader2, Receipt, Wallet, Info, FileDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange, type BookingStatus } from "@/lib/bookings";
@@ -30,6 +30,17 @@ type Balance = {
   total_owed: number;
 };
 
+type Invoice = {
+  id: string;
+  invoice_number: string;
+  period_start: string;
+  period_end: string;
+  total_amount: number;
+  booking_count: number;
+  status: string;
+  issued_at: string;
+};
+
 export const Route = createFileRoute("/vard/faktura")({
   head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällmys" }] }),
   component: HostInvoicePage,
@@ -41,6 +52,8 @@ function HostInvoicePage() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [balance, setBalance] = useState<Balance | null>(null);
   const [feePerBooking, setFeePerBooking] = useState<number>(9900);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -52,7 +65,7 @@ function HostInvoicePage() {
     if (!user) return;
     let active = true;
     (async () => {
-      const [{ data: bookings }, { data: bal }, { data: settings }] = await Promise.all([
+      const [{ data: bookings }, { data: bal }, { data: settings }, { data: inv }] = await Promise.all([
         supabase
           .from("bookings")
           .select(
@@ -66,9 +79,15 @@ function HostInvoicePage() {
           .eq("host_id", user.id)
           .maybeSingle(),
         supabase.from("app_settings").select("commission_per_booking").eq("id", 1).maybeSingle(),
+        supabase
+          .from("host_invoices")
+          .select("id, invoice_number, period_start, period_end, total_amount, booking_count, status, issued_at")
+          .eq("host_id", user.id)
+          .order("issued_at", { ascending: false }),
       ]);
       if (!active) return;
       setRows(((bookings as unknown) as Row[]) ?? []);
+      setInvoices(((inv as unknown) as Invoice[]) ?? []);
       setBalance(
         bal
           ? ({
@@ -96,6 +115,33 @@ function HostInvoicePage() {
       active = false;
     };
   }, [user]);
+
+  async function downloadInvoice(invId: string, invoiceNumber: string) {
+    setDownloadingId(invId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("Inte inloggad");
+      const res = await fetch(`/api/invoice/${invId}/pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error(`Kunde inte hämta PDF (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${invoiceNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("Kunde inte ladda ner fakturan. Försök igen.");
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   if (loading || !user || rows === null || balance === null) {
     return (
@@ -168,6 +214,65 @@ function HostInvoicePage() {
           samlingsfaktura till din e-post i början av varje månad.
         </p>
       </div>
+
+      <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Fakturor</h2>
+      {invoices.length === 0 ? (
+        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
+          Inga fakturor ännu. Vi skapar en samlingsfaktura i början av varje månad.
+        </div>
+      ) : (
+        <div className="overflow-hidden rounded-2xl border border-border">
+          <table className="w-full text-sm">
+            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
+              <tr>
+                <th className="px-4 py-3 font-medium">Fakturanr</th>
+                <th className="px-4 py-3 font-medium">Period</th>
+                <th className="px-4 py-3 font-medium">Antal</th>
+                <th className="px-4 py-3 font-medium">Belopp</th>
+                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-4 py-3 font-medium text-right">PDF</th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-border bg-background">
+              {invoices.map((i) => (
+                <tr key={i.id}>
+                  <td className="px-4 py-3 font-medium text-foreground">{i.invoice_number}</td>
+                  <td className="px-4 py-3 text-muted-foreground">
+                    {new Date(i.period_start).toLocaleDateString("sv-SE")} – {new Date(i.period_end).toLocaleDateString("sv-SE")}
+                  </td>
+                  <td className="px-4 py-3 text-muted-foreground">{i.booking_count}</td>
+                  <td className="px-4 py-3 font-medium text-foreground">{formatOre(i.total_amount)}</td>
+                  <td className="px-4 py-3">
+                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${
+                      i.status === "paid"
+                        ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
+                        : i.status === "waived"
+                        ? "bg-muted text-muted-foreground"
+                        : "bg-primary/10 text-primary"
+                    }`}>
+                      {i.status === "paid" ? "Betald" : i.status === "waived" ? "Avskriven" : "Utfärdad"}
+                    </span>
+                  </td>
+                  <td className="px-4 py-3 text-right">
+                    <button
+                      onClick={() => downloadInvoice(i.id, i.invoice_number)}
+                      disabled={downloadingId === i.id}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-50"
+                    >
+                      {downloadingId === i.id ? (
+                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                      ) : (
+                        <FileDown className="h-3.5 w-3.5" />
+                      )}
+                      Ladda ner
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      )}
 
       <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Avgiftshistorik</h2>
       {visibleRows.length === 0 ? (

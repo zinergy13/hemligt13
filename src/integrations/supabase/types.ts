@@ -52,6 +52,7 @@ export type Database = {
           guest_message: string | null
           guests: number
           host_id: string
+          host_invoice_id: string | null
           id: string
           nightly_total: number
           nights: number
@@ -79,6 +80,7 @@ export type Database = {
           guest_message?: string | null
           guests?: number
           host_id: string
+          host_invoice_id?: string | null
           id?: string
           nightly_total: number
           nights: number
@@ -106,6 +108,7 @@ export type Database = {
           guest_message?: string | null
           guests?: number
           host_id?: string
+          host_invoice_id?: string | null
           id?: string
           nightly_total?: number
           nights?: number
@@ -137,6 +140,13 @@ export type Database = {
             columns: ["host_id"]
             isOneToOne: false
             referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_host_invoice_id_fkey"
+            columns: ["host_invoice_id"]
+            isOneToOne: false
+            referencedRelation: "host_invoices"
             referencedColumns: ["id"]
           },
         ]
@@ -242,6 +252,51 @@ export type Database = {
           status?: Database["public"]["Enums"]["cabin_status"]
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      host_invoices: {
+        Row: {
+          booking_count: number
+          created_at: string
+          currency: string
+          host_id: string
+          id: string
+          invoice_number: string
+          issued_at: string
+          paid_at: string | null
+          period_end: string
+          period_start: string
+          status: string
+          total_amount: number
+        }
+        Insert: {
+          booking_count?: number
+          created_at?: string
+          currency?: string
+          host_id: string
+          id?: string
+          invoice_number: string
+          issued_at?: string
+          paid_at?: string | null
+          period_end: string
+          period_start: string
+          status?: string
+          total_amount?: number
+        }
+        Update: {
+          booking_count?: number
+          created_at?: string
+          currency?: string
+          host_id?: string
+          id?: string
+          invoice_number?: string
+          issued_at?: string
+          paid_at?: string | null
+          period_end?: string
+          period_start?: string
+          status?: string
+          total_amount?: number
         }
         Relationships: []
       }
@@ -351,6 +406,15 @@ export type Database = {
     }
     Functions: {
       complete_past_bookings: { Args: never; Returns: number }
+      generate_monthly_host_invoices: {
+        Args: never
+        Returns: {
+          booking_count: number
+          host_id: string
+          invoice_id: string
+          total_amount: number
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

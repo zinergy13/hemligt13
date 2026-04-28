@@ -1,0 +1,1 @@
+REVOKE EXECUTE ON FUNCTION public.generate_monthly_host_invoices() FROM PUBLIC, anon, authenticated;

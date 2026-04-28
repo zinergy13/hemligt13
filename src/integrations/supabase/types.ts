@@ -14,6 +14,97 @@ export type Database = {
   }
   public: {
     Tables: {
+      bookings: {
+        Row: {
+          cabin_id: string
+          check_in: string
+          check_out: string
+          cleaning_fee: number
+          created_at: string
+          currency: string
+          guest_id: string
+          guest_message: string | null
+          guests: number
+          host_id: string
+          id: string
+          nightly_total: number
+          nights: number
+          payment_status: Database["public"]["Enums"]["payment_status"]
+          service_fee: number
+          status: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent: string | null
+          stripe_session_id: string | null
+          total_price: number
+          updated_at: string
+        }
+        Insert: {
+          cabin_id: string
+          check_in: string
+          check_out: string
+          cleaning_fee?: number
+          created_at?: string
+          currency?: string
+          guest_id: string
+          guest_message?: string | null
+          guests?: number
+          host_id: string
+          id?: string
+          nightly_total: number
+          nights: number
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          service_fee?: number
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          total_price: number
+          updated_at?: string
+        }
+        Update: {
+          cabin_id?: string
+          check_in?: string
+          check_out?: string
+          cleaning_fee?: number
+          created_at?: string
+          currency?: string
+          guest_id?: string
+          guest_message?: string | null
+          guests?: number
+          host_id?: string
+          id?: string
+          nightly_total?: number
+          nights?: number
+          payment_status?: Database["public"]["Enums"]["payment_status"]
+          service_fee?: number
+          status?: Database["public"]["Enums"]["booking_status"]
+          stripe_payment_intent?: string | null
+          stripe_session_id?: string | null
+          total_price?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_guest_id_fkey"
+            columns: ["guest_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "bookings_host_id_fkey"
+            columns: ["host_id"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cabin_images: {
         Row: {
           cabin_id: string
@@ -62,6 +153,7 @@ export type Database = {
           description: string | null
           host_id: string
           id: string
+          instant_book: boolean
           lat: number | null
           lng: number | null
           max_guests: number
@@ -83,6 +175,7 @@ export type Database = {
           description?: string | null
           host_id: string
           id?: string
+          instant_book?: boolean
           lat?: number | null
           lng?: number | null
           max_guests?: number
@@ -104,6 +197,7 @@ export type Database = {
           description?: string | null
           host_id?: string
           id?: string
+          instant_book?: boolean
           lat?: number | null
           lng?: number | null
           max_guests?: number
@@ -171,7 +265,32 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      cabin_unavailable_dates: {
+        Row: {
+          cabin_id: string | null
+          check_in: string | null
+          check_out: string | null
+        }
+        Insert: {
+          cabin_id?: string | null
+          check_in?: string | null
+          check_out?: string | null
+        }
+        Update: {
+          cabin_id?: string | null
+          check_in?: string | null
+          check_out?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "bookings_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
     }
     Functions: {
       has_role: {
@@ -184,7 +303,14 @@ export type Database = {
     }
     Enums: {
       app_role: "guest" | "host" | "admin"
+      booking_status:
+        | "pending"
+        | "confirmed"
+        | "declined"
+        | "cancelled"
+        | "completed"
       cabin_status: "draft" | "published" | "paused"
+      payment_status: "unpaid" | "authorized" | "paid" | "refunded" | "failed"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -313,7 +439,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["guest", "host", "admin"],
+      booking_status: [
+        "pending",
+        "confirmed",
+        "declined",
+        "cancelled",
+        "completed",
+      ],
       cabin_status: ["draft", "published", "paused"],
+      payment_status: ["unpaid", "authorized", "paid", "refunded", "failed"],
     },
   },
 } as const

@@ -53,6 +53,7 @@ export type CabinWithImages = {
   cleaning_fee: number;
   amenities: string[];
   status: CabinStatus;
+  instant_book: boolean;
   cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
 };
 

@@ -160,7 +160,9 @@ function HostBookingsPage() {
         })}
       </div>
 
-      {visible.length === 0 ? (
+      {initialLoading ? (
+        <ListSkeleton count={3} />
+      ) : visible.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
           <Inbox className="mx-auto mb-4 h-10 w-10 text-primary" />
           <h2 className="font-serif text-2xl text-foreground">Inga bokningar här</h2>

@@ -6,6 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange } from "@/lib/bookings";
 import { commissionLabel, formatOre } from "@/lib/commission";
+import { SummaryCardsSkeleton, TableSkeleton, Skeleton } from "@/components/Skeleton";
 import {
   hostBalanceQuery,
   hostCommissionRowsQuery,
@@ -47,7 +48,9 @@ function HostInvoicePage() {
   };
   const invoices = invoicesQ.data ?? [];
   const feePerBooking = feeQ.data ?? 9900;
-  const initialLoading = rowsQ.isLoading || balanceQ.isLoading;
+  const initialBalance = balanceQ.isLoading && !balanceQ.data;
+  const initialRows = rowsQ.isLoading && !rowsQ.data;
+  const initialInvoices = invoicesQ.isLoading && !invoicesQ.data;
 
   async function downloadInvoice(invId: string, invoiceNumber: string) {
     setDownloadingId(invId);
@@ -77,7 +80,7 @@ function HostInvoicePage() {
   }
 
   // Only show full-screen spinner on initial load with no cached data.
-  if (loading || !user || (initialLoading && !rowsQ.data && !balanceQ.data)) {
+  if (loading || !user) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

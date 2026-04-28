@@ -81,11 +81,11 @@ export function Header() {
                     </Link>
                     {profile?.is_host && (
                       <Link
-                        to="/hyr-ut"
+                        to="/vard"
                         onClick={() => setMenuOpen(false)}
                         className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted"
                       >
-                        <Home className="h-4 w-4" /> Mina uthyrningar
+                        <Home className="h-4 w-4" /> Mina stugor
                       </Link>
                     )}
                     <button

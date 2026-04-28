@@ -75,6 +75,12 @@ function scanText(text, label, hits) {
   const lines = text.split("\n");
   for (let i = 0; i < lines.length; i++) {
     const line = lines[i];
+    // Hoppa över rader som bara är tekniska imports/paths (ej användarsynligt).
+    if (
+      /@lovable\.dev\//.test(line) ||
+      /@\/integrations\/lovable/.test(line) ||
+      /from\s+["']@lovable\.dev/.test(line)
+    ) continue;
     for (const re of FORBIDDEN) {
       const m = line.match(re);
       if (m) {

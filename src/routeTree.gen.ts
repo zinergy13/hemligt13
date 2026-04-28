@@ -18,6 +18,7 @@ import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 
 const SokRoute = SokRouteImport.update({
@@ -65,6 +66,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const StugaSlugRoute = StugaSlugRouteImport.update({
+  id: '/stuga/$slug',
+  path: '/stuga/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OmradeSlugRoute = OmradeSlugRouteImport.update({
   id: '/omrade/$slug',
   path: '/omrade/$slug',
@@ -82,6 +88,7 @@ export interface FileRoutesByFullPath {
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/stuga/$slug': typeof StugaSlugRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -94,6 +101,7 @@ export interface FileRoutesByTo {
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/stuga/$slug': typeof StugaSlugRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -107,6 +115,7 @@ export interface FileRoutesById {
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/stuga/$slug': typeof StugaSlugRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -121,6 +130,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sok'
     | '/omrade/$slug'
+    | '/stuga/$slug'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -133,6 +143,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sok'
     | '/omrade/$slug'
+    | '/stuga/$slug'
   id:
     | '__root__'
     | '/'
@@ -145,6 +156,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sok'
     | '/omrade/$slug'
+    | '/stuga/$slug'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -158,6 +170,7 @@ export interface RootRouteChildren {
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
+  StugaSlugRoute: typeof StugaSlugRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -225,6 +238,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/stuga/$slug': {
+      id: '/stuga/$slug'
+      path: '/stuga/$slug'
+      fullPath: '/stuga/$slug'
+      preLoaderRoute: typeof StugaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/omrade/$slug': {
       id: '/omrade/$slug'
       path: '/omrade/$slug'
@@ -246,6 +266,7 @@ const rootRouteChildren: RootRouteChildren = {
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,
   OmradeSlugRoute: OmradeSlugRoute,
+  StugaSlugRoute: StugaSlugRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

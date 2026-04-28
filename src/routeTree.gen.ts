@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as VardRouteImport } from './routes/vard'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as OmOssRouteImport } from './routes/om-oss'
+import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
 import { Route as LoggaInRouteImport } from './routes/logga-in'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as KontaktRouteImport } from './routes/kontakt'
@@ -37,6 +38,11 @@ const SokRoute = SokRouteImport.update({
 const OmOssRoute = OmOssRouteImport.update({
   id: '/om-oss',
   path: '/om-oss',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinaBokningarRoute = MinaBokningarRouteImport.update({
+  id: '/mina-bokningar',
+  path: '/mina-bokningar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const LoggaInRoute = LoggaInRouteImport.update({
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
   '/logga-in': typeof LoggaInRoute
+  '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
@@ -119,6 +126,7 @@ export interface FileRoutesByTo {
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
   '/logga-in': typeof LoggaInRoute
+  '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
@@ -136,6 +144,7 @@ export interface FileRoutesById {
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
   '/logga-in': typeof LoggaInRoute
+  '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
@@ -154,6 +163,7 @@ export interface FileRouteTypes {
     | '/kontakt'
     | '/konto'
     | '/logga-in'
+    | '/mina-bokningar'
     | '/om-oss'
     | '/sok'
     | '/vard'
@@ -170,6 +180,7 @@ export interface FileRouteTypes {
     | '/kontakt'
     | '/konto'
     | '/logga-in'
+    | '/mina-bokningar'
     | '/om-oss'
     | '/sok'
     | '/vard'
@@ -186,6 +197,7 @@ export interface FileRouteTypes {
     | '/kontakt'
     | '/konto'
     | '/logga-in'
+    | '/mina-bokningar'
     | '/om-oss'
     | '/sok'
     | '/vard'
@@ -203,6 +215,7 @@ export interface RootRouteChildren {
   KontaktRoute: typeof KontaktRoute
   KontoRoute: typeof KontoRoute
   LoggaInRoute: typeof LoggaInRoute
+  MinaBokningarRoute: typeof MinaBokningarRoute
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
   VardRoute: typeof VardRouteWithChildren
@@ -231,6 +244,13 @@ declare module '@tanstack/react-router' {
       path: '/om-oss'
       fullPath: '/om-oss'
       preLoaderRoute: typeof OmOssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mina-bokningar': {
+      id: '/mina-bokningar'
+      path: '/mina-bokningar'
+      fullPath: '/mina-bokningar'
+      preLoaderRoute: typeof MinaBokningarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/logga-in': {
@@ -333,6 +353,7 @@ const rootRouteChildren: RootRouteChildren = {
   KontaktRoute: KontaktRoute,
   KontoRoute: KontoRoute,
   LoggaInRoute: LoggaInRoute,
+  MinaBokningarRoute: MinaBokningarRoute,
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,
   VardRoute: VardRouteWithChildren,

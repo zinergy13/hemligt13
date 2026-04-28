@@ -1,6 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
-import { ArrowLeft, MapPin, Check } from "lucide-react";
+import { useEffect, useState } from "react";
+import { ArrowLeft, MapPin, Check, Loader2 } from "lucide-react";
 import { areaBySlug, areas } from "../data/areas";
+import { supabase } from "@/integrations/supabase/client";
+import { CabinCard } from "@/components/CabinCard";
+import type { CabinWithImages } from "@/lib/cabins";
 
 export const Route = createFileRoute("/omrade/$slug")({
   loader: ({ params }) => {
@@ -43,6 +47,23 @@ export const Route = createFileRoute("/omrade/$slug")({
 function AreaPage() {
   const { area } = Route.useLoaderData();
   const others = areas.filter((a) => a.slug !== area.slug).slice(0, 4);
+  const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
+
+  useEffect(() => {
+    let active = true;
+    (async () => {
+      const { data } = await supabase
+        .from("cabins")
+        .select("*, cabin_images(url, is_cover, sort_order)")
+        .eq("status", "published")
+        .eq("area_slug", area.slug)
+        .order("created_at", { ascending: false });
+      if (active) setCabins((data as CabinWithImages[]) ?? []);
+    })();
+    return () => {
+      active = false;
+    };
+  }, [area.slug]);
 
   return (
     <>
@@ -82,19 +103,31 @@ function AreaPage() {
           </aside>
         </div>
 
-        <div className="mt-12 rounded-3xl border border-dashed border-border bg-muted/30 p-10 text-center md:p-14">
-          <h3 className="font-serif text-2xl text-foreground">Stugor i {area.name}</h3>
-          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-            Vi fyller plattformen med boenden från värdar i {area.name} just nu. Är du värd i området? Lägg upp din stuga så hamnar den högst i listan vid lansering.
-          </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link to="/hyr-ut" className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-              Lägg upp din stuga
-            </Link>
-            <Link to="/sok" className="rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted">
-              Sök i hela Sälen
-            </Link>
-          </div>
+        <div className="mt-12">
+          <h3 className="mb-6 font-serif text-2xl text-foreground md:text-3xl">Stugor i {area.name}</h3>
+          {cabins === null ? (
+            <div className="flex min-h-[20vh] items-center justify-center">
+              <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+            </div>
+          ) : cabins.length > 0 ? (
+            <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+              {cabins.map((c) => <CabinCard key={c.id} cabin={c} />)}
+            </div>
+          ) : (
+            <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-10 text-center md:p-14">
+              <p className="mx-auto max-w-md text-sm text-muted-foreground">
+                Vi fyller plattformen med boenden från värdar i {area.name} just nu. Är du värd i området? Lägg upp din stuga så hamnar den högst i listan vid lansering.
+              </p>
+              <div className="mt-6 flex flex-wrap justify-center gap-3">
+                <Link to="/hyr-ut" className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+                  Lägg upp din stuga
+                </Link>
+                <Link to="/sok" className="rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted">
+                  Sök i hela Sälen
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       </section>
 

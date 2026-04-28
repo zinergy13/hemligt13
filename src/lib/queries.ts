@@ -43,28 +43,38 @@ export type HostInvoice = {
   issued_at: string;
 };
 
-export const hostBalanceQuery = (userId: string) =>
-  queryOptions({
-    queryKey: ["host", userId, "balance"],
-    staleTime: STALE,
-    gcTime: GC,
-    queryFn: async (): Promise<HostBalance> => {
-      const { data } = await supabase
-        .from("host_balances")
-        .select("*")
-        .eq("host_id", userId)
-        .maybeSingle();
-      return {
-        earned_count: data?.earned_count ?? 0,
-        earned_amount: data?.earned_amount ?? 0,
-        invoiced_count: data?.invoiced_count ?? 0,
-        invoiced_amount: data?.invoiced_amount ?? 0,
-        paid_count: data?.paid_count ?? 0,
-        paid_amount: data?.paid_amount ?? 0,
-        total_owed: data?.total_owed ?? 0,
-      };
-    },
-  });
+/**
+ * Aggregate the host balance from already-fetched commission rows. This
+ * removes a separate round-trip to the `host_balances` view — the view is
+ * just a SUM/COUNT over the same booking rows we already load on this page.
+ */
+export function computeHostBalance(rows: HostCommissionRow[]): HostBalance {
+  const b: HostBalance = {
+    earned_count: 0,
+    earned_amount: 0,
+    invoiced_count: 0,
+    invoiced_amount: 0,
+    paid_count: 0,
+    paid_amount: 0,
+    total_owed: 0,
+  };
+  for (const r of rows) {
+    const amt = r.commission_amount ?? 0;
+    if (r.commission_status === "earned") {
+      b.earned_count += 1;
+      b.earned_amount += amt;
+      b.total_owed += amt;
+    } else if (r.commission_status === "invoiced") {
+      b.invoiced_count += 1;
+      b.invoiced_amount += amt;
+      b.total_owed += amt;
+    } else if (r.commission_status === "paid") {
+      b.paid_count += 1;
+      b.paid_amount += amt;
+    }
+  }
+  return b;
+}
 
 export const hostCommissionRowsQuery = (userId: string) =>
   queryOptions({

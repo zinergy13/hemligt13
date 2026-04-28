@@ -3,7 +3,8 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { AuthProvider } from "../hooks/useAuth";
 import { Toaster } from "../components/ui/sonner";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
+import { toast } from "sonner";
 
 import appCss from "../styles.css?url";
 
@@ -81,6 +82,19 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  const [recovering, setRecovering] = useState(false);
+
+  useEffect(() => {
+    try {
+      if (sessionStorage.getItem("__chunk_reload_done") === "1") {
+        sessionStorage.removeItem("__chunk_reload_done");
+        toast.success("Sidan uppdaterades", {
+          description: "Vi laddade om appen efter ett tillfälligt laddningsfel. Du kan fortsätta som vanligt.",
+        });
+      }
+    } catch {}
+  }, []);
+
   useEffect(() => {
     const isChunkError = (msg: unknown) => {
       const s = typeof msg === "string" ? msg : (msg as Error)?.message ?? "";
@@ -93,10 +107,16 @@ function RootComponent() {
         const now = Date.now();
         if (now - last < 10000) return;
         sessionStorage.setItem(key, String(now));
+        sessionStorage.setItem("__chunk_reload_done", "1");
       } catch {}
+      setRecovering(true);
+      toast.loading("Laddar om appen…", {
+        description: "Vi upptäckte ett laddningsfel och hämtar senaste versionen åt dig.",
+        duration: 4000,
+      });
       const url = new URL(window.location.href);
       url.searchParams.set("_r", Date.now().toString(36));
-      window.location.replace(url.toString());
+      setTimeout(() => window.location.replace(url.toString()), 600);
     };
     const onError = (e: ErrorEvent) => {
       if (isChunkError(e.message) || isChunkError(e.error)) recover();
@@ -117,6 +137,15 @@ function RootComponent() {
   return (
     <AuthProvider>
       <div className="flex min-h-screen flex-col">
+        {recovering && (
+          <div
+            role="status"
+            aria-live="polite"
+            className="sticky top-0 z-50 w-full bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground shadow-md"
+          >
+            Återhämtar appen efter ett laddningsfel — sidan laddas om automatiskt…
+          </div>
+        )}
         <Header />
         <main className="flex-1">
           <Outlet />

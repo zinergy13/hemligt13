@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Receipt, Wallet, Info } from "lucide-react";
+import { Loader2, Receipt, Wallet, Info, FileDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange, type BookingStatus } from "@/lib/bookings";
@@ -30,6 +30,17 @@ type Balance = {
   total_owed: number;
 };
 
+type Invoice = {
+  id: string;
+  invoice_number: string;
+  period_start: string;
+  period_end: string;
+  total_amount: number;
+  booking_count: number;
+  status: string;
+  issued_at: string;
+};
+
 export const Route = createFileRoute("/vard/faktura")({
   head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällmys" }] }),
   component: HostInvoicePage,
@@ -41,6 +52,8 @@ function HostInvoicePage() {
   const [rows, setRows] = useState<Row[] | null>(null);
   const [balance, setBalance] = useState<Balance | null>(null);
   const [feePerBooking, setFeePerBooking] = useState<number>(9900);
+  const [invoices, setInvoices] = useState<Invoice[]>([]);
+  const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
     if (!loading && !user) {
@@ -52,7 +65,7 @@ function HostInvoicePage() {
     if (!user) return;
     let active = true;
     (async () => {
-      const [{ data: bookings }, { data: bal }, { data: settings }] = await Promise.all([
+      const [{ data: bookings }, { data: bal }, { data: settings }, { data: inv }] = await Promise.all([
         supabase
           .from("bookings")
           .select(
@@ -66,9 +79,15 @@ function HostInvoicePage() {
           .eq("host_id", user.id)
           .maybeSingle(),
         supabase.from("app_settings").select("commission_per_booking").eq("id", 1).maybeSingle(),
+        supabase
+          .from("host_invoices")
+          .select("id, invoice_number, period_start, period_end, total_amount, booking_count, status, issued_at")
+          .eq("host_id", user.id)
+          .order("issued_at", { ascending: false }),
       ]);
       if (!active) return;
       setRows(((bookings as unknown) as Row[]) ?? []);
+      setInvoices(((inv as unknown) as Invoice[]) ?? []);
       setBalance(
         bal
           ? ({
@@ -96,6 +115,33 @@ function HostInvoicePage() {
       active = false;
     };
   }, [user]);
+
+  async function downloadInvoice(invId: string, invoiceNumber: string) {
+    setDownloadingId(invId);
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      const token = session?.access_token;
+      if (!token) throw new Error("Inte inloggad");
+      const res = await fetch(`/api/invoice/${invId}/pdf`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (!res.ok) throw new Error(`Kunde inte hämta PDF (${res.status})`);
+      const blob = await res.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = `${invoiceNumber}.pdf`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+    } catch (err) {
+      console.error(err);
+      alert("Kunde inte ladda ner fakturan. Försök igen.");
+    } finally {
+      setDownloadingId(null);
+    }
+  }
 
   if (loading || !user || rows === null || balance === null) {
     return (

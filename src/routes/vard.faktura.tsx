@@ -1,45 +1,17 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import { Loader2, Receipt, Wallet, Info, FileDown } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { formatDateRange, type BookingStatus } from "@/lib/bookings";
-import { commissionLabel, formatOre, type CommissionStatus } from "@/lib/commission";
-
-type Row = {
-  id: string;
-  check_in: string;
-  check_out: string;
-  status: BookingStatus;
-  total_price: number;
-  commission_amount: number;
-  commission_status: CommissionStatus;
-  commission_earned_at: string | null;
-  commission_invoiced_at: string | null;
-  commission_paid_at: string | null;
-  cabins: { title: string; slug: string } | null;
-};
-
-type Balance = {
-  earned_count: number;
-  earned_amount: number;
-  invoiced_count: number;
-  invoiced_amount: number;
-  paid_count: number;
-  paid_amount: number;
-  total_owed: number;
-};
-
-type Invoice = {
-  id: string;
-  invoice_number: string;
-  period_start: string;
-  period_end: string;
-  total_amount: number;
-  booking_count: number;
-  status: string;
-  issued_at: string;
-};
+import { formatDateRange } from "@/lib/bookings";
+import { commissionLabel, formatOre } from "@/lib/commission";
+import {
+  hostBalanceQuery,
+  hostCommissionRowsQuery,
+  hostInvoicesQuery,
+  commissionFeeQuery,
+} from "@/lib/queries";
 
 export const Route = createFileRoute("/vard/faktura")({
   head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällmys" }] }),
@@ -49,10 +21,6 @@ export const Route = createFileRoute("/vard/faktura")({
 function HostInvoicePage() {
   const { user, profile, loading } = useAuth();
   const navigate = useNavigate();
-  const [rows, setRows] = useState<Row[] | null>(null);
-  const [balance, setBalance] = useState<Balance | null>(null);
-  const [feePerBooking, setFeePerBooking] = useState<number>(9900);
-  const [invoices, setInvoices] = useState<Invoice[]>([]);
   const [downloadingId, setDownloadingId] = useState<string | null>(null);
 
   useEffect(() => {
@@ -61,60 +29,16 @@ function HostInvoicePage() {
     }
   }, [loading, user, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
-    (async () => {
-      const [{ data: bookings }, { data: bal }, { data: settings }, { data: inv }] = await Promise.all([
-        supabase
-          .from("bookings")
-          .select(
-            "id, check_in, check_out, status, total_price, commission_amount, commission_status, commission_earned_at, commission_invoiced_at, commission_paid_at, cabins(title, slug)",
-          )
-          .eq("host_id", user.id)
-          .order("check_out", { ascending: false }),
-        supabase
-          .from("host_balances")
-          .select("*")
-          .eq("host_id", user.id)
-          .maybeSingle(),
-        supabase.from("app_settings").select("commission_per_booking").eq("id", 1).maybeSingle(),
-        supabase
-          .from("host_invoices")
-          .select("id, invoice_number, period_start, period_end, total_amount, booking_count, status, issued_at")
-          .eq("host_id", user.id)
-          .order("issued_at", { ascending: false }),
-      ]);
-      if (!active) return;
-      setRows(((bookings as unknown) as Row[]) ?? []);
-      setInvoices(((inv as unknown) as Invoice[]) ?? []);
-      setBalance(
-        bal
-          ? ({
-              earned_count: bal.earned_count ?? 0,
-              earned_amount: bal.earned_amount ?? 0,
-              invoiced_count: bal.invoiced_count ?? 0,
-              invoiced_amount: bal.invoiced_amount ?? 0,
-              paid_count: bal.paid_count ?? 0,
-              paid_amount: bal.paid_amount ?? 0,
-              total_owed: bal.total_owed ?? 0,
-            } as Balance)
-          : {
-              earned_count: 0,
-              earned_amount: 0,
-              invoiced_count: 0,
-              invoiced_amount: 0,
-              paid_count: 0,
-              paid_amount: 0,
-              total_owed: 0,
-            },
-      );
-      if (settings?.commission_per_booking) setFeePerBooking(settings.commission_per_booking);
-    })();
-    return () => {
-      active = false;
-    };
-  }, [user]);
+  const enabled = !!user;
+  const rowsQ = useQuery({ ...hostCommissionRowsQuery(user?.id ?? ""), enabled });
+  const balanceQ = useQuery({ ...hostBalanceQuery(user?.id ?? ""), enabled });
+  const invoicesQ = useQuery({ ...hostInvoicesQuery(user?.id ?? ""), enabled });
+  const feeQ = useQuery({ ...commissionFeeQuery(), enabled });
+
+  const rows = rowsQ.data;
+  const balance = balanceQ.data;
+  const invoices = invoicesQ.data ?? [];
+  const feePerBooking = feeQ.data ?? 9900;
 
   async function downloadInvoice(invId: string, invoiceNumber: string) {
     setDownloadingId(invId);
@@ -143,7 +67,8 @@ function HostInvoicePage() {
     }
   }
 
-  if (loading || !user || rows === null || balance === null) {
+  // Only show full-screen spinner on initial load with no cached data.
+  if (loading || !user || (rows === undefined && balance === undefined)) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />

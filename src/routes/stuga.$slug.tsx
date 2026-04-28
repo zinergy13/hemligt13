@@ -1,9 +1,10 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader2, Check } from "lucide-react";
+import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader2, Check, Zap, Clock } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { coverImage, AMENITY_OPTIONS, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
+import { BookingForm } from "@/components/BookingForm";
 
 export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({
@@ -175,16 +176,28 @@ function CabinPage() {
             {cabin.cleaning_fee > 0 && (
               <div className="mt-1 text-xs text-muted-foreground">+ {cabin.cleaning_fee} kr städavgift</div>
             )}
-            <button
-              disabled
-              className="mt-5 w-full cursor-not-allowed rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground opacity-60"
-              title="Bokning öppnar i nästa version"
-            >
-              Boka (öppnar snart)
-            </button>
-            <p className="mt-3 text-center text-xs text-muted-foreground">
-              Bokningsflödet är på väg. Kontakta värden direkt tills vidare.
-            </p>
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-foreground">
+              {cabin.instant_book ? (
+                <>
+                  <Zap className="h-3 w-3 text-primary" /> Direktbokning
+                </>
+              ) : (
+                <>
+                  <Clock className="h-3 w-3 text-primary" /> Kräver godkännande
+                </>
+              )}
+            </div>
+            <div className="mt-5">
+              <BookingForm
+                cabinId={cabin.id}
+                hostId={cabin.host_id}
+                cabinSlug={cabin.slug}
+                pricePerNight={cabin.price_per_night}
+                cleaningFee={cabin.cleaning_fee}
+                maxGuests={cabin.max_guests}
+                instantBook={cabin.instant_book}
+              />
+            </div>
           </div>
         </aside>
       </div>

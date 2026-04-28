@@ -1,95 +1,72 @@
-## Sprint 1 forts. — Stugor, värd-dashboard & riktig sök
+## Mål
 
-### Mål
-Gå från statiska demo-stugor till en riktig databas där värdar kan lägga upp egna stugor och gäster kan söka/se dem.
+Lägg till ett automatiskt säkerhetstest som körs vid `bun run build` och blockar publicering om någon synlig referens till externa appskapare (Lovable, GPT Engineer m.fl.) hittas i renderad HTML — inklusive header, footer och splash/loader.
 
----
+## Hur det fungerar
 
-### 1. Databas (`cabins` + relaterat)
+Eftersom appen är SSR (TanStack Start) renderas alla huvudvyer till HTML vid förfrågan. Vi gör skanningen i två lager:
 
-Ny migration som skapar:
+1. **Statisk källkods-skanner** (snabb, körs alltid)
+   - Söker igenom `src/**`, `index.html` och `public/**` efter en svartlista av termer.
+   - Ignorerar interna integrationer (`src/integrations/lovable/**`, `src/integrations/supabase/**`, `node_modules`, `routeTree.gen.ts`) och själva skannerfilen.
 
-- **`cabins`** — huvudtabell
-  - `id` (uuid, pk), `host_id` (uuid → profiles), `slug` (unik)
-  - `title`, `description` (text)
-  - `area_slug` (text, ex. `are`, `salen`) — kopplas till områdessidorna
-  - `address`, `lat`, `lng`
-  - `bedrooms`, `beds`, `bathrooms`, `max_guests` (int)
-  - `price_per_night` (int, SEK), `cleaning_fee` (int)
-  - `amenities` (text[]) — bastu, wifi, ski-in/out, etc.
-  - `status` (enum: `draft`, `published`, `paused`)
-  - `created_at`, `updated_at`
-- **`cabin_images`** — `id`, `cabin_id`, `url`, `sort_order`, `is_cover`
-- **Storage bucket** `cabin-images` (publik läs, värdar skriver egna)
+2. **Renderad HTML-skanner** (fångar runtime-strängar och badges)
+   - Startar en kortlivad preview-server av build-output.
+   - Hämtar nyckelrutter: `/`, `/sok`, `/logga-in`, `/hyr-ut`, `/kontakt`, `/konto`, plus en avsiktlig 404 (`/__not_found_check`) för att täcka NotFoundComponent.
+   - Skannar varje HTML-svar efter samma svartlista (case-insensitive), med whitelist för säkra ord (t.ex. "love" i fritext).
+   - Inkluderar skannern av inline `<script>`/`<style>` så loader/splash-markup fångas.
 
-**RLS-policies:**
-- Alla kan läsa `cabins` där `status = 'published'`
-- Värd kan CRUD egna stugor (`host_id = auth.uid()` + `has_role(uid, 'host')`)
-- Admin kan allt
-- Samma mönster för `cabin_images`
+Om något hittas: skript exitar med kod 1 → `bun run build` misslyckas → publicering blockas (Lovable publicerar bara lyckade builds).
 
-**Trigger:** auto-uppdatera `updated_at`, auto-generera `slug` från titel om tom.
+## Svartlista (case-insensitive, ord-gränsade)
 
----
+`lovable`, `lovable.dev`, `lovable.app`, `gpt engineer`, `gpt-engineer`, `gptengineer`, `made with`, `powered by lovable`, `built with lovable`, `edit with lovable`.
 
-### 2. Värd-dashboard (`/vard`)
+## Whitelist (tillåtna träffar)
 
-Ny skyddad route-grupp som kräver inloggning + `host`-roll. Annars redirect till `/konto` med "Bli värd"-CTA.
+- Filer under `src/integrations/lovable/`, `src/integrations/supabase/`
+- `package.json`, `package-lock.json`, `bun.lockb`, `node_modules/**`
+- `src/routeTree.gen.ts`
+- Själva skannern (`scripts/brand-scan.*`)
+- `.lovable/**`, `supabase/config.toml`
+- `*.lovable.app`-URL:er i meta/og som inte är användarsynlig text (matchas bort via attributkontext)
 
-- **`/vard`** — översikt: lista över egna stugor med status-badge, snabb-stats (visningar kommer i Sprint 3)
-- **`/vard/stugor/ny`** — flerstegsformulär:
-  1. Grundinfo (titel, område, beskrivning)
-  2. Kapacitet & pris
-  3. Bekvämligheter (checkbox-grid)
-  4. Bilder (drag-and-drop upload till storage)
-  5. Granska & publicera (sätter `status='published'`)
-- **`/vard/stugor/$id/redigera`** — samma formulär, förifyllt
-- Knapp "Pausa" / "Återpublicera" / "Radera"
+## Filer som skapas/ändras
 
-Använder `react-hook-form` + `zod` för validering (redan installerat förmodligen — kollas).
+- **`scripts/brand-scan.ts`** (ny): Kör båda lagren. Tar flagga `--source-only` för snabb lokal körning.
+- **`scripts/render-scan.ts`** (ny, anropas från brand-scan): Startar `vite preview`-process, gör fetch mot rutterna, parsar HTML, returnerar träffar.
+- **`package.json`** (ändras):
+  - Lägg till devDep: `tsx`
+  - Nya scripts:
+    - `"brand:scan": "tsx scripts/brand-scan.ts"`
+    - `"brand:scan:full": "tsx scripts/brand-scan.ts --render"`
+    - `"prebuild": "tsx scripts/brand-scan.ts"` ← detta är vad som blockar publicering
+    - `"build": "vite build && tsx scripts/brand-scan.ts --render"` ← post-build render-skanning mot dist/SSR-output
+- **`.lovableignore`** eller justering av prettier/eslint vid behov så skannern inte triggas av sig själv.
 
----
+## Utdata
 
-### 3. Riktig sök & visningar
+Vid träff:
+```
+✗ Brand scan failed — 2 forbidden references found:
+  src/components/Footer.tsx:42  "Powered by Lovable"
+  rendered: GET /sok            "<a href=\"https://lovable.dev\">"
+Publicering blockad. Ta bort referenserna och försök igen.
+```
 
-Ersätt nuvarande hårdkodade demo-stugor:
+Vid OK:
+```
+✓ Brand scan passed (scanned 187 source files, 7 rendered routes)
+```
 
-- **`/sok`** — query-params: `omrade`, `gaster`, `incheckning`, `utcheckning`, `prismin`, `prismax`
-  - Hämtar via TanStack Query från Supabase
-  - Visar grid med stugkort (cover-bild, titel, område, pris/natt, max gäster)
-  - Filter-sidopanel
-  - "Inga träffar"-state
-- **`/stuga/$slug`** — publik stugsida
-  - Bildgalleri (cover + thumbs)
-  - Titel, område-link, beskrivning, amenities
-  - Pris + bokningsbox (knappen "Boka" → disabled tills Sprint 2)
-  - Värd-info (förnamn + avatar från `profiles`)
-- **`/omrade/$slug`** — uppdatera så den listar publicerade stugor i området istället för demo-data
+## Tekniska detaljer
 
----
+- Skannern är ren Node (fs + fetch), inga externa beroenden förutom `tsx` för att köra TS direkt.
+- Render-fasen försöker `bun run preview` på en ledig port, pollar tills `200`, gör fetcher, dödar processen.
+- Om preview-servern inte startar inom 15s loggas ett varnings-skip (källkods-skannern räcker för att blocka build, men render-skanningen rapporterar warning så det märks i CI).
+- Skannern är idempotent och säker att köra lokalt: `bun run brand:scan`.
 
-### 4. Headers & navigation
+## Begränsningar
 
-- I header dropdown för inloggad värd: lägg till "Mina stugor" → `/vard`
-- "Bli värd"-CTA i header för icke-värdar (sidans översta nav)
-
----
-
-### Tekniska detaljer
-
-- Storage-uppladdning via `supabase.storage.from('cabin-images').upload()` med pathprefix `${user.id}/${cabin_id}/`
-- Bild-URL:er sparas som publika URLs i `cabin_images.url`
-- Sökfrågor: `supabase.from('cabins').select('*, cabin_images(url, is_cover)').eq('status','published')` med chained `.eq/.gte/.lte` för filter
-- Slug-generering: lowercase + bindestreck + 6-teckens random suffix för unikhet
-- Skyddade routes: HOC/wrapper-komponent `<RequireRole role="host">` som använder `useAuth`
-
----
-
-### Vad jag INTE gör i denna sprint
-- Bokningar / kalender / Stripe (Sprint 2)
-- Recensioner, meddelanden (Sprint 3+)
-- Karta med pins (senare)
-
----
-
-Säg **"kör"** så börjar jag, eller berätta vad du vill ändra (t.ex. färre fält i formuläret, hoppa över storage, etc.).
+- Skannern fångar inte text som hämtas från externa API:er vid runtime (t.ex. om en CMS-post innehåller "Made with Lovable") — det är rimligt utanför bygg-tid.
+- "Edit with Lovable"-badgen injiceras endast på publicerade Lovable-deployments och är redan dold via `set_badge_visibility`. Render-skanningen täcker den i lokala builds; produktionsbadge skyddas separat av plattformsinställningen.

@@ -159,6 +159,28 @@ function RootComponent() {
     };
   }, []);
 
+  const detailsText = errorDetails
+    ? [
+        `Tid: ${errorDetails.time}`,
+        `Källa: ${errorDetails.source ?? "-"}`,
+        `Chunk: ${errorDetails.chunk ?? "-"}`,
+        `URL: ${typeof window !== "undefined" ? window.location.href : "-"}`,
+        `UA: ${typeof navigator !== "undefined" ? navigator.userAgent : "-"}`,
+        `Meddelande: ${errorDetails.message}`,
+        errorDetails.stack ? `Stack:\n${errorDetails.stack}` : "",
+      ]
+        .filter(Boolean)
+        .join("\n")
+    : "";
+
+  const copyDetails = async () => {
+    try {
+      await navigator.clipboard.writeText(detailsText);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {}
+  };
+
   return (
     <AuthProvider>
       <div className="flex min-h-screen flex-col">
@@ -166,9 +188,35 @@ function RootComponent() {
           <div
             role="status"
             aria-live="polite"
-            className="sticky top-0 z-50 w-full bg-primary px-4 py-2 text-center text-sm font-medium text-primary-foreground shadow-md"
+            className="sticky top-0 z-50 w-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-md"
           >
-            Återhämtar appen efter ett laddningsfel — sidan laddas om automatiskt…
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
+              <span>Återhämtar appen efter ett laddningsfel — sidan laddas om automatiskt…</span>
+              {errorDetails && (
+                <button
+                  type="button"
+                  onClick={() => setShowDetails((v) => !v)}
+                  className="rounded-full border border-primary-foreground/40 bg-primary-foreground/10 px-3 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20"
+                >
+                  {showDetails ? "Dölj felinformation" : "Visa felinformation"}
+                </button>
+              )}
+            </div>
+            {showDetails && errorDetails && (
+              <div className="mx-auto mt-2 max-w-5xl rounded-md bg-background/95 p-3 text-left text-xs text-foreground shadow-inner">
+                <div className="mb-2 flex items-center justify-between gap-2">
+                  <span className="font-semibold">Teknisk felinformation</span>
+                  <button
+                    type="button"
+                    onClick={copyDetails}
+                    className="rounded-full border border-border bg-background px-2 py-1 text-xs font-medium hover:bg-muted"
+                  >
+                    {copied ? "Kopierat ✓" : "Kopiera"}
+                  </button>
+                </div>
+                <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all font-mono text-[11px] leading-relaxed">{detailsText}</pre>
+              </div>
+            )}
           </div>
         )}
         <Header />

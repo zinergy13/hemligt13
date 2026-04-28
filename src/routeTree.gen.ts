@@ -22,6 +22,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
+import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
 
 const VardRoute = VardRouteImport.update({
   id: '/vard',
@@ -88,6 +89,11 @@ const VardStugorNyRoute = VardStugorNyRouteImport.update({
   path: '/stugor/ny',
   getParentRoute: () => VardRoute,
 } as any)
+const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
+  id: '/stugor/$id/redigera',
+  path: '/stugor/$id/redigera',
+  getParentRoute: () => VardRoute,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -103,6 +109,7 @@ export interface FileRoutesByFullPath {
   '/omrade/$slug': typeof OmradeSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
+  '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -118,6 +125,7 @@ export interface FileRoutesByTo {
   '/omrade/$slug': typeof OmradeSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
+  '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -134,6 +142,7 @@ export interface FileRoutesById {
   '/omrade/$slug': typeof OmradeSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
+  '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -151,6 +160,7 @@ export interface FileRouteTypes {
     | '/omrade/$slug'
     | '/stuga/$slug'
     | '/vard/stugor/ny'
+    | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -166,6 +176,7 @@ export interface FileRouteTypes {
     | '/omrade/$slug'
     | '/stuga/$slug'
     | '/vard/stugor/ny'
+    | '/vard/stugor/$id/redigera'
   id:
     | '__root__'
     | '/'
@@ -181,6 +192,7 @@ export interface FileRouteTypes {
     | '/omrade/$slug'
     | '/stuga/$slug'
     | '/vard/stugor/ny'
+    | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -291,15 +303,24 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardStugorNyRouteImport
       parentRoute: typeof VardRoute
     }
+    '/vard/stugor/$id/redigera': {
+      id: '/vard/stugor/$id/redigera'
+      path: '/stugor/$id/redigera'
+      fullPath: '/vard/stugor/$id/redigera'
+      preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
+      parentRoute: typeof VardRoute
+    }
   }
 }
 
 interface VardRouteChildren {
   VardStugorNyRoute: typeof VardStugorNyRoute
+  VardStugorIdRedigeraRoute: typeof VardStugorIdRedigeraRoute
 }
 
 const VardRouteChildren: VardRouteChildren = {
   VardStugorNyRoute: VardStugorNyRoute,
+  VardStugorIdRedigeraRoute: VardStugorIdRedigeraRoute,
 }
 
 const VardRouteWithChildren = VardRoute._addFileChildren(VardRouteChildren)

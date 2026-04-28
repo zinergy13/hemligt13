@@ -108,7 +108,7 @@ export function BookingForm({
 
       toast.success(
         instantBook
-          ? "Bokningen är bekräftad — du betalar i nästa steg."
+          ? "Bokningen är bekräftad! Värden hör av sig om betalningen."
           : "Förfrågan skickad. Värden svarar inom 24 timmar.",
       );
       navigate({ to: "/mina-bokningar" });

@@ -27,6 +27,8 @@ import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
+import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
+import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
 
 const VardRoute = VardRouteImport.update({
   id: '/vard',
@@ -118,6 +120,17 @@ const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
   path: '/stugor/$id/redigera',
   getParentRoute: () => VardRoute,
 } as any)
+const ApiPublicHooksGenerateMonthlyInvoicesRoute =
+  ApiPublicHooksGenerateMonthlyInvoicesRouteImport.update({
+    id: '/api/public/hooks/generate-monthly-invoices',
+    path: '/api/public/hooks/generate-monthly-invoices',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
+  id: '/api/invoice/$id/pdf',
+  path: '/api/invoice/$id/pdf',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -137,6 +150,8 @@ export interface FileRoutesByFullPath {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
+  '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
+  '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesByTo {
@@ -157,6 +172,8 @@ export interface FileRoutesByTo {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
+  '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
+  '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesById {
@@ -178,6 +195,8 @@ export interface FileRoutesById {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
+  '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
+  '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRouteTypes {
@@ -200,6 +219,8 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/stugor/ny'
+    | '/api/invoice/$id/pdf'
+    | '/api/public/hooks/generate-monthly-invoices'
     | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -220,6 +241,8 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/stugor/ny'
+    | '/api/invoice/$id/pdf'
+    | '/api/public/hooks/generate-monthly-invoices'
     | '/vard/stugor/$id/redigera'
   id:
     | '__root__'
@@ -240,6 +263,8 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/stugor/ny'
+    | '/api/invoice/$id/pdf'
+    | '/api/public/hooks/generate-monthly-invoices'
     | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
 }
@@ -258,6 +283,8 @@ export interface RootRouteChildren {
   VardRoute: typeof VardRouteWithChildren
   OmradeSlugRoute: typeof OmradeSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
+  ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
+  ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -388,6 +415,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
       parentRoute: typeof VardRoute
     }
+    '/api/public/hooks/generate-monthly-invoices': {
+      id: '/api/public/hooks/generate-monthly-invoices'
+      path: '/api/public/hooks/generate-monthly-invoices'
+      fullPath: '/api/public/hooks/generate-monthly-invoices'
+      preLoaderRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/invoice/$id/pdf': {
+      id: '/api/invoice/$id/pdf'
+      path: '/api/invoice/$id/pdf'
+      fullPath: '/api/invoice/$id/pdf'
+      preLoaderRoute: typeof ApiInvoiceIdPdfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -422,7 +463,19 @@ const rootRouteChildren: RootRouteChildren = {
   VardRoute: VardRouteWithChildren,
   OmradeSlugRoute: OmradeSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
+  ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
+  ApiPublicHooksGenerateMonthlyInvoicesRoute:
+    ApiPublicHooksGenerateMonthlyInvoicesRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

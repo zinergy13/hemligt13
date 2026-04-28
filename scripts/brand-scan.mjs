@@ -79,7 +79,9 @@ function scanText(text, label, hits) {
     if (
       /@lovable\.dev\//.test(line) ||
       /@\/integrations\/lovable/.test(line) ||
-      /from\s+["']@lovable\.dev/.test(line)
+      /from\s+["']@lovable\.dev/.test(line) ||
+      // SDK-identifier (ej användarsynlig text), t.ex. `lovable.auth.signIn(...)`
+      /\blovable\s*\.\s*[a-zA-Z_]/.test(line)
     ) continue;
     for (const re of FORBIDDEN) {
       const m = line.match(re);

@@ -17,7 +17,6 @@ import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
-import { Route as ApiPublicPexelsFetchRouteImport } from './routes/api/public/pexels-fetch'
 
 const SokRoute = SokRouteImport.update({
   id: '/sok',
@@ -59,11 +58,6 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
   path: '/omrade/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ApiPublicPexelsFetchRoute = ApiPublicPexelsFetchRouteImport.update({
-  id: '/api/public/pexels-fetch',
-  path: '/api/public/pexels-fetch',
-  getParentRoute: () => rootRouteImport,
-} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
@@ -74,7 +68,6 @@ export interface FileRoutesByFullPath {
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/omrade/$slug': typeof OmradeSlugRoute
-  '/api/public/pexels-fetch': typeof ApiPublicPexelsFetchRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -85,7 +78,6 @@ export interface FileRoutesByTo {
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/omrade/$slug': typeof OmradeSlugRoute
-  '/api/public/pexels-fetch': typeof ApiPublicPexelsFetchRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -97,7 +89,6 @@ export interface FileRoutesById {
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
   '/omrade/$slug': typeof OmradeSlugRoute
-  '/api/public/pexels-fetch': typeof ApiPublicPexelsFetchRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -110,7 +101,6 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sok'
     | '/omrade/$slug'
-    | '/api/public/pexels-fetch'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
@@ -121,7 +111,6 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sok'
     | '/omrade/$slug'
-    | '/api/public/pexels-fetch'
   id:
     | '__root__'
     | '/'
@@ -132,7 +121,6 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sok'
     | '/omrade/$slug'
-    | '/api/public/pexels-fetch'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -144,7 +132,6 @@ export interface RootRouteChildren {
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
-  ApiPublicPexelsFetchRoute: typeof ApiPublicPexelsFetchRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -205,13 +192,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmradeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/public/pexels-fetch': {
-      id: '/api/public/pexels-fetch'
-      path: '/api/public/pexels-fetch'
-      fullPath: '/api/public/pexels-fetch'
-      preLoaderRoute: typeof ApiPublicPexelsFetchRouteImport
-      parentRoute: typeof rootRouteImport
-    }
   }
 }
 
@@ -224,7 +204,6 @@ const rootRouteChildren: RootRouteChildren = {
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,
   OmradeSlugRoute: OmradeSlugRoute,
-  ApiPublicPexelsFetchRoute: ApiPublicPexelsFetchRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

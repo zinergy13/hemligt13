@@ -8,11 +8,12 @@ import { formatDateRange } from "@/lib/bookings";
 import { commissionLabel, formatOre } from "@/lib/commission";
 import { SummaryCardsSkeleton, TableSkeleton } from "@/components/Skeleton";
 import {
-  hostBalanceQuery,
+  computeHostBalance,
   hostCommissionRowsQuery,
   hostInvoicesQuery,
   commissionFeeQuery,
 } from "@/lib/queries";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/vard/faktura")({
   head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällmys" }] }),
@@ -31,25 +32,20 @@ function HostInvoicePage() {
   }, [loading, user, navigate]);
 
   const enabled = !!user;
+  // Critical path: 2 parallel queries (was 4). Balance is derived from rows
+  // client-side instead of hitting the host_balances view.
   const rowsQ = useQuery({ ...hostCommissionRowsQuery(user?.id ?? ""), enabled });
-  const balanceQ = useQuery({ ...hostBalanceQuery(user?.id ?? ""), enabled });
   const invoicesQ = useQuery({ ...hostInvoicesQuery(user?.id ?? ""), enabled });
+  // Fee is cached app-wide (5 min stale); won't block first paint — we
+  // fall back to 9900 öre (current default) until it resolves.
   const feeQ = useQuery({ ...commissionFeeQuery(), enabled });
 
   const rows = rowsQ.data ?? [];
-  const balance = balanceQ.data ?? {
-    earned_count: 0,
-    earned_amount: 0,
-    invoiced_count: 0,
-    invoiced_amount: 0,
-    paid_count: 0,
-    paid_amount: 0,
-    total_owed: 0,
-  };
+  const balance = useMemo(() => computeHostBalance(rows), [rows]);
   const invoices = invoicesQ.data ?? [];
   const feePerBooking = feeQ.data ?? 9900;
-  const initialBalance = balanceQ.isLoading && !balanceQ.data;
   const initialRows = rowsQ.isLoading && !rowsQ.data;
+  const initialBalance = initialRows; // balance derives from rows
   const initialInvoices = invoicesQ.isLoading && !invoicesQ.data;
 
   async function downloadInvoice(invId: string, invoiceNumber: string) {

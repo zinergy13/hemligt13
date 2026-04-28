@@ -14,6 +14,107 @@ export type Database = {
   }
   public: {
     Tables: {
+      cabin_images: {
+        Row: {
+          cabin_id: string
+          created_at: string
+          id: string
+          is_cover: boolean
+          sort_order: number
+          url: string
+        }
+        Insert: {
+          cabin_id: string
+          created_at?: string
+          id?: string
+          is_cover?: boolean
+          sort_order?: number
+          url: string
+        }
+        Update: {
+          cabin_id?: string
+          created_at?: string
+          id?: string
+          is_cover?: boolean
+          sort_order?: number
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabin_images_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cabins: {
+        Row: {
+          address: string | null
+          amenities: string[]
+          area_slug: string
+          bathrooms: number
+          bedrooms: number
+          beds: number
+          cleaning_fee: number
+          created_at: string
+          description: string | null
+          host_id: string
+          id: string
+          lat: number | null
+          lng: number | null
+          max_guests: number
+          price_per_night: number
+          slug: string
+          status: Database["public"]["Enums"]["cabin_status"]
+          title: string
+          updated_at: string
+        }
+        Insert: {
+          address?: string | null
+          amenities?: string[]
+          area_slug: string
+          bathrooms?: number
+          bedrooms?: number
+          beds?: number
+          cleaning_fee?: number
+          created_at?: string
+          description?: string | null
+          host_id: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          max_guests?: number
+          price_per_night?: number
+          slug: string
+          status?: Database["public"]["Enums"]["cabin_status"]
+          title: string
+          updated_at?: string
+        }
+        Update: {
+          address?: string | null
+          amenities?: string[]
+          area_slug?: string
+          bathrooms?: number
+          bedrooms?: number
+          beds?: number
+          cleaning_fee?: number
+          created_at?: string
+          description?: string | null
+          host_id?: string
+          id?: string
+          lat?: number | null
+          lng?: number | null
+          max_guests?: number
+          price_per_night?: number
+          slug?: string
+          status?: Database["public"]["Enums"]["cabin_status"]
+          title?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -83,6 +184,7 @@ export type Database = {
     }
     Enums: {
       app_role: "guest" | "host" | "admin"
+      cabin_status: "draft" | "published" | "paused"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -211,6 +313,7 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["guest", "host", "admin"],
+      cabin_status: ["draft", "published", "paused"],
     },
   },
 } as const

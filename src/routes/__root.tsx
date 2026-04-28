@@ -3,6 +3,7 @@ import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { AuthProvider } from "../hooks/useAuth";
 import { Toaster } from "../components/ui/sonner";
+import { useEffect } from "react";
 
 import appCss from "../styles.css?url";
 
@@ -80,6 +81,39 @@ function RootShell({ children }: { children: React.ReactNode }) {
 }
 
 function RootComponent() {
+  useEffect(() => {
+    const isChunkError = (msg: unknown) => {
+      const s = typeof msg === "string" ? msg : (msg as Error)?.message ?? "";
+      return /Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError|Loading chunk [\d]+ failed/i.test(s);
+    };
+    const recover = () => {
+      try {
+        const key = "__chunk_reload_at";
+        const last = Number(sessionStorage.getItem(key) || "0");
+        const now = Date.now();
+        if (now - last < 10000) return;
+        sessionStorage.setItem(key, String(now));
+      } catch {}
+      const url = new URL(window.location.href);
+      url.searchParams.set("_r", Date.now().toString(36));
+      window.location.replace(url.toString());
+    };
+    const onError = (e: ErrorEvent) => {
+      if (isChunkError(e.message) || isChunkError(e.error)) recover();
+    };
+    const onRejection = (e: PromiseRejectionEvent) => {
+      const reason = e.reason as { message?: string } | string | undefined;
+      const msg = typeof reason === "string" ? reason : reason?.message;
+      if (isChunkError(msg)) recover();
+    };
+    window.addEventListener("error", onError);
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
+      window.removeEventListener("error", onError);
+      window.removeEventListener("unhandledrejection", onRejection);
+    };
+  }, []);
+
   return (
     <AuthProvider>
       <div className="flex min-h-screen flex-col">

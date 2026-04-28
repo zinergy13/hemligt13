@@ -12,9 +12,11 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as LoggaInRouteImport } from './routes/logga-in'
+import { Route as KontoRouteImport } from './routes/konto'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
+import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 
@@ -33,6 +35,11 @@ const LoggaInRoute = LoggaInRouteImport.update({
   path: '/logga-in',
   getParentRoute: () => rootRouteImport,
 } as any)
+const KontoRoute = KontoRouteImport.update({
+  id: '/konto',
+  path: '/konto',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const KontaktRoute = KontaktRouteImport.update({
   id: '/kontakt',
   path: '/kontakt',
@@ -48,6 +55,11 @@ const HurDetFunkarRoute = HurDetFunkarRouteImport.update({
   path: '/hur-det-funkar',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AterstallLosenordRoute = AterstallLosenordRouteImport.update({
+  id: '/aterstall-losenord',
+  path: '/aterstall-losenord',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -61,9 +73,11 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/aterstall-losenord': typeof AterstallLosenordRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
+  '/konto': typeof KontoRoute
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
@@ -71,9 +85,11 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/aterstall-losenord': typeof AterstallLosenordRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
+  '/konto': typeof KontoRoute
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
@@ -82,9 +98,11 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/aterstall-losenord': typeof AterstallLosenordRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
+  '/konto': typeof KontoRoute
   '/logga-in': typeof LoggaInRoute
   '/om-oss': typeof OmOssRoute
   '/sok': typeof SokRoute
@@ -94,9 +112,11 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/aterstall-losenord'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
+    | '/konto'
     | '/logga-in'
     | '/om-oss'
     | '/sok'
@@ -104,9 +124,11 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
+    | '/aterstall-losenord'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
+    | '/konto'
     | '/logga-in'
     | '/om-oss'
     | '/sok'
@@ -114,9 +136,11 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/aterstall-losenord'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
+    | '/konto'
     | '/logga-in'
     | '/om-oss'
     | '/sok'
@@ -125,9 +149,11 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AterstallLosenordRoute: typeof AterstallLosenordRoute
   HurDetFunkarRoute: typeof HurDetFunkarRoute
   HyrUtRoute: typeof HyrUtRoute
   KontaktRoute: typeof KontaktRoute
+  KontoRoute: typeof KontoRoute
   LoggaInRoute: typeof LoggaInRoute
   OmOssRoute: typeof OmOssRoute
   SokRoute: typeof SokRoute
@@ -157,6 +183,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LoggaInRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/konto': {
+      id: '/konto'
+      path: '/konto'
+      fullPath: '/konto'
+      preLoaderRoute: typeof KontoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/kontakt': {
       id: '/kontakt'
       path: '/kontakt'
@@ -178,6 +211,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof HurDetFunkarRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/aterstall-losenord': {
+      id: '/aterstall-losenord'
+      path: '/aterstall-losenord'
+      fullPath: '/aterstall-losenord'
+      preLoaderRoute: typeof AterstallLosenordRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -197,9 +237,11 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AterstallLosenordRoute: AterstallLosenordRoute,
   HurDetFunkarRoute: HurDetFunkarRoute,
   HyrUtRoute: HyrUtRoute,
   KontaktRoute: KontaktRoute,
+  KontoRoute: KontoRoute,
   LoggaInRoute: LoggaInRoute,
   OmOssRoute: OmOssRoute,
   SokRoute: SokRoute,

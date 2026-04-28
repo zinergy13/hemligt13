@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/om-oss")({
   head: () => ({
     meta: [
-      { title: "Om oss — Stuga i Sälen" },
-      { name: "description", content: "Stuga i Sälen är byggt av och för Sälens stugägare och besökare — en samlad, lokal plattform för uthyrning i fjällen." },
-      { property: "og:title", content: "Om oss — Stuga i Sälen" },
+      { title: "Om oss — Fjällmys" },
+      { name: "description", content: "Fjällmys är byggt av och för Sälens stugägare och besökare — en samlad, lokal plattform för uthyrning i fjällen." },
+      { property: "og:title", content: "Om oss — Fjällmys" },
       { property: "og:description", content: "Vi samlar Sälens stuguthyrning på ett ställe — lokalt, tryggt och enkelt." },
     ],
   }),
@@ -19,7 +19,7 @@ function AboutPage() {
       <h1 className="font-serif text-4xl text-foreground md:text-6xl">Sälen samlat. Lokalt. Äkta.</h1>
       <div className="mt-8 space-y-6 text-lg leading-relaxed text-muted-foreground">
         <p>
-          Stuga i Sälen är en samlad plats för stuguthyrning i Sälenfjällen. Vi byggde plattformen för att vi själva tröttnat på att leta i Facebook-grupper, sms-tråda med ägare och försöka hålla reda på lediga datum i tio olika kalendrar.
+          Fjällmys är en samlad plats för stuguthyrning i Sälenfjällen. Vi byggde plattformen för att vi själva tröttnat på att leta i Facebook-grupper, sms-tråda med ägare och försöka hålla reda på lediga datum i tio olika kalendrar.
         </p>
         <p>
           Här samlas hela Sälen — Lindvallen, Tandådalen, Hundfjället, Högfjället, Kläppen, Stöten, Gubbmyren och Sälfjällstorget. Stugor, lägenheter, ski-in/ski-out och allt däremellan.

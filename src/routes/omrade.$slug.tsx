@@ -10,12 +10,12 @@ export const Route = createFileRoute("/omrade/$slug")({
   },
   head: ({ loaderData }) => {
     const area = loaderData?.area;
-    if (!area) return { meta: [{ title: "Område — Stuga i Sälen" }] };
+    if (!area) return { meta: [{ title: "Område — Fjällmys" }] };
     return {
       meta: [
-        { title: `Stugor i ${area.name} — Stuga i Sälen` },
+        { title: `Stugor i ${area.name} — Fjällmys` },
         { name: "description", content: `${area.tagline}. Hitta och hyr stugor, lägenheter och fjällboenden i ${area.name}, Sälen.` },
-        { property: "og:title", content: `Stugor i ${area.name} — Stuga i Sälen` },
+        { property: "og:title", content: `Stugor i ${area.name} — Fjällmys` },
         { property: "og:description", content: area.description },
         { property: "og:image", content: area.image },
         { name: "twitter:image", content: area.image },

@@ -5,7 +5,7 @@ import { areas } from "../data/areas";
 export const Route = createFileRoute("/sok")({
   head: () => ({
     meta: [
-      { title: "Sök stuga i Sälen — Stuga i Sälen" },
+      { title: "Sök stuga i Sälen — Fjällmys" },
       { name: "description", content: "Sök bland stugor, lägenheter och ski-in/ski-out-boenden i hela Sälenfjällen. Filtrera på område, datum, antal bäddar och pris." },
       { property: "og:title", content: "Sök stuga i Sälen" },
       { property: "og:description", content: "Hitta din stuga i Sälen — sökbart, kalenderkopplat, redo att boka." },

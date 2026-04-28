@@ -4,8 +4,8 @@ import { Mail } from "lucide-react";
 export const Route = createFileRoute("/logga-in")({
   head: () => ({
     meta: [
-      { title: "Logga in — Stuga i Sälen" },
-      { name: "description", content: "Logga in på Stuga i Sälen för att boka stuga, hantera dina annonser eller skapa ett konto." },
+      { title: "Logga in — Fjällmys" },
+      { name: "description", content: "Logga in på Fjällmys för att boka stuga, hantera dina annonser eller skapa ett konto." },
     ],
   }),
   component: LoginPage,

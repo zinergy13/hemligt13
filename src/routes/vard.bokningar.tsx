@@ -9,6 +9,7 @@ import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
 import { formatDateRange, statusLabel } from "@/lib/bookings";
 import { hostBookingsQuery, type HostBookingRow } from "@/lib/queries";
+import { ListSkeleton } from "@/components/Skeleton";
 
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
@@ -72,7 +73,7 @@ function HostBookingsPage() {
   const updateStatus = (id: string, status: "confirmed" | "declined") =>
     statusMutation.mutate({ id, status });
 
-  if (loading || !user || (bookingsQ.isLoading && !rows)) {
+  if (loading || !user) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -80,6 +81,7 @@ function HostBookingsPage() {
     );
   }
   const safeRows = rows ?? [];
+  const initialLoading = bookingsQ.isLoading && !rows;
 
   if (!profile?.is_host) {
     return (
@@ -158,7 +160,9 @@ function HostBookingsPage() {
         })}
       </div>
 
-      {visible.length === 0 ? (
+      {initialLoading ? (
+        <ListSkeleton count={3} />
+      ) : visible.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
           <Inbox className="mx-auto mb-4 h-10 w-10 text-primary" />
           <h2 className="font-serif text-2xl text-foreground">Inga bokningar här</h2>

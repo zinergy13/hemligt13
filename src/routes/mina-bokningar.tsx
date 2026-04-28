@@ -7,6 +7,7 @@ import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
 import { formatDateRange, statusLabel } from "@/lib/bookings";
 import { guestBookingsQuery } from "@/lib/queries";
+import { ListSkeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/mina-bokningar")({
   head: () => ({ meta: [{ title: "Mina bokningar — Fjällmys" }] }),
@@ -29,7 +30,7 @@ function MyBookingsPage() {
   });
   const rows = bookingsQ.data;
 
-  if (loading || !user || (bookingsQ.isLoading && !rows)) {
+  if (loading || !user) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
         <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
@@ -37,6 +38,7 @@ function MyBookingsPage() {
     );
   }
   const safeRows = rows ?? [];
+  const initialLoading = bookingsQ.isLoading && !rows;
 
   return (
     <section className="mx-auto max-w-4xl px-4 py-12 md:px-6 md:py-16">
@@ -45,7 +47,11 @@ function MyBookingsPage() {
         Översikt av alla dina bokningar och förfrågningar.
       </p>
 
-      {safeRows.length === 0 ? (
+      {initialLoading ? (
+        <div className="mt-8">
+          <ListSkeleton count={3} />
+        </div>
+      ) : safeRows.length === 0 ? (
         <div className="mt-8 rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
           <Inbox className="mx-auto mb-4 h-10 w-10 text-primary" />
           <h2 className="font-serif text-2xl text-foreground">Inga bokningar ännu</h2>

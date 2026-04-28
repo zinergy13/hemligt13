@@ -8,6 +8,7 @@ import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { installPerfMonitor } from "../lib/perf";
 import { PerfOverlay } from "../components/PerfOverlay";
+import { RouteProgressBar } from "../components/RouteProgressBar";
 
 import appCss from "../styles.css?url";
 
@@ -246,6 +247,7 @@ function RootComponent() {
         </main>
         <Footer />
         <Toaster />
+        <RouteProgressBar />
         <PerfOverlay />
         </div>
       </AuthProvider>

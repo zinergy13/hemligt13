@@ -122,27 +122,31 @@ function HostInvoicePage() {
         </div>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-3">
-        <SummaryCard
-          icon={<Wallet className="h-5 w-5 text-amber-600" />}
-          label="Att betala"
-          value={formatOre(balance.earned_amount + balance.invoiced_amount)}
-          subline={`${balance.earned_count + balance.invoiced_count} uthyrningar`}
-          highlight
-        />
-        <SummaryCard
-          icon={<Receipt className="h-5 w-5 text-primary" />}
-          label="Fakturerat"
-          value={formatOre(balance.invoiced_amount)}
-          subline={`${balance.invoiced_count} st`}
-        />
-        <SummaryCard
-          icon={<Receipt className="h-5 w-5 text-emerald-600" />}
-          label="Betalt totalt"
-          value={formatOre(balance.paid_amount)}
-          subline={`${balance.paid_count} st`}
-        />
-      </div>
+      {initialBalance ? (
+        <SummaryCardsSkeleton count={3} />
+      ) : (
+        <div className="grid gap-4 sm:grid-cols-3">
+          <SummaryCard
+            icon={<Wallet className="h-5 w-5 text-amber-600" />}
+            label="Att betala"
+            value={formatOre(balance.earned_amount + balance.invoiced_amount)}
+            subline={`${balance.earned_count + balance.invoiced_count} uthyrningar`}
+            highlight
+          />
+          <SummaryCard
+            icon={<Receipt className="h-5 w-5 text-primary" />}
+            label="Fakturerat"
+            value={formatOre(balance.invoiced_amount)}
+            subline={`${balance.invoiced_count} st`}
+          />
+          <SummaryCard
+            icon={<Receipt className="h-5 w-5 text-emerald-600" />}
+            label="Betalt totalt"
+            value={formatOre(balance.paid_amount)}
+            subline={`${balance.paid_count} st`}
+          />
+        </div>
+      )}
 
       <div className="mt-6 flex items-start gap-3 rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
         <Info className="mt-0.5 h-4 w-4 flex-none text-primary" />
@@ -153,7 +157,9 @@ function HostInvoicePage() {
       </div>
 
       <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Fakturor</h2>
-      {invoices.length === 0 ? (
+      {initialInvoices ? (
+        <TableSkeleton rows={3} cols={6} />
+      ) : invoices.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
           Inga fakturor ännu. Vi skapar en samlingsfaktura i början av varje månad.
         </div>
@@ -212,7 +218,9 @@ function HostInvoicePage() {
       )}
 
       <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Avgiftshistorik</h2>
-      {visibleRows.length === 0 ? (
+      {initialRows ? (
+        <TableSkeleton rows={4} cols={5} />
+      ) : visibleRows.length === 0 ? (
         <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-10 text-center text-sm text-muted-foreground">
           Inga avgifter ännu. När en bokning genomförs syns den här.
         </div>

@@ -108,7 +108,7 @@ export function BookingForm({
 
       toast.success(
         instantBook
-          ? "Bokningen är bekräftad — du betalar i nästa steg."
+          ? "Bokningen är bekräftad! Värden hör av sig om betalningen."
           : "Förfrågan skickad. Värden svarar inom 24 timmar.",
       );
       navigate({ to: "/mina-bokningar" });
@@ -215,12 +215,8 @@ export function BookingForm({
               <span>{quote.cleaningFee.toLocaleString("sv-SE")} kr</span>
             </div>
           )}
-          <div className="flex justify-between text-muted-foreground">
-            <span>Serviceavgift</span>
-            <span>{quote.serviceFee.toLocaleString("sv-SE")} kr</span>
-          </div>
           <div className="mt-2 flex justify-between border-t border-border pt-2 font-medium text-foreground">
-            <span>Totalt</span>
+            <span>Totalt till värden</span>
             <span>{quote.total.toLocaleString("sv-SE")} kr</span>
           </div>
         </div>
@@ -247,8 +243,8 @@ export function BookingForm({
 
       <p className="text-center text-[11px] text-muted-foreground">
         {instantBook
-          ? "Direktbokning. Betalning sker via säker checkout i nästa steg."
-          : "Värden svarar inom 24 timmar. Du debiteras inget förrän bokningen är godkänd."}
+          ? "Direktbokning bekräftas omedelbart. Betalning sker direkt till värden (Swish, faktura eller efter överenskommelse)."
+          : "Värden svarar inom 24 timmar. Betalning sker direkt mellan dig och värden — Fjällmys hanterar inte pengarna."}
       </p>
     </form>
   );

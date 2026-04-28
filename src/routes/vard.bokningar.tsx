@@ -142,12 +142,20 @@ function HostBookingsPage() {
             Hantera förfrågningar och bekräftade vistelser för dina stugor.
           </p>
         </div>
-        <Link
-          to="/vard"
-          className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
-        >
-          Mina stugor
-        </Link>
+        <div className="flex flex-wrap gap-2">
+          <Link
+            to="/vard"
+            className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            Mina stugor
+          </Link>
+          <Link
+            to="/vard/faktura"
+            className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            Mitt saldo
+          </Link>
+        </div>
       </div>
 
       <div className="mb-6 flex flex-wrap gap-2">

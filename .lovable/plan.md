@@ -1,72 +1,150 @@
-## Mål
+## Sverige-expansion — full ompositionering
 
-Lägg till ett automatiskt säkerhetstest som körs vid `bun run build` och blockar publicering om någon synlig referens till externa appskapare (Lovable, GPT Engineer m.fl.) hittas i renderad HTML — inklusive header, footer och splash/loader.
+Idag: Fjällmys, 9 områden i Sälen. Efter: nytt varumärke som samlar Dalafjällen, Härjedalen och Jämtland, med kartförst-navigation och unika bilder per område.
 
-## Hur det fungerar
+---
 
-Eftersom appen är SSR (TanStack Start) renderas alla huvudvyer till HTML vid förfrågan. Vi gör skanningen i två lager:
+### 1. Nytt namn — 3 förslag
 
-1. **Statisk källkods-skanner** (snabb, körs alltid)
-   - Söker igenom `src/**`, `index.html` och `public/**` efter en svartlista av termer.
-   - Ignorerar interna integrationer (`src/integrations/lovable/**`, `src/integrations/supabase/**`, `node_modules`, `routeTree.gen.ts`) och själva skannerfilen.
+Jag föreslår ett namn och två alternativ. Alla är korta, uttalbara, .se-vänliga och passar hela svenska fjällkedjan utan att låsa oss vid en region:
 
-2. **Renderad HTML-skanner** (fångar runtime-strängar och badges)
-   - Startar en kortlivad preview-server av build-output.
-   - Hämtar nyckelrutter: `/`, `/sok`, `/logga-in`, `/hyr-ut`, `/kontakt`, `/konto`, plus en avsiktlig 404 (`/__not_found_check`) för att täcka NotFoundComponent.
-   - Skannar varje HTML-svar efter samma svartlista (case-insensitive), med whitelist för säkra ord (t.ex. "love" i fritext).
-   - Inkluderar skannern av inline `<script>`/`<style>` så loader/splash-markup fångas.
+**Huvudförslag: "Fjällhuset"**
+- Klingar hem, värme, kollektiv — som "stugbyn" på svenska, fast digitalt
+- Fungerar från Sälen till Riksgränsen
+- Kan användas verbalt: "hittade den på Fjällhuset"
 
-Om något hittas: skript exitar med kod 1 → `bun run build` misslyckas → publicering blockas (Lovable publicerar bara lyckade builds).
+**Alternativ A: "Nordfjäll"**
+- Mer geografiskt/redaktionellt, känns lite större och seriösare
+- Bra om ni vill växa mot Norge/Lappland senare
 
-## Svartlista (case-insensitive, ord-gränsade)
+**Alternativ B: "Stugmarken"**
+- Lekfullt, svenskt, syftar på både bokningsmarknad och fjällmark
+- Mer marketplace-känsla, mindre "boutique"
 
-`lovable`, `lovable.dev`, `lovable.app`, `gpt engineer`, `gpt-engineer`, `gptengineer`, `made with`, `powered by lovable`, `built with lovable`, `edit with lovable`.
+Jag bygger med **Fjällhuset** som default (kan bytas i ett svep — namnet ligger i `Header`, `Footer`, alla `head()`-meta och en handfull ställen i copy). Säg till om ni vill ha A eller B istället.
 
-## Whitelist (tillåtna träffar)
+---
 
-- Filer under `src/integrations/lovable/`, `src/integrations/supabase/`
-- `package.json`, `package-lock.json`, `bun.lockb`, `node_modules/**`
-- `src/routeTree.gen.ts`
-- Själva skannern (`scripts/brand-scan.*`)
-- `.lovable/**`, `supabase/config.toml`
-- `*.lovable.app`-URL:er i meta/og som inte är användarsynlig text (matchas bort via attributkontext)
+### 2. Områden som läggs till
 
-## Filer som skapas/ändras
+**Dalafjällen** (tillägg till befintliga Sälen-områden)
+- Idre Fjäll
+- Grövelsjön
 
-- **`scripts/brand-scan.ts`** (ny): Kör båda lagren. Tar flagga `--source-only` för snabb lokal körning.
-- **`scripts/render-scan.ts`** (ny, anropas från brand-scan): Startar `vite preview`-process, gör fetch mot rutterna, parsar HTML, returnerar träffar.
-- **`package.json`** (ändras):
-  - Lägg till devDep: `tsx`
-  - Nya scripts:
-    - `"brand:scan": "tsx scripts/brand-scan.ts"`
-    - `"brand:scan:full": "tsx scripts/brand-scan.ts --render"`
-    - `"prebuild": "tsx scripts/brand-scan.ts"` ← detta är vad som blockar publicering
-    - `"build": "vite build && tsx scripts/brand-scan.ts --render"` ← post-build render-skanning mot dist/SSR-output
-- **`.lovableignore`** eller justering av prettier/eslint vid behov så skannern inte triggas av sig själv.
+**Härjedalen** (nytt)
+- Vemdalen
+- Funäsdalen
+- Ramundberget
+- Bruksvallarna
+- Lofsdalen
 
-## Utdata
+**Jämtland** (nytt)
+- Åre
+- Duved
+- Storlien
+- Bydalen
+- Trillevallen
 
-Vid träff:
+Totalt: 9 befintliga Sälen-områden + 12 nya = 21 områden, grupperade i 3 regioner.
+
+---
+
+### 3. Datastruktur
+
+Utökar `src/data/areas.ts`:
+- Ny `Region` typ: `"dalafjallen" | "harjedalen" | "jamtland"`
+- Varje `Area` får `region: Region` och `regionName` (för UI)
+- Ny `regions` export: metadata per region (namn, tagline, beskrivning, hero-bild, ungefärlig position för karta)
+- `AreaSlug` utökas med alla nya slugs
+- `estimatedListings` sätts konservativt för nya områden (10–40)
+
+Databasen påverkas inte — `cabins.area_slug` är redan en string, nya slugs funkar direkt. Sälen-stugor fortsätter fungera oförändrat.
+
+---
+
+### 4. Kartförst-navigation
+
+Ny komponent: `src/components/SwedenMap.tsx`
+- SVG-karta över norra Sverige (handtecknad stil, matchar warm/serif-estetiken — inte OpenStreetMap)
+- Tre klickbara regionszoner: Dalafjällen (SV), Härjedalen (mitt), Jämtland (N)
+- Hover: regionen lyfts, tagline visas
+- Klick: navigerar till `/region/$slug`
+- Under kartan: horisontell scroll-rad med "populära områden" som fallback för mobil
+
+**Startsidan** (`src/routes/index.tsx`):
+- Hero → sökbar → **karta som primär ingång** (ersätter dagens 4-kolumns områdesrutnät)
+- Behåller "Varför Fjällmys" (döps om) och host CTA
+
+**Ny route:** `src/routes/region.$slug.tsx`
+- Regionshero + beskrivning
+- Grid med områden i regionen
+- Egen SEO (title, description, og:image = regionshero)
+
+**Befintlig route:** `src/routes/omrade.$slug.tsx` — oförändrad, funkar för alla 21 områden
+
+**Header/Footer:**
+- Header: navigation grupperas per region (dropdown eller mega-menu på desktop)
+- Footer: 3 kolumner istället för en lång lista
+
+---
+
+### 5. Bildgenerering
+
+Använder `imagegen--generate_image` (standard-kvalitet, konsekvent stil med befintliga Sälen-bilder — varm belysning, snötäckta fjäll, mysig fjällarkitektur).
+
+**12 nya områdesbilder** → `src/assets/area-{slug}.jpg`
+**3 regionsheros** → `src/assets/region-{slug}.jpg` (bredare, mer episka)
+
+Kör i parallella batcher (3–4 åt gången) för att inte överbelasta.
+
+---
+
+### 6. Copy & SEO
+
+- Alla `head()` i befintliga routes uppdateras: "Sälen" → "svenska fjällen" / "hela fjällkedjan"
+- Homepage-hero: ny H1 ("Hitta din stuga i fjällen"), ny sub ("Från Sälen till Åre — Sveriges samlade plats där värd möter gäst")
+- `hyr-ut`, `hur-det-funkar`, `om-oss`, `sok`, `kontakt` — copy-svep för att ta bort Sälen-specifika formuleringar
+- Ny region-route får egen SEO per region
+- `Footer` områdes-lista blir grupperad per region
+
+---
+
+### Tekniska ändringar (för din utvecklare / referens)
+
+```text
+NYA FILER
+  src/routes/region.$slug.tsx        // regionsöversikt
+  src/components/SwedenMap.tsx        // SVG-karta med 3 regionszoner
+  src/data/regions.ts                 // region-metadata (eller inline i areas.ts)
+  src/assets/area-idre.jpg + 11 fler
+  src/assets/region-dalafjallen.jpg + 2 fler
+
+ÄNDRADE FILER
+  src/data/areas.ts                   // + Region typ, + 12 areas, + region-fält
+  src/routes/index.tsx                // hero-copy, byt grid mot SwedenMap
+  src/routes/__root.tsx               // meta: nytt appnamn
+  src/components/Header.tsx           // logo-namn, region-nav
+  src/components/Footer.tsx           // logo-namn, grupperad områdeslista
+  src/routes/hyr-ut.tsx               // copy-svep
+  src/routes/hur-det-funkar.tsx       // copy-svep
+  src/routes/om-oss.tsx               // copy-svep
+  src/routes/sok.tsx                  // copy-svep + region-filter
+  src/routes/kontakt.tsx              // copy-svep
+  src/routes/omrade.$slug.tsx         // visa region-breadcrumb
 ```
-✗ Brand scan failed — 2 forbidden references found:
-  src/components/Footer.tsx:42  "Powered by Lovable"
-  rendered: GET /sok            "<a href=\"https://lovable.dev\">"
-Publicering blockad. Ta bort referenserna och försök igen.
-```
 
-Vid OK:
-```
-✓ Brand scan passed (scanned 187 source files, 7 rendered routes)
-```
+Ingen databasändring. Ingen ändring av bokningsflöde, saldo, värddashboard eller PerfOverlay.
 
-## Tekniska detaljer
+---
 
-- Skannern är ren Node (fs + fetch), inga externa beroenden förutom `tsx` för att köra TS direkt.
-- Render-fasen försöker `bun run preview` på en ledig port, pollar tills `200`, gör fetcher, dödar processen.
-- Om preview-servern inte startar inom 15s loggas ett varnings-skip (källkods-skannern räcker för att blocka build, men render-skanningen rapporterar warning så det märks i CI).
-- Skannern är idempotent och säker att köra lokalt: `bun run brand:scan`.
+### Ordning jag kör det i
 
-## Begränsningar
+1. Utöka `areas.ts` med regioner + 12 nya områden (platshållarbilder tillfälligt)
+2. Skapa `region.$slug.tsx` + `SwedenMap`
+3. Byt startsidan till kartförst
+4. Uppdatera Header, Footer, namnbytet överallt
+5. Copy-svep i alla routes
+6. Generera 15 nya bilder i parallella batcher, byt ut platshållarna
+7. Verifiera build och SEO-meta
 
-- Skannern fångar inte text som hämtas från externa API:er vid runtime (t.ex. om en CMS-post innehåller "Made with Lovable") — det är rimligt utanför bygg-tid.
-- "Edit with Lovable"-badgen injiceras endast på publicerade Lovable-deployments och är redan dold via `set_badge_visibility`. Render-skanningen täcker den i lokala builds; produktionsbadge skyddas separat av plattformsinställningen.
+Vill du köra?

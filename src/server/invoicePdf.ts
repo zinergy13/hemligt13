@@ -47,7 +47,7 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   const right = 547;
 
   // Header
-  page.drawText("Fjällmys", { x: left, y, size: 22, font: bold, color: accent });
+  page.drawText("Fjällhuset", { x: left, y, size: 22, font: bold, color: accent });
   page.drawText("FAKTURA", { x: right - bold.widthOfTextAtSize("FAKTURA", 14), y: y + 4, size: 14, font: bold, color: ink });
   y -= 22;
   page.drawText("Provisionsavgift för uthyrningar", { x: left, y, size: 10, font, color: muted });
@@ -103,14 +103,14 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   page.drawText(totalStr, { x: right - 8 - bold.widthOfTextAtSize(totalStr, 14), y: y - 2, size: 14, font: bold, color: accent });
 
   // Footer
-  page.drawText("Betalning sker till Fjällmys senast 30 dagar efter fakturadatum.", {
+  page.drawText("Betalning sker till Fjällhuset senast 30 dagar efter fakturadatum.", {
     x: left,
     y: 60,
     size: 9,
     font,
     color: muted,
   });
-  page.drawText("Fjällmys AB · faktura@fjällmys.se", { x: left, y: 46, size: 9, font, color: muted });
+  page.drawText("Fjällhuset AB · faktura@fjallhuset.se", { x: left, y: 46, size: 9, font, color: muted });
 
   return await pdf.save();
 }

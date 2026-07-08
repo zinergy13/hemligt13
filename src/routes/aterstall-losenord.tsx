@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 
 export const Route = createFileRoute("/aterstall-losenord")({
   head: () => ({
-    meta: [{ title: "Återställ lösenord — Fjällmys" }],
+    meta: [{ title: "Återställ lösenord — Fjällhuset" }],
   }),
   component: ResetPage,
 });

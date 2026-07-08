@@ -10,7 +10,7 @@ import { guestBookingsQuery } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/mina-bokningar")({
-  head: () => ({ meta: [{ title: "Mina bokningar — Fjällmys" }] }),
+  head: () => ({ meta: [{ title: "Mina bokningar — Fjällhuset" }] }),
   component: MyBookingsPage,
 });
 

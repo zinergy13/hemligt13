@@ -6,7 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 
 export const Route = createFileRoute("/konto")({
-  head: () => ({ meta: [{ title: "Mitt konto — Fjällmys" }] }),
+  head: () => ({ meta: [{ title: "Mitt konto — Fjällhuset" }] }),
   component: AccountPage,
 });
 

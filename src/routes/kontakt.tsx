@@ -4,10 +4,10 @@ import { Mail, MessageCircle, MapPin } from "lucide-react";
 export const Route = createFileRoute("/kontakt")({
   head: () => ({
     meta: [
-      { title: "Kontakt — Fjällmys" },
-      { name: "description", content: "Kontakta Fjällmys. Vi finns här för både gäster och värdar — hör av dig så svarar vi snabbt." },
-      { property: "og:title", content: "Kontakt — Fjällmys" },
-      { property: "og:description", content: "Hör av dig till Fjällmys — vi svarar inom 24 timmar." },
+      { title: "Kontakt — Fjällhuset" },
+      { name: "description", content: "Kontakta Fjällhuset. Vi finns här för både gäster och värdar — hör av dig så svarar vi snabbt." },
+      { property: "og:title", content: "Kontakt — Fjällhuset" },
+      { property: "og:description", content: "Hör av dig till Fjällhuset — vi svarar inom 24 timmar." },
     ],
   }),
   component: ContactPage,

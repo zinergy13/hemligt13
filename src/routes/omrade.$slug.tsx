@@ -1,7 +1,7 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, MapPin, Check, Loader2 } from "lucide-react";
-import { areaBySlug, areas } from "../data/areas";
+import { areaBySlug, areas, regionBySlug } from "../data/areas";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import type { CabinWithImages } from "@/lib/cabins";
@@ -14,12 +14,14 @@ export const Route = createFileRoute("/omrade/$slug")({
   },
   head: ({ loaderData }) => {
     const area = loaderData?.area;
-    if (!area) return { meta: [{ title: "Område — Fjällmys" }] };
+    if (!area) return { meta: [{ title: "Område — Fjällhuset" }] };
+    const region = regionBySlug(area.region);
+    const regionName = region?.name ?? "svenska fjällen";
     return {
       meta: [
-        { title: `Stugor i ${area.name} — Fjällmys` },
-        { name: "description", content: `${area.tagline}. Hitta och hyr stugor, lägenheter och fjällboenden i ${area.name}, Sälen.` },
-        { property: "og:title", content: `Stugor i ${area.name} — Fjällmys` },
+        { title: `Stugor i ${area.name} — Fjällhuset` },
+        { name: "description", content: `${area.tagline}. Hitta och hyr stugor, lägenheter och fjällboenden i ${area.name}, ${regionName}.` },
+        { property: "og:title", content: `Stugor i ${area.name} — Fjällhuset` },
         { property: "og:description", content: area.description },
         { property: "og:image", content: area.image },
         { name: "twitter:image", content: area.image },
@@ -46,7 +48,8 @@ export const Route = createFileRoute("/omrade/$slug")({
 
 function AreaPage() {
   const { area } = Route.useLoaderData();
-  const others = areas.filter((a) => a.slug !== area.slug).slice(0, 4);
+  const region = regionBySlug(area.region);
+  const others = areas.filter((a) => a.region === area.region && a.slug !== area.slug).slice(0, 4);
   const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
 
   useEffect(() => {
@@ -68,14 +71,20 @@ function AreaPage() {
   return (
     <>
       <section className="relative isolate overflow-hidden">
-        <img src={area.image} alt={`${area.name} i Sälen`} width={1920} height={900} className="absolute inset-0 h-full w-full object-cover" />
+        <img src={area.image} alt={`${area.name} — ${region?.name ?? "fjällen"}`} width={1920} height={900} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} aria-hidden="true" />
         <div className="relative mx-auto flex max-w-7xl flex-col px-4 pb-16 pt-24 md:px-6 md:pb-24 md:pt-40">
-          <Link to="/" className="mb-6 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur hover:bg-white/25">
-            <ArrowLeft className="h-3.5 w-3.5" /> Alla områden
-          </Link>
+          {region && (
+            <Link
+              to="/region/$slug"
+              params={{ slug: region.slug }}
+              className="mb-6 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur hover:bg-white/25"
+            >
+              <ArrowLeft className="h-3.5 w-3.5" /> Alla områden i {region.name}
+            </Link>
+          )}
           <p className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-white/85">
-            <MapPin className="h-4 w-4" /> Sälen
+            <MapPin className="h-4 w-4" /> {region?.name ?? "Sverige"}
           </p>
           <h1 className="font-serif text-4xl text-white md:text-7xl">{area.name}</h1>
           <p className="mt-3 max-w-xl text-lg text-white/90">{area.tagline}</p>
@@ -123,7 +132,7 @@ function AreaPage() {
                   Lägg upp din stuga
                 </Link>
                 <Link to="/sok" className="rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted">
-                  Sök i hela Sälen
+                  Sök i hela fjällkedjan
                 </Link>
               </div>
             </div>
@@ -132,7 +141,9 @@ function AreaPage() {
       </section>
 
       <section className="mx-auto max-w-7xl px-4 pb-24 md:px-6">
-        <h2 className="mb-6 font-serif text-2xl text-foreground md:text-3xl">Andra områden i Sälen</h2>
+        <h2 className="mb-6 font-serif text-2xl text-foreground md:text-3xl">
+          Andra områden i {region?.name ?? "regionen"}
+        </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
           {others.map((o) => (
             <Link key={o.slug} to="/omrade/$slug" params={{ slug: o.slug }} className="group overflow-hidden rounded-xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5">

@@ -9,7 +9,7 @@ import { areaBySlug } from "@/data/areas";
 import { CabinGridSkeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/vard")({
-  head: () => ({ meta: [{ title: "Mina stugor — Fjällmys" }] }),
+  head: () => ({ meta: [{ title: "Mina stugor — Fjällhuset" }] }),
   component: HostDashboard,
 });
 

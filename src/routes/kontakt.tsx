@@ -4,10 +4,10 @@ import { Mail, MessageCircle, MapPin } from "lucide-react";
 export const Route = createFileRoute("/kontakt")({
   head: () => ({
     meta: [
-      { title: "Kontakt — Fjällmys" },
-      { name: "description", content: "Kontakta Fjällmys. Vi finns här för både gäster och värdar — hör av dig så svarar vi snabbt." },
-      { property: "og:title", content: "Kontakt — Fjällmys" },
-      { property: "og:description", content: "Hör av dig till Fjällmys — vi svarar inom 24 timmar." },
+      { title: "Kontakt — Fjällhuset" },
+      { name: "description", content: "Kontakta Fjällhuset. Vi finns här för både gäster och värdar — hör av dig så svarar vi snabbt." },
+      { property: "og:title", content: "Kontakt — Fjällhuset" },
+      { property: "og:description", content: "Hör av dig till Fjällhuset — vi svarar inom 24 timmar." },
     ],
   }),
   component: ContactPage,
@@ -26,7 +26,7 @@ function ContactPage() {
         {[
           { icon: Mail, title: "E-post", value: "hej@stugaisalen.se" },
           { icon: MessageCircle, title: "Chatt", value: "Vardagar 9–17" },
-          { icon: MapPin, title: "På plats", value: "Sälfjällstorget, Sälen" },
+          { icon: MapPin, title: "På plats", value: "Storgatan 12, Åre" },
         ].map((item) => (
           <div key={item.title} className="rounded-2xl bg-background p-6 shadow-[var(--shadow-soft)]">
             <item.icon className="h-6 w-6 text-primary" />

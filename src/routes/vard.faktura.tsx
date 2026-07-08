@@ -16,7 +16,7 @@ import {
 import { useMemo } from "react";
 
 export const Route = createFileRoute("/vard/faktura")({
-  head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällmys" }] }),
+  head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällhuset" }] }),
   component: HostInvoicePage,
 });
 
@@ -104,8 +104,8 @@ function HostInvoicePage() {
         <div>
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mitt saldo</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Fjällmys tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen
-            betalar dig direkt — du betalar din avgift till Fjällmys månadsvis via faktura.
+            Fjällhuset tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen
+            betalar dig direkt — du betalar din avgift till Fjällhuset månadsvis via faktura.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

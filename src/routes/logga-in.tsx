@@ -16,8 +16,8 @@ export const Route = createFileRoute("/logga-in")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Logga in — Fjällmys" },
-      { name: "description", content: "Logga in på Fjällmys för att boka stuga, hantera dina annonser eller skapa ett konto." },
+      { title: "Logga in — Fjällhuset" },
+      { name: "description", content: "Logga in på Fjällhuset för att boka stuga, hantera dina annonser eller skapa ett konto." },
     ],
   }),
   component: LoginPage,
@@ -121,7 +121,7 @@ function LoginPage() {
         </h1>
         <p className="mt-2 text-sm text-muted-foreground">
           {mode === "signup"
-            ? "Hitta eller hyr ut stugor i Sälenfjällen."
+            ? "Hitta eller hyr ut stugor i svenska fjällenfjällen."
             : "Logga in för att fortsätta."}
         </p>
       </div>
@@ -218,7 +218,7 @@ function LoginPage() {
       </div>
 
       <p className="mt-8 text-center text-xs text-muted-foreground">
-        Genom att fortsätta godkänner du Fjällmys{" "}
+        Genom att fortsätta godkänner du Fjällhuset{" "}
         <Link to="/" className="underline">villkor</Link>.
       </p>
     </section>

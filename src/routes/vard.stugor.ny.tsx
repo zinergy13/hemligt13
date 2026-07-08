@@ -5,7 +5,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { CabinForm } from "@/components/CabinForm";
 
 export const Route = createFileRoute("/vard/stugor/ny")({
-  head: () => ({ meta: [{ title: "Ny stuga — Fjällmys" }] }),
+  head: () => ({ meta: [{ title: "Ny stuga — Fjällhuset" }] }),
   component: NewCabinPage,
 });
 

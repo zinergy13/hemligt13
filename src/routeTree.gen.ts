@@ -24,6 +24,7 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
+import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
@@ -105,6 +106,11 @@ const StugaSlugRoute = StugaSlugRouteImport.update({
   path: '/stuga/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const RegionSlugRoute = RegionSlugRouteImport.update({
+  id: '/region/$slug',
+  path: '/region/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const OmradeSlugRoute = OmradeSlugRouteImport.update({
   id: '/omrade/$slug',
   path: '/omrade/$slug',
@@ -146,6 +152,7 @@ export interface FileRoutesByFullPath {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
@@ -168,6 +175,7 @@ export interface FileRoutesByTo {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
@@ -191,6 +199,7 @@ export interface FileRoutesById {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
+  '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
@@ -215,6 +224,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/omrade/$slug'
+    | '/region/$slug'
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
@@ -237,6 +247,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/omrade/$slug'
+    | '/region/$slug'
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
@@ -259,6 +270,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/omrade/$slug'
+    | '/region/$slug'
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
@@ -282,6 +294,7 @@ export interface RootRouteChildren {
   SokRoute: typeof SokRoute
   VardRoute: typeof VardRouteWithChildren
   OmradeSlugRoute: typeof OmradeSlugRoute
+  RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -394,6 +407,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof StugaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/region/$slug': {
+      id: '/region/$slug'
+      path: '/region/$slug'
+      fullPath: '/region/$slug'
+      preLoaderRoute: typeof RegionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/omrade/$slug': {
       id: '/omrade/$slug'
       path: '/omrade/$slug'
@@ -462,6 +482,7 @@ const rootRouteChildren: RootRouteChildren = {
   SokRoute: SokRoute,
   VardRoute: VardRouteWithChildren,
   OmradeSlugRoute: OmradeSlugRoute,
+  RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksGenerateMonthlyInvoicesRoute:

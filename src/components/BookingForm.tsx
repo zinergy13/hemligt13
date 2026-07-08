@@ -244,7 +244,7 @@ export function BookingForm({
       <p className="text-center text-[11px] text-muted-foreground">
         {instantBook
           ? "Direktbokning bekräftas omedelbart. Betalning sker direkt till värden (Swish, faktura eller efter överenskommelse)."
-          : "Värden svarar inom 24 timmar. Betalning sker direkt mellan dig och värden — Fjällmys hanterar inte pengarna."}
+          : "Värden svarar inom 24 timmar. Betalning sker direkt mellan dig och värden — Fjällhuset hanterar inte pengarna."}
       </p>
     </form>
   );

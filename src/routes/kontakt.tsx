@@ -26,7 +26,7 @@ function ContactPage() {
         {[
           { icon: Mail, title: "E-post", value: "hej@stugaisalen.se" },
           { icon: MessageCircle, title: "Chatt", value: "Vardagar 9–17" },
-          { icon: MapPin, title: "På plats", value: "Sälfjällstorget, Sälen" },
+          { icon: MapPin, title: "På plats", value: "Storgatan 12, Åre" },
         ].map((item) => (
           <div key={item.title} className="rounded-2xl bg-background p-6 shadow-[var(--shadow-soft)]">
             <item.icon className="h-6 w-6 text-primary" />

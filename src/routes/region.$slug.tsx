@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { ArrowLeft, MapPin } from "lucide-react";
-import { regionBySlug, areasByRegion, regions } from "../data/areas";
+import { regionBySlug, areasByRegion, regions, type Area } from "../data/areas";
 
 export const Route = createFileRoute("/region/$slug")({
   loader: ({ params }) => {
@@ -79,7 +79,7 @@ function RegionPage() {
           Områden i {region.name}
         </h2>
         <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {areas.map((area) => (
+          {(areas as Area[]).map((area) => (
             <Link
               key={area.slug}
               to="/omrade/$slug"

@@ -387,7 +387,7 @@ export type Database = {
           created_at: string
           description: string | null
           host_id: string
-          ical_token: string | null
+          ical_token: string
           id: string
           instant_book: boolean
           lat: number | null
@@ -412,7 +412,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           host_id: string
-          ical_token?: string | null
+          ical_token?: string
           id?: string
           instant_book?: boolean
           lat?: number | null
@@ -437,7 +437,7 @@ export type Database = {
           created_at?: string
           description?: string | null
           host_id?: string
-          ical_token?: string | null
+          ical_token?: string
           id?: string
           instant_book?: boolean
           lat?: number | null

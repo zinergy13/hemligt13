@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet } from "lucide-react";
+import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, Calendar as CalendarIcon } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -96,6 +96,12 @@ function HostDashboard() {
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
           >
             <Wallet className="h-4 w-4" /> Mitt saldo
+          </Link>
+          <Link
+            to="/vard/kalender"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            <CalendarIcon className="h-4 w-4" /> Kalendersync
           </Link>
           <Link
             to="/vard/bokningar"

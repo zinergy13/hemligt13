@@ -22,6 +22,7 @@ import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
@@ -29,6 +30,7 @@ import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
+import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
 import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
 
@@ -97,6 +99,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VardKalenderRoute = VardKalenderRouteImport.update({
+  id: '/kalender',
+  path: '/kalender',
+  getParentRoute: () => VardRoute,
+} as any)
 const VardFakturaRoute = VardFakturaRouteImport.update({
   id: '/faktura',
   path: '/faktura',
@@ -132,6 +139,11 @@ const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
   path: '/stugor/$id/redigera',
   getParentRoute: () => VardRoute,
 } as any)
+const ApiPublicIcalTokenRoute = ApiPublicIcalTokenRouteImport.update({
+  id: '/api/public/ical/$token',
+  path: '/api/public/ical/$token',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ApiPublicHooksGenerateMonthlyInvoicesRoute =
   ApiPublicHooksGenerateMonthlyInvoicesRouteImport.update({
     id: '/api/public/hooks/generate-monthly-invoices',
@@ -163,9 +175,11 @@ export interface FileRoutesByFullPath {
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
+  '/vard/kalender': typeof VardKalenderRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
+  '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesByTo {
@@ -187,9 +201,11 @@ export interface FileRoutesByTo {
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
+  '/vard/kalender': typeof VardKalenderRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
+  '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesById {
@@ -212,9 +228,11 @@ export interface FileRoutesById {
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
+  '/vard/kalender': typeof VardKalenderRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
+  '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRouteTypes {
@@ -238,9 +256,11 @@ export interface FileRouteTypes {
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
+    | '/vard/kalender'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
+    | '/api/public/ical/$token'
     | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -262,9 +282,11 @@ export interface FileRouteTypes {
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
+    | '/vard/kalender'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
+    | '/api/public/ical/$token'
     | '/vard/stugor/$id/redigera'
   id:
     | '__root__'
@@ -286,9 +308,11 @@ export interface FileRouteTypes {
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
+    | '/vard/kalender'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
+    | '/api/public/ical/$token'
     | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
 }
@@ -311,6 +335,7 @@ export interface RootRouteChildren {
   StugaSlugRoute: typeof StugaSlugRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
+  ApiPublicIcalTokenRoute: typeof ApiPublicIcalTokenRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -406,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vard/kalender': {
+      id: '/vard/kalender'
+      path: '/kalender'
+      fullPath: '/vard/kalender'
+      preLoaderRoute: typeof VardKalenderRouteImport
+      parentRoute: typeof VardRoute
+    }
     '/vard/faktura': {
       id: '/vard/faktura'
       path: '/faktura'
@@ -455,6 +487,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
       parentRoute: typeof VardRoute
     }
+    '/api/public/ical/$token': {
+      id: '/api/public/ical/$token'
+      path: '/api/public/ical/$token'
+      fullPath: '/api/public/ical/$token'
+      preLoaderRoute: typeof ApiPublicIcalTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/generate-monthly-invoices': {
       id: '/api/public/hooks/generate-monthly-invoices'
       path: '/api/public/hooks/generate-monthly-invoices'
@@ -475,6 +514,7 @@ declare module '@tanstack/react-router' {
 interface VardRouteChildren {
   VardBokningarRoute: typeof VardBokningarRoute
   VardFakturaRoute: typeof VardFakturaRoute
+  VardKalenderRoute: typeof VardKalenderRoute
   VardStugorNyRoute: typeof VardStugorNyRoute
   VardStugorIdRedigeraRoute: typeof VardStugorIdRedigeraRoute
 }
@@ -482,6 +522,7 @@ interface VardRouteChildren {
 const VardRouteChildren: VardRouteChildren = {
   VardBokningarRoute: VardBokningarRoute,
   VardFakturaRoute: VardFakturaRoute,
+  VardKalenderRoute: VardKalenderRoute,
   VardStugorNyRoute: VardStugorNyRoute,
   VardStugorIdRedigeraRoute: VardStugorIdRedigeraRoute,
 }
@@ -508,6 +549,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
     ApiPublicHooksGenerateMonthlyInvoicesRoute,
+  ApiPublicIcalTokenRoute: ApiPublicIcalTokenRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

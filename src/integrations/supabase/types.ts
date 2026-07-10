@@ -151,6 +151,94 @@ export type Database = {
           },
         ]
       }
+      cabin_blocked_dates: {
+        Row: {
+          cabin_id: string
+          check_in: string
+          check_out: string
+          created_at: string
+          external_uid: string | null
+          id: string
+          source: string
+          summary: string | null
+        }
+        Insert: {
+          cabin_id: string
+          check_in: string
+          check_out: string
+          created_at?: string
+          external_uid?: string | null
+          id?: string
+          source?: string
+          summary?: string | null
+        }
+        Update: {
+          cabin_id?: string
+          check_in?: string
+          check_out?: string
+          created_at?: string
+          external_uid?: string | null
+          id?: string
+          source?: string
+          summary?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabin_blocked_dates_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cabin_ical_feeds: {
+        Row: {
+          active: boolean
+          cabin_id: string
+          created_at: string
+          id: string
+          label: string
+          last_error: string | null
+          last_event_count: number | null
+          last_synced_at: string | null
+          updated_at: string
+          url: string
+        }
+        Insert: {
+          active?: boolean
+          cabin_id: string
+          created_at?: string
+          id?: string
+          label?: string
+          last_error?: string | null
+          last_event_count?: number | null
+          last_synced_at?: string | null
+          updated_at?: string
+          url: string
+        }
+        Update: {
+          active?: boolean
+          cabin_id?: string
+          created_at?: string
+          id?: string
+          label?: string
+          last_error?: string | null
+          last_event_count?: number | null
+          last_synced_at?: string | null
+          updated_at?: string
+          url?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabin_ical_feeds_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cabin_images: {
         Row: {
           cabin_id: string
@@ -186,6 +274,50 @@ export type Database = {
           },
         ]
       }
+      cabin_season_prices: {
+        Row: {
+          cabin_id: string
+          created_at: string
+          end_date: string
+          id: string
+          label: string
+          min_nights: number | null
+          price_per_night: number
+          start_date: string
+          weekend_only: boolean
+        }
+        Insert: {
+          cabin_id: string
+          created_at?: string
+          end_date: string
+          id?: string
+          label: string
+          min_nights?: number | null
+          price_per_night: number
+          start_date: string
+          weekend_only?: boolean
+        }
+        Update: {
+          cabin_id?: string
+          created_at?: string
+          end_date?: string
+          id?: string
+          label?: string
+          min_nights?: number | null
+          price_per_night?: number
+          start_date?: string
+          weekend_only?: boolean
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabin_season_prices_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cabins: {
         Row: {
           address: string | null
@@ -194,15 +326,18 @@ export type Database = {
           bathrooms: number
           bedrooms: number
           beds: number
+          check_in_weekday: number | null
           cleaning_fee: number
           created_at: string
           description: string | null
           host_id: string
+          ical_token: string | null
           id: string
           instant_book: boolean
           lat: number | null
           lng: number | null
           max_guests: number
+          min_nights: number
           price_per_night: number
           slug: string
           status: Database["public"]["Enums"]["cabin_status"]
@@ -216,15 +351,18 @@ export type Database = {
           bathrooms?: number
           bedrooms?: number
           beds?: number
+          check_in_weekday?: number | null
           cleaning_fee?: number
           created_at?: string
           description?: string | null
           host_id: string
+          ical_token?: string | null
           id?: string
           instant_book?: boolean
           lat?: number | null
           lng?: number | null
           max_guests?: number
+          min_nights?: number
           price_per_night?: number
           slug: string
           status?: Database["public"]["Enums"]["cabin_status"]
@@ -238,15 +376,18 @@ export type Database = {
           bathrooms?: number
           bedrooms?: number
           beds?: number
+          check_in_weekday?: number | null
           cleaning_fee?: number
           created_at?: string
           description?: string | null
           host_id?: string
+          ical_token?: string | null
           id?: string
           instant_book?: boolean
           lat?: number | null
           lng?: number | null
           max_guests?: number
+          min_nights?: number
           price_per_night?: number
           slug?: string
           status?: Database["public"]["Enums"]["cabin_status"]
@@ -297,6 +438,39 @@ export type Database = {
           period_start?: string
           status?: string
           total_amount?: number
+        }
+        Relationships: []
+      }
+      host_payout_details: {
+        Row: {
+          bank_account: string | null
+          bankgiro: string | null
+          created_at: string
+          host_id: string
+          is_business: boolean
+          payment_instructions: string | null
+          swish_number: string | null
+          updated_at: string
+        }
+        Insert: {
+          bank_account?: string | null
+          bankgiro?: string | null
+          created_at?: string
+          host_id: string
+          is_business?: boolean
+          payment_instructions?: string | null
+          swish_number?: string | null
+          updated_at?: string
+        }
+        Update: {
+          bank_account?: string | null
+          bankgiro?: string | null
+          created_at?: string
+          host_id?: string
+          is_business?: boolean
+          payment_instructions?: string | null
+          swish_number?: string | null
+          updated_at?: string
         }
         Relationships: []
       }
@@ -362,25 +536,7 @@ export type Database = {
           check_in: string | null
           check_out: string | null
         }
-        Insert: {
-          cabin_id?: string | null
-          check_in?: string | null
-          check_out?: string | null
-        }
-        Update: {
-          cabin_id?: string | null
-          check_in?: string | null
-          check_out?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "bookings_cabin_id_fkey"
-            columns: ["cabin_id"]
-            isOneToOne: false
-            referencedRelation: "cabins"
-            referencedColumns: ["id"]
-          },
-        ]
+        Relationships: []
       }
       host_balances: {
         Row: {

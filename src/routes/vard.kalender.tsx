@@ -98,14 +98,14 @@ function HostCalendarPage() {
   const addFeed = async (cabinId: string, form: HTMLFormElement) => {
     const fd = new FormData(form);
     const url = String(fd.get("url") ?? "").trim();
-    const label = String(fd.get("label") ?? "").trim() || null;
+    const label = String(fd.get("label") ?? "").trim() || undefined;
     if (!url.startsWith("http")) {
       toast.error("Ange en giltig URL som börjar med http/https");
       return;
     }
-    const { error } = await supabase.from("cabin_ical_feeds").insert([
-      { cabin_id: cabinId, url, label, active: true },
-    ]);
+    const { error } = await supabase
+      .from("cabin_ical_feeds")
+      .insert([{ cabin_id: cabinId, url, label, active: true }]);
     if (error) {
       toast.error(error.message);
       return;

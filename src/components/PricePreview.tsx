@@ -99,6 +99,52 @@ function kr(n: number) {
   return `${n.toLocaleString("sv-SE")} kr`;
 }
 
+function NightList({ rows, requiredWeekday }: { rows: NightRow[]; requiredWeekday: number | null }) {
+  if (rows.length === 0) return null;
+  const total = rows.reduce((s, r) => s + r.total, 0);
+  return (
+    <div className="rounded-xl border border-border bg-background">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <span>Pris per natt</span>
+        <span>{rows.length} nätter</span>
+      </div>
+      <ul className="divide-y divide-border">
+        {rows.map((r) => {
+          const isWeekend = r.weekday === 5 || r.weekday === 6;
+          return (
+            <li key={r.date} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 text-foreground">
+                  <span className="font-medium">{WEEKDAYS[r.weekday]} {fmtDate(r.date)}</span>
+                  {isWeekend && (
+                    <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                      Helg
+                    </span>
+                  )}
+                  {r.breaksWeekday && requiredWeekday !== null && (
+                    <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-red-700 dark:text-red-300">
+                      Bryter {WEEKDAYS_LONG[requiredWeekday]}-byte
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {r.label} · {kr(r.rate)}
+                  {r.weekendSurcharge > 0 && <> · helgtillägg +{kr(r.weekendSurcharge)}</>}
+                </div>
+              </div>
+              <div className="text-right font-medium text-foreground">{kr(r.total)}</div>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="flex items-center justify-between border-t border-border px-4 py-2 text-sm">
+        <span className="text-muted-foreground">Summa nätter</span>
+        <span className="font-semibold text-foreground">{kr(total)}</span>
+      </div>
+    </div>
+  );
+}
+
 export function PricePreview({ hostId }: { hostId: string }) {
   const [cabins, setCabins] = useState<CabinLite[]>([]);
   const [loading, setLoading] = useState(true);

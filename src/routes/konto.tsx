@@ -6,6 +6,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { HostPayoutForm } from "@/components/HostPayoutForm";
 import { SeasonPricingManager } from "@/components/SeasonPricingManager";
+import { PricePreview } from "@/components/PricePreview";
 
 export const Route = createFileRoute("/konto")({
   head: () => ({ meta: [{ title: "Mitt konto — Fjällhuset" }] }),
@@ -218,6 +219,12 @@ function AccountPage() {
       {profile.is_host && (
         <div className="mt-8">
           <SeasonPricingManager hostId={user.id} />
+        </div>
+      )}
+
+      {profile.is_host && (
+        <div className="mt-8">
+          <PricePreview hostId={user.id} />
         </div>
       )}
     </section>

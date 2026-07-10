@@ -5,12 +5,12 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import {
-  calcQuote,
-  diffNights,
   fetchUnavailableRanges,
   rangeOverlapsAny,
   todayISO,
 } from "@/lib/bookings";
+import { computeQuote, fetchSeasonPrices, type SeasonPrice } from "@/lib/pricing";
+import { PriceBreakdown } from "@/components/PriceBreakdown";
 
 type Props = {
   cabinId: string;
@@ -20,6 +20,8 @@ type Props = {
   cleaningFee: number;
   maxGuests: number;
   instantBook: boolean;
+  minNights: number | null;
+  checkInWeekday: number | null;
 };
 
 export function BookingForm({
@@ -30,6 +32,8 @@ export function BookingForm({
   cleaningFee,
   maxGuests,
   instantBook,
+  minNights,
+  checkInWeekday,
 }: Props) {
   const { user, loading: authLoading } = useAuth();
   const navigate = useNavigate();
@@ -41,12 +45,15 @@ export function BookingForm({
   const [message, setMessage] = useState<string>("");
   const [submitting, setSubmitting] = useState(false);
   const [unavailable, setUnavailable] = useState<{ check_in: string; check_out: string }[]>([]);
+  const [seasons, setSeasons] = useState<SeasonPrice[]>([]);
 
   useEffect(() => {
     let active = true;
-    fetchUnavailableRanges(cabinId)
-      .then((r) => {
-        if (active) setUnavailable(r);
+    Promise.all([fetchUnavailableRanges(cabinId), fetchSeasonPrices(cabinId)])
+      .then(([ranges, s]) => {
+        if (!active) return;
+        setUnavailable(ranges);
+        setSeasons(s);
       })
       .catch(() => {});
     return () => {
@@ -54,17 +61,26 @@ export function BookingForm({
     };
   }, [cabinId]);
 
-  const nights = diffNights(checkIn, checkOut);
   const quote = useMemo(
-    () => (nights > 0 ? calcQuote({ pricePerNight, cleaningFee, nights }) : null),
-    [pricePerNight, cleaningFee, nights],
+    () =>
+      computeQuote({
+        checkIn,
+        checkOut,
+        pricePerNight,
+        cleaningFee,
+        minNights,
+        checkInWeekday,
+        seasons,
+      }),
+    [checkIn, checkOut, pricePerNight, cleaningFee, minNights, checkInWeekday, seasons],
   );
+  const nights = quote.nights;
 
   const overlaps = checkIn && checkOut && rangeOverlapsAny(checkIn, checkOut, unavailable);
   const tooManyGuests = guests > maxGuests;
   const datesValid = nights > 0 && checkIn >= today;
 
-  const canSubmit = !!user && datesValid && !overlaps && !tooManyGuests && !submitting;
+  const canSubmit = !!user && datesValid && !overlaps && !tooManyGuests && !submitting && !quote.blocked;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -72,7 +88,7 @@ export function BookingForm({
       navigate({ to: "/logga-in", search: { redirect: `/stuga/${cabinSlug}` } });
       return;
     }
-    if (!quote || !canSubmit) return;
+    if (!canSubmit) return;
 
     setSubmitting(true);
     try {
@@ -89,7 +105,7 @@ export function BookingForm({
           nights,
           nightly_total: quote.nightlyTotal,
           cleaning_fee: quote.cleaningFee,
-          service_fee: quote.serviceFee,
+          service_fee: 0,
           total_price: quote.total,
           guest_message: message.trim() || null,
           status,
@@ -201,26 +217,7 @@ export function BookingForm({
         </p>
       )}
 
-      {quote && !overlaps && (
-        <div className="space-y-1.5 rounded-lg bg-muted/40 p-3 text-sm">
-          <div className="flex justify-between text-foreground">
-            <span>
-              {pricePerNight.toLocaleString("sv-SE")} kr × {nights} nätter
-            </span>
-            <span>{quote.nightlyTotal.toLocaleString("sv-SE")} kr</span>
-          </div>
-          {cleaningFee > 0 && (
-            <div className="flex justify-between text-muted-foreground">
-              <span>Städavgift</span>
-              <span>{quote.cleaningFee.toLocaleString("sv-SE")} kr</span>
-            </div>
-          )}
-          <div className="mt-2 flex justify-between border-t border-border pt-2 font-medium text-foreground">
-            <span>Totalt till värden</span>
-            <span>{quote.total.toLocaleString("sv-SE")} kr</span>
-          </div>
-        </div>
-      )}
+      {!overlaps && nights > 0 && <PriceBreakdown quote={quote} />}
 
       {!user && !authLoading ? (
         <Link

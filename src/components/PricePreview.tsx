@@ -23,6 +23,7 @@ type CabinLite = {
 };
 
 const WEEKDAYS = ["Sön", "Mån", "Tis", "Ons", "Tor", "Fre", "Lör"];
+const WEEKDAYS_LONG = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
 
 function todayIso() {
   return new Date().toISOString().slice(0, 10);
@@ -31,6 +32,117 @@ function addDays(iso: string, n: number) {
   const d = new Date(iso + "T00:00:00Z");
   d.setUTCDate(d.getUTCDate() + n);
   return d.toISOString().slice(0, 10);
+}
+
+type NightRow = {
+  date: string;
+  weekday: number;
+  label: string;
+  rate: number;
+  weekendSurcharge: number;
+  total: number;
+  breaksWeekday: boolean;
+};
+
+function buildNightRows(
+  checkIn: string,
+  checkOut: string,
+  basePrice: number,
+  seasons: SeasonPrice[],
+  checkInWeekday: number | null,
+): NightRow[] {
+  if (!checkIn || !checkOut) return [];
+  const rows: NightRow[] = [];
+  const start = new Date(checkIn + "T00:00:00Z");
+  const end = new Date(checkOut + "T00:00:00Z");
+  for (let d = new Date(start); d < end; d.setUTCDate(d.getUTCDate() + 1)) {
+    const iso = d.toISOString().slice(0, 10);
+    const weekday = d.getUTCDay();
+    const season = seasons.find((s) => iso >= s.start_date && iso <= s.end_date) ?? null;
+    const rate = season ? season.price_per_night : basePrice;
+    const label = season ? season.label : "Grundpris";
+    const isWeekend = weekday === 5 || weekday === 6;
+    const surchargePct = season?.weekend_surcharge_pct ?? 0;
+    const weekendSurcharge = isWeekend && surchargePct > 0 ? Math.round((rate * surchargePct) / 100) : 0;
+    const breaksWeekday =
+      checkInWeekday !== null &&
+      checkInWeekday !== undefined &&
+      // check-in day itself and the check-out day (= day after last night) must match
+      (iso === checkIn ? weekday !== checkInWeekday : false);
+    rows.push({
+      date: iso,
+      weekday,
+      label,
+      rate,
+      weekendSurcharge,
+      total: rate + weekendSurcharge,
+      breaksWeekday,
+    });
+  }
+  // Also mark the check-out day when it breaks the pattern (append as note row? simpler: last night flag)
+  if (rows.length > 0 && checkInWeekday !== null && checkInWeekday !== undefined) {
+    const outDay = new Date(checkOut + "T00:00:00Z").getUTCDay();
+    if (outDay !== checkInWeekday) {
+      // flag last night as breaking (utcheckning bryter mönstret)
+      rows[rows.length - 1] = { ...rows[rows.length - 1], breaksWeekday: true };
+    }
+  }
+  return rows;
+}
+
+function fmtDate(iso: string) {
+  const d = new Date(iso + "T00:00:00Z");
+  return d.toLocaleDateString("sv-SE", { day: "numeric", month: "short", timeZone: "UTC" });
+}
+
+function kr(n: number) {
+  return `${n.toLocaleString("sv-SE")} kr`;
+}
+
+function NightList({ rows, requiredWeekday }: { rows: NightRow[]; requiredWeekday: number | null }) {
+  if (rows.length === 0) return null;
+  const total = rows.reduce((s, r) => s + r.total, 0);
+  return (
+    <div className="rounded-xl border border-border bg-background">
+      <div className="flex items-center justify-between border-b border-border px-4 py-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+        <span>Pris per natt</span>
+        <span>{rows.length} nätter</span>
+      </div>
+      <ul className="divide-y divide-border">
+        {rows.map((r) => {
+          const isWeekend = r.weekday === 5 || r.weekday === 6;
+          return (
+            <li key={r.date} className="flex items-center justify-between gap-3 px-4 py-2 text-sm">
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 text-foreground">
+                  <span className="font-medium">{WEEKDAYS[r.weekday]} {fmtDate(r.date)}</span>
+                  {isWeekend && (
+                    <span className="rounded-full bg-amber-500/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-amber-700 dark:text-amber-300">
+                      Helg
+                    </span>
+                  )}
+                  {r.breaksWeekday && requiredWeekday !== null && (
+                    <span className="rounded-full bg-red-500/15 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-red-700 dark:text-red-300">
+                      Bryter {WEEKDAYS_LONG[requiredWeekday]}-byte
+                    </span>
+                  )}
+                </div>
+                <div className="text-xs text-muted-foreground">
+                  {r.label} · {kr(r.rate)}
+                  {r.weekendSurcharge > 0 && <> · helgtillägg +{kr(r.weekendSurcharge)}</>}
+                </div>
+              </div>
+              <div className="text-right font-medium text-foreground">{kr(r.total)}</div>
+            </li>
+          );
+        })}
+      </ul>
+      <div className="flex items-center justify-between border-t border-border px-4 py-2 text-sm">
+        <span className="text-muted-foreground">Summa nätter</span>
+        <span className="font-semibold text-foreground">{kr(total)}</span>
+      </div>
+    </div>
+  );
 }
 
 export function PricePreview({ hostId }: { hostId: string }) {
@@ -194,6 +306,19 @@ export function PricePreview({ hostId }: { hostId: string }) {
         </div>
       ) : (
         quote && <PriceBreakdown quote={quote} />
+      )}
+
+      {!priceLoading && selectedCabin && quote && quote.nights > 0 && (
+        <NightList
+          rows={buildNightRows(
+            checkIn,
+            checkOut,
+            selectedCabin.price_per_night,
+            seasons,
+            selectedCabin.check_in_weekday,
+          )}
+          requiredWeekday={selectedCabin.check_in_weekday}
+        />
       )}
 
       {quote && quote.adjustmentsTotal !== 0 && (

@@ -25,9 +25,27 @@ export type QuoteLine =
   | { kind: "cleaning"; label: string; subtotal: number }
   | { kind: "adjustment"; label: string; subtotal: number; note?: string };
 
+export type NightBreakdown = {
+  date: string;
+  weekday: number;
+  label: string;
+  /** Effective per-night rate. Reflects weekly-rate distribution when active. */
+  rate: number;
+  weekendSurcharge: number;
+  total: number;
+  /** True when this night is part of a whole-week bucket priced with weeklyRate. */
+  weekly: boolean;
+};
+
 export type Quote = {
   nights: number;
   lines: QuoteLine[];
+  /**
+   * Per-night rows. Sum of `total` across entries equals `nightlyTotal` and
+   * matches the buckets in `lines`, so any UI (PriceBreakdown, NightList) that
+   * renders per-night pricing MUST source rates here to stay in sync.
+   */
+  nightBreakdown: NightBreakdown[];
   nightlyTotal: number;
   cleaningFee: number;
   adjustmentsTotal: number;
@@ -126,12 +144,12 @@ export function computeQuote(opts: {
   let blocked = false;
 
   if (!opts.checkIn || !opts.checkOut) {
-    return { nights: 0, lines: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
+    return { nights: 0, lines: [], nightBreakdown: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
   }
 
   const nights = eachNight(opts.checkIn, opts.checkOut);
   if (nights.length === 0) {
-    return { nights: 0, lines: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
+    return { nights: 0, lines: [], nightBreakdown: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
   }
 
   // Group consecutive nights by season (or base)
@@ -158,6 +176,7 @@ export function computeQuote(opts: {
   }
 
   const lines: QuoteLine[] = [];
+  const nightBreakdown: NightBreakdown[] = [];
   let nightlyTotal = 0;
 
   for (const b of buckets) {
@@ -174,7 +193,8 @@ export function computeQuote(opts: {
     let weekendSurcharge = 0;
 
     const weeks = Math.floor(n / 7);
-    if (b.weeklyRate && weeks > 0) {
+    const usesWeekly = !!(b.weeklyRate && weeks > 0);
+    if (usesWeekly && b.weeklyRate) {
       const remainder = n - weeks * 7;
       subtotal = weeks * b.weeklyRate + remainder * b.rate;
       weeklyDiscount = Math.max(0, weeks * 7 * b.rate - weeks * b.weeklyRate);
@@ -182,13 +202,63 @@ export function computeQuote(opts: {
       subtotal = n * b.rate;
     }
 
-    if (b.weekendPct > 0 && weekendNights > 0 && !(b.weeklyRate && weeks > 0)) {
+    if (b.weekendPct > 0 && weekendNights > 0 && !usesWeekly) {
       weekendSurcharge = Math.round(weekendNights * b.rate * (b.weekendPct / 100));
       subtotal += weekendSurcharge;
     }
 
     void weekdayNights;
     nightlyTotal += subtotal;
+
+    // Per-night rows — MUST sum to `subtotal` so NightList matches PriceBreakdown.
+    if (usesWeekly && b.weeklyRate) {
+      const weekRate = b.weeklyRate;
+      const base = Math.floor(weekRate / 7);
+      const rem = weekRate - base * 7; // distribute rounding remainder across first `rem` nights of each week
+      for (let w = 0; w < weeks; w++) {
+        for (let k = 0; k < 7; k++) {
+          const d = b.nights[w * 7 + k];
+          const perNight = base + (k < rem ? 1 : 0);
+          nightBreakdown.push({
+            date: isoDate(d),
+            weekday: d.getUTCDay(),
+            label: b.label,
+            rate: perNight,
+            weekendSurcharge: 0,
+            total: perNight,
+            weekly: true,
+          });
+        }
+      }
+      for (let i = weeks * 7; i < n; i++) {
+        const d = b.nights[i];
+        nightBreakdown.push({
+          date: isoDate(d),
+          weekday: d.getUTCDay(),
+          label: b.label,
+          rate: b.rate,
+          weekendSurcharge: 0,
+          total: b.rate,
+          weekly: false,
+        });
+      }
+    } else {
+      for (const d of b.nights) {
+        const w = d.getUTCDay();
+        const isWeekend = w === 5 || w === 6;
+        const surcharge = b.weekendPct > 0 && isWeekend ? Math.round((b.rate * b.weekendPct) / 100) : 0;
+        nightBreakdown.push({
+          date: isoDate(d),
+          weekday: w,
+          label: b.label,
+          rate: b.rate,
+          weekendSurcharge: surcharge,
+          total: b.rate + surcharge,
+          weekly: false,
+        });
+      }
+    }
+
     lines.push({
       kind: b.seasonId ? "season" : "base",
       label: b.label,
@@ -235,6 +305,7 @@ export function computeQuote(opts: {
   return {
     nights: totalNights,
     lines,
+    nightBreakdown,
     nightlyTotal,
     cleaningFee,
     adjustmentsTotal: 0,

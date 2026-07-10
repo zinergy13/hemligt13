@@ -80,6 +80,39 @@ export async function fetchSeasonPrices(cabinId: string): Promise<SeasonPrice[]>
   return (data ?? []) as SeasonPrice[];
 }
 
+/**
+ * Unified quote builder used by BOTH the guest checkout (BookingForm) and the
+ * host price preview (/konto). Fetches season prices + dynamic rule for the
+ * cabin and returns the final Quote with dynamic adjustments applied. Anything
+ * that needs "the real final price a guest will pay" MUST go through this.
+ */
+export async function buildFinalQuote(opts: {
+  cabinId: string;
+  checkIn: string;
+  checkOut: string;
+  pricePerNight: number;
+  cleaningFee: number;
+  minNights: number | null;
+  checkInWeekday: number | null;
+  today?: string;
+}): Promise<{ quote: Quote; seasons: SeasonPrice[]; rule: PricingRule | null }> {
+  const [seasons, rule] = await Promise.all([
+    fetchSeasonPrices(opts.cabinId),
+    fetchPricingRule(opts.cabinId),
+  ]);
+  const base = computeQuote({
+    checkIn: opts.checkIn,
+    checkOut: opts.checkOut,
+    pricePerNight: opts.pricePerNight,
+    cleaningFee: opts.cleaningFee,
+    minNights: opts.minNights,
+    checkInWeekday: opts.checkInWeekday,
+    seasons,
+  });
+  const quote = applyDynamicRules(base, rule, { checkIn: opts.checkIn, today: opts.today });
+  return { quote, seasons, rule };
+}
+
 export function computeQuote(opts: {
   checkIn: string;
   checkOut: string;

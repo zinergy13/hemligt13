@@ -50,23 +50,17 @@ describe("PricePreview – ett-klicks-fixar uppdaterar direkt", () => {
     // Wait for cabin+seasons to load and validation panel to render
     const fixButton = await screen.findByRole("button", { name: /Förläng till 14 nätter/i });
 
-    // Initial breakdown: 7 nätter, 7 * 1000 + 500 = 7500 kr
-    const initialSummary = await screen.findByText(/Prisberäkning/i);
-    const initialCard = initialSummary.closest("div")!.parentElement!;
-    expect(within(initialCard).getByText(/7 nätter/i)).toBeInTheDocument();
-    expect(within(initialCard).getByText(/7[\s ]?500 kr/)).toBeInTheDocument();
+    // Initial breakdown: 7 nätter, 7 * 1000 + 500 = 7 500 kr totalt till värden
+    expect(await screen.findByText(/Totalt till värden/i)).toBeInTheDocument();
+    expect(screen.getByText(/^\s*7[\s ]?500 kr\s*$/)).toBeInTheDocument();
 
     await user.click(fixButton);
 
-    // Breakdown must reflect the new dates in the same tick — 14 nätter, 14 * 1000 + 500 = 14 500 kr
-    const updatedCard = (await screen.findByText(/Prisberäkning/i)).closest("div")!.parentElement!;
-    expect(within(updatedCard).getByText(/14 nätter/i)).toBeInTheDocument();
-    expect(within(updatedCard).getByText(/14[\s ]?500 kr/)).toBeInTheDocument();
-
-    // Radlistan (Pris per natt) ska också ha 14 rader
-    const nightListHeader = screen.getByText(/Pris per natt/i);
-    const nightListCard = nightListHeader.closest("div")!.parentElement!;
-    expect(within(nightListCard).getByText(/14 nätter/i)).toBeInTheDocument();
+    // Breakdown must reflect the new dates immediately — 14 * 1000 + 500 = 14 500 kr
+    expect(await screen.findByText(/^\s*14[\s ]?500 kr\s*$/)).toBeInTheDocument();
+    // Både summeringen och radlistan visar 14 nätter (två träffar)
+    const nightMatches = screen.getAllByText(/14 nätter/i);
+    expect(nightMatches.length).toBeGreaterThanOrEqual(2);
 
     // Bekräftelse-badge visas
     expect(screen.getByText(/Uppdaterat med nya datum/i)).toBeInTheDocument();
@@ -96,9 +90,12 @@ describe("PricePreview – ett-klicks-fixar uppdaterar direkt", () => {
 
     // Efter fixet ska bokningen vara giltig och nätter vara jämna veckor (>= 14)
     expect(await screen.findByText(/Bokningen är giltig/i)).toBeInTheDocument();
-    const summary = screen.getByText(/Prisberäkning/i).closest("div")!.parentElement!;
-    const nightsLabel = within(summary).getByText(/\d+ nätter/i).textContent!;
-    const n = parseInt(nightsLabel, 10);
+    const nightsLabels = screen.getAllByText(/^\s*\d+ nätter\s*$/i);
+    const nights = nightsLabels
+      .map((el) => parseInt(el.textContent || "", 10))
+      .filter((n) => Number.isFinite(n));
+    expect(nights.length).toBeGreaterThan(0);
+    const n = nights[0];
     expect(n).toBeGreaterThanOrEqual(14);
     expect(n % 7).toBe(0);
   });

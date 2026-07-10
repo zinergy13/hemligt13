@@ -9,6 +9,8 @@ import {
   fetchPricingRule,
   type SeasonPrice,
   type PricingRule,
+  type Quote,
+  type NightBreakdown,
 } from "@/lib/pricing";
 import { PriceBreakdown } from "@/components/PriceBreakdown";
 import { areaBySlug } from "@/data/areas";
@@ -35,59 +37,27 @@ function addDays(iso: string, n: number) {
   return d.toISOString().slice(0, 10);
 }
 
-type NightRow = {
-  date: string;
-  weekday: number;
-  label: string;
-  rate: number;
-  weekendSurcharge: number;
-  total: number;
-  breaksWeekday: boolean;
-};
-
-function buildNightRows(
+/**
+ * Build display rows for the per-night list from the SAME quote used by the
+ * PriceBreakdown summary. This guarantees prices always match after any date
+ * change or one-click fix — there is only one source of truth: computeQuote.
+ */
+function nightRowsFromQuote(
+  quote: Quote,
   checkIn: string,
   checkOut: string,
-  basePrice: number,
-  seasons: SeasonPrice[],
   checkInWeekday: number | null,
-): NightRow[] {
-  if (!checkIn || !checkOut) return [];
-  const rows: NightRow[] = [];
-  const start = new Date(checkIn + "T00:00:00Z");
-  const end = new Date(checkOut + "T00:00:00Z");
-  for (let d = new Date(start); d < end; d.setUTCDate(d.getUTCDate() + 1)) {
-    const iso = d.toISOString().slice(0, 10);
-    const weekday = d.getUTCDay();
-    const season = seasons.find((s) => iso >= s.start_date && iso <= s.end_date) ?? null;
-    const rate = season ? season.price_per_night : basePrice;
-    const label = season ? season.label : "Grundpris";
-    const isWeekend = weekday === 5 || weekday === 6;
-    const surchargePct = season?.weekend_surcharge_pct ?? 0;
-    const weekendSurcharge = isWeekend && surchargePct > 0 ? Math.round((rate * surchargePct) / 100) : 0;
-    const breaksWeekday =
-      checkInWeekday !== null &&
-      checkInWeekday !== undefined &&
-      // check-in day itself and the check-out day (= day after last night) must match
-      (iso === checkIn ? weekday !== checkInWeekday : false);
-    rows.push({
-      date: iso,
-      weekday,
-      label,
-      rate,
-      weekendSurcharge,
-      total: rate + weekendSurcharge,
-      breaksWeekday,
-    });
+): Array<NightBreakdown & { breaksWeekday: boolean }> {
+  const rows = quote.nightBreakdown.map((r) => ({ ...r, breaksWeekday: false }));
+  if (rows.length === 0 || checkInWeekday === null || checkInWeekday === undefined) {
+    return rows;
   }
-  // Also mark the check-out day when it breaks the pattern (append as note row? simpler: last night flag)
-  if (rows.length > 0 && checkInWeekday !== null && checkInWeekday !== undefined) {
-    const outDay = new Date(checkOut + "T00:00:00Z").getUTCDay();
-    if (outDay !== checkInWeekday) {
-      // flag last night as breaking (utcheckning bryter mönstret)
-      rows[rows.length - 1] = { ...rows[rows.length - 1], breaksWeekday: true };
-    }
-  }
+  // Flag the check-in night if its weekday breaks the required pattern.
+  const inDay = new Date(checkIn + "T00:00:00Z").getUTCDay();
+  if (inDay !== checkInWeekday) rows[0].breaksWeekday = true;
+  // Flag the last night when the check-out day breaks the pattern.
+  const outDay = new Date(checkOut + "T00:00:00Z").getUTCDay();
+  if (outDay !== checkInWeekday) rows[rows.length - 1].breaksWeekday = true;
   return rows;
 }
 
@@ -118,7 +88,13 @@ function kr(n: number) {
   return `${n.toLocaleString("sv-SE")} kr`;
 }
 
-function NightList({ rows, requiredWeekday }: { rows: NightRow[]; requiredWeekday: number | null }) {
+function NightList({
+  rows,
+  requiredWeekday,
+}: {
+  rows: Array<NightBreakdown & { breaksWeekday: boolean }>;
+  requiredWeekday: number | null;
+}) {
   if (rows.length === 0) return null;
   const total = rows.reduce((s, r) => s + r.total, 0);
   return (
@@ -148,6 +124,7 @@ function NightList({ rows, requiredWeekday }: { rows: NightRow[]; requiredWeekda
                 </div>
                 <div className="text-xs text-muted-foreground">
                   {r.label} · {kr(r.rate)}
+                  {r.weekly && <> · veckopris</>}
                   {r.weekendSurcharge > 0 && <> · helgtillägg +{kr(r.weekendSurcharge)}</>}
                 </div>
               </div>
@@ -403,13 +380,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
           className={justFixed ? "animate-in fade-in duration-500" : undefined}
         >
           <NightList
-            rows={buildNightRows(
-              checkIn,
-              checkOut,
-              selectedCabin.price_per_night,
-              seasons,
-              selectedCabin.check_in_weekday,
-            )}
+            rows={nightRowsFromQuote(quote, checkIn, checkOut, selectedCabin.check_in_weekday)}
             requiredWeekday={selectedCabin.check_in_weekday}
           />
         </div>

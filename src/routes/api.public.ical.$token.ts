@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { buildIcs, type IcsEvent } from "@/lib/ical";
 
-export const Route = createFileRoute("/api/public/ical/$token[.]ics")({
+export const Route = createFileRoute("/api/public/ical/$token.ics")({
   server: {
     handlers: {
       GET: async ({ params }) => {

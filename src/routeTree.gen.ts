@@ -11,6 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VardRouteImport } from './routes/vard'
 import { Route as SokRouteImport } from './routes/sok'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
 import { Route as LoggaInRouteImport } from './routes/logga-in'
@@ -39,6 +40,11 @@ const VardRoute = VardRouteImport.update({
 const SokRoute = SokRouteImport.update({
   id: '/sok',
   path: '/sok',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
   getParentRoute: () => rootRouteImport,
 } as any)
 const OmOssRoute = OmOssRouteImport.update({
@@ -149,6 +155,7 @@ export interface FileRoutesByFullPath {
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -172,6 +179,7 @@ export interface FileRoutesByTo {
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -196,6 +204,7 @@ export interface FileRoutesById {
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
+  '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -221,6 +230,7 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
+    | '/sitemap.xml'
     | '/sok'
     | '/vard'
     | '/omrade/$slug'
@@ -244,6 +254,7 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
+    | '/sitemap.xml'
     | '/sok'
     | '/vard'
     | '/omrade/$slug'
@@ -267,6 +278,7 @@ export interface FileRouteTypes {
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
+    | '/sitemap.xml'
     | '/sok'
     | '/vard'
     | '/omrade/$slug'
@@ -291,6 +303,7 @@ export interface RootRouteChildren {
   LoggaInRoute: typeof LoggaInRoute
   MinaBokningarRoute: typeof MinaBokningarRoute
   OmOssRoute: typeof OmOssRoute
+  SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SokRoute: typeof SokRoute
   VardRoute: typeof VardRouteWithChildren
   OmradeSlugRoute: typeof OmradeSlugRoute
@@ -314,6 +327,13 @@ declare module '@tanstack/react-router' {
       path: '/sok'
       fullPath: '/sok'
       preLoaderRoute: typeof SokRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/om-oss': {
@@ -479,6 +499,7 @@ const rootRouteChildren: RootRouteChildren = {
   LoggaInRoute: LoggaInRoute,
   MinaBokningarRoute: MinaBokningarRoute,
   OmOssRoute: OmOssRoute,
+  SitemapDotxmlRoute: SitemapDotxmlRoute,
   SokRoute: SokRoute,
   VardRoute: VardRouteWithChildren,
   OmradeSlugRoute: OmradeSlugRoute,

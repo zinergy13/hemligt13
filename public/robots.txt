@@ -1,0 +1,12 @@
+User-agent: *
+Allow: /
+
+Disallow: /konto
+Disallow: /admin
+Disallow: /vard
+Disallow: /mina-bokningar
+Disallow: /logga-in
+Disallow: /aterstall-losenord
+Disallow: /api/
+
+Sitemap: https://klappen-fjall-share.lovable.app/sitemap.xml

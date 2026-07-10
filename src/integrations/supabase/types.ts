@@ -274,6 +274,56 @@ export type Database = {
           },
         ]
       }
+      cabin_pricing_rules: {
+        Row: {
+          cabin_id: string
+          created_at: string
+          early_bird_days: number
+          early_bird_discount_pct: number
+          high_demand_markup_pct: number
+          id: string
+          last_minute_days: number
+          last_minute_discount_pct: number
+          long_stay_discount_pct: number
+          long_stay_nights: number
+          updated_at: string
+        }
+        Insert: {
+          cabin_id: string
+          created_at?: string
+          early_bird_days?: number
+          early_bird_discount_pct?: number
+          high_demand_markup_pct?: number
+          id?: string
+          last_minute_days?: number
+          last_minute_discount_pct?: number
+          long_stay_discount_pct?: number
+          long_stay_nights?: number
+          updated_at?: string
+        }
+        Update: {
+          cabin_id?: string
+          created_at?: string
+          early_bird_days?: number
+          early_bird_discount_pct?: number
+          high_demand_markup_pct?: number
+          id?: string
+          last_minute_days?: number
+          last_minute_discount_pct?: number
+          long_stay_discount_pct?: number
+          long_stay_nights?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cabin_pricing_rules_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: true
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       cabin_season_prices: {
         Row: {
           cabin_id: string
@@ -283,8 +333,10 @@ export type Database = {
           label: string
           min_nights: number | null
           price_per_night: number
+          price_per_week: number | null
           start_date: string
           weekend_only: boolean
+          weekend_surcharge_pct: number
         }
         Insert: {
           cabin_id: string
@@ -294,8 +346,10 @@ export type Database = {
           label: string
           min_nights?: number | null
           price_per_night: number
+          price_per_week?: number | null
           start_date: string
           weekend_only?: boolean
+          weekend_surcharge_pct?: number
         }
         Update: {
           cabin_id?: string
@@ -305,8 +359,10 @@ export type Database = {
           label?: string
           min_nights?: number | null
           price_per_night?: number
+          price_per_week?: number | null
           start_date?: string
           weekend_only?: boolean
+          weekend_surcharge_pct?: number
         }
         Relationships: [
           {

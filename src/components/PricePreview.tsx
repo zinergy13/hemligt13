@@ -448,7 +448,11 @@ function ValidationPanel({
         <div>
           <div className="font-medium text-foreground">Bokningen är giltig</div>
           <div className="text-xs text-muted-foreground">
-            Datumen uppfyller stugans regler för minsta antal nätter och veckoväxling.
+            Datumen uppfyller reglerna: minst {effectiveMin} nätter
+            {cabinMinNights && seasonMinNights
+              ? ` (säsongens ${seasonMinNights} nätter överstiger stugans ${cabinMinNights})`
+              : ""}
+            {requiredWeekday !== null && requiredWeekday !== undefined ? " och rätt veckoväxling." : "."}
           </div>
         </div>
       </div>

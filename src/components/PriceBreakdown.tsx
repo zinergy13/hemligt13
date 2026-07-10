@@ -1,4 +1,4 @@
-import { AlertTriangle, Sparkles, CalendarClock } from "lucide-react";
+import { AlertTriangle, Sparkles, CalendarClock, TrendingUp, TrendingDown } from "lucide-react";
 import type { Quote } from "@/lib/pricing";
 
 function kr(n: number) {
@@ -22,6 +22,21 @@ export function PriceBreakdown({ quote }: { quote: Quote }) {
               <li key={i} className="flex items-start justify-between gap-3 text-muted-foreground">
                 <span>{line.label}</span>
                 <span>{kr(line.subtotal)}</span>
+              </li>
+            );
+          }
+          if (line.kind === "adjustment") {
+            const negative = line.subtotal < 0;
+            return (
+              <li key={i} className="space-y-0.5">
+                <div className={`flex items-start justify-between gap-3 ${negative ? "text-primary" : "text-amber-700 dark:text-amber-300"}`}>
+                  <span className="flex items-center gap-1.5 font-medium">
+                    {negative ? <TrendingDown className="h-3.5 w-3.5" /> : <TrendingUp className="h-3.5 w-3.5" />}
+                    {line.label}
+                  </span>
+                  <span className="font-medium">{negative ? "−" : "+"}{kr(Math.abs(line.subtotal))}</span>
+                </div>
+                {line.note && <div className="pl-5 text-xs text-muted-foreground">{line.note}</div>}
               </li>
             );
           }

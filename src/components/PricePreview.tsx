@@ -366,3 +366,115 @@ export function PricePreview({ hostId }: { hostId: string }) {
     </section>
   );
 }
+function ValidationPanel({
+  checkIn,
+  checkOut,
+  nights,
+  cabinMinNights,
+  seasonMinNights,
+  requiredWeekday,
+  onFixCheckIn,
+  onFixCheckOut,
+  onExtendToMinNights,
+}: {
+  checkIn: string;
+  checkOut: string;
+  nights: number;
+  cabinMinNights: number | null;
+  seasonMinNights: number | null;
+  requiredWeekday: number | null;
+  onFixCheckIn: (iso: string) => void;
+  onFixCheckOut: (iso: string) => void;
+  onExtendToMinNights: (min: number) => void;
+}) {
+  const errors: { title: string; detail: string; fix?: { label: string; onClick: () => void } }[] = [];
+
+  const effectiveMin = Math.max(cabinMinNights ?? 0, seasonMinNights ?? 0);
+  if (effectiveMin > 0 && nights < effectiveMin) {
+    const source = seasonMinNights && seasonMinNights >= (cabinMinNights ?? 0) ? "säsongens" : "stugans";
+    errors.push({
+      title: `För få nätter (${nights} av ${effectiveMin} krävs)`,
+      detail: `Enligt ${source} regler måste bokningen vara minst ${effectiveMin} nätter. Förläng utcheckningen eller välj en kortare period utanför säsongen.`,
+      fix: {
+        label: `Förläng till ${effectiveMin} nätter`,
+        onClick: () => onExtendToMinNights(effectiveMin),
+      },
+    });
+  }
+
+  if (requiredWeekday !== null && requiredWeekday !== undefined) {
+    const inDay = new Date(checkIn + "T00:00:00Z").getUTCDay();
+    const outDay = new Date(checkOut + "T00:00:00Z").getUTCDay();
+    const target = WEEKDAYS_LONG[requiredWeekday];
+
+    if (inDay !== requiredWeekday) {
+      const suggestion = nextWeekday(checkIn, requiredWeekday);
+      errors.push({
+        title: `Incheckning måste ske på en ${target}`,
+        detail: `Du valde ${WEEKDAYS_LONG[inDay]} ${fmtDate(checkIn)}. Denna stuga hyrs ut från ${target} till ${target}.`,
+        fix: {
+          label: `Flytta till ${fmtDateLong(suggestion)}`,
+          onClick: () => onFixCheckIn(suggestion),
+        },
+      });
+    }
+
+    if (outDay !== requiredWeekday && inDay === requiredWeekday) {
+      // Suggest next matching weekday after check-in
+      const suggestion = nextWeekday(checkIn, requiredWeekday);
+      errors.push({
+        title: `Utcheckning måste ske på en ${target}`,
+        detail: `Du valde ${WEEKDAYS_LONG[outDay]} ${fmtDate(checkOut)}. Utcheckning ska ske samma veckodag som incheckningen.`,
+        fix: {
+          label: `Flytta till ${fmtDateLong(suggestion)}`,
+          onClick: () => onFixCheckOut(suggestion),
+        },
+      });
+    }
+  }
+
+  if (errors.length === 0) {
+    return (
+      <div className="flex items-start gap-2 rounded-xl border border-emerald-500/40 bg-emerald-500/5 p-3 text-sm">
+        <CheckCircle2 className="mt-0.5 h-4 w-4 shrink-0 text-emerald-600 dark:text-emerald-400" />
+        <div>
+          <div className="font-medium text-foreground">Bokningen är giltig</div>
+          <div className="text-xs text-muted-foreground">
+            Datumen uppfyller stugans regler för minsta antal nätter och veckoväxling.
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="space-y-2 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
+      <div className="flex items-center gap-2 text-sm font-semibold text-red-800 dark:text-red-300">
+        <AlertTriangle className="h-4 w-4" />
+        Bokning ej tillåten — åtgärda {errors.length === 1 ? "felet" : `${errors.length} fel`} nedan
+      </div>
+      <ul className="space-y-2">
+        {errors.map((e, i) => (
+          <li key={i} className="rounded-lg border border-border bg-background p-3">
+            <div className="flex items-start gap-2">
+              <CalendarClock className="mt-0.5 h-4 w-4 shrink-0 text-red-600 dark:text-red-400" />
+              <div className="min-w-0 flex-1">
+                <div className="text-sm font-medium text-foreground">{e.title}</div>
+                <div className="mt-0.5 text-xs text-muted-foreground">{e.detail}</div>
+                {e.fix && (
+                  <button
+                    type="button"
+                    onClick={e.fix.onClick}
+                    className="mt-2 inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                  >
+                    <Wand2 className="h-3 w-3" /> {e.fix.label}
+                  </button>
+                )}
+              </div>
+            </div>
+          </li>
+        ))}
+      </ul>
+    </div>
+  );
+}

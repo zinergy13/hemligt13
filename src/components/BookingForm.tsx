@@ -9,7 +9,14 @@ import {
   rangeOverlapsAny,
   todayISO,
 } from "@/lib/bookings";
-import { computeQuote, fetchSeasonPrices, type SeasonPrice } from "@/lib/pricing";
+import {
+  computeQuote,
+  applyDynamicRules,
+  fetchSeasonPrices,
+  fetchPricingRule,
+  type SeasonPrice,
+  type PricingRule,
+} from "@/lib/pricing";
 import { PriceBreakdown } from "@/components/PriceBreakdown";
 
 type Props = {
@@ -46,14 +53,20 @@ export function BookingForm({
   const [submitting, setSubmitting] = useState(false);
   const [unavailable, setUnavailable] = useState<{ check_in: string; check_out: string }[]>([]);
   const [seasons, setSeasons] = useState<SeasonPrice[]>([]);
+  const [rule, setRule] = useState<PricingRule | null>(null);
 
   useEffect(() => {
     let active = true;
-    Promise.all([fetchUnavailableRanges(cabinId), fetchSeasonPrices(cabinId)])
-      .then(([ranges, s]) => {
+    Promise.all([
+      fetchUnavailableRanges(cabinId),
+      fetchSeasonPrices(cabinId),
+      fetchPricingRule(cabinId),
+    ])
+      .then(([ranges, s, r]) => {
         if (!active) return;
         setUnavailable(ranges);
         setSeasons(s);
+        setRule(r);
       })
       .catch(() => {});
     return () => {
@@ -61,19 +74,18 @@ export function BookingForm({
     };
   }, [cabinId]);
 
-  const quote = useMemo(
-    () =>
-      computeQuote({
-        checkIn,
-        checkOut,
-        pricePerNight,
-        cleaningFee,
-        minNights,
-        checkInWeekday,
-        seasons,
-      }),
-    [checkIn, checkOut, pricePerNight, cleaningFee, minNights, checkInWeekday, seasons],
-  );
+  const quote = useMemo(() => {
+    const base = computeQuote({
+      checkIn,
+      checkOut,
+      pricePerNight,
+      cleaningFee,
+      minNights,
+      checkInWeekday,
+      seasons,
+    });
+    return applyDynamicRules(base, rule, { checkIn });
+  }, [checkIn, checkOut, pricePerNight, cleaningFee, minNights, checkInWeekday, seasons, rule]);
   const nights = quote.nights;
 
   const overlaps = checkIn && checkOut && rangeOverlapsAny(checkIn, checkOut, unavailable);

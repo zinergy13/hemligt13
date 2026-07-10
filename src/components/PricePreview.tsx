@@ -380,6 +380,7 @@ function ValidationPanel({
   onFixCheckIn,
   onFixCheckOut,
   onExtendToMinNights,
+  onFixAll,
 }: {
   checkIn: string;
   checkOut: string;
@@ -390,6 +391,7 @@ function ValidationPanel({
   onFixCheckIn: (iso: string) => void;
   onFixCheckOut: (iso: string) => void;
   onExtendToMinNights: (min: number) => void;
+  onFixAll: (checkIn: string, checkOut: string) => void;
 }) {
   const errors: { title: string; detail: string; fix?: { label: string; onClick: () => void } }[] = [];
 
@@ -451,12 +453,45 @@ function ValidationPanel({
     );
   }
 
+  // Combined auto-fix: pick the next valid check-in on required weekday (or keep
+  // current check-in when it already matches / no weekday rule) and set nights
+  // to satisfy min-nights. When a weekday rule exists, round up to whole weeks
+  // so check-out also lands on the same weekday.
+  let combined: { checkIn: string; checkOut: string } | null = null;
+  if (errors.length >= 2) {
+    const today = todayIso();
+    let newIn = checkIn;
+    if (requiredWeekday !== null && requiredWeekday !== undefined) {
+      const inDay = new Date(checkIn + "T00:00:00Z").getUTCDay();
+      if (inDay !== requiredWeekday) newIn = nextWeekday(checkIn, requiredWeekday);
+    }
+    if (newIn < today) newIn = today;
+    const desiredNights = Math.max(effectiveMin || 0, nightsBetween(checkIn, checkOut), 1);
+    let finalNights = desiredNights;
+    if (requiredWeekday !== null && requiredWeekday !== undefined) {
+      // must be whole weeks so check-out lands on required weekday too
+      finalNights = Math.max(7, Math.ceil(desiredNights / 7) * 7);
+    }
+    combined = { checkIn: newIn, checkOut: addDays(newIn, finalNights) };
+  }
+
   return (
     <div className="space-y-2 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
       <div className="flex items-center gap-2 text-sm font-semibold text-red-800 dark:text-red-300">
         <AlertTriangle className="h-4 w-4" />
         Bokning ej tillåten — åtgärda {errors.length === 1 ? "felet" : `${errors.length} fel`} nedan
       </div>
+      {combined && (
+        <button
+          type="button"
+          onClick={() => onFixAll(combined!.checkIn, combined!.checkOut)}
+          className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
+        >
+          <Wand2 className="h-4 w-4" />
+          Åtgärda allt — {fmtDateLong(combined.checkIn)} → {fmtDateLong(combined.checkOut)}
+          {" "}({nightsBetween(combined.checkIn, combined.checkOut)} nätter)
+        </button>
+      )}
       <ul className="space-y-2">
         {errors.map((e, i) => (
           <li key={i} className="rounded-lg border border-border bg-background p-3">

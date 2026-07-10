@@ -22,16 +22,28 @@ export type QuoteLine =
       weekendSurcharge: number;
       weeklyDiscount: number;
     }
-  | { kind: "cleaning"; label: string; subtotal: number };
+  | { kind: "cleaning"; label: string; subtotal: number }
+  | { kind: "adjustment"; label: string; subtotal: number; note?: string };
 
 export type Quote = {
   nights: number;
   lines: QuoteLine[];
   nightlyTotal: number;
   cleaningFee: number;
+  adjustmentsTotal: number;
   total: number;
   warnings: string[];
   blocked: boolean;
+};
+
+export type PricingRule = {
+  last_minute_days: number;
+  last_minute_discount_pct: number;
+  long_stay_nights: number;
+  long_stay_discount_pct: number;
+  high_demand_markup_pct: number;
+  early_bird_days: number;
+  early_bird_discount_pct: number;
 };
 
 const WEEKDAYS_SV = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
@@ -81,12 +93,12 @@ export function computeQuote(opts: {
   let blocked = false;
 
   if (!opts.checkIn || !opts.checkOut) {
-    return { nights: 0, lines: [], nightlyTotal: 0, cleaningFee: 0, total: 0, warnings, blocked: false };
+    return { nights: 0, lines: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
   }
 
   const nights = eachNight(opts.checkIn, opts.checkOut);
   if (nights.length === 0) {
-    return { nights: 0, lines: [], nightlyTotal: 0, cleaningFee: 0, total: 0, warnings, blocked: false };
+    return { nights: 0, lines: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
   }
 
   // Group consecutive nights by season (or base)
@@ -192,8 +204,99 @@ export function computeQuote(opts: {
     lines,
     nightlyTotal,
     cleaningFee,
+    adjustmentsTotal: 0,
     total: nightlyTotal + cleaningFee,
     warnings,
     blocked,
+  };
+}
+
+/** Fetch dynamic pricing rule for a cabin (may return null). */
+export async function fetchPricingRule(cabinId: string): Promise<PricingRule | null> {
+  const { data, error } = await supabase
+    .from("cabin_pricing_rules")
+    .select("last_minute_days, last_minute_discount_pct, long_stay_nights, long_stay_discount_pct, high_demand_markup_pct, early_bird_days, early_bird_discount_pct")
+    .eq("cabin_id", cabinId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data ?? null) as PricingRule | null;
+}
+
+function daysBetween(a: string, b: string): number {
+  const da = new Date(a + "T00:00:00Z").getTime();
+  const db = new Date(b + "T00:00:00Z").getTime();
+  return Math.round((da - db) / 86400000);
+}
+
+/**
+ * Apply dynamic pricing rules on top of a base quote. Returns a new Quote with
+ * adjustment lines appended. Rules apply as a percentage of nightlyTotal.
+ */
+export function applyDynamicRules(quote: Quote, rule: PricingRule | null, opts: { checkIn: string; today?: string }): Quote {
+  if (!rule || quote.nights === 0) return quote;
+  const today = opts.today ?? new Date().toISOString().slice(0, 10);
+  const daysToCheckIn = daysBetween(opts.checkIn, today);
+
+  const lines: QuoteLine[] = [...quote.lines];
+  let adjustmentsTotal = 0;
+
+  const pushAdj = (label: string, pct: number, sign: 1 | -1, note?: string) => {
+    if (pct <= 0) return;
+    const amount = sign * Math.round((quote.nightlyTotal * pct) / 100);
+    if (amount === 0) return;
+    adjustmentsTotal += amount;
+    lines.push({ kind: "adjustment", label, subtotal: amount, note });
+  };
+
+  // Early-bird: booking far in advance
+  if (rule.early_bird_days > 0 && rule.early_bird_discount_pct > 0 && daysToCheckIn >= rule.early_bird_days) {
+    pushAdj(
+      `Tidig-bokning-rabatt (−${rule.early_bird_discount_pct}%)`,
+      rule.early_bird_discount_pct,
+      -1,
+      `Bokat ${daysToCheckIn} dagar i förväg (krav ≥ ${rule.early_bird_days})`,
+    );
+  }
+
+  // Last-minute: booking close to check-in
+  if (
+    rule.last_minute_days > 0 &&
+    rule.last_minute_discount_pct > 0 &&
+    daysToCheckIn >= 0 &&
+    daysToCheckIn <= rule.last_minute_days
+  ) {
+    pushAdj(
+      `Sista minuten-rabatt (−${rule.last_minute_discount_pct}%)`,
+      rule.last_minute_discount_pct,
+      -1,
+      `${daysToCheckIn} dagar till incheckning (krav ≤ ${rule.last_minute_days})`,
+    );
+  }
+
+  // Long-stay: stay length threshold
+  if (rule.long_stay_nights > 0 && rule.long_stay_discount_pct > 0 && quote.nights >= rule.long_stay_nights) {
+    pushAdj(
+      `Långtidsrabatt (−${rule.long_stay_discount_pct}%)`,
+      rule.long_stay_discount_pct,
+      -1,
+      `${quote.nights} nätter (krav ≥ ${rule.long_stay_nights})`,
+    );
+  }
+
+  // High-demand markup (applied as informational — hosts opt in per season in practice)
+  if (rule.high_demand_markup_pct > 0) {
+    pushAdj(
+      `Högsäsongstillägg (+${rule.high_demand_markup_pct}%)`,
+      rule.high_demand_markup_pct,
+      1,
+      "Aktivt när efterfrågan är hög",
+    );
+  }
+
+  return {
+    ...quote,
+    lines,
+    adjustmentsTotal,
+    total: quote.nightlyTotal + quote.cleaningFee + adjustmentsTotal,
   };
 }

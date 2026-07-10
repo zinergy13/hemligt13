@@ -1,0 +1,1 @@
+ALTER VIEW public.cabin_unavailable_dates SET (security_invoker = true);

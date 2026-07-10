@@ -181,6 +181,7 @@ export const hostBookingsQuery = (userId: string) =>
 
 export type GuestBookingRow = {
   id: string;
+  host_id: string;
   check_in: string;
   check_out: string;
   status: BookingStatus;

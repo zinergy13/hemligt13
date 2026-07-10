@@ -1,150 +1,111 @@
-## Sverige-expansion — full ompositionering
+## Sprint 3 — Betalning, prissättning & kalendersync
 
-Idag: Fjällmys, 9 områden i Sälen. Efter: nytt varumärke som samlar Dalafjällen, Härjedalen och Jämtland, med kartförst-navigation och unika bilder per område.
+Ingen pengahantering via Fjällhuset. Vi visar värdens betaluppgifter efter bekräftad bokning och synkar kalendrar med Airbnb/Booking.
 
----
+### 1. Betalning direkt värd→gäst
 
-### 1. Nytt namn — 3 förslag
+Utöka `profiles` (eller ny `host_payout_settings`) med värdens betaluppgifter:
+- `swish_number` (text, valfritt) — validera format `07XXXXXXXX` eller `123XXXXXXX`
+- `bankgiro` (text, valfritt) — format `XXX-XXXX` eller `XXXX-XXXX`
+- `bank_account` (text, valfritt) — fritt clearing + kontonr
+- `payment_instructions` (text, valfritt) — värdens egen instruktion ("Märk med bokning + namn")
+- `is_business` (bool) — påverkar bara vilka fält som visas prominent
 
-Jag föreslår ett namn och två alternativ. Alla är korta, uttalbara, .se-vänliga och passar hela svenska fjällkedjan utan att låsa oss vid en region:
+Minst ett fält krävs innan stugan får publiceras (validering i CabinForm + serverside check).
 
-**Huvudförslag: "Fjällhuset"**
-- Klingar hem, värme, kollektiv — som "stugbyn" på svenska, fast digitalt
-- Fungerar från Sälen till Riksgränsen
-- Kan användas verbalt: "hittade den på Fjällhuset"
+**Visning:** Efter `status='confirmed'` visas en betalningspanel på `/mina-bokningar` för gästen:
+- Totalt att betala (kr)
+- Swish-nr med "Kopiera"-knapp + `swish://` deeplink på mobil
+- Bankgiro/konto med kopieringsknapp
+- Föreslagen meddelanderad: "Fjällhuset #<kort-id> — <gästnamn>"
+- Värdens egna instruktioner
 
-**Alternativ A: "Nordfjäll"**
-- Mer geografiskt/redaktionellt, känns lite större och seriösare
-- Bra om ni vill växa mot Norge/Lappland senare
+Innan bekräftelse: **inga** betaluppgifter läcker. RLS: `bookings.status='confirmed' AND guest_id=auth.uid()` för att se värdens betalfält.
 
-**Alternativ B: "Stugmarken"**
-- Lekfullt, svenskt, syftar på både bokningsmarknad och fjällmark
-- Mer marketplace-känsla, mindre "boutique"
+Status `payment_status` behålls men flippas manuellt av värden på `/vard/bokningar` ("Markera som betald"). Vi visar gästen "Väntar på att värden bekräftar betalning" tills flipp.
 
-Jag bygger med **Fjällhuset** som default (kan bytas i ett svep — namnet ligger i `Header`, `Footer`, alla `head()`-meta och en handfull ställen i copy). Säg till om ni vill ha A eller B istället.
+### 2. Säsongspriser (låg / hög / topp)
 
----
-
-### 2. Områden som läggs till
-
-**Dalafjällen** (tillägg till befintliga Sälen-områden)
-- Idre Fjäll
-- Grövelsjön
-
-**Härjedalen** (nytt)
-- Vemdalen
-- Funäsdalen
-- Ramundberget
-- Bruksvallarna
-- Lofsdalen
-
-**Jämtland** (nytt)
-- Åre
-- Duved
-- Storlien
-- Bydalen
-- Trillevallen
-
-Totalt: 9 befintliga Sälen-områden + 12 nya = 21 områden, grupperade i 3 regioner.
-
----
-
-### 3. Datastruktur
-
-Utökar `src/data/areas.ts`:
-- Ny `Region` typ: `"dalafjallen" | "harjedalen" | "jamtland"`
-- Varje `Area` får `region: Region` och `regionName` (för UI)
-- Ny `regions` export: metadata per region (namn, tagline, beskrivning, hero-bild, ungefärlig position för karta)
-- `AreaSlug` utökas med alla nya slugs
-- `estimatedListings` sätts konservativt för nya områden (10–40)
-
-Databasen påverkas inte — `cabins.area_slug` är redan en string, nya slugs funkar direkt. Sälen-stugor fortsätter fungera oförändrat.
-
----
-
-### 4. Kartförst-navigation
-
-Ny komponent: `src/components/SwedenMap.tsx`
-- SVG-karta över norra Sverige (handtecknad stil, matchar warm/serif-estetiken — inte OpenStreetMap)
-- Tre klickbara regionszoner: Dalafjällen (SV), Härjedalen (mitt), Jämtland (N)
-- Hover: regionen lyfts, tagline visas
-- Klick: navigerar till `/region/$slug`
-- Under kartan: horisontell scroll-rad med "populära områden" som fallback för mobil
-
-**Startsidan** (`src/routes/index.tsx`):
-- Hero → sökbar → **karta som primär ingång** (ersätter dagens 4-kolumns områdesrutnät)
-- Behåller "Varför Fjällmys" (döps om) och host CTA
-
-**Ny route:** `src/routes/region.$slug.tsx`
-- Regionshero + beskrivning
-- Grid med områden i regionen
-- Egen SEO (title, description, og:image = regionshero)
-
-**Befintlig route:** `src/routes/omrade.$slug.tsx` — oförändrad, funkar för alla 21 områden
-
-**Header/Footer:**
-- Header: navigation grupperas per region (dropdown eller mega-menu på desktop)
-- Footer: 3 kolumner istället för en lång lista
-
----
-
-### 5. Bildgenerering
-
-Använder `imagegen--generate_image` (standard-kvalitet, konsekvent stil med befintliga Sälen-bilder — varm belysning, snötäckta fjäll, mysig fjällarkitektur).
-
-**12 nya områdesbilder** → `src/assets/area-{slug}.jpg`
-**3 regionsheros** → `src/assets/region-{slug}.jpg` (bredare, mer episka)
-
-Kör i parallella batcher (3–4 åt gången) för att inte överbelasta.
-
----
-
-### 6. Copy & SEO
-
-- Alla `head()` i befintliga routes uppdateras: "Sälen" → "svenska fjällen" / "hela fjällkedjan"
-- Homepage-hero: ny H1 ("Hitta din stuga i fjällen"), ny sub ("Från Sälen till Åre — Sveriges samlade plats där värd möter gäst")
-- `hyr-ut`, `hur-det-funkar`, `om-oss`, `sok`, `kontakt` — copy-svep för att ta bort Sälen-specifika formuleringar
-- Ny region-route får egen SEO per region
-- `Footer` områdes-lista blir grupperad per region
-
----
-
-### Tekniska ändringar (för din utvecklare / referens)
-
-```text
-NYA FILER
-  src/routes/region.$slug.tsx        // regionsöversikt
-  src/components/SwedenMap.tsx        // SVG-karta med 3 regionszoner
-  src/data/regions.ts                 // region-metadata (eller inline i areas.ts)
-  src/assets/area-idre.jpg + 11 fler
-  src/assets/region-dalafjallen.jpg + 2 fler
-
-ÄNDRADE FILER
-  src/data/areas.ts                   // + Region typ, + 12 areas, + region-fält
-  src/routes/index.tsx                // hero-copy, byt grid mot SwedenMap
-  src/routes/__root.tsx               // meta: nytt appnamn
-  src/components/Header.tsx           // logo-namn, region-nav
-  src/components/Footer.tsx           // logo-namn, grupperad områdeslista
-  src/routes/hyr-ut.tsx               // copy-svep
-  src/routes/hur-det-funkar.tsx       // copy-svep
-  src/routes/om-oss.tsx               // copy-svep
-  src/routes/sok.tsx                  // copy-svep + region-filter
-  src/routes/kontakt.tsx              // copy-svep
-  src/routes/omrade.$slug.tsx         // visa region-breadcrumb
+Ny tabell `cabin_season_prices`:
+```
+id, cabin_id (FK), label ('lag'|'hog'|'topp'), start_date, end_date,
+price_per_night, min_nights, weekend_only bool, created_at
 ```
 
-Ingen databasändring. Ingen ändring av bokningsflöde, saldo, värddashboard eller PerfOverlay.
+- `cabins.price_per_night` blir **basspris** (fallback när ingen säsong matchar)
+- `cabins.min_nights` (ny kolumn, default 1) blir baseline; per-säsong `min_nights` overrider
+- `weekend_only=true` = tvingar lör→lör (eller annan `check_in_weekday` som värden väljer, default lördag) under den perioden
 
----
+**Priskalkyl** (`calcQuote` i `lib/bookings.ts`) läser alla säsonger som täcker resan, plockar pris per natt, summerar. Blandade säsonger tillåts (nätter beräknas individuellt).
 
-### Ordning jag kör det i
+**UI värd:** ny sektion i CabinForm — "Säsonger" med lista + "Lägg till period". Datepicker-intervall + pris + min-nätter + veckotvång-toggle. Konflikter (överlappande perioder) valideras.
 
-1. Utöka `areas.ts` med regioner + 12 nya områden (platshållarbilder tillfälligt)
-2. Skapa `region.$slug.tsx` + `SwedenMap`
-3. Byt startsidan till kartförst
-4. Uppdatera Header, Footer, namnbytet överallt
-5. Copy-svep i alla routes
-6. Generera 15 nya bilder i parallella batcher, byt ut platshållarna
-7. Verifiera build och SEO-meta
+**UI gäst:** BookingForm visar prisuppdelning per säsong när bokning spänner över flera.
 
-Vill du köra?
+Validering framåt: minst basspris krävs; säsonger valfria.
+
+### 3. iCal-sync (in + ut)
+
+**Export ut (våra bokningar → Airbnb/Booking):**
+- Ny server route: `/api/public/ical/cabin/[token].ics` (obfuskerad slug-token per stuga)
+- Nya kolumn `cabins.ical_token` (random 32 hex) genereras vid publicering
+- Returnerar VEVENT för varje `confirmed`/`completed` bokning + varje rad i `cabin_unavailable_dates`
+- Values: `SUMMARY:Bokad (Fjällhuset)`, DTSTART/DTEND som DATE (all-day)
+- Cache-Control: private, max-age=300
+
+**Import in (externa kalendrar → oss):**
+- Ny tabell `cabin_ical_feeds`: `id, cabin_id, url, label, last_synced_at, last_error`
+- Server function `syncIcalFeed(feed_id)` hämtar ICS, parsar VEVENT, upserar i `cabin_unavailable_dates` med `source='ical:<feed_id>'`
+- Cron var 30:e min via pg_cron POST till `/api/public/hooks/sync-ical-feeds` (skyddad med signaturheader)
+- Vi lägger `source`-kolumn på `cabin_unavailable_dates` så manuellt spärrade datum inte skrivs över
+
+**UI värd:** ny flik "Kalendersynk" på `/vard/stugor/[id]/redigera`:
+- Visar exportlänk med "Kopiera" (instruktioner: klistra in i Airbnb → Kalender → Tillgänglighet → Importera kalender)
+- Lista över inkommande feeds + "Lägg till kalender" (url + etikett)
+- Senaste sync + felmeddelande per feed
+- Knapp "Synka nu"
+
+### 4. Migrationer (sammanfattat)
+
+```sql
+-- Betalfält
+ALTER TABLE profiles ADD COLUMN swish_number text,
+  ADD COLUMN bankgiro text, ADD COLUMN bank_account text,
+  ADD COLUMN payment_instructions text, ADD COLUMN is_business boolean DEFAULT false;
+
+-- Bokningsregler
+ALTER TABLE cabins ADD COLUMN min_nights int DEFAULT 1,
+  ADD COLUMN check_in_weekday smallint,  -- null = valfri, 6 = lördag
+  ADD COLUMN ical_token text UNIQUE;
+
+-- Säsongspriser
+CREATE TABLE cabin_season_prices (...);
+
+-- iCal-import
+CREATE TABLE cabin_ical_feeds (...);
+ALTER TABLE cabin_unavailable_dates ADD COLUMN source text DEFAULT 'manual';
+```
+
+Alla nya tabeller: GRANT + RLS (host_id = auth.uid() för skrivning, publik SELECT bara för `cabin_season_prices` för publicerade stugor).
+
+### 5. Ordning jag bygger i
+
+1. Migration: alla schemaändringar + RLS + GRANT
+2. Betaluppgifter i profil + gate på publish + visning på gästens bokningssida
+3. Säsongspriser: form, kalkylator, visning
+4. iCal export (våra → externa)
+5. iCal import (externa → våra) + cron
+6. Uppdatera `.lovable/plan.md`
+
+### Tekniska detaljer
+
+- **iCal-parsing:** `ical.js`-paketet (WASM-fri, edge-kompatibel), körs i server function
+- **Swish deeplink:** `swish://payment?data=<base64 JSON>` för mobil, fallback: nummer + kopiera
+- **Prisberäkning:** görs client-side för snabb preview, valideras server-side vid insert via trigger som räknar om `nightly_total`
+- **Ingen dubbelbokningsrisk:** befintlig EXCLUDE-constraint på `bookings` fångar överlapp; iCal-import går via `cabin_unavailable_dates` (ingen constraint) så vi lägger unik constraint på `(cabin_id, check_in, source)`
+
+### Avgränsat (inte i denna sprint)
+
+- Automatisk detektion av "betald" via bankintegration (kräver Open Banking, senare)
+- Booking.com iCal-quirks (deras format skiljer sig; vi tar Airbnb-standard först)
+- Dynamiska "smart pricing" (ML). Värden sätter själv säsongspriserna.

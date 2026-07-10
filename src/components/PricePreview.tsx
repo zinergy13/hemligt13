@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { flushSync } from "react-dom";
 import { Loader2, Calculator, AlertTriangle, CheckCircle2, CalendarClock, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
@@ -175,6 +175,13 @@ export function PricePreview({ hostId }: { hostId: string }) {
   const [priceLoading, setPriceLoading] = useState(false);
   const [flashKey, setFlashKey] = useState(0);
   const [justFixed, setJustFixed] = useState(false);
+  const flashTimerRef = useRef<number | null>(null);
+
+  useEffect(() => () => {
+    if (flashTimerRef.current !== null) {
+      window.clearTimeout(flashTimerRef.current);
+    }
+  }, []);
 
   // Apply date changes synchronously so the price preview and night list
   // repaint in the same frame as the click, then flash a visual confirmation.
@@ -183,10 +190,22 @@ export function PricePreview({ hostId }: { hostId: string }) {
       setCheckIn(nextIn);
       setCheckOut(nextOut);
     });
+    // Restart the flash cleanly on every click — clear any pending reset,
+    // bump the key so the animation re-mounts, and re-arm the confirmation.
+    if (flashTimerRef.current !== null) {
+      window.clearTimeout(flashTimerRef.current);
+      flashTimerRef.current = null;
+    }
+    flushSync(() => {
+      setJustFixed(false);
+    });
     setFlashKey((k) => k + 1);
     setJustFixed(true);
     if (typeof window !== "undefined") {
-      window.setTimeout(() => setJustFixed(false), 1400);
+      flashTimerRef.current = window.setTimeout(() => {
+        setJustFixed(false);
+        flashTimerRef.current = null;
+      }, 1400);
     }
   };
 

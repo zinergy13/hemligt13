@@ -397,10 +397,12 @@ function ValidationPanel({
 
   const effectiveMin = Math.max(cabinMinNights ?? 0, seasonMinNights ?? 0);
   if (effectiveMin > 0 && nights < effectiveMin) {
-    const source = seasonMinNights && seasonMinNights >= (cabinMinNights ?? 0) ? "säsongens" : "stugans";
+    const cabinPart = cabinMinNights ? `stugans minimum ${cabinMinNights} nätter` : "ingen stugatröskel";
+    const seasonPart = seasonMinNights ? `säsongens minimum ${seasonMinNights} nätter` : "ingen säsongs-tröskel";
+    const governing = seasonMinNights && seasonMinNights >= (cabinMinNights ?? 0) ? "säsongens tröskel styr" : "stugans tröskel styr";
     errors.push({
       title: `För få nätter (${nights} av ${effectiveMin} krävs)`,
-      detail: `Enligt ${source} regler måste bokningen vara minst ${effectiveMin} nätter. Förläng utcheckningen eller välj en kortare period utanför säsongen.`,
+      detail: `Gällande tröskel: ${effectiveMin} nätter (${cabinPart}, ${seasonPart}). ${governing}. Förläng utcheckningen eller välj en period utanför säsongen.`,
       fix: {
         label: `Förläng till ${effectiveMin} nätter`,
         onClick: () => onExtendToMinNights(effectiveMin),

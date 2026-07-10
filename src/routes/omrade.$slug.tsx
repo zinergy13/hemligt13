@@ -17,6 +17,7 @@ export const Route = createFileRoute("/omrade/$slug")({
     if (!area) return { meta: [{ title: "Område — Fjällhuset" }] };
     const region = regionBySlug(area.region);
     const regionName = region?.name ?? "svenska fjällen";
+    const url = `https://klappen-fjall-share.lovable.app/omrade/${area.slug}`;
     return {
       meta: [
         { title: `Stugor i ${area.name} — Fjällhuset` },
@@ -24,8 +25,12 @@ export const Route = createFileRoute("/omrade/$slug")({
         { property: "og:title", content: `Stugor i ${area.name} — Fjällhuset` },
         { property: "og:description", content: area.description },
         { property: "og:image", content: area.image },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
         { name: "twitter:image", content: area.image },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   notFoundComponent: () => (

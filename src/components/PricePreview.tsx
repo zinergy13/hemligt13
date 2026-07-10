@@ -221,7 +221,13 @@ export function PricePreview({ hostId }: { hostId: string }) {
     };
   }, [selectedId]);
 
-  const selectedCabin = cabins.find((c) => c.id === selectedId);
+  // Memoize the selected cabin by id so its reference is stable across
+  // re-renders that only touch flash state — otherwise every render of
+  // this component invalidates every downstream useMemo.
+  const selectedCabin = useMemo(
+    () => cabins.find((c) => c.id === selectedId) ?? null,
+    [cabins, selectedId],
+  );
 
   const quote = useMemo(() => {
     if (!selectedCabin) return null;
@@ -236,6 +242,16 @@ export function PricePreview({ hostId }: { hostId: string }) {
     });
     return applyDynamicRules(base, rule, { checkIn });
   }, [selectedCabin, checkIn, checkOut, seasons, rule]);
+
+  // Night rows only need to rebuild when the underlying quote (or the
+  // required weekday) changes — decoupled from flashKey/justFixed rerenders.
+  const nightRows = useMemo(
+    () =>
+      quote && selectedCabin
+        ? nightRowsFromQuote(quote, checkIn, checkOut, selectedCabin.check_in_weekday)
+        : [],
+    [quote, checkIn, checkOut, selectedCabin],
+  );
 
   if (loading) {
     return (
@@ -379,10 +395,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
           key={`nl-${flashKey}`}
           className={justFixed ? "animate-in fade-in duration-500" : undefined}
         >
-          <NightList
-            rows={nightRowsFromQuote(quote, checkIn, checkOut, selectedCabin.check_in_weekday)}
-            requiredWeekday={selectedCabin.check_in_weekday}
-          />
+          <NightList rows={nightRows} requiredWeekday={selectedCabin.check_in_weekday} />
         </div>
       )}
 

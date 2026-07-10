@@ -80,11 +80,43 @@ function isoDate(d: Date): string {
   return d.toISOString().slice(0, 10);
 }
 
+/**
+ * Sorted-by-start_date cache for season arrays. Keyed on the array reference
+ * so as long as callers pass the same seasons array (React state / query
+ * cache), we sort once and reuse — turning per-night O(n·s) scans into
+ * O(n + s log s) amortised for repeated quotes.
+ */
+const sortedSeasonsCache = new WeakMap<SeasonPrice[], SeasonPrice[]>();
+function getSortedSeasons(seasons: SeasonPrice[]): SeasonPrice[] {
+  const cached = sortedSeasonsCache.get(seasons);
+  if (cached) return cached;
+  const sorted = [...seasons].sort((a, b) => a.start_date.localeCompare(b.start_date));
+  sortedSeasonsCache.set(seasons, sorted);
+  return sorted;
+}
+
 function seasonFor(date: string, seasons: SeasonPrice[]): SeasonPrice | null {
+  // Linear scan preserved for one-off calls; hot path uses the pointer walk
+  // below inside computeQuote when iterating nights in order.
   for (const s of seasons) {
     if (date >= s.start_date && date <= s.end_date) return s;
   }
   return null;
+}
+
+/**
+ * Monotonic season lookup: nights are iterated in ascending date order, so
+ * we advance a shared pointer through the sorted seasons array. O(1) per
+ * night on average.
+ */
+function makeSeasonWalker(sortedSeasons: SeasonPrice[]) {
+  let i = 0;
+  return (date: string): SeasonPrice | null => {
+    while (i < sortedSeasons.length && sortedSeasons[i].end_date < date) i++;
+    const s = sortedSeasons[i];
+    if (s && date >= s.start_date && date <= s.end_date) return s;
+    return null;
+  };
 }
 
 /** Fetch all season prices for a cabin (public via cabin id). */
@@ -152,12 +184,15 @@ export function computeQuote(opts: {
     return { nights: 0, lines: [], nightBreakdown: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
   }
 
-  // Group consecutive nights by season (or base)
+  // Group consecutive nights by season (or base) — walk sorted seasons with a
+  // monotonic pointer so this stays O(nights + seasons) even with large sets.
+  const sortedSeasons = getSortedSeasons(opts.seasons);
+  const walker = makeSeasonWalker(sortedSeasons);
   type Bucket = { seasonId: string | null; label: string; rate: number; weeklyRate: number | null; weekendPct: number; minNights: number | null; nights: Date[] };
   const buckets: Bucket[] = [];
   for (const d of nights) {
     const iso = isoDate(d);
-    const s = seasonFor(iso, opts.seasons);
+    const s = walker(iso);
     const key = s?.id ?? null;
     const last = buckets[buckets.length - 1];
     if (last && last.seasonId === key) {

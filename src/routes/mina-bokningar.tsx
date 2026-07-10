@@ -1,13 +1,78 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, CalendarDays, MapPin, Inbox } from "lucide-react";
+import { Loader2, CalendarDays, MapPin, Inbox, Wallet } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
 import { formatDateRange, statusLabel } from "@/lib/bookings";
 import { guestBookingsQuery } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
+import { supabase } from "@/integrations/supabase/client";
+
+type Payout = {
+  swish_number: string | null;
+  bankgiro: string | null;
+  bank_account: string | null;
+  payment_instructions: string | null;
+};
+
+function PayoutBox({ hostId, totalPrice }: { hostId: string; totalPrice: number }) {
+  const [open, setOpen] = useState(false);
+  const [data, setData] = useState<Payout | null | undefined>(undefined);
+
+  const load = async () => {
+    setOpen(true);
+    if (data !== undefined) return;
+    const { data: rows } = await supabase
+      .from("host_payout_details")
+      .select("swish_number, bankgiro, bank_account, payment_instructions")
+      .eq("host_id", hostId)
+      .maybeSingle();
+    setData(rows ?? null);
+  };
+
+  if (!open) {
+    return (
+      <button
+        onClick={load}
+        className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10"
+      >
+        <Wallet className="h-3.5 w-3.5" /> Visa betaluppgifter
+      </button>
+    );
+  }
+
+  if (data === undefined) {
+    return <Loader2 className="mt-3 h-4 w-4 animate-spin text-muted-foreground" />;
+  }
+
+  if (data === null || (!data.swish_number && !data.bankgiro && !data.bank_account && !data.payment_instructions)) {
+    return (
+      <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+        Värden har inte lagt in betaluppgifter ännu. Kontakta värden direkt.
+      </p>
+    );
+  }
+
+  return (
+    <div className="mt-3 space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
+      <div className="mb-1 font-medium text-foreground">Betala {totalPrice.toLocaleString("sv-SE")} kr direkt till värden</div>
+      {data.swish_number && (
+        <div><span className="text-muted-foreground">Swish:</span> <span className="font-mono text-foreground">{data.swish_number}</span></div>
+      )}
+      {data.bankgiro && (
+        <div><span className="text-muted-foreground">Bankgiro:</span> <span className="font-mono text-foreground">{data.bankgiro}</span></div>
+      )}
+      {data.bank_account && (
+        <div><span className="text-muted-foreground">Bankkonto:</span> <span className="font-mono text-foreground">{data.bank_account}</span></div>
+      )}
+      {data.payment_instructions && (
+        <p className="mt-2 whitespace-pre-line text-muted-foreground">{data.payment_instructions}</p>
+      )}
+    </div>
+  );
+}
 
 export const Route = createFileRoute("/mina-bokningar")({
   head: () => ({ meta: [{ title: "Mina bokningar — Fjällhuset" }] }),
@@ -119,6 +184,9 @@ function MyBookingsPage() {
                       </Link>
                     )}
                   </div>
+                  {b.status === "confirmed" && (
+                    <PayoutBox hostId={b.host_id} totalPrice={b.total_price} />
+                  )}
                 </div>
               </li>
             );

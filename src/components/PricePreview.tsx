@@ -311,10 +311,15 @@ export function PricePreview({ hostId }: { hostId: string }) {
         </div>
       </div>
 
-      {selectedCabin?.check_in_weekday !== null && selectedCabin?.check_in_weekday !== undefined && (
+      {selectedCabin && (
         <div className="text-xs text-muted-foreground">
-          In-/utcheckning krävs på <strong>{WEEKDAYS[selectedCabin.check_in_weekday]}</strong>
-          {selectedCabin.min_nights ? ` · min ${selectedCabin.min_nights} nätter` : ""}
+          {selectedCabin.check_in_weekday !== null && selectedCabin.check_in_weekday !== undefined && (
+            <>In-/utcheckning krävs på <strong>{WEEKDAYS[selectedCabin.check_in_weekday]}</strong> · </>
+          )}
+          {selectedCabin.min_nights ? `stuga min ${selectedCabin.min_nights} nätter` : "ingen stugatröskel"}
+          {seasons.length > 0 && (
+            <> · säsongströskel kan vara högre för vald period</>
+          )}
         </div>
       )}
 

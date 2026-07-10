@@ -54,6 +54,8 @@ export type CabinWithImages = {
   amenities: string[];
   status: CabinStatus;
   instant_book: boolean;
+  min_nights: number | null;
+  check_in_weekday: number | null;
   cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
 };
 

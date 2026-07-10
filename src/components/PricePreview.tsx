@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, Calculator } from "lucide-react";
+import { Loader2, Calculator, AlertTriangle, CheckCircle2, CalendarClock, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
   computeQuote,
@@ -93,6 +93,24 @@ function buildNightRows(
 function fmtDate(iso: string) {
   const d = new Date(iso + "T00:00:00Z");
   return d.toLocaleDateString("sv-SE", { day: "numeric", month: "short", timeZone: "UTC" });
+}
+function fmtDateLong(iso: string) {
+  const d = new Date(iso + "T00:00:00Z");
+  return d.toLocaleDateString("sv-SE", { weekday: "long", day: "numeric", month: "long", timeZone: "UTC" });
+}
+function nextWeekday(fromIso: string, target: number): string {
+  const d = new Date(fromIso + "T00:00:00Z");
+  const cur = d.getUTCDay();
+  const diff = (target - cur + 7) % 7 || 7; // always land on a FUTURE matching weekday
+  d.setUTCDate(d.getUTCDate() + diff);
+  return d.toISOString().slice(0, 10);
+}
+function activeSeasonMinNights(iso: string, seasons: SeasonPrice[]): number | null {
+  const s = seasons.find((s) => iso >= s.start_date && iso <= s.end_date);
+  return s?.min_nights ?? null;
+}
+function nightsBetween(a: string, b: string): number {
+  return Math.max(0, Math.round((new Date(b + "T00:00:00Z").getTime() - new Date(a + "T00:00:00Z").getTime()) / 86400000));
 }
 
 function kr(n: number) {
@@ -298,6 +316,24 @@ export function PricePreview({ hostId }: { hostId: string }) {
           In-/utcheckning krävs på <strong>{WEEKDAYS[selectedCabin.check_in_weekday]}</strong>
           {selectedCabin.min_nights ? ` · min ${selectedCabin.min_nights} nätter` : ""}
         </div>
+      )}
+
+      {!priceLoading && selectedCabin && quote && quote.nights > 0 && (
+        <ValidationPanel
+          checkIn={checkIn}
+          checkOut={checkOut}
+          nights={quote.nights}
+          cabinMinNights={selectedCabin.min_nights}
+          seasonMinNights={activeSeasonMinNights(checkIn, seasons)}
+          requiredWeekday={selectedCabin.check_in_weekday}
+          onFixCheckIn={(iso) => {
+            const currentNights = nightsBetween(checkIn, checkOut);
+            setCheckIn(iso);
+            setCheckOut(addDays(iso, Math.max(currentNights, 1)));
+          }}
+          onFixCheckOut={(iso) => setCheckOut(iso)}
+          onExtendToMinNights={(min) => setCheckOut(addDays(checkIn, min))}
+        />
       )}
 
       {priceLoading ? (

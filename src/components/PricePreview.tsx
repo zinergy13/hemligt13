@@ -333,6 +333,10 @@ export function PricePreview({ hostId }: { hostId: string }) {
           }}
           onFixCheckOut={(iso) => setCheckOut(iso)}
           onExtendToMinNights={(min) => setCheckOut(addDays(checkIn, min))}
+          onFixAll={(inIso, outIso) => {
+            setCheckIn(inIso);
+            setCheckOut(outIso);
+          }}
         />
       )}
 

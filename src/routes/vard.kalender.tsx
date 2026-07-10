@@ -103,12 +103,9 @@ function HostCalendarPage() {
       toast.error("Ange en giltig URL som börjar med http/https");
       return;
     }
-    const { error } = await supabase.from("cabin_ical_feeds").insert({
-      cabin_id: cabinId,
-      url,
-      label,
-      active: true,
-    });
+    const { error } = await supabase.from("cabin_ical_feeds").insert([
+      { cabin_id: cabinId, url, label, active: true },
+    ]);
     if (error) {
       toast.error(error.message);
       return;

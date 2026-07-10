@@ -22,6 +22,7 @@ import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
@@ -98,6 +99,11 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const VardKalenderRoute = VardKalenderRouteImport.update({
+  id: '/kalender',
+  path: '/kalender',
+  getParentRoute: () => VardRoute,
+} as any)
 const VardFakturaRoute = VardFakturaRouteImport.update({
   id: '/faktura',
   path: '/faktura',
@@ -169,6 +175,7 @@ export interface FileRoutesByFullPath {
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
+  '/vard/kalender': typeof VardKalenderRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -194,6 +201,7 @@ export interface FileRoutesByTo {
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
+  '/vard/kalender': typeof VardKalenderRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -220,6 +228,7 @@ export interface FileRoutesById {
   '/stuga/$slug': typeof StugaSlugRoute
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
+  '/vard/kalender': typeof VardKalenderRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -247,6 +256,7 @@ export interface FileRouteTypes {
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
+    | '/vard/kalender'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -272,6 +282,7 @@ export interface FileRouteTypes {
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
+    | '/vard/kalender'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -297,6 +308,7 @@ export interface FileRouteTypes {
     | '/stuga/$slug'
     | '/vard/bokningar'
     | '/vard/faktura'
+    | '/vard/kalender'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -419,6 +431,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vard/kalender': {
+      id: '/vard/kalender'
+      path: '/kalender'
+      fullPath: '/vard/kalender'
+      preLoaderRoute: typeof VardKalenderRouteImport
+      parentRoute: typeof VardRoute
+    }
     '/vard/faktura': {
       id: '/vard/faktura'
       path: '/faktura'
@@ -495,6 +514,7 @@ declare module '@tanstack/react-router' {
 interface VardRouteChildren {
   VardBokningarRoute: typeof VardBokningarRoute
   VardFakturaRoute: typeof VardFakturaRoute
+  VardKalenderRoute: typeof VardKalenderRoute
   VardStugorNyRoute: typeof VardStugorNyRoute
   VardStugorIdRedigeraRoute: typeof VardStugorIdRedigeraRoute
 }
@@ -502,6 +522,7 @@ interface VardRouteChildren {
 const VardRouteChildren: VardRouteChildren = {
   VardBokningarRoute: VardBokningarRoute,
   VardFakturaRoute: VardFakturaRoute,
+  VardKalenderRoute: VardKalenderRoute,
   VardStugorNyRoute: VardStugorNyRoute,
   VardStugorIdRedigeraRoute: VardStugorIdRedigeraRoute,
 }

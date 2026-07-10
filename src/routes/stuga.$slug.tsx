@@ -196,6 +196,8 @@ function CabinPage() {
                 cleaningFee={cabin.cleaning_fee}
                 maxGuests={cabin.max_guests}
                 instantBook={cabin.instant_book}
+                minNights={cabin.min_nights ?? null}
+                checkInWeekday={cabin.check_in_weekday ?? null}
               />
             </div>
           </div>

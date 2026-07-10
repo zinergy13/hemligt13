@@ -7,13 +7,17 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { installPerfMonitor } from "../lib/perf";
+import { isPerfEnabled } from "../lib/perf";
 import { PerfOverlay } from "../components/PerfOverlay";
 import { RouteProgressBar } from "../components/RouteProgressBar";
 
 import appCss from "../styles.css?url";
 
-// Install once at module load — must run before any supabase fetch happens.
-if (typeof window !== "undefined") installPerfMonitor();
+// Install once at module load — but ONLY when the perf flag is on.
+// Patching window.fetch + logging every Supabase call adds real overhead
+// (extra work per request, console spam, retained arrays) that made the
+// site feel sluggish for regular visitors. Activate with ?perf=1.
+if (typeof window !== "undefined" && isPerfEnabled()) installPerfMonitor();
 
 // Single QueryClient for the app. All authenticated data is keyed by user id,
 // so re-using one client between users is safe — the keys differ. We also
@@ -80,7 +84,7 @@ export const Route = createRootRoute({
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;600&display=swap",
       },
     ],
   }),

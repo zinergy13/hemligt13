@@ -380,13 +380,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
           className={justFixed ? "animate-in fade-in duration-500" : undefined}
         >
           <NightList
-            rows={buildNightRows(
-              checkIn,
-              checkOut,
-              selectedCabin.price_per_night,
-              seasons,
-              selectedCabin.check_in_weekday,
-            )}
+            rows={nightRowsFromQuote(quote, checkIn, checkOut, selectedCabin.check_in_weekday)}
             requiredWeekday={selectedCabin.check_in_weekday}
           />
         </div>

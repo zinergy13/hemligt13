@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
+import { flushSync } from "react-dom";
 import { Loader2, Calculator, AlertTriangle, CheckCircle2, CalendarClock, Wand2 } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import {
@@ -172,6 +173,22 @@ export function PricePreview({ hostId }: { hostId: string }) {
   const [seasons, setSeasons] = useState<SeasonPrice[]>([]);
   const [rule, setRule] = useState<PricingRule | null>(null);
   const [priceLoading, setPriceLoading] = useState(false);
+  const [flashKey, setFlashKey] = useState(0);
+  const [justFixed, setJustFixed] = useState(false);
+
+  // Apply date changes synchronously so the price preview and night list
+  // repaint in the same frame as the click, then flash a visual confirmation.
+  const applyDateFix = (nextIn: string, nextOut: string) => {
+    flushSync(() => {
+      setCheckIn(nextIn);
+      setCheckOut(nextOut);
+    });
+    setFlashKey((k) => k + 1);
+    setJustFixed(true);
+    if (typeof window !== "undefined") {
+      window.setTimeout(() => setJustFixed(false), 1400);
+    }
+  };
 
   useEffect(() => {
     (async () => {
@@ -333,15 +350,11 @@ export function PricePreview({ hostId }: { hostId: string }) {
           requiredWeekday={selectedCabin.check_in_weekday}
           onFixCheckIn={(iso) => {
             const currentNights = nightsBetween(checkIn, checkOut);
-            setCheckIn(iso);
-            setCheckOut(addDays(iso, Math.max(currentNights, 1)));
+            applyDateFix(iso, addDays(iso, Math.max(currentNights, 1)));
           }}
-          onFixCheckOut={(iso) => setCheckOut(iso)}
-          onExtendToMinNights={(min) => setCheckOut(addDays(checkIn, min))}
-          onFixAll={(inIso, outIso) => {
-            setCheckIn(inIso);
-            setCheckOut(outIso);
-          }}
+          onFixCheckOut={(iso) => applyDateFix(checkIn, iso)}
+          onExtendToMinNights={(min) => applyDateFix(checkIn, addDays(checkIn, min))}
+          onFixAll={(inIso, outIso) => applyDateFix(inIso, outIso)}
         />
       )}
 
@@ -350,20 +363,37 @@ export function PricePreview({ hostId }: { hostId: string }) {
           <Loader2 className="h-4 w-4 animate-spin" /> Beräknar pris...
         </div>
       ) : (
-        quote && <PriceBreakdown quote={quote} />
+        quote && (
+          <div
+            key={`bd-${flashKey}`}
+            className={justFixed ? "animate-in fade-in zoom-in-[0.99] duration-500 rounded-2xl ring-2 ring-primary/50 transition-shadow" : "transition-shadow"}
+          >
+            {justFixed && (
+              <div className="mb-2 inline-flex items-center gap-1.5 rounded-full bg-emerald-500/15 px-3 py-1 text-xs font-medium text-emerald-700 dark:text-emerald-300">
+                <CheckCircle2 className="h-3 w-3" /> Uppdaterat med nya datum
+              </div>
+            )}
+            <PriceBreakdown quote={quote} />
+          </div>
+        )
       )}
 
       {!priceLoading && selectedCabin && quote && quote.nights > 0 && (
-        <NightList
-          rows={buildNightRows(
-            checkIn,
-            checkOut,
-            selectedCabin.price_per_night,
-            seasons,
-            selectedCabin.check_in_weekday,
-          )}
-          requiredWeekday={selectedCabin.check_in_weekday}
-        />
+        <div
+          key={`nl-${flashKey}`}
+          className={justFixed ? "animate-in fade-in duration-500" : undefined}
+        >
+          <NightList
+            rows={buildNightRows(
+              checkIn,
+              checkOut,
+              selectedCabin.price_per_night,
+              seasons,
+              selectedCabin.check_in_weekday,
+            )}
+            requiredWeekday={selectedCabin.check_in_weekday}
+          />
+        </div>
       )}
 
       {quote && quote.adjustmentsTotal !== 0 && (

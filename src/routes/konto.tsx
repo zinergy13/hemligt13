@@ -4,6 +4,7 @@ import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck } from
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { HostPayoutForm } from "@/components/HostPayoutForm";
 
 export const Route = createFileRoute("/konto")({
   head: () => ({ meta: [{ title: "Mitt konto — Fjällhuset" }] }),
@@ -206,6 +207,12 @@ function AccountPage() {
           Spara ändringar
         </button>
       </form>
+
+      {profile.is_host && (
+        <div className="mt-8">
+          <HostPayoutForm hostId={user.id} />
+        </div>
+      )}
     </section>
   );
 }

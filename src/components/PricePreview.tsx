@@ -311,10 +311,15 @@ export function PricePreview({ hostId }: { hostId: string }) {
         </div>
       </div>
 
-      {selectedCabin?.check_in_weekday !== null && selectedCabin?.check_in_weekday !== undefined && (
+      {selectedCabin && (
         <div className="text-xs text-muted-foreground">
-          In-/utcheckning krävs på <strong>{WEEKDAYS[selectedCabin.check_in_weekday]}</strong>
-          {selectedCabin.min_nights ? ` · min ${selectedCabin.min_nights} nätter` : ""}
+          {selectedCabin.check_in_weekday !== null && selectedCabin.check_in_weekday !== undefined && (
+            <>In-/utcheckning krävs på <strong>{WEEKDAYS[selectedCabin.check_in_weekday]}</strong> · </>
+          )}
+          {selectedCabin.min_nights ? `stuga min ${selectedCabin.min_nights} nätter` : "ingen stugatröskel"}
+          {seasons.length > 0 && (
+            <> · säsongströskel kan vara högre för vald period</>
+          )}
         </div>
       )}
 
@@ -397,10 +402,12 @@ function ValidationPanel({
 
   const effectiveMin = Math.max(cabinMinNights ?? 0, seasonMinNights ?? 0);
   if (effectiveMin > 0 && nights < effectiveMin) {
-    const source = seasonMinNights && seasonMinNights >= (cabinMinNights ?? 0) ? "säsongens" : "stugans";
+    const cabinPart = cabinMinNights ? `stugans minimum ${cabinMinNights} nätter` : "ingen stugatröskel";
+    const seasonPart = seasonMinNights ? `säsongens minimum ${seasonMinNights} nätter` : "ingen säsongs-tröskel";
+    const governing = seasonMinNights && seasonMinNights >= (cabinMinNights ?? 0) ? "säsongens tröskel styr" : "stugans tröskel styr";
     errors.push({
       title: `För få nätter (${nights} av ${effectiveMin} krävs)`,
-      detail: `Enligt ${source} regler måste bokningen vara minst ${effectiveMin} nätter. Förläng utcheckningen eller välj en kortare period utanför säsongen.`,
+      detail: `Gällande tröskel: ${effectiveMin} nätter (${cabinPart}, ${seasonPart}). ${governing}. Förläng utcheckningen eller välj en period utanför säsongen.`,
       fix: {
         label: `Förläng till ${effectiveMin} nätter`,
         onClick: () => onExtendToMinNights(effectiveMin),
@@ -446,7 +453,11 @@ function ValidationPanel({
         <div>
           <div className="font-medium text-foreground">Bokningen är giltig</div>
           <div className="text-xs text-muted-foreground">
-            Datumen uppfyller stugans regler för minsta antal nätter och veckoväxling.
+            Datumen uppfyller reglerna: minst {effectiveMin} nätter
+            {cabinMinNights && seasonMinNights
+              ? ` (säsongens ${seasonMinNights} nätter överstiger stugans ${cabinMinNights})`
+              : ""}
+            {requiredWeekday !== null && requiredWeekday !== undefined ? " och rätt veckoväxling." : "."}
           </div>
         </div>
       </div>
@@ -475,12 +486,54 @@ function ValidationPanel({
     combined = { checkIn: newIn, checkOut: addDays(newIn, finalNights) };
   }
 
+  const thresholdRows = [
+    { label: "Stugans tröskel", value: cabinMinNights, active: (cabinMinNights ?? 0) >= (seasonMinNights ?? 0) },
+    { label: "Säsongens tröskel", value: seasonMinNights, active: (seasonMinNights ?? 0) > (cabinMinNights ?? 0) },
+  ];
+
   return (
-    <div className="space-y-2 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
+    <div className="space-y-3 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
       <div className="flex items-center gap-2 text-sm font-semibold text-red-800 dark:text-red-300">
         <AlertTriangle className="h-4 w-4" />
         Bokning ej tillåten — åtgärda {errors.length === 1 ? "felet" : `${errors.length} fel`} nedan
       </div>
+
+      {(cabinMinNights || seasonMinNights) && (
+        <div className="rounded-lg border border-border bg-background p-3 text-sm">
+          <div className="mb-2 flex items-center gap-1.5 font-medium text-foreground">
+            <CalendarClock className="h-4 w-4 text-muted-foreground" />
+            Minsta antal nätter — så här räknas det
+          </div>
+          <div className="grid gap-2 sm:grid-cols-2">
+            {thresholdRows.map((row) =>
+              row.value ? (
+                <div
+                  key={row.label}
+                  className={`rounded-md border px-3 py-2 ${
+                    row.active
+                      ? "border-primary/40 bg-primary/5"
+                      : "border-border bg-muted/30"
+                  }`}
+                >
+                  <div className="text-xs text-muted-foreground">{row.label}</div>
+                  <div className="flex items-center gap-2 font-semibold text-foreground">
+                    {row.value} nätter
+                    {row.active && (
+                      <span className="rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
+                        Gällande
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ) : null,
+            )}
+          </div>
+          <div className="mt-2 text-xs text-muted-foreground">
+            Effektivt minimum blir det högsta av de två värdena: <strong>{effectiveMin || 0} nätter</strong>.
+          </div>
+        </div>
+      )}
+
       {combined && (
         <button
           type="button"

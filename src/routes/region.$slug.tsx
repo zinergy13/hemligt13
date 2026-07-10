@@ -11,6 +11,7 @@ export const Route = createFileRoute("/region/$slug")({
   head: ({ loaderData }) => {
     const region = loaderData?.region;
     if (!region) return { meta: [{ title: "Region — Fjällhuset" }] };
+    const url = `https://klappen-fjall-share.lovable.app/region/${region.slug}`;
     return {
       meta: [
         { title: `Stugor i ${region.name} — Fjällhuset` },
@@ -18,8 +19,12 @@ export const Route = createFileRoute("/region/$slug")({
         { property: "og:title", content: `Stugor i ${region.name} — Fjällhuset` },
         { property: "og:description", content: region.description },
         { property: "og:image", content: region.image },
+        { property: "og:url", content: url },
+        { property: "og:type", content: "website" },
         { name: "twitter:image", content: region.image },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
+      links: [{ rel: "canonical", href: url }],
     };
   },
   notFoundComponent: () => (

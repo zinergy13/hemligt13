@@ -12,6 +12,9 @@ export const Route = createFileRoute("/")({
       { property: "og:title", content: "Fjällhuset — Hyr stuga i svenska fjällen" },
       { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, direkt och utan mellanhänder." },
     ],
+    links: [
+      { rel: "preload", as: "image", href: heroCabin, fetchpriority: "high" },
+    ],
   }),
   component: HomePage,
 });
@@ -26,6 +29,8 @@ function HomePage() {
           alt="Mysig stuga i svenska fjällen vid solnedgång med snötäckta fjäll i bakgrunden"
           width={1920}
           height={1080}
+          fetchPriority="high"
+          decoding="async"
           className="absolute inset-0 h-full w-full object-cover"
         />
         <div

@@ -45,9 +45,8 @@ function Zone({ slug, d, hitD, cx, cy, label, count, calloutSide }: ZoneProps) {
           cx={cx}
           cy={cy}
           r={7}
-          className="fill-primary stroke-background transition-transform duration-300 group-hover:scale-125"
+          className="fill-primary stroke-background"
           strokeWidth={3}
-          style={{ transformOrigin: `${cx}px ${cy}px`, transformBox: "fill-box" as never }}
         />
         {/* Pulse ring on hover */}
         <circle

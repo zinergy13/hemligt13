@@ -115,8 +115,14 @@ export function SeasonPricingManager({ hostId }: { hostId: string }) {
 
   if (cabins.length === 0) {
     return (
-      <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">
-        Du har inga stugor än. Lägg upp din första stuga för att sätta säsongspriser.
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">
+        <span>Du har inga stugor än. Lägg upp din första stuga för att sätta säsongspriser.</span>
+        <a
+          href="/vard/stugor/ny"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+        >
+          + Lägg upp stuga
+        </a>
       </div>
     );
   }

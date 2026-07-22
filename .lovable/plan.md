@@ -109,3 +109,29 @@ Alla nya tabeller: GRANT + RLS (host_id = auth.uid() för skrivning, publik SELE
 - Automatisk detektion av "betald" via bankintegration (kräver Open Banking, senare)
 - Booking.com iCal-quirks (deras format skiljer sig; vi tar Airbnb-standard först)
 - Dynamiska "smart pricing" (ML). Värden sätter själv säsongspriserna.
+
+---
+
+## Sprint 4 — Extratjänster + provisionsjustering (v2.0)
+
+### Levererat
+
+1. **Provisionshöjning**: `app_settings.commission_per_booking` = 40000 öre (400 kr). Fallback i klienten uppdaterad.
+2. **Nya app-settings**: `cleaning_markup_percent` (25), `grocery_delivery_fee` (24900 öre = 249 kr), `firewood_markup_percent` (20), `linen_markup_percent` (20).
+3. **cabins.size_sqm** (kvm) — krävs för publicering, används för städmatching.
+4. **Nya tabeller**:
+   - `cleaning_firms` — admin-hanterade städfirmor
+   - `firm_areas` (slug-baserad koppling firma ↔ fjällområde)
+   - `cleaning_firm_prices` — prislista per kvm-intervall
+   - `booking_extras` — extras per bokning med cost_price / guest_price / platform_fee
+5. **Extras-motor** (`src/lib/extras.ts`): findCleaningPrice, cleaningLine, groceriesLine, firewoodLine, linenLine.
+6. **BookingExtras**-komponent på BookingForm — checkbox för städ/mat, stepper för ved/linne, live-totalpris.
+7. **/admin/stadfirmor** — CRUD för firmor, områden och prislistor.
+
+### Ännu ej byggt (rekommenderade nästa steg)
+
+- Visa valda extras på `/mina-bokningar` och `/vard/bokningar`.
+- Lägga till extras-intäkter (städmarginal, logistikavgift, ved/linne-marginal) i `/vard/faktura` och månadsfakturans PDF.
+- Uppladdning av matleveransens orderbekräftelse (Storage-bucket `grocery-receipts` + fält på booking_extras).
+- Admin-vy för att se alla pågående matleveransuppdrag med hämtningsstatus.
+- Justera `set_booking_commission_insert`/`set_booking_commission`-triggers om vi vill baka in extras-provision i `commission_amount` istället för att räkna dem separat.

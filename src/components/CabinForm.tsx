@@ -119,6 +119,10 @@ export function CabinForm({
 
   const handleSubmit = async (e: FormEvent, publish: boolean) => {
     e.preventDefault();
+    if (uploading) {
+      toast.error("Vänta tills alla bilder har laddats upp.");
+      return;
+    }
     if (!v.title.trim()) {
       toast.error("Titel krävs");
       return;
@@ -161,15 +165,32 @@ export function CabinForm({
 
       if (!cabinId) throw new Error("Misslyckades skapa stuga");
 
-      // Sync images: delete removed, insert new
-      // For simplicity: delete all existing rows for this cabin, re-insert all current
-      await supabase.from("cabin_images").delete().eq("cabin_id", cabinId);
-      if (images.length > 0) {
-        const rows = images.map((img, i) => ({
+      // Sync images without briefly deleting rows that should remain.
+      const retainedIds = images.flatMap((img) => img.existing_id ? [img.existing_id] : []);
+      if (isEdit) {
+        let deleteQuery = supabase.from("cabin_images").delete().eq("cabin_id", cabinId);
+        if (retainedIds.length > 0) deleteQuery = deleteQuery.not("id", "in", `(${retainedIds.join(",")})`);
+        const { error: deleteError } = await deleteQuery;
+        if (deleteError) throw deleteError;
+
+        for (const [i, img] of images.entries()) {
+          if (!img.existing_id) continue;
+          const { error: updateError } = await supabase
+            .from("cabin_images")
+            .update({ url: img.url, is_cover: img.is_cover, sort_order: i })
+            .eq("id", img.existing_id)
+            .eq("cabin_id", cabinId);
+          if (updateError) throw updateError;
+        }
+      }
+
+      const newImages = images.filter((img) => !img.existing_id);
+      if (newImages.length > 0) {
+        const rows = newImages.map((img) => ({
           cabin_id: cabinId!,
           url: img.url,
           is_cover: img.is_cover,
-          sort_order: i,
+          sort_order: images.indexOf(img),
         }));
         const { error: imgErr } = await supabase.from("cabin_images").insert(rows);
         if (imgErr) throw imgErr;
@@ -387,7 +408,7 @@ export function CabinForm({
       <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-background/95 px-4 py-4 backdrop-blur md:mx-0 md:rounded-2xl md:border md:px-6">
         <button
           type="submit"
-          disabled={saving}
+          disabled={saving || uploading}
           className="rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50"
         >
           {saving && <Loader2 className="mr-1 inline h-4 w-4 animate-spin" />}
@@ -396,7 +417,7 @@ export function CabinForm({
         <button
           type="button"
           onClick={(e) => handleSubmit(e, true)}
-          disabled={saving}
+          disabled={saving || uploading}
           className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
           {saving && <Loader2 className="mr-1 inline h-4 w-4 animate-spin" />}

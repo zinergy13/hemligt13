@@ -15,6 +15,7 @@ export type CabinFormValues = {
   beds: number;
   bathrooms: number;
   max_guests: number;
+  size_sqm: number | null;
   price_per_night: number;
   cleaning_fee: number;
   amenities: string[];
@@ -39,6 +40,7 @@ const DEFAULTS: CabinFormValues = {
   beds: 2,
   bathrooms: 1,
   max_guests: 4,
+  size_sqm: null,
   price_per_night: 1500,
   cleaning_fee: 500,
   amenities: [],
@@ -121,6 +123,10 @@ export function CabinForm({
       toast.error("Titel krävs");
       return;
     }
+    if (publish && (!v.size_sqm || v.size_sqm < 5)) {
+      toast.error("Ange stugans yta (kvm) innan publicering — behövs för att räkna städpris.");
+      return;
+    }
     setSaving(true);
     try {
       const status: CabinStatus = publish ? "published" : v.status;
@@ -136,6 +142,7 @@ export function CabinForm({
         beds: v.beds,
         bathrooms: v.bathrooms,
         max_guests: v.max_guests,
+        size_sqm: v.size_sqm,
         price_per_night: v.price_per_night,
         cleaning_fee: v.cleaning_fee,
         amenities: v.amenities,
@@ -250,6 +257,24 @@ export function CabinForm({
               />
             </div>
           ))}
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-foreground">
+            Yta (kvm) *
+            <span className="ml-2 font-normal text-muted-foreground">Krävs för att räkna städpris till gästen</span>
+          </label>
+          <input
+            type="number"
+            min={0}
+            step={1}
+            value={v.size_sqm ?? ""}
+            onChange={(e) => {
+              const n = Number(e.target.value);
+              setV((s) => ({ ...s, size_sqm: Number.isFinite(n) && n > 0 ? n : null }));
+            }}
+            placeholder="t.ex. 65"
+            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none md:max-w-xs"
+          />
         </div>
         <div className="grid grid-cols-2 gap-4">
           <div>

@@ -28,6 +28,7 @@ import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
+import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
 import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
@@ -129,6 +130,11 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
   path: '/omrade/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
+  id: '/stadfirmor',
+  path: '/stadfirmor',
+  getParentRoute: () => AdminRoute,
+} as any)
 const VardStugorNyRoute = VardStugorNyRouteImport.update({
   id: '/stugor/ny',
   path: '/stugor/ny',
@@ -158,7 +164,7 @@ const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
@@ -170,6 +176,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -184,7 +191,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
@@ -196,6 +203,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -211,7 +219,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
-  '/admin': typeof AdminRoute
+  '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
@@ -223,6 +231,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -251,6 +260,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/vard'
+    | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -277,6 +287,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/vard'
+    | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -303,6 +314,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/vard'
+    | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -318,7 +330,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
-  AdminRoute: typeof AdminRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AterstallLosenordRoute: typeof AterstallLosenordRoute
   HurDetFunkarRoute: typeof HurDetFunkarRoute
   HyrUtRoute: typeof HyrUtRoute
@@ -473,6 +485,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmradeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/stadfirmor': {
+      id: '/admin/stadfirmor'
+      path: '/stadfirmor'
+      fullPath: '/admin/stadfirmor'
+      preLoaderRoute: typeof AdminStadfirmorRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/vard/stugor/ny': {
       id: '/vard/stugor/ny'
       path: '/stugor/ny'
@@ -511,6 +530,16 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminStadfirmorRoute: typeof AdminStadfirmorRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminStadfirmorRoute: AdminStadfirmorRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface VardRouteChildren {
   VardBokningarRoute: typeof VardBokningarRoute
   VardFakturaRoute: typeof VardFakturaRoute
@@ -531,7 +560,7 @@ const VardRouteWithChildren = VardRoute._addFileChildren(VardRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
-  AdminRoute: AdminRoute,
+  AdminRoute: AdminRouteWithChildren,
   AterstallLosenordRoute: AterstallLosenordRoute,
   HurDetFunkarRoute: HurDetFunkarRoute,
   HyrUtRoute: HyrUtRoute,
@@ -554,12 +583,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { createStart } from '@tanstack/react-start'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-  }
-}

@@ -121,7 +121,7 @@ export const commissionFeeQuery = () =>
         .select("commission_per_booking")
         .eq("id", 1)
         .maybeSingle();
-      return data?.commission_per_booking ?? 9900;
+      return data?.commission_per_booking ?? 40000;
     },
   });
 

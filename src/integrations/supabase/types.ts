@@ -16,24 +16,102 @@ export type Database = {
     Tables: {
       app_settings: {
         Row: {
+          cleaning_markup_percent: number
           commission_per_booking: number
           currency: string
+          firewood_markup_percent: number
+          grocery_delivery_fee: number
           id: number
+          linen_markup_percent: number
           updated_at: string
         }
         Insert: {
+          cleaning_markup_percent?: number
           commission_per_booking?: number
           currency?: string
+          firewood_markup_percent?: number
+          grocery_delivery_fee?: number
           id?: number
+          linen_markup_percent?: number
           updated_at?: string
         }
         Update: {
+          cleaning_markup_percent?: number
           commission_per_booking?: number
           currency?: string
+          firewood_markup_percent?: number
+          grocery_delivery_fee?: number
           id?: number
+          linen_markup_percent?: number
           updated_at?: string
         }
         Relationships: []
+      }
+      booking_extras: {
+        Row: {
+          booking_id: string
+          cost_price: number
+          created_at: string
+          grocery_delivery_time: string | null
+          grocery_order_reference: string | null
+          grocery_receipt_url: string | null
+          guest_price: number
+          id: string
+          platform_fee: number
+          quantity: number
+          service_provider_id: string | null
+          service_type: string
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          cost_price?: number
+          created_at?: string
+          grocery_delivery_time?: string | null
+          grocery_order_reference?: string | null
+          grocery_receipt_url?: string | null
+          guest_price?: number
+          id?: string
+          platform_fee?: number
+          quantity?: number
+          service_provider_id?: string | null
+          service_type: string
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          cost_price?: number
+          created_at?: string
+          grocery_delivery_time?: string | null
+          grocery_order_reference?: string | null
+          grocery_receipt_url?: string | null
+          guest_price?: number
+          id?: string
+          platform_fee?: number
+          quantity?: number
+          service_provider_id?: string | null
+          service_type?: string
+          status?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_extras_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "booking_extras_service_provider_id_fkey"
+            columns: ["service_provider_id"]
+            isOneToOne: false
+            referencedRelation: "cleaning_firms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       bookings: {
         Row: {
@@ -395,6 +473,7 @@ export type Database = {
           max_guests: number
           min_nights: number
           price_per_night: number
+          size_sqm: number | null
           slug: string
           status: Database["public"]["Enums"]["cabin_status"]
           title: string
@@ -420,6 +499,7 @@ export type Database = {
           max_guests?: number
           min_nights?: number
           price_per_night?: number
+          size_sqm?: number | null
           slug: string
           status?: Database["public"]["Enums"]["cabin_status"]
           title: string
@@ -445,12 +525,107 @@ export type Database = {
           max_guests?: number
           min_nights?: number
           price_per_night?: number
+          size_sqm?: number | null
           slug?: string
           status?: Database["public"]["Enums"]["cabin_status"]
           title?: string
           updated_at?: string
         }
         Relationships: []
+      }
+      cleaning_firm_prices: {
+        Row: {
+          created_at: string
+          firm_id: string
+          id: string
+          max_sqm: number
+          min_sqm: number
+          price_to_firm: number
+        }
+        Insert: {
+          created_at?: string
+          firm_id: string
+          id?: string
+          max_sqm: number
+          min_sqm: number
+          price_to_firm: number
+        }
+        Update: {
+          created_at?: string
+          firm_id?: string
+          id?: string
+          max_sqm?: number
+          min_sqm?: number
+          price_to_firm?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cleaning_firm_prices_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "cleaning_firms"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      cleaning_firms: {
+        Row: {
+          contact_email: string | null
+          contact_phone: string | null
+          created_at: string
+          id: string
+          invoice_email: string | null
+          is_active: boolean
+          name: string
+          updated_at: string
+        }
+        Insert: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          invoice_email?: string | null
+          is_active?: boolean
+          name: string
+          updated_at?: string
+        }
+        Update: {
+          contact_email?: string | null
+          contact_phone?: string | null
+          created_at?: string
+          id?: string
+          invoice_email?: string | null
+          is_active?: boolean
+          name?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
+      firm_areas: {
+        Row: {
+          area_slug: string
+          created_at: string
+          firm_id: string
+        }
+        Insert: {
+          area_slug: string
+          created_at?: string
+          firm_id: string
+        }
+        Update: {
+          area_slug?: string
+          created_at?: string
+          firm_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "firm_areas_firm_id_fkey"
+            columns: ["firm_id"]
+            isOneToOne: false
+            referencedRelation: "cleaning_firms"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       host_invoices: {
         Row: {

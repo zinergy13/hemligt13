@@ -18,11 +18,15 @@ import {
   type PricingRule,
 } from "@/lib/pricing";
 import { PriceBreakdown } from "@/components/PriceBreakdown";
+import { BookingExtras } from "@/components/BookingExtras";
+import { extrasTotal, formatOreKr, type ExtraLine } from "@/lib/extras";
 
 type Props = {
   cabinId: string;
   hostId: string;
   cabinSlug: string;
+  areaSlug: string;
+  sizeSqm: number | null;
   pricePerNight: number;
   cleaningFee: number;
   maxGuests: number;
@@ -35,6 +39,8 @@ export function BookingForm({
   cabinId,
   hostId,
   cabinSlug,
+  areaSlug,
+  sizeSqm,
   pricePerNight,
   cleaningFee,
   maxGuests,
@@ -54,6 +60,7 @@ export function BookingForm({
   const [unavailable, setUnavailable] = useState<{ check_in: string; check_out: string }[]>([]);
   const [seasons, setSeasons] = useState<SeasonPrice[]>([]);
   const [rule, setRule] = useState<PricingRule | null>(null);
+  const [extras, setExtras] = useState<ExtraLine[]>([]);
 
   useEffect(() => {
     let active = true;
@@ -88,6 +95,9 @@ export function BookingForm({
   }, [checkIn, checkOut, pricePerNight, cleaningFee, minNights, checkInWeekday, seasons, rule]);
   const nights = quote.nights;
 
+  const extrasTotalOre = useMemo(() => extrasTotal(extras), [extras]);
+  const grandTotal = quote.total + Math.round(extrasTotalOre / 100);
+
   const overlaps = checkIn && checkOut && rangeOverlapsAny(checkIn, checkOut, unavailable);
   const tooManyGuests = guests > maxGuests;
   const datesValid = nights > 0 && checkIn >= today;
@@ -118,7 +128,7 @@ export function BookingForm({
           nightly_total: quote.nightlyTotal,
           cleaning_fee: quote.cleaningFee,
           service_fee: 0,
-          total_price: quote.total,
+          total_price: grandTotal,
           guest_message: message.trim() || null,
           status,
         })
@@ -132,6 +142,24 @@ export function BookingForm({
           toast.error(error.message);
         }
         return;
+      }
+
+      // Spara valda extras kopplade till bokningen
+      if (data?.id && extras.length > 0) {
+        const rows = extras.map((l) => ({
+          booking_id: data.id,
+          service_type: l.service_type,
+          service_provider_id: l.service_provider_id ?? null,
+          quantity: l.quantity,
+          cost_price: l.cost_price,
+          guest_price: l.guest_price,
+          platform_fee: l.platform_fee,
+          status: "pending" as const,
+        }));
+        const { error: exErr } = await supabase.from("booking_extras").insert(rows);
+        if (exErr) {
+          toast.error("Bokningen skapades men extratjänster kunde inte sparas: " + exErr.message);
+        }
       }
 
       toast.success(
@@ -230,6 +258,25 @@ export function BookingForm({
       )}
 
       {!overlaps && nights > 0 && <PriceBreakdown quote={quote} />}
+
+      {nights > 0 && (
+        <BookingExtras
+          areaSlug={areaSlug}
+          sizeSqm={sizeSqm}
+          guests={guests}
+          onChange={setExtras}
+        />
+      )}
+
+      {extras.length > 0 && (
+        <div className="flex items-center justify-between rounded-lg bg-primary/5 px-3 py-2 text-sm">
+          <span className="text-foreground">Totalt inkl. tillval</span>
+          <span className="font-semibold text-foreground">
+            {grandTotal.toLocaleString("sv-SE")} kr
+            <span className="ml-1 text-xs text-muted-foreground">(+{formatOreKr(extrasTotalOre)})</span>
+          </span>
+        </div>
+      )}
 
       {!user && !authLoading ? (
         <Link

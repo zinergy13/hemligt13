@@ -192,6 +192,8 @@ function CabinPage() {
                 cabinId={cabin.id}
                 hostId={cabin.host_id}
                 cabinSlug={cabin.slug}
+                areaSlug={cabin.area_slug}
+                sizeSqm={cabin.size_sqm ?? null}
                 pricePerNight={cabin.price_per_night}
                 cleaningFee={cabin.cleaning_fee}
                 maxGuests={cabin.max_guests}

@@ -37,13 +37,13 @@ function HostInvoicePage() {
   const rowsQ = useQuery({ ...hostCommissionRowsQuery(user?.id ?? ""), enabled });
   const invoicesQ = useQuery({ ...hostInvoicesQuery(user?.id ?? ""), enabled });
   // Fee is cached app-wide (5 min stale); won't block first paint — we
-  // fall back to 9900 öre (current default) until it resolves.
+  // fall back to 9900 öre (new default (400 kr)) until it resolves.
   const feeQ = useQuery({ ...commissionFeeQuery(), enabled });
 
   const rows = rowsQ.data ?? [];
   const balance = useMemo(() => computeHostBalance(rows), [rows]);
   const invoices = invoicesQ.data ?? [];
-  const feePerBooking = feeQ.data ?? 9900;
+  const feePerBooking = feeQ.data ?? 40000;
   const initialRows = rowsQ.isLoading && !rowsQ.data;
   const initialBalance = initialRows; // balance derives from rows
   const initialInvoices = invoicesQ.isLoading && !invoicesQ.data;

@@ -102,6 +102,7 @@ function EditCabinPage() {
     .slice()
     .sort((a, b) => a.sort_order - b.sort_order)
     .map((img, i) => ({
+      existing_id: (img as typeof img & { id: string }).id,
       url: img.url,
       is_cover: img.is_cover,
       sort_order: i,

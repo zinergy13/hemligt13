@@ -22,6 +22,7 @@ import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as VardIndexRouteImport } from './routes/vard.index'
 import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
@@ -99,6 +100,11 @@ const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
+} as any)
+const VardIndexRoute = VardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VardRoute,
 } as any)
 const VardKalenderRoute = VardKalenderRouteImport.update({
   id: '/kalender',
@@ -183,6 +189,7 @@ export interface FileRoutesByFullPath {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
+  '/vard/': typeof VardIndexRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -202,7 +209,6 @@ export interface FileRoutesByTo {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
-  '/vard': typeof VardRouteWithChildren
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
@@ -210,6 +216,7 @@ export interface FileRoutesByTo {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
+  '/vard': typeof VardIndexRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -238,6 +245,7 @@ export interface FileRoutesById {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
+  '/vard/': typeof VardIndexRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -267,6 +275,7 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/kalender'
+    | '/vard/'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -286,7 +295,6 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
-    | '/vard'
     | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
@@ -294,6 +302,7 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/kalender'
+    | '/vard'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -321,6 +330,7 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/kalender'
+    | '/vard/'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -443,6 +453,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/vard/': {
+      id: '/vard/'
+      path: '/'
+      fullPath: '/vard/'
+      preLoaderRoute: typeof VardIndexRouteImport
+      parentRoute: typeof VardRoute
+    }
     '/vard/kalender': {
       id: '/vard/kalender'
       path: '/kalender'
@@ -544,6 +561,7 @@ interface VardRouteChildren {
   VardBokningarRoute: typeof VardBokningarRoute
   VardFakturaRoute: typeof VardFakturaRoute
   VardKalenderRoute: typeof VardKalenderRoute
+  VardIndexRoute: typeof VardIndexRoute
   VardStugorNyRoute: typeof VardStugorNyRoute
   VardStugorIdRedigeraRoute: typeof VardStugorIdRedigeraRoute
 }
@@ -552,6 +570,7 @@ const VardRouteChildren: VardRouteChildren = {
   VardBokningarRoute: VardBokningarRoute,
   VardFakturaRoute: VardFakturaRoute,
   VardKalenderRoute: VardKalenderRoute,
+  VardIndexRoute: VardIndexRoute,
   VardStugorNyRoute: VardStugorNyRoute,
   VardStugorIdRedigeraRoute: VardStugorIdRedigeraRoute,
 }

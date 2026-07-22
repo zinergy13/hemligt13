@@ -128,7 +128,7 @@ export function BookingForm({
           nightly_total: quote.nightlyTotal,
           cleaning_fee: quote.cleaningFee,
           service_fee: 0,
-          total_price: grandTotal,
+          total_price: quote.total,
           guest_message: message.trim() || null,
           status,
         })

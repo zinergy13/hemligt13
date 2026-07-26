@@ -6,7 +6,10 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { CabinCard, type CabinCardData } from "@/components/CabinCard";
+import { CabinCard } from "@/components/CabinCard";
+import type { CabinWithImages } from "@/lib/cabins";
+
+type CabinCardData = CabinWithImages;
 
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
@@ -42,17 +45,12 @@ function WishlistDetailPage() {
       supabase.from("wishlists" as any).select("*").eq("id", id).maybeSingle(),
       supabase
         .from("wishlist_cabins" as any)
-        .select("cabin_id, note, cabin:cabins(id, slug, title, area, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order))")
+        .select("cabin_id, note, cabin:cabins(id, slug, title, area_slug, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order))")
         .eq("wishlist_id", id),
       supabase.from("wishlist_members" as any).select("user_id").eq("wishlist_id", id),
     ]);
     setList(w);
-    const mapped = ((wc as any[]) || []).map((row) => {
-      const c = row.cabin;
-      const cover = (c?.images || []).sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0]?.url ?? null;
-      return { ...c, cover_image: cover } as CabinCardData;
-    });
-    setCabins(mapped);
+    setCabins(((wc as any[]) || []).map((row) => row.cabin as CabinCardData).filter(Boolean));
     // Load member names
     const memberIds = ((wm as any[]) || []).map((m) => m.user_id);
     if (memberIds.length) {
@@ -69,15 +67,11 @@ function WishlistDetailPage() {
     if (!searchQ.trim()) return;
     const { data } = await supabase
       .from("cabins")
-      .select("id, slug, title, area, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order)")
-      .eq("published", true)
+      .select("id, slug, title, area_slug, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order)")
+      .eq("status", "published")
       .or(`title.ilike.%${searchQ}%,area.ilike.%${searchQ}%`)
       .limit(8);
-    const mapped = ((data as any[]) || []).map((c) => {
-      const cover = (c.images || []).sort((a: any, b: any) => (a.sort_order ?? 0) - (b.sort_order ?? 0))[0]?.url ?? null;
-      return { ...c, cover_image: cover } as CabinCardData;
-    });
-    setSearchResults(mapped);
+    setSearchResults(((data as any[]) || []) as CabinCardData[]);
   };
 
   const addCabin = async (cabinId: string) => {
@@ -102,13 +96,11 @@ function WishlistDetailPage() {
 
   const invite = async (e: FormEvent) => {
     e.preventDefault();
-    const email = inviteEmail.trim().toLowerCase();
-    if (!email) return;
-    const { data: prof } = await supabase.from("profiles").select("id").eq("email", email).maybeSingle();
-    if (!prof) { toast.error("Ingen användare hittades med den e-postadressen"); return; }
+    const userId = inviteEmail.trim();
+    if (!userId) return;
     const { error } = await supabase.from("wishlist_members" as any).insert({
       wishlist_id: id,
-      user_id: (prof as any).id,
+      user_id: userId,
     });
     if (error) { toast.error(error.message); return; }
     toast.success("Medlem tillagd");
@@ -160,10 +152,10 @@ function WishlistDetailPage() {
               {isOwner && (
                 <form onSubmit={invite} className="mt-3 flex gap-2">
                   <input
-                    type="email"
+                    type="text"
                     value={inviteEmail}
                     onChange={(e) => setInviteEmail(e.target.value)}
-                    placeholder="E-postadress"
+                    placeholder="Klistra in medlemmens användar-ID"
                     className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
                   />
                   <button

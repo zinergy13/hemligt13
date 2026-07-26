@@ -35,6 +35,7 @@ import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
+import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
@@ -176,6 +177,11 @@ const AdminRecensionerRoute = AdminRecensionerRouteImport.update({
   path: '/recensioner',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminPresentkortRoute = AdminPresentkortRouteImport.update({
+  id: '/presentkort',
+  path: '/presentkort',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
   id: '/bokforing',
   path: '/bokforing',
@@ -246,6 +252,7 @@ export interface FileRoutesByFullPath {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/listor/$id': typeof ListorIdRoute
@@ -283,6 +290,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/listor/$id': typeof ListorIdRoute
@@ -322,6 +330,7 @@ export interface FileRoutesById {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/listor/$id': typeof ListorIdRoute
@@ -362,6 +371,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/listor/$id'
@@ -399,6 +409,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/admin/bokforing'
+    | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/listor/$id'
@@ -437,6 +448,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/listor/$id'
@@ -671,6 +683,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRecensionerRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/presentkort': {
+      id: '/admin/presentkort'
+      path: '/presentkort'
+      fullPath: '/admin/presentkort'
+      preLoaderRoute: typeof AdminPresentkortRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/bokforing': {
       id: '/admin/bokforing'
       path: '/bokforing'
@@ -746,12 +765,14 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminBokforingRoute: typeof AdminBokforingRoute
+  AdminPresentkortRoute: typeof AdminPresentkortRoute
   AdminRecensionerRoute: typeof AdminRecensionerRoute
   AdminStadfirmorRoute: typeof AdminStadfirmorRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBokforingRoute: AdminBokforingRoute,
+  AdminPresentkortRoute: AdminPresentkortRoute,
   AdminRecensionerRoute: AdminRecensionerRoute,
   AdminStadfirmorRoute: AdminStadfirmorRoute,
 }

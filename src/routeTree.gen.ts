@@ -19,6 +19,7 @@ import { Route as KontoRouteImport } from './routes/konto'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
+import { Route as FavoriterRouteImport } from './routes/favoriter'
 import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
@@ -85,6 +86,11 @@ const HyrUtRoute = HyrUtRouteImport.update({
 const HurDetFunkarRoute = HurDetFunkarRouteImport.update({
   id: '/hur-det-funkar',
   path: '/hur-det-funkar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const FavoriterRoute = FavoriterRouteImport.update({
+  id: '/favoriter',
+  path: '/favoriter',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AterstallLosenordRoute = AterstallLosenordRouteImport.update({
@@ -179,6 +185,7 @@ export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
+  '/favoriter': typeof FavoriterRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
@@ -208,6 +215,7 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
+  '/favoriter': typeof FavoriterRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
@@ -237,6 +245,7 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
+  '/favoriter': typeof FavoriterRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
@@ -268,6 +277,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/aterstall-losenord'
+    | '/favoriter'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
@@ -297,6 +307,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/aterstall-losenord'
+    | '/favoriter'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
@@ -325,6 +336,7 @@ export interface FileRouteTypes {
     | '/'
     | '/admin'
     | '/aterstall-losenord'
+    | '/favoriter'
     | '/hur-det-funkar'
     | '/hyr-ut'
     | '/kontakt'
@@ -355,6 +367,7 @@ export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AdminRoute: typeof AdminRouteWithChildren
   AterstallLosenordRoute: typeof AterstallLosenordRoute
+  FavoriterRoute: typeof FavoriterRoute
   HurDetFunkarRoute: typeof HurDetFunkarRoute
   HyrUtRoute: typeof HyrUtRoute
   KontaktRoute: typeof KontaktRoute
@@ -444,6 +457,13 @@ declare module '@tanstack/react-router' {
       path: '/hur-det-funkar'
       fullPath: '/hur-det-funkar'
       preLoaderRoute: typeof HurDetFunkarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/favoriter': {
+      id: '/favoriter'
+      path: '/favoriter'
+      fullPath: '/favoriter'
+      preLoaderRoute: typeof FavoriterRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/aterstall-losenord': {
@@ -602,6 +622,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AdminRoute: AdminRouteWithChildren,
   AterstallLosenordRoute: AterstallLosenordRoute,
+  FavoriterRoute: FavoriterRoute,
   HurDetFunkarRoute: HurDetFunkarRoute,
   HyrUtRoute: HyrUtRoute,
   KontaktRoute: KontaktRoute,

@@ -9,6 +9,12 @@ type Profile = {
   avatar_url: string | null;
   bio: string | null;
   is_host: boolean;
+  email: string | null;
+  address_line: string | null;
+  postal_code: string | null;
+  city: string | null;
+  country: string | null;
+  personal_number: string | null;
 };
 
 type AuthContextValue = {
@@ -30,16 +36,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [loading, setLoading] = useState(true);
 
   const loadProfile = async (userId: string) => {
-    const [{ data: prof }, { data: roles }, { data: phone }] = await Promise.all([
-      supabase
-        .from("profiles")
-        .select("id, full_name, avatar_url, bio, is_host")
-        .eq("id", userId)
-        .maybeSingle(),
+    const [{ data: rows }, { data: roles }] = await Promise.all([
+      supabase.rpc("get_my_profile"),
       supabase.from("user_roles").select("role").eq("user_id", userId),
-      supabase.rpc("get_my_phone"),
     ]);
-    setProfile(prof ? { ...prof, phone: (phone as string | null) ?? null } : null);
+    const prof = Array.isArray(rows) ? rows[0] : rows;
+    setProfile(prof ?? null);
     setIsAdmin(!!roles?.some((r: { role: string }) => r.role === "admin"));
   };
 

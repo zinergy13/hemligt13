@@ -50,18 +50,11 @@ function periodBounds(year: number, quarter?: number, month?: number) {
   return { start: s.toISOString().slice(0, 10), end: e.toISOString().slice(0, 10) }
 }
 
-async function requireAdmin(supabase: NonNullable<Parameters<typeof requireSupabaseAuth>[0]> extends never ? never : never, userId: string) {
-  // placeholder to satisfy type when tools change
-  void supabase
-  void userId
-}
-
 export const getAccountingReport = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
   .inputValidator((i: unknown) => PeriodInput.parse(i))
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context
-    void requireAdmin
 
     // Verify admin
     const { data: isAdmin } = await supabase.rpc('has_role', {
@@ -285,7 +278,7 @@ export const syncInvoiceToFortnox = createServerFn({ method: 'POST' })
 
     const { data: host } = await supabase
       .from('profiles')
-      .select('id, full_name, email')
+      .select('id, full_name')
       .eq('id', inv.host_id)
       .single()
 
@@ -295,7 +288,6 @@ export const syncInvoiceToFortnox = createServerFn({ method: 'POST' })
       Customer: {
         CustomerNumber: customerNumber,
         Name: host?.full_name || 'Värd',
-        Email: host?.email ?? undefined,
         Type: 'PRIVATE',
         Currency: 'SEK',
       },

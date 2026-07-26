@@ -1,4 +1,4 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { createFileRoute, Link, useNavigate, redirect } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { Loader2, Settings, Receipt, CheckCircle2, XCircle, ShieldAlert, BookOpenCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
@@ -23,6 +23,21 @@ type HostInfo = { id: string; full_name: string | null };
 
 export const Route = createFileRoute("/admin")({
   head: () => ({ meta: [{ title: "Admin — Fjällportalen" }] }),
+  ssr: false,
+  beforeLoad: async ({ location }) => {
+    const { data: userData } = await supabase.auth.getUser();
+    const user = userData?.user;
+    if (!user) {
+      throw redirect({ to: "/logga-in", search: { redirect: location.href } });
+    }
+    const { data: isAdmin } = await supabase.rpc("has_role", {
+      _user_id: user.id,
+      _role: "admin",
+    });
+    if (!isAdmin) {
+      throw redirect({ to: "/" });
+    }
+  },
   component: AdminPage,
 });
 

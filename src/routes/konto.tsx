@@ -1,6 +1,6 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck, Heart } from "lucide-react";
+import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck, Heart, Mail, MapPin, Hash } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
@@ -21,6 +21,12 @@ function AccountPage() {
   const [fullName, setFullName] = useState("");
   const [phone, setPhone] = useState("");
   const [bio, setBio] = useState("");
+  const [email, setEmail] = useState("");
+  const [addressLine, setAddressLine] = useState("");
+  const [postalCode, setPostalCode] = useState("");
+  const [city, setCity] = useState("");
+  const [country, setCountry] = useState("Sverige");
+  const [personalNumber, setPersonalNumber] = useState("");
   const [saving, setSaving] = useState(false);
   const [becomingHost, setBecomingHost] = useState(false);
 
@@ -35,8 +41,14 @@ function AccountPage() {
       setFullName(profile.full_name ?? "");
       setPhone(profile.phone ?? "");
       setBio(profile.bio ?? "");
+      setEmail(profile.email ?? user?.email ?? "");
+      setAddressLine(profile.address_line ?? "");
+      setPostalCode(profile.postal_code ?? "");
+      setCity(profile.city ?? "");
+      setCountry(profile.country ?? "Sverige");
+      setPersonalNumber(profile.personal_number ?? "");
     }
-  }, [profile]);
+  }, [profile, user]);
 
   if (loading || !user || !profile) {
     return (
@@ -48,10 +60,24 @@ function AccountPage() {
 
   const handleSave = async (e: FormEvent) => {
     e.preventDefault();
+    if (!fullName.trim() || !phone.trim() || !addressLine.trim() || !postalCode.trim() || !city.trim()) {
+      toast.error("Fyll i namn, telefon och adress för att kunna boka/hyra ut.");
+      return;
+    }
     setSaving(true);
     const { error } = await supabase
       .from("profiles")
-      .update({ full_name: fullName, phone, bio })
+      .update({
+        full_name: fullName,
+        phone,
+        bio,
+        email: email || null,
+        address_line: addressLine || null,
+        postal_code: postalCode || null,
+        city: city || null,
+        country: country || null,
+        personal_number: personalNumber || null,
+      })
       .eq("id", user.id);
     setSaving(false);
     if (error) toast.error(error.message);
@@ -172,9 +198,14 @@ function AccountPage() {
 
       {/* Profilformulär */}
       <form onSubmit={handleSave} className="space-y-4 rounded-2xl border border-border bg-background p-6">
-        <h2 className="font-serif text-xl text-foreground">Profil</h2>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground">Namn</label>
+          <h2 className="font-serif text-xl text-foreground">Personuppgifter</h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            Krävs för att boka och hyra ut. Endast du själv och administratörer kan se dina uppgifter.
+          </p>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-foreground">Fullständigt namn *</label>
           <div className="relative">
             <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <input
@@ -183,21 +214,103 @@ function AccountPage() {
               onChange={(e) => setFullName(e.target.value)}
               className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
               placeholder="För- och efternamn"
+              required
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-2">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-foreground">E-post *</label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+                placeholder="namn@exempel.se"
+                required
+              />
+            </div>
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-foreground">Telefon *</label>
+            <div className="relative">
+              <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+              <input
+                type="tel"
+                value={phone}
+                onChange={(e) => setPhone(e.target.value)}
+                className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+                placeholder="+46 70 123 45 67"
+                required
+              />
+            </div>
+          </div>
+        </div>
+        <div>
+          <label className="mb-1 block text-xs font-medium text-foreground">Gatuadress *</label>
+          <div className="relative">
+            <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <input
+              type="text"
+              value={addressLine}
+              onChange={(e) => setAddressLine(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+              placeholder="Storgatan 1"
+              required
+            />
+          </div>
+        </div>
+        <div className="grid gap-4 md:grid-cols-3">
+          <div>
+            <label className="mb-1 block text-xs font-medium text-foreground">Postnummer *</label>
+            <input
+              type="text"
+              value={postalCode}
+              onChange={(e) => setPostalCode(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm focus:border-primary focus:outline-none"
+              placeholder="123 45"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-foreground">Ort *</label>
+            <input
+              type="text"
+              value={city}
+              onChange={(e) => setCity(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm focus:border-primary focus:outline-none"
+              placeholder="Stockholm"
+              required
+            />
+          </div>
+          <div>
+            <label className="mb-1 block text-xs font-medium text-foreground">Land</label>
+            <input
+              type="text"
+              value={country}
+              onChange={(e) => setCountry(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm focus:border-primary focus:outline-none"
+              placeholder="Sverige"
             />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground">Telefon</label>
+          <label className="mb-1 block text-xs font-medium text-foreground">
+            Personnummer {profile.is_host ? "*" : "(valfritt för gäster)"}
+          </label>
           <div className="relative">
-            <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <Hash className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
             <input
-              type="tel"
-              value={phone}
-              onChange={(e) => setPhone(e.target.value)}
+              type="text"
+              value={personalNumber}
+              onChange={(e) => setPersonalNumber(e.target.value)}
               className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
-              placeholder="+46 70 123 45 67"
+              placeholder="ÅÅÅÅMMDD-XXXX"
             />
           </div>
+          <p className="mt-1 text-xs text-muted-foreground">Används för fakturering och myndighetsrapportering. Endast du och admin ser detta.</p>
         </div>
         <div>
           <label className="mb-1 block text-xs font-medium text-foreground">Om dig</label>

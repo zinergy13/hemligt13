@@ -31,8 +31,9 @@ export function NotificationBell() {
       if (active && data) setItems(data as unknown as Notif[]);
     })();
 
+    const channelName = `notif-${user.id}-${Math.random().toString(36).slice(2, 10)}`;
     const channel = supabase
-      .channel("notif-" + user.id)
+      .channel(channelName)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "notifications", filter: `user_id=eq.${user.id}` },

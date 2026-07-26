@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { coverImage, AMENITY_OPTIONS, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
 import { BookingForm } from "@/components/BookingForm";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { ReviewsSection } from "@/components/ReviewsSection";
 
 export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({

@@ -147,6 +147,9 @@ function HomePage() {
         </div>
       </section>
 
+      {/* LAST-MINUTE */}
+      <LastMinuteSection />
+
       {/* VALUE PROPS */}
       <section className="bg-muted/50 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4 md:px-6">

@@ -5,6 +5,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { cabinReviewsQuery, averageRating, type ReviewWithProfile } from "@/lib/social";
+import { ReviewFlagButton } from "@/components/ReviewFlagButton";
 
 function Stars({ value, size = 4 }: { value: number; size?: number }) {
   return (
@@ -107,6 +108,11 @@ function ReviewItem({ review }: { review: ReviewWithProfile }) {
         >
           <Trash2 className="h-3 w-3" /> Ta bort min recension
         </button>
+      )}
+      {!isMine && (
+        <div className="mt-3">
+          <ReviewFlagButton reviewId={review.id} />
+        </div>
       )}
     </li>
   );

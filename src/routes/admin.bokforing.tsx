@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { useServerFn } from '@tanstack/react-start'
-import { AlertTriangle, ArrowLeft, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Send, ShieldAlert, Sparkles } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Search, Send, ShieldAlert, Sparkles, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { zodValidator, fallback } from '@tanstack/zod-adapter'
+import { z } from 'zod'
 import { useAuth } from '@/hooks/useAuth'
 import {
   getAccountingReport,
@@ -13,8 +15,17 @@ import {
   type AccountingInvoice,
 } from '@/lib/accounting.functions'
 
+const searchSchema = z.object({
+  q: fallback(z.string(), '').default(''),
+  from: fallback(z.string(), '').default(''),
+  to: fallback(z.string(), '').default(''),
+  status: fallback(z.string(), 'all').default('all'),
+  kind: fallback(z.string(), 'all').default('all'),
+})
+
 export const Route = createFileRoute('/admin/bokforing')({
   head: () => ({ meta: [{ title: 'Bokföring — Fjällportalen' }] }),
+  validateSearch: zodValidator(searchSchema),
   component: BookkeepingPage,
 })
 
@@ -35,6 +46,7 @@ function download(name: string, mime: string, content: string) {
 function BookkeepingPage() {
   const { user, isAdmin, loading } = useAuth()
   const navigate = useNavigate()
+  const search = Route.useSearch()
   const fetchReport = useServerFn(getAccountingReport)
   const runSync = useServerFn(syncInvoiceToFortnox)
   const checkFortnox = useServerFn(fortnoxStatus)
@@ -80,6 +92,58 @@ function BookkeepingPage() {
 
   const periodLabel = useMemo(() => `Q${quarter} ${year}`, [year, quarter])
 
+  const setSearch = (patch: Partial<z.infer<typeof searchSchema>>) => {
+    navigate({
+      to: '/admin/bokforing',
+      search: (prev) => ({ ...prev, ...patch }),
+      replace: true,
+    })
+  }
+
+  const filtered = useMemo(() => {
+    if (!report) return [] as AccountingInvoice[]
+    const q = search.q.trim().toLowerCase()
+    const statusFilter = search.status
+    const kindFilter = search.kind
+    const from = search.from
+    const to = search.to
+    return report.invoices.filter((inv) => {
+      const day = inv.issued_at.slice(0, 10)
+      if (from && day < from) return false
+      if (to && day > to) return false
+      if (statusFilter !== 'all' && inv.status !== statusFilter) return false
+      if (kindFilter === 'with_extras' && inv.extras_net <= 0) return false
+      if (kindFilter === 'commission_only' && inv.extras_net > 0) return false
+      if (q) {
+        const hay = [
+          inv.invoice_number,
+          inv.host_name ?? '',
+          inv.ocr_reference ?? '',
+        ]
+          .join(' ')
+          .toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      return true
+    })
+  }, [report, search])
+
+  const availableStatuses = useMemo(() => {
+    const s = new Set<string>()
+    for (const inv of report?.invoices ?? []) s.add(inv.status)
+    return Array.from(s).sort()
+  }, [report])
+
+  const activeFilterCount =
+    (search.q ? 1 : 0) +
+    (search.from ? 1 : 0) +
+    (search.to ? 1 : 0) +
+    (search.status !== 'all' ? 1 : 0) +
+    (search.kind !== 'all' ? 1 : 0)
+
+  const clearFilters = () =>
+    setSearch({ q: '', from: '', to: '', status: 'all', kind: 'all' })
+
   if (loading || !user) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -102,18 +166,24 @@ function BookkeepingPage() {
 
   const doCsv = () => {
     if (!report) return
-    const csv = buildCsv(report.invoices)
-    download(`fjallportalen-bokforing-${year}-Q${quarter}.csv`, 'text/csv', csv)
+    const rows = activeFilterCount > 0 ? filtered : report.invoices
+    if (rows.length === 0) return
+    const suffix = activeFilterCount > 0 ? '-filtrerad' : ''
+    const csv = buildCsv(rows)
+    download(`fjallportalen-bokforing-${year}-Q${quarter}${suffix}.csv`, 'text/csv', csv)
   }
 
   const doSie = () => {
     if (!report) return
+    const rows = activeFilterCount > 0 ? filtered : report.invoices
+    if (rows.length === 0) return
+    const suffix = activeFilterCount > 0 ? '-filtrerad' : ''
     const sie = buildSie4({
-      invoices: report.invoices,
+      invoices: rows,
       period: report.period,
       companyName: 'Fjällportalen',
     })
-    download(`fjallportalen-${year}-Q${quarter}.se`, 'application/octet-stream', sie)
+    download(`fjallportalen-${year}-Q${quarter}${suffix}.se`, 'application/octet-stream', sie)
   }
 
   const doSync = async (inv: AccountingInvoice) => {

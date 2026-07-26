@@ -1415,6 +1415,7 @@ export type Database = {
           total_amount: number
         }[]
       }
+      get_cron_secret: { Args: { _key: string }; Returns: string }
       get_my_phone: { Args: never; Returns: string }
       has_role: {
         Args: {

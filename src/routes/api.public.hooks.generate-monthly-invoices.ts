@@ -1,6 +1,13 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { createClient } from "@supabase/supabase-js";
 import type { Database } from "@/integrations/supabase/types";
+import { timingSafeEqual, createHash } from "node:crypto";
+
+function safeEqual(a: string, b: string): boolean {
+  const ha = createHash("sha256").update(a, "utf8").digest();
+  const hb = createHash("sha256").update(b, "utf8").digest();
+  return timingSafeEqual(ha, hb);
+}
 
 export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoices")({
   server: {
@@ -8,19 +15,9 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
       POST: async ({ request }) => {
         const SUPABASE_URL = process.env.SUPABASE_URL;
         const SERVICE_KEY = process.env.SUPABASE_SERVICE_ROLE_KEY;
-        const ANON = process.env.SUPABASE_PUBLISHABLE_KEY;
-        if (!SUPABASE_URL || !SERVICE_KEY || !ANON) {
+        if (!SUPABASE_URL || !SERVICE_KEY) {
           return new Response(JSON.stringify({ error: "Server not configured" }), {
             status: 500,
-            headers: { "Content-Type": "application/json" },
-          });
-        }
-
-        // Endast pg_cron / interna anrop tillåts: kräv anon-apikey i header
-        const providedKey = request.headers.get("apikey") ?? "";
-        if (providedKey !== ANON) {
-          return new Response(JSON.stringify({ error: "Unauthorized" }), {
-            status: 401,
             headers: { "Content-Type": "application/json" },
           });
         }
@@ -28,6 +25,18 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
         const admin = createClient<Database>(SUPABASE_URL, SERVICE_KEY, {
           auth: { persistSession: false, autoRefreshToken: false },
         });
+
+        // Endast pg_cron / interna anrop: kräv delad hemlighet från private.cron_config
+        const provided = request.headers.get("x-cron-secret") ?? "";
+        const { data: expected, error: sErr } = await admin.rpc("get_cron_secret", {
+          _key: "invoice_hook",
+        });
+        if (sErr || !expected || !provided || !safeEqual(provided, expected as string)) {
+          return new Response(JSON.stringify({ error: "Unauthorized" }), {
+            status: 401,
+            headers: { "Content-Type": "application/json" },
+          });
+        }
 
         const url = new URL(request.url);
         const doOverdue = url.searchParams.get("mark_overdue") === "1";

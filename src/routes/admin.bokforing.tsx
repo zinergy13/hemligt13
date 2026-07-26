@@ -9,6 +9,7 @@ import { useAuth } from '@/hooks/useAuth'
 import {
   getAccountingReport,
   buildCsv,
+  buildSummaryCsv,
   buildSie4,
   syncInvoiceToFortnox,
   fortnoxStatus,
@@ -186,6 +187,12 @@ function BookkeepingPage() {
     download(`fjallportalen-bokforing-${year}-Q${quarter}${suffix}.csv`, 'text/csv', csv)
   }
 
+  const doSummaryCsv = () => {
+    if (!report) return
+    const csv = buildSummaryCsv(report)
+    download(`fjallportalen-sammanfattning-${year}-Q${quarter}.csv`, 'text/csv', csv)
+  }
+
   const doSie = () => {
     if (!report) return
     const rows = activeFilterCount > 0 ? filtered : report.invoices
@@ -272,6 +279,13 @@ function BookkeepingPage() {
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
           >
             <FileSpreadsheet className="h-4 w-4" /> CSV{activeFilterCount > 0 ? ` (${filtered.length})` : ''}
+          </button>
+          <button
+            onClick={doSummaryCsv}
+            disabled={!report}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
+          >
+            <FileSpreadsheet className="h-4 w-4" /> Sammanfattning
           </button>
           <button
             onClick={doSie}

@@ -81,8 +81,8 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
                 invoiceNumber: inv.invoice_number,
                 periodLabel: `${inv.period_start} – ${inv.period_end}`,
                 amountKr: Math.round((inv.total_amount as number) / 100),
-                dueDate: inv.due_date,
-                ocrReference: inv.ocr_reference,
+                dueDate: inv.due_date ?? undefined,
+                ocrReference: inv.ocr_reference ?? undefined,
                 downloadUrl: `${origin}/api/invoice/${inv.id}/pdf`,
               };
               const html = await render(React.createElement(hostInvoiceTemplate.component, props));

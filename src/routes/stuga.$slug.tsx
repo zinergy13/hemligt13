@@ -1,6 +1,6 @@
 import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader2, Check, Zap, Clock } from "lucide-react";
+import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader2, Check, Zap, Clock, Languages } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { coverImage, AMENITY_OPTIONS, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
@@ -38,6 +38,7 @@ function CabinPage() {
   const [cabin, setCabin] = useState<CabinWithImages | null>(null);
   const [hostName, setHostName] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [lang, setLang] = useState<"sv" | "en" | "de">("sv");
 
   useEffect(() => {
     let active = true;
@@ -97,6 +98,24 @@ function CabinPage() {
   const amenityLabel = (val: string) =>
     AMENITY_OPTIONS.find((a) => a.value === val)?.label ?? val;
 
+  const c = cabin as CabinWithImages & {
+    title_en?: string | null; title_de?: string | null;
+    description_en?: string | null; description_de?: string | null;
+  };
+  const displayTitle =
+    lang === "en" && c.title_en ? c.title_en :
+    lang === "de" && c.title_de ? c.title_de :
+    cabin.title;
+  const displayDescription =
+    lang === "en" && c.description_en ? c.description_en :
+    lang === "de" && c.description_de ? c.description_de :
+    cabin.description;
+  const availableLangs: Array<{ code: "sv" | "en" | "de"; label: string; flag: string }> = [
+    { code: "sv", label: "Svenska", flag: "🇸🇪" },
+    ...(c.title_en || c.description_en ? [{ code: "en" as const, label: "English", flag: "🇬🇧" }] : []),
+    ...(c.title_de || c.description_de ? [{ code: "de" as const, label: "Deutsch", flag: "🇩🇪" }] : []),
+  ];
+
   return (
     <article className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {area && (
@@ -108,7 +127,23 @@ function CabinPage() {
           <ArrowLeft className="h-4 w-4" /> Tillbaka till {area.name}
         </Link>
       )}
-      <h1 className="font-serif text-3xl text-foreground md:text-5xl">{cabin.title}</h1>
+      {availableLangs.length > 1 && (
+        <div className="mb-3 inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+          <Languages className="ml-2 h-3.5 w-3.5 text-muted-foreground" />
+          {availableLangs.map((l) => (
+            <button
+              key={l.code}
+              onClick={() => setLang(l.code)}
+              className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                lang === l.code ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <span className="mr-1">{l.flag}</span>{l.label}
+            </button>
+          ))}
+        </div>
+      )}
+      <h1 className="font-serif text-3xl text-foreground md:text-5xl">{displayTitle}</h1>
       <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
         <p className="flex items-center gap-1 text-sm text-muted-foreground">
           <MapPin className="h-4 w-4" /> {area?.name ?? cabin.area_slug}
@@ -144,10 +179,10 @@ function CabinPage() {
             <span className="flex items-center gap-2"><Bath className="h-4 w-4" /> {cabin.bathrooms} badrum</span>
           </div>
 
-          {cabin.description && (
+          {displayDescription && (
             <div>
               <h2 className="font-serif text-2xl text-foreground">Om stugan</h2>
-              <p className="mt-3 whitespace-pre-line leading-relaxed text-muted-foreground">{cabin.description}</p>
+              <p className="mt-3 whitespace-pre-line leading-relaxed text-muted-foreground">{displayDescription}</p>
             </div>
           )}
 

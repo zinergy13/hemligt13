@@ -41,6 +41,11 @@ export type HostInvoice = {
   booking_count: number;
   status: string;
   issued_at: string;
+  due_date: string | null;
+  ocr_reference: string | null;
+  commission_net: number;
+  extras_net: number;
+  vat_amount: number;
 };
 
 /**
@@ -102,7 +107,7 @@ export const hostInvoicesQuery = (userId: string) =>
       const { data } = await supabase
         .from("host_invoices")
         .select(
-          "id, invoice_number, period_start, period_end, total_amount, booking_count, status, issued_at",
+          "id, invoice_number, period_start, period_end, total_amount, booking_count, status, issued_at, due_date, ocr_reference, commission_net, extras_net, vat_amount",
         )
         .eq("host_id", userId)
         .order("issued_at", { ascending: false });

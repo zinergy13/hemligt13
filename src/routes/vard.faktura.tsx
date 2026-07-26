@@ -166,20 +166,26 @@ function HostInvoicePage() {
               <tr>
                 <th className="px-4 py-3 font-medium">Fakturanr</th>
                 <th className="px-4 py-3 font-medium">Period</th>
-                <th className="px-4 py-3 font-medium">Antal</th>
-                <th className="px-4 py-3 font-medium">Belopp</th>
+                <th className="px-4 py-3 font-medium">Förfaller</th>
+                <th className="px-4 py-3 font-medium">OCR</th>
+                <th className="px-4 py-3 font-medium">Belopp (inkl. moms)</th>
                 <th className="px-4 py-3 font-medium">Status</th>
                 <th className="px-4 py-3 font-medium text-right">PDF</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-border bg-background">
-              {invoices.map((i) => (
+              {invoices.map((i) => {
+                const overdue = i.status !== "paid" && i.status !== "waived" && i.due_date && new Date(i.due_date) < new Date();
+                return (
                 <tr key={i.id}>
                   <td className="px-4 py-3 font-medium text-foreground">{i.invoice_number}</td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {new Date(i.period_start).toLocaleDateString("sv-SE")} – {new Date(i.period_end).toLocaleDateString("sv-SE")}
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground">{i.booking_count}</td>
+                  <td className={`px-4 py-3 ${overdue ? "font-medium text-destructive" : "text-muted-foreground"}`}>
+                    {i.due_date ? new Date(i.due_date).toLocaleDateString("sv-SE") : "—"}
+                  </td>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{i.ocr_reference ?? "—"}</td>
                   <td className="px-4 py-3 font-medium text-foreground">{formatOre(i.total_amount)}</td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${
@@ -187,9 +193,17 @@ function HostInvoicePage() {
                         ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
                         : i.status === "waived"
                         ? "bg-muted text-muted-foreground"
+                        : overdue || i.status === "overdue"
+                        ? "bg-destructive/10 text-destructive"
                         : "bg-primary/10 text-primary"
                     }`}>
-                      {i.status === "paid" ? "Betald" : i.status === "waived" ? "Avskriven" : "Utfärdad"}
+                      {i.status === "paid"
+                        ? "Betald"
+                        : i.status === "waived"
+                        ? "Avskriven"
+                        : overdue || i.status === "overdue"
+                        ? "Förfallen"
+                        : "Utfärdad"}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right">
@@ -207,7 +221,8 @@ function HostInvoicePage() {
                     </button>
                   </td>
                 </tr>
-              ))}
+                );
+              })}
             </tbody>
           </table>
         </div>

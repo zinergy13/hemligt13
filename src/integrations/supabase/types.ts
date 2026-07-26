@@ -627,48 +627,104 @@ export type Database = {
           },
         ]
       }
+      host_invoice_events: {
+        Row: {
+          actor_id: string | null
+          created_at: string
+          event_type: string
+          id: string
+          invoice_id: string
+          note: string | null
+        }
+        Insert: {
+          actor_id?: string | null
+          created_at?: string
+          event_type: string
+          id?: string
+          invoice_id: string
+          note?: string | null
+        }
+        Update: {
+          actor_id?: string | null
+          created_at?: string
+          event_type?: string
+          id?: string
+          invoice_id?: string
+          note?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "host_invoice_events_invoice_id_fkey"
+            columns: ["invoice_id"]
+            isOneToOne: false
+            referencedRelation: "host_invoices"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       host_invoices: {
         Row: {
           booking_count: number
+          commission_net: number
           created_at: string
           currency: string
+          due_date: string | null
+          extras_breakdown: Json
+          extras_net: number
           host_id: string
           id: string
           invoice_number: string
           issued_at: string
+          ocr_reference: string | null
           paid_at: string | null
           period_end: string
           period_start: string
           status: string
           total_amount: number
+          vat_amount: number
+          vat_rate: number
         }
         Insert: {
           booking_count?: number
+          commission_net?: number
           created_at?: string
           currency?: string
+          due_date?: string | null
+          extras_breakdown?: Json
+          extras_net?: number
           host_id: string
           id?: string
           invoice_number: string
           issued_at?: string
+          ocr_reference?: string | null
           paid_at?: string | null
           period_end: string
           period_start: string
           status?: string
           total_amount?: number
+          vat_amount?: number
+          vat_rate?: number
         }
         Update: {
           booking_count?: number
+          commission_net?: number
           created_at?: string
           currency?: string
+          due_date?: string | null
+          extras_breakdown?: Json
+          extras_net?: number
           host_id?: string
           id?: string
           invoice_number?: string
           issued_at?: string
+          ocr_reference?: string | null
           paid_at?: string | null
           period_end?: string
           period_start?: string
           status?: string
           total_amount?: number
+          vat_amount?: number
+          vat_rate?: number
         }
         Relationships: []
       }
@@ -810,6 +866,7 @@ export type Database = {
         }
         Returns: boolean
       }
+      mark_overdue_invoices: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "guest" | "host" | "admin"

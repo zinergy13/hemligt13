@@ -166,7 +166,55 @@ export function buildCsv(invoices: AccountingInvoice[]) {
     i.paid_at ? i.paid_at.slice(0, 10) : '',
     i.ocr_reference ?? '',
   ])
-  return [headers, ...rows].map((r) => r.map(csvEscape).join(';')).join('\r\n') + '\r\n'
+  const body = [headers, ...rows].map((r) => r.map(csvEscape).join(';')).join('\r\n') + '\r\n'
+  return '\ufeff' + body
+}
+
+// Sammanfattning: momsrapport + kontoutfall — underlag för bokföring/revision
+export function buildSummaryCsv(report: {
+  period: { start: string; end: string }
+  invoices: AccountingInvoice[]
+  totals: {
+    commission_net: number
+    extras_net: number
+    vat_amount: number
+    total_amount: number
+    paid_amount: number
+    open_amount: number
+  }
+  accounts: Record<string, string | number>
+}) {
+  const kr = (ore: number) => (ore / 100).toFixed(2).replace('.', ',')
+  const t = report.totals
+  const paidCount = report.invoices.filter((i) => i.status === 'paid').length
+  const overdueCount = report.invoices.filter((i) => i.status === 'overdue').length
+  const openCount = report.invoices.length - paidCount - overdueCount
+  const lines: (string | number)[][] = [
+    ['Fjällportalen — Bokföringssammanfattning'],
+    ['Period', report.period.start, report.period.end],
+    [],
+    ['Momsrapport (netto, kr)'],
+    ['Kommission netto', kr(t.commission_net)],
+    ['Tilläggstjänster netto', kr(t.extras_net)],
+    ['Momspliktig försäljning (ruta 05)', kr(t.commission_net + t.extras_net)],
+    ['Utgående moms 25% (ruta 10)', kr(t.vat_amount)],
+    ['Total omsättning inkl. moms', kr(t.total_amount)],
+    [],
+    ['Kassa & fordringar (kr)'],
+    ['Betalt under perioden (konto 1930)', kr(t.paid_amount)],
+    ['Öppna fordringar (konto 1510)', kr(t.open_amount)],
+    [],
+    ['Fakturor'],
+    ['Totalt antal', report.invoices.length],
+    ['Betalda', paidCount],
+    ['Öppna', openCount],
+    ['Förfallna', overdueCount],
+    [],
+    ['Kontoplan (SIE4)'],
+    ...Object.entries(report.accounts).map(([k, v]) => [k, String(v)]),
+  ]
+  const body = lines.map((r) => r.map(csvEscape).join(';')).join('\r\n') + '\r\n'
+  return '\ufeff' + body
 }
 
 // -------- SIE4 export --------

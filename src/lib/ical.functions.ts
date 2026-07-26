@@ -96,7 +96,7 @@ export const syncIcalFeed = createServerFn({ method: "POST" })
     try {
       await assertSafePublicUrl(feed.url);
       const res = await fetch(feed.url, {
-        headers: { "User-Agent": "Fjallhuset-iCal/1.0", Accept: "text/calendar" },
+        headers: { "User-Agent": "Fjallportalen-iCal/1.0", Accept: "text/calendar" },
         redirect: "manual",
       });
       if (res.status >= 300 && res.status < 400) {

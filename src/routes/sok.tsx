@@ -20,7 +20,7 @@ export const Route = createFileRoute("/sok")({
   }),
   head: () => ({
     meta: [
-      { title: "Sök stuga i svenska fjällen — Fjällhuset" },
+      { title: "Sök stuga i svenska fjällen — Fjällportalen" },
       { name: "description", content: "Sök bland stugor, lägenheter och ski-in/ski-out-boenden i hela svenska fjällen." },
     ],
   }),

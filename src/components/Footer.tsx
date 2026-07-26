@@ -12,7 +12,7 @@ export function Footer() {
               <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
                 <Mountain className="h-5 w-5" />
               </span>
-              <span>Fjällhuset</span>
+              <span>Fjällportalen</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-secondary-foreground/75">
               Svenska fjällens samlade plats för stuguthyrning. Från Sälen till Åre — direkt mellan värd och gäst.
@@ -47,7 +47,7 @@ export function Footer() {
           ))}
 
           <div>
-            <h4 className="mb-4 font-serif text-base">Fjällhuset</h4>
+            <h4 className="mb-4 font-serif text-base">Fjällportalen</h4>
             <ul className="space-y-2 text-sm">
               <li><Link to="/sok" className="text-secondary-foreground/75 hover:text-secondary-foreground">Sök stuga</Link></li>
               <li><Link to="/hur-det-funkar" className="text-secondary-foreground/75 hover:text-secondary-foreground">Hur det funkar</Link></li>
@@ -60,7 +60,7 @@ export function Footer() {
         </div>
 
         <div className="mt-12 flex flex-col gap-2 border-t border-secondary-foreground/15 pt-6 text-xs text-secondary-foreground/60 md:flex-row md:justify-between">
-          <p>© {new Date().getFullYear()} Fjällhuset. Alla rättigheter förbehållna.</p>
+          <p>© {new Date().getFullYear()} Fjällportalen. Alla rättigheter förbehållna.</p>
           <p>Sälen · Idre · Grövelsjön · Vemdalen · Funäsdalen · Ramundberget · Lofsdalen · Åre · Duved · Storlien</p>
         </div>
       </div>

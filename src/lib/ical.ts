@@ -57,7 +57,7 @@ export function buildIcs(calendarName: string, events: IcsEvent[]): string {
   const lines: string[] = [
     "BEGIN:VCALENDAR",
     "VERSION:2.0",
-    "PRODID:-//Fjallhuset//Availability//SV",
+    "PRODID:-//Fjallportalen//Availability//SV",
     "CALSCALE:GREGORIAN",
     "METHOD:PUBLISH",
     foldLine(`X-WR-CALNAME:${escapeText(calendarName)}`),

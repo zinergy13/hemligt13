@@ -9,8 +9,8 @@ import { BookingForm } from "@/components/BookingForm";
 export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `Stuga — Fjällhuset` },
-      { name: "description", content: `Stuga ${params.slug} . Boka direkt från värd via Fjällhuset.` },
+      { title: `Stuga — Fjällportalen` },
+      { name: "description", content: `Stuga ${params.slug} . Boka direkt från värd via Fjällportalen.` },
     ],
   }),
   notFoundComponent: () => (

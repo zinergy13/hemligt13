@@ -7,9 +7,9 @@ import { SwedenMap } from "../components/SwedenMap";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Fjällhuset — Hyr stuga i svenska fjällen" },
+      { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
       { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — direkt från värd." },
-      { property: "og:title", content: "Fjällhuset — Hyr stuga i svenska fjällen" },
+      { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
       { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, direkt och utan mellanhänder." },
     ],
     links: [
@@ -150,7 +150,7 @@ function HomePage() {
       <section className="bg-muted/50 py-20 md:py-28">
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Varför Fjällhuset?</p>
+            <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Varför Fjällportalen?</p>
             <h2 className="font-serif text-3xl text-foreground md:text-5xl">Svenska fjällen — samlat på ett ställe</h2>
             <p className="mt-4 text-muted-foreground">
               Slipp scrolla genom tio Facebook-grupper. Här hittar du alla stugor, lägenheter och fjällboenden — sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.

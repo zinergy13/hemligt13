@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { syncIcalFeed } from "@/lib/ical.functions";
 
 export const Route = createFileRoute("/vard/kalender")({
-  head: () => ({ meta: [{ title: "Kalendersync — Fjällhuset" }] }),
+  head: () => ({ meta: [{ title: "Kalendersync — Fjällportalen" }] }),
   component: HostCalendarPage,
 });
 

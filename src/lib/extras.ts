@@ -133,7 +133,7 @@ export function groceriesLine(deliveryFee: number): ExtraLine {
 }
 
 export function firewoodLine(bags: number, markupPercent: number): ExtraLine {
-  // Gästpris fixt 150 kr/säck. Fjällhusets marginal = markup% av gästpriset.
+  // Gästpris fixt 150 kr/säck. Fjällportalens marginal = markup% av gästpriset.
   const guest = FIREWOOD_GUEST_PRICE_ORE * bags;
   const fee = Math.round((guest * markupPercent) / 100 / 100) * 100;
   return {

@@ -33,6 +33,7 @@ import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
+import { Route as VardStugorIdInsikterRouteImport } from './routes/vard.stugor.$id.insikter'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -160,6 +161,11 @@ const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
   path: '/stugor/$id/redigera',
   getParentRoute: () => VardRoute,
 } as any)
+const VardStugorIdInsikterRoute = VardStugorIdInsikterRouteImport.update({
+  id: '/stugor/$id/insikter',
+  path: '/stugor/$id/insikter',
+  getParentRoute: () => VardRoute,
+} as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -223,6 +229,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesByTo {
@@ -254,6 +261,7 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesById {
@@ -287,6 +295,7 @@ export interface FileRoutesById {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRouteTypes {
@@ -321,6 +330,7 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -352,6 +362,7 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   id:
     | '__root__'
@@ -384,6 +395,7 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
 }
@@ -583,6 +595,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
       parentRoute: typeof VardRoute
     }
+    '/vard/stugor/$id/insikter': {
+      id: '/vard/stugor/$id/insikter'
+      path: '/stugor/$id/insikter'
+      fullPath: '/vard/stugor/$id/insikter'
+      preLoaderRoute: typeof VardStugorIdInsikterRouteImport
+      parentRoute: typeof VardRoute
+    }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
       path: '/lovable/email/queue/process'
@@ -644,6 +663,7 @@ interface VardRouteChildren {
   VardKalenderRoute: typeof VardKalenderRoute
   VardIndexRoute: typeof VardIndexRoute
   VardStugorNyRoute: typeof VardStugorNyRoute
+  VardStugorIdInsikterRoute: typeof VardStugorIdInsikterRoute
   VardStugorIdRedigeraRoute: typeof VardStugorIdRedigeraRoute
 }
 
@@ -653,6 +673,7 @@ const VardRouteChildren: VardRouteChildren = {
   VardKalenderRoute: VardKalenderRoute,
   VardIndexRoute: VardIndexRoute,
   VardStugorNyRoute: VardStugorNyRoute,
+  VardStugorIdInsikterRoute: VardStugorIdInsikterRoute,
   VardStugorIdRedigeraRoute: VardStugorIdRedigeraRoute,
 }
 

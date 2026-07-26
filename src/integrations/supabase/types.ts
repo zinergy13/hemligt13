@@ -464,6 +464,8 @@ export type Database = {
           cleaning_fee: number
           created_at: string
           description: string | null
+          description_de: string | null
+          description_en: string | null
           host_id: string
           ical_token: string
           id: string
@@ -477,6 +479,9 @@ export type Database = {
           slug: string
           status: Database["public"]["Enums"]["cabin_status"]
           title: string
+          title_de: string | null
+          title_en: string | null
+          translated_at: string | null
           updated_at: string
         }
         Insert: {
@@ -490,6 +495,8 @@ export type Database = {
           cleaning_fee?: number
           created_at?: string
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
           host_id: string
           ical_token?: string
           id?: string
@@ -503,6 +510,9 @@ export type Database = {
           slug: string
           status?: Database["public"]["Enums"]["cabin_status"]
           title: string
+          title_de?: string | null
+          title_en?: string | null
+          translated_at?: string | null
           updated_at?: string
         }
         Update: {
@@ -516,6 +526,8 @@ export type Database = {
           cleaning_fee?: number
           created_at?: string
           description?: string | null
+          description_de?: string | null
+          description_en?: string | null
           host_id?: string
           ical_token?: string
           id?: string
@@ -529,6 +541,9 @@ export type Database = {
           slug?: string
           status?: Database["public"]["Enums"]["cabin_status"]
           title?: string
+          title_de?: string | null
+          title_en?: string | null
+          translated_at?: string | null
           updated_at?: string
         }
         Relationships: []

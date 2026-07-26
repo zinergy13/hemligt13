@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, Calendar as CalendarIcon } from "lucide-react";
+import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -163,6 +163,13 @@ function HostDashboard() {
                       className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                     >
                       <Pencil className="h-3.5 w-3.5" /> Redigera
+                    </Link>
+                    <Link
+                      to="/vard/stugor/$id/insikter"
+                      params={{ id: c.id }}
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+                    >
+                      <BarChart3 className="h-3.5 w-3.5" /> Insikter
                     </Link>
                     {c.status === "published" && (
                       <Link

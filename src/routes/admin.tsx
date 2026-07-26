@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { Loader2, Settings, Receipt, CheckCircle2, XCircle, ShieldAlert } from "lucide-react";
+import { Loader2, Settings, Receipt, CheckCircle2, XCircle, ShieldAlert, BookOpenCheck } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { formatDateRange, type BookingStatus } from "@/lib/bookings";
@@ -165,6 +165,20 @@ function AdminPage() {
         <p className="mt-1 text-sm text-muted-foreground">
           Hantera avgifter och fakturastatus för alla värdar.
         </p>
+        <div className="mt-4 flex flex-wrap gap-2">
+          <Link
+            to="/admin/bokforing"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            <BookOpenCheck className="h-4 w-4" /> Bokföring & moms
+          </Link>
+          <Link
+            to="/admin/stadfirmor"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            Städfirmor
+          </Link>
+        </div>
       </div>
 
       <div className="mb-8 rounded-2xl border border-border bg-background p-6">

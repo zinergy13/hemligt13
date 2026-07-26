@@ -31,6 +31,7 @@ import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
+import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
 import { Route as VardStugorIdInsikterRouteImport } from './routes/vard.stugor.$id.insikter'
@@ -151,6 +152,11 @@ const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
   path: '/stadfirmor',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminBokforingRoute = AdminBokforingRouteImport.update({
+  id: '/bokforing',
+  path: '/bokforing',
+  getParentRoute: () => AdminRoute,
+} as any)
 const VardStugorNyRoute = VardStugorNyRouteImport.update({
   id: '/stugor/ny',
   path: '/stugor/ny',
@@ -214,6 +220,7 @@ export interface FileRoutesByFullPath {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
@@ -246,6 +253,7 @@ export interface FileRoutesByTo {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
@@ -280,6 +288,7 @@ export interface FileRoutesById {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
@@ -315,6 +324,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/vard'
+    | '/admin/bokforing'
     | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
@@ -347,6 +357,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/admin/bokforing'
     | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
@@ -380,6 +391,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/vard'
+    | '/admin/bokforing'
     | '/admin/stadfirmor'
     | '/omrade/$slug'
     | '/region/$slug'
@@ -581,6 +593,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStadfirmorRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/bokforing': {
+      id: '/admin/bokforing'
+      path: '/bokforing'
+      fullPath: '/admin/bokforing'
+      preLoaderRoute: typeof AdminBokforingRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/vard/stugor/ny': {
       id: '/vard/stugor/ny'
       path: '/stugor/ny'
@@ -648,10 +667,12 @@ declare module '@tanstack/react-router' {
 }
 
 interface AdminRouteChildren {
+  AdminBokforingRoute: typeof AdminBokforingRoute
   AdminStadfirmorRoute: typeof AdminStadfirmorRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminBokforingRoute: AdminBokforingRoute,
   AdminStadfirmorRoute: AdminStadfirmorRoute,
 }
 

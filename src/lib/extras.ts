@@ -54,37 +54,20 @@ export async function findCleaningPrice(
   areaSlug: string,
   sizeSqm: number,
 ): Promise<CleaningFirmMatch | null> {
-  const { data: areaRows } = await supabase
-    .from("firm_areas")
-    .select("firm_id")
-    .eq("area_slug", areaSlug);
-  const firmIds = (areaRows ?? []).map((r) => r.firm_id);
-  if (firmIds.length === 0) return null;
-
-  const { data: firms } = await supabase
-    .from("cleaning_firms")
-    .select("id, name, is_active")
-    .in("id", firmIds)
-    .eq("is_active", true);
-  const activeIds = (firms ?? []).map((f) => f.id);
-  if (activeIds.length === 0) return null;
-
-  const { data: prices } = await supabase
-    .from("cleaning_firm_prices")
-    .select("firm_id, min_sqm, max_sqm, price_to_firm")
-    .in("firm_id", activeIds)
-    .lte("min_sqm", sizeSqm)
-    .gte("max_sqm", sizeSqm)
-    .order("price_to_firm", { ascending: true })
-    .limit(1);
-
-  const p = prices?.[0];
-  if (!p) return null;
-  const firm = (firms ?? []).find((f) => f.id === p.firm_id);
+  // Uses a SECURITY DEFINER RPC so the client does not need direct SELECT
+  // access to cleaning_firms / cleaning_firm_prices (which contain internal
+  // wholesale cost data).
+  const { data, error } = await supabase.rpc("find_cleaning_match", {
+    _area_slug: areaSlug,
+    _size_sqm: sizeSqm,
+  });
+  if (error) return null;
+  const row = Array.isArray(data) ? data[0] : null;
+  if (!row) return null;
   return {
-    firm_id: p.firm_id,
-    firm_name: firm?.name ?? "Städfirma",
-    price_to_firm: p.price_to_firm,
+    firm_id: row.firm_id,
+    firm_name: row.firm_name ?? "Städfirma",
+    price_to_firm: row.price_to_firm,
   };
 }
 

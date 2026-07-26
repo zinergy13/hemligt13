@@ -42,19 +42,37 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
           )
         }
 
-        // Verify the caller has a valid Supabase auth token.
-        // In TanStack, there is no Supabase gateway — we validate the JWT ourselves.
-        const authHeader = request.headers.get('Authorization')
-        if (!authHeader?.startsWith('Bearer ')) {
-          return Response.json({ error: 'Unauthorized' }, { status: 401 })
-        }
-
-        const token = authHeader.slice('Bearer '.length).trim()
+        // Only admins (or server-to-server callers with the shared internal
+        // secret) may send templated emails. This prevents any signed-in
+        // guest/host from relaying templated mail via our verified domain.
         const supabase = createClient(supabaseUrl, supabaseServiceKey)
-        const { data: { user }, error: authError } = await supabase.auth.getUser(token)
 
-        if (authError || !user) {
-          return Response.json({ error: 'Unauthorized' }, { status: 401 })
+        const internalSecret = process.env.EMAIL_RELAY_INTERNAL_SECRET
+        const providedSecret = request.headers.get('x-internal-secret')
+        const isInternalCaller =
+          !!internalSecret &&
+          !!providedSecret &&
+          providedSecret.length === internalSecret.length &&
+          providedSecret === internalSecret
+
+        if (!isInternalCaller) {
+          const authHeader = request.headers.get('Authorization')
+          if (!authHeader?.startsWith('Bearer ')) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 })
+          }
+          const token = authHeader.slice('Bearer '.length).trim()
+          const { data: { user }, error: authError } =
+            await supabase.auth.getUser(token)
+          if (authError || !user) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 })
+          }
+          const { data: isAdmin, error: roleErr } = await supabase.rpc(
+            'has_role',
+            { _user_id: user.id, _role: 'admin' },
+          )
+          if (roleErr || !isAdmin) {
+            return Response.json({ error: 'Forbidden' }, { status: 403 })
+          }
         }
 
         // Parse request body

@@ -9,119 +9,54 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as VardRouteImport } from './routes/vard'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
-import { Route as SokRouteImport } from './routes/sok'
-import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
-import { Route as OmOssRouteImport } from './routes/om-oss'
-import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
-import { Route as LoggaInRouteImport } from './routes/logga-in'
-import { Route as ListorRouteImport } from './routes/listor'
-import { Route as KontoRouteImport } from './routes/konto'
-import { Route as KontaktRouteImport } from './routes/kontakt'
-import { Route as HyrUtRouteImport } from './routes/hyr-ut'
-import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
-import { Route as FavoriterRouteImport } from './routes/favoriter'
-import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
-import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as VardIndexRouteImport } from './routes/vard.index'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
+import { Route as FavoriterRouteImport } from './routes/favoriter'
+import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
+import { Route as HyrUtRouteImport } from './routes/hyr-ut'
+import { Route as KontaktRouteImport } from './routes/kontakt'
+import { Route as KontoRouteImport } from './routes/konto'
+import { Route as ListorRouteImport } from './routes/listor'
+import { Route as LoggaInRouteImport } from './routes/logga-in'
+import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
+import { Route as OmOssRouteImport } from './routes/om-oss'
+import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
+import { Route as SokRouteImport } from './routes/sok'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
+import { Route as VardRouteImport } from './routes/vard'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
-import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
-import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
-import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
-import { Route as RegionSlugRouteImport } from './routes/region.$slug'
-import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
-import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
-import { Route as ListorIdRouteImport } from './routes/listor.$id'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
-import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
-import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
-import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
-import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
-import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
+import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
+import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
+import { Route as ListorIdRouteImport } from './routes/listor.$id'
+import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
+import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
+import { Route as RegionSlugRouteImport } from './routes/region.$slug'
+import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
+import { Route as VardIndexRouteImport } from './routes/vard.index'
+import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
+import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
+import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
-import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
-import { Route as VardStugorIdInsikterRouteImport } from './routes/vard.stugor.$id.insikter'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
-import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
-import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
-import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
-import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
+import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
+import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
+import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
+import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
+import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as VardStugorIdInsikterRouteImport } from './routes/vard.stugor.$id.insikter'
+import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
 
-const VardRoute = VardRouteImport.update({
-  id: '/vard',
-  path: '/vard',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SokRoute = SokRouteImport.update({
-  id: '/sok',
-  path: '/sok',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
-  id: '/sitemap.xml',
-  path: '/sitemap.xml',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OmOssRoute = OmOssRouteImport.update({
-  id: '/om-oss',
-  path: '/om-oss',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MinaBokningarRoute = MinaBokningarRouteImport.update({
-  id: '/mina-bokningar',
-  path: '/mina-bokningar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoggaInRoute = LoggaInRouteImport.update({
-  id: '/logga-in',
-  path: '/logga-in',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ListorRoute = ListorRouteImport.update({
-  id: '/listor',
-  path: '/listor',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KontoRoute = KontoRouteImport.update({
-  id: '/konto',
-  path: '/konto',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const KontaktRoute = KontaktRouteImport.update({
-  id: '/kontakt',
-  path: '/kontakt',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HyrUtRoute = HyrUtRouteImport.update({
-  id: '/hyr-ut',
-  path: '/hyr-ut',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const HurDetFunkarRoute = HurDetFunkarRouteImport.update({
-  id: '/hur-det-funkar',
-  path: '/hur-det-funkar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const FavoriterRoute = FavoriterRouteImport.update({
-  id: '/favoriter',
-  path: '/favoriter',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AterstallLosenordRoute = AterstallLosenordRouteImport.update({
-  id: '/aterstall-losenord',
-  path: '/aterstall-losenord',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -129,84 +64,79 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const AterstallLosenordRoute = AterstallLosenordRouteImport.update({
+  id: '/aterstall-losenord',
+  path: '/aterstall-losenord',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VardIndexRoute = VardIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => VardRoute,
+const FavoriterRoute = FavoriterRouteImport.update({
+  id: '/favoriter',
+  path: '/favoriter',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HurDetFunkarRoute = HurDetFunkarRouteImport.update({
+  id: '/hur-det-funkar',
+  path: '/hur-det-funkar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const HyrUtRoute = HyrUtRouteImport.update({
+  id: '/hyr-ut',
+  path: '/hyr-ut',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontaktRoute = KontaktRouteImport.update({
+  id: '/kontakt',
+  path: '/kontakt',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const KontoRoute = KontoRouteImport.update({
+  id: '/konto',
+  path: '/konto',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorRoute = ListorRouteImport.update({
+  id: '/listor',
+  path: '/listor',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LoggaInRoute = LoggaInRouteImport.update({
+  id: '/logga-in',
+  path: '/logga-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MinaBokningarRoute = MinaBokningarRouteImport.update({
+  id: '/mina-bokningar',
+  path: '/mina-bokningar',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OmOssRoute = OmOssRouteImport.update({
+  id: '/om-oss',
+  path: '/om-oss',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
+  id: '/sitemap.xml',
+  path: '/sitemap.xml',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SokRoute = SokRouteImport.update({
+  id: '/sok',
+  path: '/sok',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VardRoute = VardRouteImport.update({
+  id: '/vard',
+  path: '/vard',
+  getParentRoute: () => rootRouteImport,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const VardKalenderRoute = VardKalenderRouteImport.update({
-  id: '/kalender',
-  path: '/kalender',
-  getParentRoute: () => VardRoute,
-} as any)
-const VardFakturaRoute = VardFakturaRouteImport.update({
-  id: '/faktura',
-  path: '/faktura',
-  getParentRoute: () => VardRoute,
-} as any)
-const VardBokningarRoute = VardBokningarRouteImport.update({
-  id: '/bokningar',
-  path: '/bokningar',
-  getParentRoute: () => VardRoute,
-} as any)
-const StugaSlugRoute = StugaSlugRouteImport.update({
-  id: '/stuga/$slug',
-  path: '/stuga/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const RegionSlugRoute = RegionSlugRouteImport.update({
-  id: '/region/$slug',
-  path: '/region/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const OmradeSlugRoute = OmradeSlugRouteImport.update({
-  id: '/omrade/$slug',
-  path: '/omrade/$slug',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const MeddelandenBookingIdRoute = MeddelandenBookingIdRouteImport.update({
-  id: '/meddelanden/$bookingId',
-  path: '/meddelanden/$bookingId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ListorIdRoute = ListorIdRouteImport.update({
-  id: '/$id',
-  path: '/$id',
-  getParentRoute: () => ListorRoute,
-} as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
-  id: '/stadfirmor',
-  path: '/stadfirmor',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRecensionerRoute = AdminRecensionerRouteImport.update({
-  id: '/recensioner',
-  path: '/recensioner',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminPresentkortRoute = AdminPresentkortRouteImport.update({
-  id: '/presentkort',
-  path: '/presentkort',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
@@ -214,9 +144,74 @@ const AdminBokforingRoute = AdminBokforingRouteImport.update({
   path: '/bokforing',
   getParentRoute: () => AdminRoute,
 } as any)
-const VardStugorNyRoute = VardStugorNyRouteImport.update({
-  id: '/stugor/ny',
-  path: '/stugor/ny',
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPresentkortRoute = AdminPresentkortRouteImport.update({
+  id: '/presentkort',
+  path: '/presentkort',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRecensionerRoute = AdminRecensionerRouteImport.update({
+  id: '/recensioner',
+  path: '/recensioner',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
+  id: '/stadfirmor',
+  path: '/stadfirmor',
+  getParentRoute: () => AdminRoute,
+} as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorIdRoute = ListorIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ListorRoute,
+} as any)
+const MeddelandenBookingIdRoute = MeddelandenBookingIdRouteImport.update({
+  id: '/meddelanden/$bookingId',
+  path: '/meddelanden/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const OmradeSlugRoute = OmradeSlugRouteImport.update({
+  id: '/omrade/$slug',
+  path: '/omrade/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RegionSlugRoute = RegionSlugRouteImport.update({
+  id: '/region/$slug',
+  path: '/region/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StugaSlugRoute = StugaSlugRouteImport.update({
+  id: '/stuga/$slug',
+  path: '/stuga/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const VardIndexRoute = VardIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => VardRoute,
+} as any)
+const VardBokningarRoute = VardBokningarRouteImport.update({
+  id: '/bokningar',
+  path: '/bokningar',
+  getParentRoute: () => VardRoute,
+} as any)
+const VardFakturaRoute = VardFakturaRouteImport.update({
+  id: '/faktura',
+  path: '/faktura',
+  getParentRoute: () => VardRoute,
+} as any)
+const VardKalenderRoute = VardKalenderRouteImport.update({
+  id: '/kalender',
+  path: '/kalender',
   getParentRoute: () => VardRoute,
 } as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
@@ -224,47 +219,14 @@ const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
-const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
-  id: '/stugor/$id/redigera',
-  path: '/stugor/$id/redigera',
+const VardStugorNyRoute = VardStugorNyRouteImport.update({
+  id: '/stugor/ny',
+  path: '/stugor/ny',
   getParentRoute: () => VardRoute,
 } as any)
-const VardStugorIdInsikterRoute = VardStugorIdInsikterRouteImport.update({
-  id: '/stugor/$id/insikter',
-  path: '/stugor/$id/insikter',
-  getParentRoute: () => VardRoute,
-} as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailTransactionalPreviewRoute =
-  LovableEmailTransactionalPreviewRouteImport.update({
-    id: '/lovable/email/transactional/preview',
-    path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
-  id: '/lovable/email/auth/webhook',
-  path: '/lovable/email/auth/webhook',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
-  id: '/lovable/email/auth/preview',
-  path: '/lovable/email/auth/preview',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const ApiPublicIcalTokenRoute = ApiPublicIcalTokenRouteImport.update({
-  id: '/api/public/ical/$token',
-  path: '/api/public/ical/$token',
+const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
+  id: '/api/invoice/$id/pdf',
+  path: '/api/invoice/$id/pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ApiPublicHooksGenerateMonthlyInvoicesRoute =
@@ -273,10 +235,48 @@ const ApiPublicHooksGenerateMonthlyInvoicesRoute =
     path: '/api/public/hooks/generate-monthly-invoices',
     getParentRoute: () => rootRouteImport,
   } as any)
-const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
-  id: '/api/invoice/$id/pdf',
-  path: '/api/invoice/$id/pdf',
+const ApiPublicIcalTokenRoute = ApiPublicIcalTokenRouteImport.update({
+  id: '/api/public/ical/$token',
+  path: '/api/public/ical/$token',
   getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
+  id: '/lovable/email/auth/preview',
+  path: '/lovable/email/auth/preview',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
+  id: '/lovable/email/auth/webhook',
+  path: '/lovable/email/auth/webhook',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const VardStugorIdInsikterRoute = VardStugorIdInsikterRouteImport.update({
+  id: '/stugor/$id/insikter',
+  path: '/stugor/$id/insikter',
+  getParentRoute: () => VardRoute,
+} as any)
+const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
+  id: '/stugor/$id/redigera',
+  path: '/stugor/$id/redigera',
+  getParentRoute: () => VardRoute,
 } as any)
 
 export interface FileRoutesByFullPath {
@@ -590,102 +590,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/vard': {
-      id: '/vard'
-      path: '/vard'
-      fullPath: '/vard'
-      preLoaderRoute: typeof VardRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sok': {
-      id: '/sok'
-      path: '/sok'
-      fullPath: '/sok'
-      preLoaderRoute: typeof SokRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/sitemap.xml': {
-      id: '/sitemap.xml'
-      path: '/sitemap.xml'
-      fullPath: '/sitemap.xml'
-      preLoaderRoute: typeof SitemapDotxmlRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/om-oss': {
-      id: '/om-oss'
-      path: '/om-oss'
-      fullPath: '/om-oss'
-      preLoaderRoute: typeof OmOssRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/mina-bokningar': {
-      id: '/mina-bokningar'
-      path: '/mina-bokningar'
-      fullPath: '/mina-bokningar'
-      preLoaderRoute: typeof MinaBokningarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/logga-in': {
-      id: '/logga-in'
-      path: '/logga-in'
-      fullPath: '/logga-in'
-      preLoaderRoute: typeof LoggaInRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/listor': {
-      id: '/listor'
-      path: '/listor'
-      fullPath: '/listor'
-      preLoaderRoute: typeof ListorRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/konto': {
-      id: '/konto'
-      path: '/konto'
-      fullPath: '/konto'
-      preLoaderRoute: typeof KontoRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/kontakt': {
-      id: '/kontakt'
-      path: '/kontakt'
-      fullPath: '/kontakt'
-      preLoaderRoute: typeof KontaktRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hyr-ut': {
-      id: '/hyr-ut'
-      path: '/hyr-ut'
-      fullPath: '/hyr-ut'
-      preLoaderRoute: typeof HyrUtRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/hur-det-funkar': {
-      id: '/hur-det-funkar'
-      path: '/hur-det-funkar'
-      fullPath: '/hur-det-funkar'
-      preLoaderRoute: typeof HurDetFunkarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/favoriter': {
-      id: '/favoriter'
-      path: '/favoriter'
-      fullPath: '/favoriter'
-      preLoaderRoute: typeof FavoriterRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/aterstall-losenord': {
-      id: '/aterstall-losenord'
-      path: '/aterstall-losenord'
-      fullPath: '/aterstall-losenord'
-      preLoaderRoute: typeof AterstallLosenordRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/admin': {
@@ -695,116 +604,109 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/aterstall-losenord': {
+      id: '/aterstall-losenord'
+      path: '/aterstall-losenord'
+      fullPath: '/aterstall-losenord'
+      preLoaderRoute: typeof AterstallLosenordRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vard/': {
-      id: '/vard/'
-      path: '/'
-      fullPath: '/vard/'
-      preLoaderRoute: typeof VardIndexRouteImport
-      parentRoute: typeof VardRoute
+    '/favoriter': {
+      id: '/favoriter'
+      path: '/favoriter'
+      fullPath: '/favoriter'
+      preLoaderRoute: typeof FavoriterRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hur-det-funkar': {
+      id: '/hur-det-funkar'
+      path: '/hur-det-funkar'
+      fullPath: '/hur-det-funkar'
+      preLoaderRoute: typeof HurDetFunkarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/hyr-ut': {
+      id: '/hyr-ut'
+      path: '/hyr-ut'
+      fullPath: '/hyr-ut'
+      preLoaderRoute: typeof HyrUtRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/kontakt': {
+      id: '/kontakt'
+      path: '/kontakt'
+      fullPath: '/kontakt'
+      preLoaderRoute: typeof KontaktRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/konto': {
+      id: '/konto'
+      path: '/konto'
+      fullPath: '/konto'
+      preLoaderRoute: typeof KontoRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor': {
+      id: '/listor'
+      path: '/listor'
+      fullPath: '/listor'
+      preLoaderRoute: typeof ListorRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/logga-in': {
+      id: '/logga-in'
+      path: '/logga-in'
+      fullPath: '/logga-in'
+      preLoaderRoute: typeof LoggaInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/mina-bokningar': {
+      id: '/mina-bokningar'
+      path: '/mina-bokningar'
+      fullPath: '/mina-bokningar'
+      preLoaderRoute: typeof MinaBokningarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/om-oss': {
+      id: '/om-oss'
+      path: '/om-oss'
+      fullPath: '/om-oss'
+      preLoaderRoute: typeof OmOssRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sitemap.xml': {
+      id: '/sitemap.xml'
+      path: '/sitemap.xml'
+      fullPath: '/sitemap.xml'
+      preLoaderRoute: typeof SitemapDotxmlRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/sok': {
+      id: '/sok'
+      path: '/sok'
+      fullPath: '/sok'
+      preLoaderRoute: typeof SokRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vard': {
+      id: '/vard'
+      path: '/vard'
+      fullPath: '/vard'
+      preLoaderRoute: typeof VardRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/admin/': {
       id: '/admin/'
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/vard/kalender': {
-      id: '/vard/kalender'
-      path: '/kalender'
-      fullPath: '/vard/kalender'
-      preLoaderRoute: typeof VardKalenderRouteImport
-      parentRoute: typeof VardRoute
-    }
-    '/vard/faktura': {
-      id: '/vard/faktura'
-      path: '/faktura'
-      fullPath: '/vard/faktura'
-      preLoaderRoute: typeof VardFakturaRouteImport
-      parentRoute: typeof VardRoute
-    }
-    '/vard/bokningar': {
-      id: '/vard/bokningar'
-      path: '/bokningar'
-      fullPath: '/vard/bokningar'
-      preLoaderRoute: typeof VardBokningarRouteImport
-      parentRoute: typeof VardRoute
-    }
-    '/stuga/$slug': {
-      id: '/stuga/$slug'
-      path: '/stuga/$slug'
-      fullPath: '/stuga/$slug'
-      preLoaderRoute: typeof StugaSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/region/$slug': {
-      id: '/region/$slug'
-      path: '/region/$slug'
-      fullPath: '/region/$slug'
-      preLoaderRoute: typeof RegionSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/omrade/$slug': {
-      id: '/omrade/$slug'
-      path: '/omrade/$slug'
-      fullPath: '/omrade/$slug'
-      preLoaderRoute: typeof OmradeSlugRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/meddelanden/$bookingId': {
-      id: '/meddelanden/$bookingId'
-      path: '/meddelanden/$bookingId'
-      fullPath: '/meddelanden/$bookingId'
-      preLoaderRoute: typeof MeddelandenBookingIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/listor/$id': {
-      id: '/listor/$id'
-      path: '/$id'
-      fullPath: '/listor/$id'
-      preLoaderRoute: typeof ListorIdRouteImport
-      parentRoute: typeof ListorRoute
-    }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin/stadfirmor': {
-      id: '/admin/stadfirmor'
-      path: '/stadfirmor'
-      fullPath: '/admin/stadfirmor'
-      preLoaderRoute: typeof AdminStadfirmorRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/recensioner': {
-      id: '/admin/recensioner'
-      path: '/recensioner'
-      fullPath: '/admin/recensioner'
-      preLoaderRoute: typeof AdminRecensionerRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/presentkort': {
-      id: '/admin/presentkort'
-      path: '/presentkort'
-      fullPath: '/admin/presentkort'
-      preLoaderRoute: typeof AdminPresentkortRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/dashboard': {
-      id: '/admin/dashboard'
-      path: '/dashboard'
-      fullPath: '/admin/dashboard'
-      preLoaderRoute: typeof AdminDashboardRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/bokforing': {
@@ -814,11 +716,102 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBokforingRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/vard/stugor/ny': {
-      id: '/vard/stugor/ny'
-      path: '/stugor/ny'
-      fullPath: '/vard/stugor/ny'
-      preLoaderRoute: typeof VardStugorNyRouteImport
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/presentkort': {
+      id: '/admin/presentkort'
+      path: '/presentkort'
+      fullPath: '/admin/presentkort'
+      preLoaderRoute: typeof AdminPresentkortRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/recensioner': {
+      id: '/admin/recensioner'
+      path: '/recensioner'
+      fullPath: '/admin/recensioner'
+      preLoaderRoute: typeof AdminRecensionerRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/stadfirmor': {
+      id: '/admin/stadfirmor'
+      path: '/stadfirmor'
+      fullPath: '/admin/stadfirmor'
+      preLoaderRoute: typeof AdminStadfirmorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor/$id': {
+      id: '/listor/$id'
+      path: '/$id'
+      fullPath: '/listor/$id'
+      preLoaderRoute: typeof ListorIdRouteImport
+      parentRoute: typeof ListorRoute
+    }
+    '/meddelanden/$bookingId': {
+      id: '/meddelanden/$bookingId'
+      path: '/meddelanden/$bookingId'
+      fullPath: '/meddelanden/$bookingId'
+      preLoaderRoute: typeof MeddelandenBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/omrade/$slug': {
+      id: '/omrade/$slug'
+      path: '/omrade/$slug'
+      fullPath: '/omrade/$slug'
+      preLoaderRoute: typeof OmradeSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/region/$slug': {
+      id: '/region/$slug'
+      path: '/region/$slug'
+      fullPath: '/region/$slug'
+      preLoaderRoute: typeof RegionSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stuga/$slug': {
+      id: '/stuga/$slug'
+      path: '/stuga/$slug'
+      fullPath: '/stuga/$slug'
+      preLoaderRoute: typeof StugaSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vard/': {
+      id: '/vard/'
+      path: '/'
+      fullPath: '/vard/'
+      preLoaderRoute: typeof VardIndexRouteImport
+      parentRoute: typeof VardRoute
+    }
+    '/vard/bokningar': {
+      id: '/vard/bokningar'
+      path: '/bokningar'
+      fullPath: '/vard/bokningar'
+      preLoaderRoute: typeof VardBokningarRouteImport
+      parentRoute: typeof VardRoute
+    }
+    '/vard/faktura': {
+      id: '/vard/faktura'
+      path: '/faktura'
+      fullPath: '/vard/faktura'
+      preLoaderRoute: typeof VardFakturaRouteImport
+      parentRoute: typeof VardRoute
+    }
+    '/vard/kalender': {
+      id: '/vard/kalender'
+      path: '/kalender'
+      fullPath: '/vard/kalender'
+      preLoaderRoute: typeof VardKalenderRouteImport
       parentRoute: typeof VardRoute
     }
     '/lovable/email/suppression': {
@@ -828,60 +821,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailSuppressionRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/vard/stugor/$id/redigera': {
-      id: '/vard/stugor/$id/redigera'
-      path: '/stugor/$id/redigera'
-      fullPath: '/vard/stugor/$id/redigera'
-      preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
+    '/vard/stugor/ny': {
+      id: '/vard/stugor/ny'
+      path: '/stugor/ny'
+      fullPath: '/vard/stugor/ny'
+      preLoaderRoute: typeof VardStugorNyRouteImport
       parentRoute: typeof VardRoute
     }
-    '/vard/stugor/$id/insikter': {
-      id: '/vard/stugor/$id/insikter'
-      path: '/stugor/$id/insikter'
-      fullPath: '/vard/stugor/$id/insikter'
-      preLoaderRoute: typeof VardStugorIdInsikterRouteImport
-      parentRoute: typeof VardRoute
-    }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/transactional/preview': {
-      id: '/lovable/email/transactional/preview'
-      path: '/lovable/email/transactional/preview'
-      fullPath: '/lovable/email/transactional/preview'
-      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/webhook': {
-      id: '/lovable/email/auth/webhook'
-      path: '/lovable/email/auth/webhook'
-      fullPath: '/lovable/email/auth/webhook'
-      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/auth/preview': {
-      id: '/lovable/email/auth/preview'
-      path: '/lovable/email/auth/preview'
-      fullPath: '/lovable/email/auth/preview'
-      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/api/public/ical/$token': {
-      id: '/api/public/ical/$token'
-      path: '/api/public/ical/$token'
-      fullPath: '/api/public/ical/$token'
-      preLoaderRoute: typeof ApiPublicIcalTokenRouteImport
+    '/api/invoice/$id/pdf': {
+      id: '/api/invoice/$id/pdf'
+      path: '/api/invoice/$id/pdf'
+      fullPath: '/api/invoice/$id/pdf'
+      preLoaderRoute: typeof ApiInvoiceIdPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/api/public/hooks/generate-monthly-invoices': {
@@ -891,12 +842,61 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/api/invoice/$id/pdf': {
-      id: '/api/invoice/$id/pdf'
-      path: '/api/invoice/$id/pdf'
-      fullPath: '/api/invoice/$id/pdf'
-      preLoaderRoute: typeof ApiInvoiceIdPdfRouteImport
+    '/api/public/ical/$token': {
+      id: '/api/public/ical/$token'
+      path: '/api/public/ical/$token'
+      fullPath: '/api/public/ical/$token'
+      preLoaderRoute: typeof ApiPublicIcalTokenRouteImport
       parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/preview': {
+      id: '/lovable/email/auth/preview'
+      path: '/lovable/email/auth/preview'
+      fullPath: '/lovable/email/auth/preview'
+      preLoaderRoute: typeof LovableEmailAuthPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/auth/webhook': {
+      id: '/lovable/email/auth/webhook'
+      path: '/lovable/email/auth/webhook'
+      fullPath: '/lovable/email/auth/webhook'
+      preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/vard/stugor/$id/insikter': {
+      id: '/vard/stugor/$id/insikter'
+      path: '/stugor/$id/insikter'
+      fullPath: '/vard/stugor/$id/insikter'
+      preLoaderRoute: typeof VardStugorIdInsikterRouteImport
+      parentRoute: typeof VardRoute
+    }
+    '/vard/stugor/$id/redigera': {
+      id: '/vard/stugor/$id/redigera'
+      path: '/stugor/$id/redigera'
+      fullPath: '/vard/stugor/$id/redigera'
+      preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
+      parentRoute: typeof VardRoute
     }
   }
 }
@@ -990,13 +990,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

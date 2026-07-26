@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
 import { Route as LoggaInRouteImport } from './routes/logga-in'
+import { Route as ListorRouteImport } from './routes/listor'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
@@ -71,6 +72,11 @@ const MinaBokningarRoute = MinaBokningarRouteImport.update({
 const LoggaInRoute = LoggaInRouteImport.update({
   id: '/logga-in',
   path: '/logga-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorRoute = ListorRouteImport.update({
+  id: '/listor',
+  path: '/listor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontoRoute = KontoRouteImport.update({
@@ -220,6 +226,7 @@ export interface FileRoutesByFullPath {
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
+  '/listor': typeof ListorRoute
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
@@ -255,6 +262,7 @@ export interface FileRoutesByTo {
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
+  '/listor': typeof ListorRoute
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
+  '/listor': typeof ListorRoute
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
@@ -327,6 +336,7 @@ export interface FileRouteTypes {
     | '/hyr-ut'
     | '/kontakt'
     | '/konto'
+    | '/listor'
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
@@ -362,6 +372,7 @@ export interface FileRouteTypes {
     | '/hyr-ut'
     | '/kontakt'
     | '/konto'
+    | '/listor'
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
@@ -396,6 +407,7 @@ export interface FileRouteTypes {
     | '/hyr-ut'
     | '/kontakt'
     | '/konto'
+    | '/listor'
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
@@ -432,6 +444,7 @@ export interface RootRouteChildren {
   HyrUtRoute: typeof HyrUtRoute
   KontaktRoute: typeof KontaktRoute
   KontoRoute: typeof KontoRoute
+  ListorRoute: typeof ListorRoute
   LoggaInRoute: typeof LoggaInRoute
   MinaBokningarRoute: typeof MinaBokningarRoute
   OmOssRoute: typeof OmOssRoute
@@ -492,6 +505,13 @@ declare module '@tanstack/react-router' {
       path: '/logga-in'
       fullPath: '/logga-in'
       preLoaderRoute: typeof LoggaInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor': {
+      id: '/listor'
+      path: '/listor'
+      fullPath: '/listor'
+      preLoaderRoute: typeof ListorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/konto': {
@@ -729,6 +749,7 @@ const rootRouteChildren: RootRouteChildren = {
   HyrUtRoute: HyrUtRoute,
   KontaktRoute: KontaktRoute,
   KontoRoute: KontoRoute,
+  ListorRoute: ListorRoute,
   LoggaInRoute: LoggaInRoute,
   MinaBokningarRoute: MinaBokningarRoute,
   OmOssRoute: OmOssRoute,

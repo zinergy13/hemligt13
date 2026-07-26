@@ -102,6 +102,10 @@ function BookkeepingPage() {
     })
   }
 
+  // Reset page to 1 whenever any filter changes
+  const setFilter = (patch: Partial<z.infer<typeof searchSchema>>) =>
+    setSearch({ ...patch, page: 1 })
+
   const filtered = useMemo(() => {
     if (!report) return [] as AccountingInvoice[]
     const q = search.q.trim().toLowerCase()
@@ -144,7 +148,14 @@ function BookkeepingPage() {
     (search.kind !== 'all' ? 1 : 0)
 
   const clearFilters = () =>
-    setSearch({ q: '', from: '', to: '', status: 'all', kind: 'all' })
+    setSearch({ q: '', from: '', to: '', status: 'all', kind: 'all', page: 1 })
+
+  const pageSize = Math.max(10, Math.min(200, search.pageSize || 25))
+  const totalPages = Math.max(1, Math.ceil(filtered.length / pageSize))
+  const currentPage = Math.max(1, Math.min(search.page || 1, totalPages))
+  const pageStart = (currentPage - 1) * pageSize
+  const pageEnd = Math.min(pageStart + pageSize, filtered.length)
+  const paged = useMemo(() => filtered.slice(pageStart, pageEnd), [filtered, pageStart, pageEnd])
 
   if (loading || !user) {
     return (
@@ -283,7 +294,7 @@ function BookkeepingPage() {
                 <input
                   type="search"
                   value={search.q}
-                  onChange={(e) => setSearch({ q: e.target.value })}
+                  onChange={(e) => setFilter({ q: e.target.value })}
                   placeholder="Fakturanr, värd eller OCR…"
                   className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm"
                 />
@@ -296,7 +307,7 @@ function BookkeepingPage() {
                 value={search.from}
                 min={report.period.start}
                 max={report.period.end}
-                onChange={(e) => setSearch({ from: e.target.value })}
+                onChange={(e) => setFilter({ from: e.target.value })}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               />
             </div>
@@ -307,7 +318,7 @@ function BookkeepingPage() {
                 value={search.to}
                 min={report.period.start}
                 max={report.period.end}
-                onChange={(e) => setSearch({ to: e.target.value })}
+                onChange={(e) => setFilter({ to: e.target.value })}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               />
             </div>
@@ -315,7 +326,7 @@ function BookkeepingPage() {
               <label className="mb-1 block text-xs font-medium text-muted-foreground">Status</label>
               <select
                 value={search.status}
-                onChange={(e) => setSearch({ status: e.target.value })}
+                onChange={(e) => setFilter({ status: e.target.value })}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="all">Alla</option>
@@ -328,7 +339,7 @@ function BookkeepingPage() {
               <label className="mb-1 block text-xs font-medium text-muted-foreground">Avdelning</label>
               <select
                 value={search.kind}
-                onChange={(e) => setSearch({ kind: e.target.value })}
+                onChange={(e) => setFilter({ kind: e.target.value })}
                 className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
               >
                 <option value="all">Alla</option>
@@ -470,7 +481,7 @@ function BookkeepingPage() {
                   </td>
                 </tr>
               ) : (
-                filtered.map((inv) => (
+                paged.map((inv) => (
                   <tr key={inv.id}>
                     <td className="px-4 py-3 font-medium text-foreground">{inv.invoice_number}</td>
                     <td className="px-4 py-3 text-muted-foreground">{inv.issued_at.slice(0, 10)}</td>
@@ -502,6 +513,48 @@ function BookkeepingPage() {
               )}
             </tbody>
           </table>
+        </div>
+      )}
+
+      {/* Pagination */}
+      {report && !error && filtered.length > 0 && (
+        <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-background px-4 py-3 text-sm">
+          <div className="text-xs text-muted-foreground">
+            Visar <strong className="text-foreground">{pageStart + 1}–{pageEnd}</strong> av {filtered.length}
+          </div>
+          <div className="flex items-center gap-3">
+            <label className="flex items-center gap-2 text-xs text-muted-foreground">
+              Per sida
+              <select
+                value={pageSize}
+                onChange={(e) => setSearch({ pageSize: Number(e.target.value), page: 1 })}
+                className="rounded-lg border border-border bg-background px-2 py-1 text-xs"
+              >
+                {[10, 25, 50, 100, 200].map((n) => (
+                  <option key={n} value={n}>{n}</option>
+                ))}
+              </select>
+            </label>
+            <div className="flex items-center gap-1">
+              <button
+                onClick={() => setSearch({ page: currentPage - 1 })}
+                disabled={currentPage <= 1}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-40"
+              >
+                <ChevronLeft className="h-3.5 w-3.5" /> Föregående
+              </button>
+              <span className="px-2 text-xs text-muted-foreground">
+                Sida {currentPage} / {totalPages}
+              </span>
+              <button
+                onClick={() => setSearch({ page: currentPage + 1 })}
+                disabled={currentPage >= totalPages}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-40"
+              >
+                Nästa <ChevronRight className="h-3.5 w-3.5" />
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </section>

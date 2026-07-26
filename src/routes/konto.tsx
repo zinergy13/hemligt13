@@ -1,12 +1,13 @@
 import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState, type FormEvent } from "react";
-import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck } from "lucide-react";
+import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck, Heart } from "lucide-react";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { HostPayoutForm } from "@/components/HostPayoutForm";
 import { SeasonPricingManager } from "@/components/SeasonPricingManager";
 import { PricePreview } from "@/components/PricePreview";
+import { PriceAlertsManager } from "@/components/PriceAlertsManager";
 
 export const Route = createFileRoute("/konto")({
   head: () => ({ meta: [{ title: "Mitt konto — Fjällportalen" }] }),
@@ -238,6 +239,25 @@ function AccountPage() {
           <PricePreview hostId={user.id} />
         </div>
       )}
+
+      <div className="mt-8">
+        <PriceAlertsManager />
+      </div>
+
+      <div className="mt-8 rounded-2xl border border-border bg-background p-6">
+        <div className="flex items-start gap-3">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+            <Heart className="h-5 w-5" />
+          </div>
+          <div className="flex-1">
+            <h2 className="font-serif text-xl text-foreground">Mina favoriter</h2>
+            <p className="mt-1 text-sm text-muted-foreground">Se stugor du sparat för senare.</p>
+            <Link to="/favoriter" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">
+              Till mina favoriter →
+            </Link>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }

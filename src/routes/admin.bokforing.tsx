@@ -1,8 +1,10 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { useServerFn } from '@tanstack/react-start'
-import { AlertTriangle, ArrowLeft, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Send, ShieldAlert, Sparkles } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Search, Send, ShieldAlert, Sparkles, X } from 'lucide-react'
 import { toast } from 'sonner'
+import { zodValidator, fallback } from '@tanstack/zod-adapter'
+import { z } from 'zod'
 import { useAuth } from '@/hooks/useAuth'
 import {
   getAccountingReport,
@@ -13,8 +15,17 @@ import {
   type AccountingInvoice,
 } from '@/lib/accounting.functions'
 
+const searchSchema = z.object({
+  q: fallback(z.string(), '').default(''),
+  from: fallback(z.string(), '').default(''),
+  to: fallback(z.string(), '').default(''),
+  status: fallback(z.string(), 'all').default('all'),
+  kind: fallback(z.string(), 'all').default('all'),
+})
+
 export const Route = createFileRoute('/admin/bokforing')({
   head: () => ({ meta: [{ title: 'Bokföring — Fjällportalen' }] }),
+  validateSearch: zodValidator(searchSchema),
   component: BookkeepingPage,
 })
 
@@ -35,6 +46,7 @@ function download(name: string, mime: string, content: string) {
 function BookkeepingPage() {
   const { user, isAdmin, loading } = useAuth()
   const navigate = useNavigate()
+  const search = Route.useSearch()
   const fetchReport = useServerFn(getAccountingReport)
   const runSync = useServerFn(syncInvoiceToFortnox)
   const checkFortnox = useServerFn(fortnoxStatus)
@@ -80,6 +92,58 @@ function BookkeepingPage() {
 
   const periodLabel = useMemo(() => `Q${quarter} ${year}`, [year, quarter])
 
+  const setSearch = (patch: Partial<z.infer<typeof searchSchema>>) => {
+    navigate({
+      to: '/admin/bokforing',
+      search: (prev: z.infer<typeof searchSchema>) => ({ ...prev, ...patch }),
+      replace: true,
+    })
+  }
+
+  const filtered = useMemo(() => {
+    if (!report) return [] as AccountingInvoice[]
+    const q = search.q.trim().toLowerCase()
+    const statusFilter = search.status
+    const kindFilter = search.kind
+    const from = search.from
+    const to = search.to
+    return report.invoices.filter((inv) => {
+      const day = inv.issued_at.slice(0, 10)
+      if (from && day < from) return false
+      if (to && day > to) return false
+      if (statusFilter !== 'all' && inv.status !== statusFilter) return false
+      if (kindFilter === 'with_extras' && inv.extras_net <= 0) return false
+      if (kindFilter === 'commission_only' && inv.extras_net > 0) return false
+      if (q) {
+        const hay = [
+          inv.invoice_number,
+          inv.host_name ?? '',
+          inv.ocr_reference ?? '',
+        ]
+          .join(' ')
+          .toLowerCase()
+        if (!hay.includes(q)) return false
+      }
+      return true
+    })
+  }, [report, search])
+
+  const availableStatuses = useMemo(() => {
+    const s = new Set<string>()
+    for (const inv of report?.invoices ?? []) s.add(inv.status)
+    return Array.from(s).sort()
+  }, [report])
+
+  const activeFilterCount =
+    (search.q ? 1 : 0) +
+    (search.from ? 1 : 0) +
+    (search.to ? 1 : 0) +
+    (search.status !== 'all' ? 1 : 0) +
+    (search.kind !== 'all' ? 1 : 0)
+
+  const clearFilters = () =>
+    setSearch({ q: '', from: '', to: '', status: 'all', kind: 'all' })
+
   if (loading || !user) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
@@ -102,18 +166,24 @@ function BookkeepingPage() {
 
   const doCsv = () => {
     if (!report) return
-    const csv = buildCsv(report.invoices)
-    download(`fjallportalen-bokforing-${year}-Q${quarter}.csv`, 'text/csv', csv)
+    const rows = activeFilterCount > 0 ? filtered : report.invoices
+    if (rows.length === 0) return
+    const suffix = activeFilterCount > 0 ? '-filtrerad' : ''
+    const csv = buildCsv(rows)
+    download(`fjallportalen-bokforing-${year}-Q${quarter}${suffix}.csv`, 'text/csv', csv)
   }
 
   const doSie = () => {
     if (!report) return
+    const rows = activeFilterCount > 0 ? filtered : report.invoices
+    if (rows.length === 0) return
+    const suffix = activeFilterCount > 0 ? '-filtrerad' : ''
     const sie = buildSie4({
-      invoices: report.invoices,
+      invoices: rows,
       period: report.period,
       companyName: 'Fjällportalen',
     })
-    download(`fjallportalen-${year}-Q${quarter}.se`, 'application/octet-stream', sie)
+    download(`fjallportalen-${year}-Q${quarter}${suffix}.se`, 'application/octet-stream', sie)
   }
 
   const doSync = async (inv: AccountingInvoice) => {
@@ -188,17 +258,97 @@ function BookkeepingPage() {
             disabled={!report || report.invoices.length === 0}
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
           >
-            <FileSpreadsheet className="h-4 w-4" /> CSV
+            <FileSpreadsheet className="h-4 w-4" /> CSV{activeFilterCount > 0 ? ` (${filtered.length})` : ''}
           </button>
           <button
             onClick={doSie}
             disabled={!report || report.invoices.length === 0}
             className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
           >
-            <Download className="h-4 w-4" /> SIE4
+            <Download className="h-4 w-4" /> SIE4{activeFilterCount > 0 ? ` (${filtered.length})` : ''}
           </button>
         </div>
       </div>
+
+      {/* Search + filters */}
+      {report && !error && (
+        <div className="mt-4 rounded-2xl border border-border bg-background p-4">
+          <div className="flex flex-wrap items-end gap-3">
+            <div className="min-w-[220px] flex-1">
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Sök</label>
+              <div className="relative">
+                <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+                <input
+                  type="search"
+                  value={search.q}
+                  onChange={(e) => setSearch({ q: e.target.value })}
+                  placeholder="Fakturanr, värd eller OCR…"
+                  className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm"
+                />
+              </div>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Från</label>
+              <input
+                type="date"
+                value={search.from}
+                min={report.period.start}
+                max={report.period.end}
+                onChange={(e) => setSearch({ from: e.target.value })}
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Till</label>
+              <input
+                type="date"
+                value={search.to}
+                min={report.period.start}
+                max={report.period.end}
+                onChange={(e) => setSearch({ to: e.target.value })}
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              />
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Status</label>
+              <select
+                value={search.status}
+                onChange={(e) => setSearch({ status: e.target.value })}
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="all">Alla</option>
+                {availableStatuses.map((s) => (
+                  <option key={s} value={s}>{s}</option>
+                ))}
+              </select>
+            </div>
+            <div>
+              <label className="mb-1 block text-xs font-medium text-muted-foreground">Avdelning</label>
+              <select
+                value={search.kind}
+                onChange={(e) => setSearch({ kind: e.target.value })}
+                className="rounded-lg border border-border bg-background px-3 py-2 text-sm"
+              >
+                <option value="all">Alla</option>
+                <option value="commission_only">Endast kommission</option>
+                <option value="with_extras">Med tilläggstjänster</option>
+              </select>
+            </div>
+            {activeFilterCount > 0 && (
+              <button
+                onClick={clearFilters}
+                className="inline-flex items-center gap-1 rounded-full border border-border bg-background px-3 py-2 text-xs font-medium text-muted-foreground hover:bg-muted"
+              >
+                <X className="h-3.5 w-3.5" /> Rensa ({activeFilterCount})
+              </button>
+            )}
+          </div>
+          <p className="mt-3 text-xs text-muted-foreground">
+            Visar <strong className="text-foreground">{filtered.length}</strong> av {report.invoices.length} fakturor
+            {activeFilterCount > 0 ? ' — export använder filtrerat urval.' : '.'}
+          </p>
+        </div>
+      )}
 
       {/* Error banner */}
       {error && (
@@ -308,15 +458,17 @@ function BookkeepingPage() {
               </tr>
             </thead>
             <tbody className="divide-y divide-border bg-background">
-              {report.invoices.length === 0 ? (
+              {filtered.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-10 text-center text-sm text-muted-foreground">
                     <Inbox className="mx-auto mb-2 h-6 w-6 text-muted-foreground/70" />
-                    Inga fakturor under {periodLabel}. Prova ett annat kvartal.
+                    {report.invoices.length === 0
+                      ? `Inga fakturor under ${periodLabel}. Prova ett annat kvartal.`
+                      : 'Inga fakturor matchar sök/filter. Rensa för att se alla.'}
                   </td>
                 </tr>
               ) : (
-                report.invoices.map((inv) => (
+                filtered.map((inv) => (
                   <tr key={inv.id}>
                     <td className="px-4 py-3 font-medium text-foreground">{inv.invoice_number}</td>
                     <td className="px-4 py-3 text-muted-foreground">{inv.issued_at.slice(0, 10)}</td>

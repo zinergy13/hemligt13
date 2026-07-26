@@ -23,6 +23,7 @@ import { Route as HyrUtRouteImport } from './routes/hyr-ut'
 import { Route as HurDetFunkarRouteImport } from './routes/hur-det-funkar'
 import { Route as FavoriterRouteImport } from './routes/favoriter'
 import { Route as AterstallLosenordRouteImport } from './routes/aterstall-losenord'
+import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VardIndexRouteImport } from './routes/vard.index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -123,6 +124,11 @@ const AterstallLosenordRoute = AterstallLosenordRouteImport.update({
   path: '/aterstall-losenord',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminRoute = AdminRouteImport.update({
+  id: '/admin',
+  path: '/admin',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
@@ -134,9 +140,9 @@ const VardIndexRoute = VardIndexRouteImport.update({
   getParentRoute: () => VardRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
-  id: '/admin/',
-  path: '/admin/',
-  getParentRoute: () => rootRouteImport,
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const VardKalenderRoute = VardKalenderRouteImport.update({
   id: '/kalender',
@@ -184,29 +190,29 @@ const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
-  id: '/admin/stadfirmor',
-  path: '/admin/stadfirmor',
-  getParentRoute: () => rootRouteImport,
+  id: '/stadfirmor',
+  path: '/stadfirmor',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminRecensionerRoute = AdminRecensionerRouteImport.update({
-  id: '/admin/recensioner',
-  path: '/admin/recensioner',
-  getParentRoute: () => rootRouteImport,
+  id: '/recensioner',
+  path: '/recensioner',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminPresentkortRoute = AdminPresentkortRouteImport.update({
-  id: '/admin/presentkort',
-  path: '/admin/presentkort',
-  getParentRoute: () => rootRouteImport,
+  id: '/presentkort',
+  path: '/presentkort',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
-  id: '/admin/dashboard',
-  path: '/admin/dashboard',
-  getParentRoute: () => rootRouteImport,
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
 } as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
-  id: '/admin/bokforing',
-  path: '/admin/bokforing',
-  getParentRoute: () => rootRouteImport,
+  id: '/bokforing',
+  path: '/bokforing',
+  getParentRoute: () => AdminRoute,
 } as any)
 const VardStugorNyRoute = VardStugorNyRouteImport.update({
   id: '/stugor/ny',
@@ -275,6 +281,7 @@ const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
   '/favoriter': typeof FavoriterRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
@@ -365,6 +372,7 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
   '/favoriter': typeof FavoriterRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
@@ -412,6 +420,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
+    | '/admin'
     | '/aterstall-losenord'
     | '/favoriter'
     | '/hur-det-funkar'
@@ -501,6 +510,7 @@ export interface FileRouteTypes {
   id:
     | '__root__'
     | '/'
+    | '/admin'
     | '/aterstall-losenord'
     | '/favoriter'
     | '/hur-det-funkar'
@@ -547,6 +557,7 @@ export interface FileRouteTypes {
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  AdminRoute: typeof AdminRouteWithChildren
   AterstallLosenordRoute: typeof AterstallLosenordRoute
   FavoriterRoute: typeof FavoriterRoute
   HurDetFunkarRoute: typeof HurDetFunkarRoute
@@ -561,17 +572,11 @@ export interface RootRouteChildren {
   SokRoute: typeof SokRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VardRoute: typeof VardRouteWithChildren
-  AdminBokforingRoute: typeof AdminBokforingRoute
-  AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminPresentkortRoute: typeof AdminPresentkortRoute
-  AdminRecensionerRoute: typeof AdminRecensionerRoute
-  AdminStadfirmorRoute: typeof AdminStadfirmorRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
   RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
-  AdminIndexRoute: typeof AdminIndexRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -683,6 +688,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AterstallLosenordRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -699,10 +711,10 @@ declare module '@tanstack/react-router' {
     }
     '/admin/': {
       id: '/admin/'
-      path: '/admin'
+      path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/vard/kalender': {
       id: '/vard/kalender'
@@ -769,38 +781,38 @@ declare module '@tanstack/react-router' {
     }
     '/admin/stadfirmor': {
       id: '/admin/stadfirmor'
-      path: '/admin/stadfirmor'
+      path: '/stadfirmor'
       fullPath: '/admin/stadfirmor'
       preLoaderRoute: typeof AdminStadfirmorRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/recensioner': {
       id: '/admin/recensioner'
-      path: '/admin/recensioner'
+      path: '/recensioner'
       fullPath: '/admin/recensioner'
       preLoaderRoute: typeof AdminRecensionerRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/presentkort': {
       id: '/admin/presentkort'
-      path: '/admin/presentkort'
+      path: '/presentkort'
       fullPath: '/admin/presentkort'
       preLoaderRoute: typeof AdminPresentkortRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/dashboard': {
       id: '/admin/dashboard'
-      path: '/admin/dashboard'
+      path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/admin/bokforing': {
       id: '/admin/bokforing'
-      path: '/admin/bokforing'
+      path: '/bokforing'
       fullPath: '/admin/bokforing'
       preLoaderRoute: typeof AdminBokforingRouteImport
-      parentRoute: typeof rootRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/vard/stugor/ny': {
       id: '/vard/stugor/ny'
@@ -889,6 +901,26 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminRouteChildren {
+  AdminBokforingRoute: typeof AdminBokforingRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminPresentkortRoute: typeof AdminPresentkortRoute
+  AdminRecensionerRoute: typeof AdminRecensionerRoute
+  AdminStadfirmorRoute: typeof AdminStadfirmorRoute
+  AdminIndexRoute: typeof AdminIndexRoute
+}
+
+const AdminRouteChildren: AdminRouteChildren = {
+  AdminBokforingRoute: AdminBokforingRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
+  AdminPresentkortRoute: AdminPresentkortRoute,
+  AdminRecensionerRoute: AdminRecensionerRoute,
+  AdminStadfirmorRoute: AdminStadfirmorRoute,
+  AdminIndexRoute: AdminIndexRoute,
+}
+
+const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
 interface ListorRouteChildren {
   ListorIdRoute: typeof ListorIdRoute
 }
@@ -924,6 +956,7 @@ const VardRouteWithChildren = VardRoute._addFileChildren(VardRouteChildren)
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  AdminRoute: AdminRouteWithChildren,
   AterstallLosenordRoute: AterstallLosenordRoute,
   FavoriterRoute: FavoriterRoute,
   HurDetFunkarRoute: HurDetFunkarRoute,
@@ -938,17 +971,11 @@ const rootRouteChildren: RootRouteChildren = {
   SokRoute: SokRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VardRoute: VardRouteWithChildren,
-  AdminBokforingRoute: AdminBokforingRoute,
-  AdminDashboardRoute: AdminDashboardRoute,
-  AdminPresentkortRoute: AdminPresentkortRoute,
-  AdminRecensionerRoute: AdminRecensionerRoute,
-  AdminStadfirmorRoute: AdminStadfirmorRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,
   RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
-  AdminIndexRoute: AdminIndexRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
@@ -963,3 +990,12 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { createStart } from '@tanstack/react-start'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+  }
+}

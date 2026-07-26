@@ -119,12 +119,12 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   page.drawLine({ start: { x: left, y }, end: { x: right, y }, thickness: 1, color: rgb(0.85, 0.86, 0.87) });
   // Extras-marginaler
   const extras = inv.extras_breakdown ?? {};
-  const extrasRows: [string, number][] = [
-    ["Städmarginal", extras.cleaning ?? 0],
-    ["Matleveransavgift", extras.groceries ?? 0],
-    ["Vedmarginal", extras.firewood ?? 0],
-    ["Linnemarginal", extras.linen ?? 0],
-  ].filter(([, v]) => v > 0) as [string, number][];
+  const extrasRows: [string, number][] = ([
+    ["Städmarginal", extras.cleaning ?? 0] as [string, number],
+    ["Matleveransavgift", extras.groceries ?? 0] as [string, number],
+    ["Vedmarginal", extras.firewood ?? 0] as [string, number],
+    ["Linnemarginal", extras.linen ?? 0] as [string, number],
+  ]).filter((r) => r[1] > 0);
   if (extrasRows.length > 0) {
     y -= 18;
     page.drawText("Tillvalsmarginaler (inkl. moms)", { x: left, y, size: 9, font: bold, color: muted });

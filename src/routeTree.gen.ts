@@ -26,6 +26,7 @@ import { Route as AterstallLosenordRouteImport } from './routes/aterstall-loseno
 import { Route as AdminRouteImport } from './routes/admin'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as VardIndexRouteImport } from './routes/vard.index'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
@@ -137,6 +138,11 @@ const VardIndexRoute = VardIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => VardRoute,
+} as any)
+const AdminIndexRoute = AdminIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminRoute,
 } as any)
 const VardKalenderRoute = VardKalenderRouteImport.update({
   id: '/kalender',
@@ -304,6 +310,7 @@ export interface FileRoutesByFullPath {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
+  '/admin/': typeof AdminIndexRoute
   '/vard/': typeof VardIndexRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
@@ -320,7 +327,6 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/admin': typeof AdminRouteWithChildren
   '/aterstall-losenord': typeof AterstallLosenordRoute
   '/favoriter': typeof FavoriterRoute
   '/hur-det-funkar': typeof HurDetFunkarRoute
@@ -348,6 +354,7 @@ export interface FileRoutesByTo {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
+  '/admin': typeof AdminIndexRoute
   '/vard': typeof VardIndexRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
@@ -394,6 +401,7 @@ export interface FileRoutesById {
   '/vard/bokningar': typeof VardBokningarRoute
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
+  '/admin/': typeof AdminIndexRoute
   '/vard/': typeof VardIndexRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
@@ -441,6 +449,7 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/kalender'
+    | '/admin/'
     | '/vard/'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
@@ -457,7 +466,6 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/admin'
     | '/aterstall-losenord'
     | '/favoriter'
     | '/hur-det-funkar'
@@ -485,6 +493,7 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/kalender'
+    | '/admin'
     | '/vard'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
@@ -530,6 +539,7 @@ export interface FileRouteTypes {
     | '/vard/bokningar'
     | '/vard/faktura'
     | '/vard/kalender'
+    | '/admin/'
     | '/vard/'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
@@ -698,6 +708,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/vard/'
       preLoaderRoute: typeof VardIndexRouteImport
       parentRoute: typeof VardRoute
+    }
+    '/admin/': {
+      id: '/admin/'
+      path: '/'
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
     '/vard/kalender': {
       id: '/vard/kalender'
@@ -890,6 +907,7 @@ interface AdminRouteChildren {
   AdminPresentkortRoute: typeof AdminPresentkortRoute
   AdminRecensionerRoute: typeof AdminRecensionerRoute
   AdminStadfirmorRoute: typeof AdminStadfirmorRoute
+  AdminIndexRoute: typeof AdminIndexRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
@@ -898,6 +916,7 @@ const AdminRouteChildren: AdminRouteChildren = {
   AdminPresentkortRoute: AdminPresentkortRoute,
   AdminRecensionerRoute: AdminRecensionerRoute,
   AdminStadfirmorRoute: AdminStadfirmorRoute,
+  AdminIndexRoute: AdminIndexRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)

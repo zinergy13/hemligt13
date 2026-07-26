@@ -11,6 +11,21 @@ import { ListSkeleton } from "@/components/Skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { ReviewForm } from "@/components/ReviewsSection";
 
+function ReviewCTA({ bookingId, cabinId }: { bookingId: string; cabinId: string }) {
+  const [open, setOpen] = useState(false);
+  if (!open) {
+    return (
+      <button
+        onClick={() => setOpen(true)}
+        className="mt-3 inline-flex items-center gap-2 rounded-full border border-primary/30 bg-primary/5 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/10"
+      >
+        <Star className="h-3.5 w-3.5" /> Lämna recension
+      </button>
+    );
+  }
+  return <ReviewForm bookingId={bookingId} cabinId={cabinId} onDone={() => setOpen(false)} />;
+}
+
 type Payout = {
   swish_number: string | null;
   bankgiro: string | null;

@@ -188,6 +188,9 @@ function MyBookingsPage() {
                   {b.status === "confirmed" && (
                     <PayoutBox hostId={b.host_id} totalPrice={b.total_price} />
                   )}
+                  {b.status === "completed" && c && (
+                    <ReviewCTA bookingId={b.id} cabinId={b.cabin_id} />
+                  )}
                 </div>
               </li>
             );

@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as VardRouteImport } from './routes/vard'
+import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OmOssRouteImport } from './routes/om-oss'
@@ -54,6 +55,11 @@ import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pd
 const VardRoute = VardRouteImport.update({
   id: '/vard',
   path: '/vard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const UnsubscribeRoute = UnsubscribeRouteImport.update({
+  id: '/unsubscribe',
+  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SokRoute = SokRouteImport.update({
@@ -276,6 +282,7 @@ export interface FileRoutesByFullPath {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
@@ -319,6 +326,7 @@ export interface FileRoutesByTo {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -362,6 +370,7 @@ export interface FileRoutesById {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
@@ -407,6 +416,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/unsubscribe'
     | '/vard'
     | '/admin/bokforing'
     | '/admin/presentkort'
@@ -450,6 +460,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/unsubscribe'
     | '/admin/bokforing'
     | '/admin/presentkort'
     | '/admin/recensioner'
@@ -492,6 +503,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/unsubscribe'
     | '/vard'
     | '/admin/bokforing'
     | '/admin/presentkort'
@@ -536,6 +548,7 @@ export interface RootRouteChildren {
   OmOssRoute: typeof OmOssRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SokRoute: typeof SokRoute
+  UnsubscribeRoute: typeof UnsubscribeRoute
   VardRoute: typeof VardRouteWithChildren
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
@@ -560,6 +573,13 @@ declare module '@tanstack/react-router' {
       path: '/vard'
       fullPath: '/vard'
       preLoaderRoute: typeof VardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/unsubscribe': {
+      id: '/unsubscribe'
+      path: '/unsubscribe'
+      fullPath: '/unsubscribe'
+      preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sok': {
@@ -909,6 +929,7 @@ const rootRouteChildren: RootRouteChildren = {
   OmOssRoute: OmOssRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SokRoute: SokRoute,
+  UnsubscribeRoute: UnsubscribeRoute,
   VardRoute: VardRouteWithChildren,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,

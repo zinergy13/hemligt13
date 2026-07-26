@@ -3,6 +3,7 @@ import { Mountain, Menu, X, User as UserIcon, LogOut, Home } from "lucide-react"
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
+import { NotificationBell } from "@/components/NotificationBell";
 
 const navItems = [
   { to: "/", label: "Hem" },
@@ -58,7 +59,9 @@ export function Header() {
 
         <div className="hidden items-center gap-2 md:flex">
           {loading ? null : user ? (
-            <div className="relative">
+            <>
+              <NotificationBell />
+              <div className="relative">
               <button
                 onClick={() => setMenuOpen((o) => !o)}
                 className="flex items-center gap-2 rounded-full border border-border bg-background py-1.5 pl-2 pr-3 text-sm font-medium text-foreground hover:bg-muted"
@@ -79,6 +82,13 @@ export function Header() {
                     >
                       <UserIcon className="h-4 w-4" /> Mitt konto
                     </Link>
+                    <Link
+                      to="/listor"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted"
+                    >
+                      <Home className="h-4 w-4" /> Mina listor
+                    </Link>
                     {profile?.is_host && (
                       <Link
                         to="/vard"
@@ -97,7 +107,8 @@ export function Header() {
                   </div>
                 </>
               )}
-            </div>
+              </div>
+            </>
           ) : (
             <>
               <Link

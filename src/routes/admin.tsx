@@ -178,6 +178,18 @@ function AdminPage() {
           >
             Städfirmor
           </Link>
+          <Link
+            to="/admin/recensioner"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            Moderera recensioner
+          </Link>
+          <Link
+            to="/admin/presentkort"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            Presentkort
+          </Link>
         </div>
       </div>
 

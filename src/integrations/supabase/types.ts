@@ -113,6 +113,41 @@ export type Database = {
           },
         ]
       }
+      booking_messages: {
+        Row: {
+          body: string
+          booking_id: string
+          created_at: string
+          id: string
+          read_at: string | null
+          sender_id: string
+        }
+        Insert: {
+          body: string
+          booking_id: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id: string
+        }
+        Update: {
+          body?: string
+          booking_id?: string
+          created_at?: string
+          id?: string
+          read_at?: string | null
+          sender_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "booking_messages_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       bookings: {
         Row: {
           cabin_id: string
@@ -755,6 +790,96 @@ export type Database = {
           },
         ]
       }
+      gift_card_redemptions: {
+        Row: {
+          amount_ore: number
+          booking_id: string | null
+          created_at: string
+          gift_card_id: string
+          id: string
+          redeemed_by: string
+        }
+        Insert: {
+          amount_ore: number
+          booking_id?: string | null
+          created_at?: string
+          gift_card_id: string
+          id?: string
+          redeemed_by: string
+        }
+        Update: {
+          amount_ore?: number
+          booking_id?: string | null
+          created_at?: string
+          gift_card_id?: string
+          id?: string
+          redeemed_by?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "gift_card_redemptions_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "gift_card_redemptions_gift_card_id_fkey"
+            columns: ["gift_card_id"]
+            isOneToOne: false
+            referencedRelation: "gift_cards"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      gift_cards: {
+        Row: {
+          amount_ore: number
+          code: string
+          created_at: string
+          created_by: string | null
+          currency: string
+          expires_at: string | null
+          id: string
+          issued_to_email: string | null
+          issued_to_name: string | null
+          message: string | null
+          redeemed_ore: number
+          status: string
+          updated_at: string
+        }
+        Insert: {
+          amount_ore: number
+          code: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          issued_to_email?: string | null
+          issued_to_name?: string | null
+          message?: string | null
+          redeemed_ore?: number
+          status?: string
+          updated_at?: string
+        }
+        Update: {
+          amount_ore?: number
+          code?: string
+          created_at?: string
+          created_by?: string | null
+          currency?: string
+          expires_at?: string | null
+          id?: string
+          issued_to_email?: string | null
+          issued_to_name?: string | null
+          message?: string | null
+          redeemed_ore?: number
+          status?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       host_invoice_events: {
         Row: {
           actor_id: string | null
@@ -889,6 +1014,39 @@ export type Database = {
         }
         Relationships: []
       }
+      notifications: {
+        Row: {
+          body: string | null
+          created_at: string
+          id: string
+          kind: string
+          link: string | null
+          read_at: string | null
+          title: string
+          user_id: string
+        }
+        Insert: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind: string
+          link?: string | null
+          read_at?: string | null
+          title: string
+          user_id: string
+        }
+        Update: {
+          body?: string | null
+          created_at?: string
+          id?: string
+          kind?: string
+          link?: string | null
+          read_at?: string | null
+          title?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       price_alerts: {
         Row: {
           active: boolean
@@ -961,6 +1119,47 @@ export type Database = {
         }
         Relationships: []
       }
+      review_flags: {
+        Row: {
+          created_at: string
+          id: string
+          reason: string
+          reporter_id: string
+          resolved: boolean
+          resolved_at: string | null
+          resolved_by: string | null
+          review_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          reason: string
+          reporter_id: string
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          review_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          reason?: string
+          reporter_id?: string
+          resolved?: boolean
+          resolved_at?: string | null
+          resolved_by?: string | null
+          review_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "review_flags_review_id_fkey"
+            columns: ["review_id"]
+            isOneToOne: false
+            referencedRelation: "reviews"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       reviews: {
         Row: {
           booking_id: string
@@ -968,7 +1167,11 @@ export type Database = {
           comment: string | null
           created_at: string
           guest_id: string
+          hidden: boolean
+          hidden_reason: string | null
           id: string
+          moderated_at: string | null
+          moderated_by: string | null
           rating: number
           updated_at: string
         }
@@ -978,7 +1181,11 @@ export type Database = {
           comment?: string | null
           created_at?: string
           guest_id: string
+          hidden?: boolean
+          hidden_reason?: string | null
           id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
           rating: number
           updated_at?: string
         }
@@ -988,7 +1195,11 @@ export type Database = {
           comment?: string | null
           created_at?: string
           guest_id?: string
+          hidden?: boolean
+          hidden_reason?: string | null
           id?: string
+          moderated_at?: string | null
+          moderated_by?: string | null
           rating?: number
           updated_at?: string
         }
@@ -1054,6 +1265,104 @@ export type Database = {
         }
         Relationships: []
       }
+      wishlist_cabins: {
+        Row: {
+          added_at: string
+          added_by: string
+          cabin_id: string
+          note: string | null
+          wishlist_id: string
+        }
+        Insert: {
+          added_at?: string
+          added_by: string
+          cabin_id: string
+          note?: string | null
+          wishlist_id: string
+        }
+        Update: {
+          added_at?: string
+          added_by?: string
+          cabin_id?: string
+          note?: string | null
+          wishlist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_cabins_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "wishlist_cabins_wishlist_id_fkey"
+            columns: ["wishlist_id"]
+            isOneToOne: false
+            referencedRelation: "wishlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishlist_members: {
+        Row: {
+          added_at: string
+          user_id: string
+          wishlist_id: string
+        }
+        Insert: {
+          added_at?: string
+          user_id: string
+          wishlist_id: string
+        }
+        Update: {
+          added_at?: string
+          user_id?: string
+          wishlist_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "wishlist_members_wishlist_id_fkey"
+            columns: ["wishlist_id"]
+            isOneToOne: false
+            referencedRelation: "wishlists"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      wishlists: {
+        Row: {
+          created_at: string
+          description: string | null
+          id: string
+          is_private: boolean
+          name: string
+          owner_id: string
+          share_slug: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_private?: boolean
+          name: string
+          owner_id: string
+          share_slug?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          description?: string | null
+          id?: string
+          is_private?: boolean
+          name?: string
+          owner_id?: string
+          share_slug?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       cabin_unavailable_dates: {
@@ -1114,6 +1423,20 @@ export type Database = {
         }
         Returns: boolean
       }
+      is_wishlist_member: {
+        Args: { _user: string; _wishlist: string }
+        Returns: boolean
+      }
+      lookup_gift_card: {
+        Args: { _code: string }
+        Returns: {
+          currency: string
+          expires_at: string
+          id: string
+          remaining_ore: number
+          status: string
+        }[]
+      }
       mark_overdue_invoices: { Args: never; Returns: number }
       move_to_dlq: {
         Args: {
@@ -1130,6 +1453,14 @@ export type Database = {
           message: Json
           msg_id: number
           read_ct: number
+        }[]
+      }
+      redeem_gift_card: {
+        Args: { _amount_ore: number; _booking_id: string; _code: string }
+        Returns: {
+          applied_ore: number
+          redemption_id: string
+          remaining_ore: number
         }[]
       }
     }

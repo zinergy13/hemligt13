@@ -15,6 +15,7 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
 import { Route as LoggaInRouteImport } from './routes/logga-in'
+import { Route as ListorRouteImport } from './routes/listor'
 import { Route as KontoRouteImport } from './routes/konto'
 import { Route as KontaktRouteImport } from './routes/kontakt'
 import { Route as HyrUtRouteImport } from './routes/hyr-ut'
@@ -30,7 +31,11 @@ import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
+import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
+import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
+import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
+import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
@@ -70,6 +75,11 @@ const MinaBokningarRoute = MinaBokningarRouteImport.update({
 const LoggaInRoute = LoggaInRouteImport.update({
   id: '/logga-in',
   path: '/logga-in',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorRoute = ListorRouteImport.update({
+  id: '/listor',
+  path: '/listor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const KontoRoute = KontoRouteImport.update({
@@ -147,9 +157,29 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
   path: '/omrade/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeddelandenBookingIdRoute = MeddelandenBookingIdRouteImport.update({
+  id: '/meddelanden/$bookingId',
+  path: '/meddelanden/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ListorIdRoute = ListorIdRouteImport.update({
+  id: '/$id',
+  path: '/$id',
+  getParentRoute: () => ListorRoute,
+} as any)
 const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
   id: '/stadfirmor',
   path: '/stadfirmor',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRecensionerRoute = AdminRecensionerRouteImport.update({
+  id: '/recensioner',
+  path: '/recensioner',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPresentkortRoute = AdminPresentkortRouteImport.update({
+  id: '/presentkort',
+  path: '/presentkort',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
@@ -214,6 +244,7 @@ export interface FileRoutesByFullPath {
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
+  '/listor': typeof ListorRouteWithChildren
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
@@ -221,7 +252,11 @@ export interface FileRoutesByFullPath {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/presentkort': typeof AdminPresentkortRoute
+  '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/listor/$id': typeof ListorIdRoute
+  '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -248,13 +283,18 @@ export interface FileRoutesByTo {
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
+  '/listor': typeof ListorRouteWithChildren
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/presentkort': typeof AdminPresentkortRoute
+  '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/listor/$id': typeof ListorIdRoute
+  '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -282,6 +322,7 @@ export interface FileRoutesById {
   '/hyr-ut': typeof HyrUtRoute
   '/kontakt': typeof KontaktRoute
   '/konto': typeof KontoRoute
+  '/listor': typeof ListorRouteWithChildren
   '/logga-in': typeof LoggaInRoute
   '/mina-bokningar': typeof MinaBokningarRoute
   '/om-oss': typeof OmOssRoute
@@ -289,7 +330,11 @@ export interface FileRoutesById {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/presentkort': typeof AdminPresentkortRoute
+  '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/listor/$id': typeof ListorIdRoute
+  '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -318,6 +363,7 @@ export interface FileRouteTypes {
     | '/hyr-ut'
     | '/kontakt'
     | '/konto'
+    | '/listor'
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
@@ -325,7 +371,11 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/presentkort'
+    | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/listor/$id'
+    | '/meddelanden/$bookingId'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -352,13 +402,18 @@ export interface FileRouteTypes {
     | '/hyr-ut'
     | '/kontakt'
     | '/konto'
+    | '/listor'
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
     | '/admin/bokforing'
+    | '/admin/presentkort'
+    | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/listor/$id'
+    | '/meddelanden/$bookingId'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -385,6 +440,7 @@ export interface FileRouteTypes {
     | '/hyr-ut'
     | '/kontakt'
     | '/konto'
+    | '/listor'
     | '/logga-in'
     | '/mina-bokningar'
     | '/om-oss'
@@ -392,7 +448,11 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/presentkort'
+    | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/listor/$id'
+    | '/meddelanden/$bookingId'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -420,12 +480,14 @@ export interface RootRouteChildren {
   HyrUtRoute: typeof HyrUtRoute
   KontaktRoute: typeof KontaktRoute
   KontoRoute: typeof KontoRoute
+  ListorRoute: typeof ListorRouteWithChildren
   LoggaInRoute: typeof LoggaInRoute
   MinaBokningarRoute: typeof MinaBokningarRoute
   OmOssRoute: typeof OmOssRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SokRoute: typeof SokRoute
   VardRoute: typeof VardRouteWithChildren
+  MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
   RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
@@ -479,6 +541,13 @@ declare module '@tanstack/react-router' {
       path: '/logga-in'
       fullPath: '/logga-in'
       preLoaderRoute: typeof LoggaInRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor': {
+      id: '/listor'
+      path: '/listor'
+      fullPath: '/listor'
+      preLoaderRoute: typeof ListorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/konto': {
@@ -586,11 +655,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmradeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meddelanden/$bookingId': {
+      id: '/meddelanden/$bookingId'
+      path: '/meddelanden/$bookingId'
+      fullPath: '/meddelanden/$bookingId'
+      preLoaderRoute: typeof MeddelandenBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/listor/$id': {
+      id: '/listor/$id'
+      path: '/$id'
+      fullPath: '/listor/$id'
+      preLoaderRoute: typeof ListorIdRouteImport
+      parentRoute: typeof ListorRoute
+    }
     '/admin/stadfirmor': {
       id: '/admin/stadfirmor'
       path: '/stadfirmor'
       fullPath: '/admin/stadfirmor'
       preLoaderRoute: typeof AdminStadfirmorRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/recensioner': {
+      id: '/admin/recensioner'
+      path: '/recensioner'
+      fullPath: '/admin/recensioner'
+      preLoaderRoute: typeof AdminRecensionerRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/presentkort': {
+      id: '/admin/presentkort'
+      path: '/presentkort'
+      fullPath: '/admin/presentkort'
+      preLoaderRoute: typeof AdminPresentkortRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/bokforing': {
@@ -668,15 +765,30 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminBokforingRoute: typeof AdminBokforingRoute
+  AdminPresentkortRoute: typeof AdminPresentkortRoute
+  AdminRecensionerRoute: typeof AdminRecensionerRoute
   AdminStadfirmorRoute: typeof AdminStadfirmorRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBokforingRoute: AdminBokforingRoute,
+  AdminPresentkortRoute: AdminPresentkortRoute,
+  AdminRecensionerRoute: AdminRecensionerRoute,
   AdminStadfirmorRoute: AdminStadfirmorRoute,
 }
 
 const AdminRouteWithChildren = AdminRoute._addFileChildren(AdminRouteChildren)
+
+interface ListorRouteChildren {
+  ListorIdRoute: typeof ListorIdRoute
+}
+
+const ListorRouteChildren: ListorRouteChildren = {
+  ListorIdRoute: ListorIdRoute,
+}
+
+const ListorRouteWithChildren =
+  ListorRoute._addFileChildren(ListorRouteChildren)
 
 interface VardRouteChildren {
   VardBokningarRoute: typeof VardBokningarRoute
@@ -709,12 +821,14 @@ const rootRouteChildren: RootRouteChildren = {
   HyrUtRoute: HyrUtRoute,
   KontaktRoute: KontaktRoute,
   KontoRoute: KontoRoute,
+  ListorRoute: ListorRouteWithChildren,
   LoggaInRoute: LoggaInRoute,
   MinaBokningarRoute: MinaBokningarRoute,
   OmOssRoute: OmOssRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SokRoute: SokRoute,
   VardRoute: VardRouteWithChildren,
+  MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,
   RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,

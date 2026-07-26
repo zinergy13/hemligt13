@@ -227,7 +227,15 @@ function HostBookingsPage() {
                       {b.total_price.toLocaleString("sv-SE")} kr
                       <span className="ml-1 text-xs text-muted-foreground">total</span>
                     </span>
-                    {isPending && (
+                    <div className="flex flex-wrap items-center gap-2">
+                      <Link
+                        to="/meddelanden/$bookingId"
+                        params={{ bookingId: b.id }}
+                        className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
+                      >
+                        Meddelanden
+                      </Link>
+                      {isPending && (
                       <div className="flex gap-2">
                         <button
                           disabled={busy}
@@ -244,7 +252,8 @@ function HostBookingsPage() {
                           <Check className="h-3.5 w-3.5" /> Godkänn
                         </button>
                       </div>
-                    )}
+                      )}
+                    </div>
                   </div>
                 </div>
               </li>

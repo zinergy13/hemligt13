@@ -34,6 +34,7 @@ import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
+import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
@@ -170,6 +171,11 @@ const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
   path: '/stadfirmor',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminRecensionerRoute = AdminRecensionerRouteImport.update({
+  id: '/recensioner',
+  path: '/recensioner',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
   id: '/bokforing',
   path: '/bokforing',
@@ -240,6 +246,7 @@ export interface FileRoutesByFullPath {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -276,6 +283,7 @@ export interface FileRoutesByTo {
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -314,6 +322,7 @@ export interface FileRoutesById {
   '/sok': typeof SokRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -353,6 +362,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -389,6 +399,7 @@ export interface FileRouteTypes {
     | '/sitemap.xml'
     | '/sok'
     | '/admin/bokforing'
+    | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -426,6 +437,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -652,6 +664,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStadfirmorRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/recensioner': {
+      id: '/admin/recensioner'
+      path: '/recensioner'
+      fullPath: '/admin/recensioner'
+      preLoaderRoute: typeof AdminRecensionerRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/bokforing': {
       id: '/admin/bokforing'
       path: '/bokforing'
@@ -727,11 +746,13 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminBokforingRoute: typeof AdminBokforingRoute
+  AdminRecensionerRoute: typeof AdminRecensionerRoute
   AdminStadfirmorRoute: typeof AdminStadfirmorRoute
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBokforingRoute: AdminBokforingRoute,
+  AdminRecensionerRoute: AdminRecensionerRoute,
   AdminStadfirmorRoute: AdminStadfirmorRoute,
 }
 

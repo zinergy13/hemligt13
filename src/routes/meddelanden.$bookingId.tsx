@@ -1,8 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, Loader2 } from "lucide-react";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
 import { BookingMessages } from "@/components/BookingMessages";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -52,9 +50,7 @@ function MessagesPage() {
   }, [authLoading, user, bookingId, navigate]);
 
   return (
-    <>
-      <Header />
-      <main className="mx-auto min-h-[60vh] max-w-2xl px-4 py-8 md:px-6">
+    <main className="mx-auto min-h-[60vh] max-w-2xl px-4 py-8 md:px-6">
         {loading ? (
           <div className="flex items-center gap-2 text-sm text-muted-foreground">
             <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
@@ -77,9 +73,7 @@ function MessagesPage() {
             </p>
             <BookingMessages bookingId={booking.id} />
           </>
-        )}
-      </main>
-      <Footer />
-    </>
+      )}
+    </main>
   );
 }

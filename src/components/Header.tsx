@@ -1,5 +1,5 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Mountain, Menu, X, User as UserIcon, LogOut, Home } from "lucide-react";
+import { Mountain, Menu, X, User as UserIcon, LogOut, Home, Calendar } from "lucide-react";
 import { useState } from "react";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
@@ -83,6 +83,13 @@ export function Header() {
                       <UserIcon className="h-4 w-4" /> Mitt konto
                     </Link>
                     <Link
+                      to="/mina-bokningar"
+                      onClick={() => setMenuOpen(false)}
+                      className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted"
+                    >
+                      <Calendar className="h-4 w-4" /> Mina bokningar
+                    </Link>
+                    <Link
                       to="/listor"
                       onClick={() => setMenuOpen(false)}
                       className="flex items-center gap-2 px-4 py-3 text-sm text-foreground hover:bg-muted"
@@ -158,6 +165,13 @@ export function Header() {
                     className="rounded-lg px-3 py-3 text-sm font-medium text-foreground hover:bg-muted"
                   >
                     Mitt konto
+                  </Link>
+                  <Link
+                    to="/mina-bokningar"
+                    onClick={() => setOpen(false)}
+                    className="rounded-lg px-3 py-3 text-sm font-medium text-foreground hover:bg-muted"
+                  >
+                    Mina bokningar
                   </Link>
                   <button
                     onClick={() => { setOpen(false); handleSignOut(); }}

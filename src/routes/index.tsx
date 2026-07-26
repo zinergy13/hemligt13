@@ -3,6 +3,7 @@ import { Search, MapPin, Calendar, Users, ShieldCheck, Heart, KeyRound, ArrowRig
 import heroCabin from "../assets/hero-cabin.jpg";
 import { regions } from "../data/areas";
 import { SwedenMap } from "../components/SwedenMap";
+import { LastMinuteSection } from "../components/LastMinuteSection";
 
 export const Route = createFileRoute("/")({
   head: () => ({

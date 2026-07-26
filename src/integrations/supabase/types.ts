@@ -688,6 +688,32 @@ export type Database = {
         }
         Relationships: []
       }
+      favorites: {
+        Row: {
+          cabin_id: string
+          created_at: string
+          user_id: string
+        }
+        Insert: {
+          cabin_id: string
+          created_at?: string
+          user_id: string
+        }
+        Update: {
+          cabin_id?: string
+          created_at?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "favorites_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       firm_areas: {
         Row: {
           area_slug: string
@@ -848,6 +874,45 @@ export type Database = {
         }
         Relationships: []
       }
+      price_alerts: {
+        Row: {
+          active: boolean
+          area_slug: string | null
+          created_at: string
+          email: string
+          id: string
+          last_notified_at: string | null
+          max_price_per_night: number
+          region_slug: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          active?: boolean
+          area_slug?: string | null
+          created_at?: string
+          email: string
+          id?: string
+          last_notified_at?: string | null
+          max_price_per_night: number
+          region_slug?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          active?: boolean
+          area_slug?: string | null
+          created_at?: string
+          email?: string
+          id?: string
+          last_notified_at?: string | null
+          max_price_per_night?: number
+          region_slug?: string | null
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           avatar_url: string | null
@@ -880,6 +945,54 @@ export type Database = {
           updated_at?: string
         }
         Relationships: []
+      }
+      reviews: {
+        Row: {
+          booking_id: string
+          cabin_id: string
+          comment: string | null
+          created_at: string
+          guest_id: string
+          id: string
+          rating: number
+          updated_at: string
+        }
+        Insert: {
+          booking_id: string
+          cabin_id: string
+          comment?: string | null
+          created_at?: string
+          guest_id: string
+          id?: string
+          rating: number
+          updated_at?: string
+        }
+        Update: {
+          booking_id?: string
+          cabin_id?: string
+          comment?: string | null
+          created_at?: string
+          guest_id?: string
+          id?: string
+          rating?: number
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "reviews_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: true
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "reviews_cabin_id_fkey"
+            columns: ["cabin_id"]
+            isOneToOne: false
+            referencedRelation: "cabins"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       suppressed_emails: {
         Row: {

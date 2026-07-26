@@ -4,7 +4,7 @@ import { Camera, Calendar, Wallet, ShieldCheck, ArrowRight } from "lucide-react"
 export const Route = createFileRoute("/hyr-ut")({
   head: () => ({
     meta: [
-      { title: "Hyr ut din stuga i svenska fjällen — Fjällhuset" },
+      { title: "Hyr ut din stuga i svenska fjällen — Fjällportalen" },
       { name: "description", content: "Lägg upp din stuga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender — du sätter pris och regler." },
       { property: "og:title", content: "Hyr ut din stuga i svenska fjällen" },
       { property: "og:description", content: "Tjäna pengar på din stuga i svenska fjällen — utan krångel och utan höga avgifter." },
@@ -28,7 +28,7 @@ function HostPage() {
             <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">För stugägare</p>
             <h1 className="font-serif text-4xl leading-tight md:text-6xl">Hyr ut din stuga i svenska fjällen.</h1>
             <p className="mt-5 text-lg text-secondary-foreground/85">
-              Slipp Facebook-grupper och sms-trafik. Fjällhuset samlar gäster som söker just din typ av boende — och hanterar bokning, betalning och kalender åt dig.
+              Slipp Facebook-grupper och sms-trafik. Fjällportalen samlar gäster som söker just din typ av boende — och hanterar bokning, betalning och kalender åt dig.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link

@@ -8,7 +8,7 @@ import { areas } from "@/data/areas";
 import { formatOreKr } from "@/lib/extras";
 
 export const Route = createFileRoute("/admin/stadfirmor")({
-  head: () => ({ meta: [{ title: "Städfirmor — Admin — Fjällhuset" }] }),
+  head: () => ({ meta: [{ title: "Städfirmor — Admin — Fjällportalen" }] }),
   component: AdminFirmsPage,
 });
 

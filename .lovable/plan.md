@@ -1,6 +1,6 @@
 ## Sprint 3 — Betalning, prissättning & kalendersync
 
-Ingen pengahantering via Fjällhuset. Vi visar värdens betaluppgifter efter bekräftad bokning och synkar kalendrar med Airbnb/Booking.
+Ingen pengahantering via Fjällportalen. Vi visar värdens betaluppgifter efter bekräftad bokning och synkar kalendrar med Airbnb/Booking.
 
 ### 1. Betalning direkt värd→gäst
 
@@ -17,7 +17,7 @@ Minst ett fält krävs innan stugan får publiceras (validering i CabinForm + se
 - Totalt att betala (kr)
 - Swish-nr med "Kopiera"-knapp + `swish://` deeplink på mobil
 - Bankgiro/konto med kopieringsknapp
-- Föreslagen meddelanderad: "Fjällhuset #<kort-id> — <gästnamn>"
+- Föreslagen meddelanderad: "Fjällportalen #<kort-id> — <gästnamn>"
 - Värdens egna instruktioner
 
 Innan bekräftelse: **inga** betaluppgifter läcker. RLS: `bookings.status='confirmed' AND guest_id=auth.uid()` för att se värdens betalfält.
@@ -50,7 +50,7 @@ Validering framåt: minst basspris krävs; säsonger valfria.
 - Ny server route: `/api/public/ical/cabin/[token].ics` (obfuskerad slug-token per stuga)
 - Nya kolumn `cabins.ical_token` (random 32 hex) genereras vid publicering
 - Returnerar VEVENT för varje `confirmed`/`completed` bokning + varje rad i `cabin_unavailable_dates`
-- Values: `SUMMARY:Bokad (Fjällhuset)`, DTSTART/DTEND som DATE (all-day)
+- Values: `SUMMARY:Bokad (Fjällportalen)`, DTSTART/DTEND som DATE (all-day)
 - Cache-Control: private, max-age=300
 
 **Import in (externa kalendrar → oss):**

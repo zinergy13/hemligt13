@@ -75,7 +75,7 @@ function PayoutBox({ hostId, totalPrice }: { hostId: string; totalPrice: number 
 }
 
 export const Route = createFileRoute("/mina-bokningar")({
-  head: () => ({ meta: [{ title: "Mina bokningar — Fjällhuset" }] }),
+  head: () => ({ meta: [{ title: "Mina bokningar — Fjällportalen" }] }),
   component: MyBookingsPage,
 });
 

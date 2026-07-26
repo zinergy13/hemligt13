@@ -59,7 +59,7 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   const right = 547;
 
   // Header
-  page.drawText("Fjällhuset", { x: left, y, size: 22, font: bold, color: accent });
+  page.drawText("Fjällportalen", { x: left, y, size: 22, font: bold, color: accent });
   page.drawText("FAKTURA", { x: right - bold.widthOfTextAtSize("FAKTURA", 14), y: y + 4, size: 14, font: bold, color: ink });
   y -= 22;
   page.drawText("Provisionsavgift för uthyrningar", { x: left, y, size: 10, font, color: muted });
@@ -164,7 +164,7 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
     ? `Betalas senast ${formatDate(inv.due_date)}. Ange OCR ${inv.ocr_reference ?? inv.invoice_number} som referens.`
     : "Betalas senast 10 dagar efter fakturadatum.";
   page.drawText(dueTxt, { x: left, y: 60, size: 9, font, color: muted });
-  page.drawText("Fjällhuset AB · faktura@fjallhuset.se", { x: left, y: 46, size: 9, font, color: muted });
+  page.drawText("Fjällportalen AB · faktura@fjallportalen.se", { x: left, y: 46, size: 9, font, color: muted });
 
   return await pdf.save();
 }

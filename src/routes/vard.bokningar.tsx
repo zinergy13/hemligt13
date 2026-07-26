@@ -14,7 +14,7 @@ import { ListSkeleton } from "@/components/Skeleton";
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
 export const Route = createFileRoute("/vard/bokningar")({
-  head: () => ({ meta: [{ title: "Bokningar — Värd — Fjällhuset" }] }),
+  head: () => ({ meta: [{ title: "Bokningar — Värd — Fjällportalen" }] }),
   component: HostBookingsPage,
 });
 

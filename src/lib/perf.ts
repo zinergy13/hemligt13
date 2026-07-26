@@ -3,8 +3,8 @@
 // then exposes the data via a tiny pub-sub for the PerfOverlay component.
 //
 // Activate by visiting any page with ?perf=1 (sticky), or run
-//   localStorage.setItem("fjallmys-perf", "1")
-// Disable with ?perf=0 or localStorage.removeItem("fjallmys-perf").
+//   localStorage.setItem("fjallportalen-perf", "1")
+// Disable with ?perf=0 or localStorage.removeItem("fjallportalen-perf").
 
 export type PerfEntry = {
   id: number;
@@ -30,7 +30,7 @@ export type PerfAlert = {
   durationMs: number;
 };
 
-const FLAG_KEY = "fjallmys-perf";
+const FLAG_KEY = "fjallportalen-perf";
 const MAX_ENTRIES = 100;
 const MAX_ALERTS = 30;
 const COLD_START_IDLE_MS = 30_000; // gap that counts as a "cold start"

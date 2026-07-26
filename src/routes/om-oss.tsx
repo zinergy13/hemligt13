@@ -3,9 +3,9 @@ import { createFileRoute } from "@tanstack/react-router";
 export const Route = createFileRoute("/om-oss")({
   head: () => ({
     meta: [
-      { title: "Om oss — Fjällhuset" },
-      { name: "description", content: "Fjällhuset är byggt av och för svenska fjällens stugägare och besökare — en samlad, lokal plattform för uthyrning i hela fjällkedjan." },
-      { property: "og:title", content: "Om oss — Fjällhuset" },
+      { title: "Om oss — Fjällportalen" },
+      { name: "description", content: "Fjällportalen är byggt av och för svenska fjällens stugägare och besökare — en samlad, lokal plattform för uthyrning i hela fjällkedjan." },
+      { property: "og:title", content: "Om oss — Fjällportalen" },
       { property: "og:description", content: "Vi samlar Sveriges fjällstuguthyrning på ett ställe — lokalt, tryggt och enkelt." },
     ],
   }),
@@ -19,7 +19,7 @@ function AboutPage() {
       <h1 className="font-serif text-4xl text-foreground md:text-6xl">Svenska fjällen samlat. Lokalt. Äkta.</h1>
       <div className="mt-8 space-y-6 text-lg leading-relaxed text-muted-foreground">
         <p>
-          Fjällhuset är en samlad plats för stuguthyrning i svenska fjällen. Vi byggde plattformen för att vi själva tröttnat på att leta i Facebook-grupper, sms-tråda med ägare och försöka hålla reda på lediga datum i tio olika kalendrar.
+          Fjällportalen är en samlad plats för stuguthyrning i svenska fjällen. Vi byggde plattformen för att vi själva tröttnat på att leta i Facebook-grupper, sms-tråda med ägare och försöka hålla reda på lediga datum i tio olika kalendrar.
         </p>
         <p>
           Här samlas hela svenska fjällkedjan — Dalafjällen med Sälen och Idre, Härjedalens vidsträckta vidder kring Vemdalen och Funäsdalen, och Jämtlands alpina toppar från Åre till Storlien. Stugor, lägenheter, ski-in/ski-out och allt däremellan.

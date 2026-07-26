@@ -37,7 +37,7 @@ export const Route = createFileRoute("/api/public/ical/$token")({
         const events: IcsEvent[] = [];
         for (const b of bookings ?? []) {
           events.push({
-            uid: `booking-${b.id}@fjallhuset`,
+            uid: `booking-${b.id}@fjallportalen`,
             checkIn: b.check_in,
             checkOut: b.check_out,
             summary: b.status === "pending" ? "Reserved (pending)" : "Reserved",
@@ -49,20 +49,20 @@ export const Route = createFileRoute("/api/public/ical/$token")({
           // creates loops when a partner imports our feed.
           if (b.source && b.source.startsWith("feed:")) continue;
           events.push({
-            uid: b.external_uid || `block-${b.id}@fjallhuset`,
+            uid: b.external_uid || `block-${b.id}@fjallportalen`,
             checkIn: b.check_in,
             checkOut: b.check_out,
             summary: b.summary || "Blocked",
           });
         }
 
-        const body = buildIcs(`Fjällhuset — ${cabin.title}`, events);
+        const body = buildIcs(`Fjällportalen — ${cabin.title}`, events);
 
         return new Response(body, {
           status: 200,
           headers: {
             "Content-Type": "text/calendar; charset=utf-8",
-            "Content-Disposition": `inline; filename="fjallhuset-${cabin.id}.ics"`,
+            "Content-Disposition": `inline; filename="fjallportalen-${cabin.id}.ics"`,
             "Cache-Control": "public, max-age=300",
           },
         });

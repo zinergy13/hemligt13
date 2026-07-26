@@ -9,7 +9,7 @@ import { SeasonPricingManager } from "@/components/SeasonPricingManager";
 import { PricePreview } from "@/components/PricePreview";
 
 export const Route = createFileRoute("/konto")({
-  head: () => ({ meta: [{ title: "Mitt konto — Fjällhuset" }] }),
+  head: () => ({ meta: [{ title: "Mitt konto — Fjällportalen" }] }),
   component: AccountPage,
 });
 

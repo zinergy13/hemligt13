@@ -14,15 +14,15 @@ export const Route = createFileRoute("/omrade/$slug")({
   },
   head: ({ loaderData }) => {
     const area = loaderData?.area;
-    if (!area) return { meta: [{ title: "Område — Fjällhuset" }] };
+    if (!area) return { meta: [{ title: "Område — Fjällportalen" }] };
     const region = regionBySlug(area.region);
     const regionName = region?.name ?? "svenska fjällen";
     const url = `https://klappen-fjall-share.lovable.app/omrade/${area.slug}`;
     return {
       meta: [
-        { title: `Stugor i ${area.name} — Fjällhuset` },
+        { title: `Stugor i ${area.name} — Fjällportalen` },
         { name: "description", content: `${area.tagline}. Hitta och hyr stugor, lägenheter och fjällboenden i ${area.name}, ${regionName}.` },
-        { property: "og:title", content: `Stugor i ${area.name} — Fjällhuset` },
+        { property: "og:title", content: `Stugor i ${area.name} — Fjällportalen` },
         { property: "og:description", content: area.description },
         { property: "og:image", content: area.image },
         { property: "og:url", content: url },

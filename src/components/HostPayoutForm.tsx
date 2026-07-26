@@ -77,7 +77,7 @@ export function HostPayoutForm({ hostId }: { hostId: string }) {
       <div>
         <h2 className="font-serif text-xl text-foreground">Betaluppgifter</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Visas endast för gäster med en bekräftad bokning hos dig. Fjällhuset hanterar aldrig pengarna — gästen betalar dig direkt.
+          Visas endast för gäster med en bekräftad bokning hos dig. Fjällportalen hanterar aldrig pengarna — gästen betalar dig direkt.
         </p>
       </div>
 

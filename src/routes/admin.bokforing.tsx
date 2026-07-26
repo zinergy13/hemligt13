@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { useServerFn } from '@tanstack/react-start'
-import { AlertTriangle, ArrowLeft, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Search, Send, ShieldAlert, Sparkles, X } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, ChevronLeft, ChevronRight, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Search, Send, ShieldAlert, Sparkles, X } from 'lucide-react'
 import { toast } from 'sonner'
 import { zodValidator, fallback } from '@tanstack/zod-adapter'
 import { z } from 'zod'
@@ -21,6 +21,8 @@ const searchSchema = z.object({
   to: fallback(z.string(), '').default(''),
   status: fallback(z.string(), 'all').default('all'),
   kind: fallback(z.string(), 'all').default('all'),
+  page: fallback(z.number().int(), 1).default(1),
+  pageSize: fallback(z.number().int(), 25).default(25),
 })
 
 export const Route = createFileRoute('/admin/bokforing')({

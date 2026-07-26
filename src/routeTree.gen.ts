@@ -33,13 +33,17 @@ import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
+import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
 import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
+import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
 import { Route as VardStugorIdInsikterRouteImport } from './routes/vard.stugor.$id.insikter'
+import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
+import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
@@ -167,6 +171,11 @@ const ListorIdRoute = ListorIdRouteImport.update({
   path: '/$id',
   getParentRoute: () => ListorRoute,
 } as any)
+const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
+  id: '/email/unsubscribe',
+  path: '/email/unsubscribe',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
   id: '/stadfirmor',
   path: '/stadfirmor',
@@ -192,6 +201,11 @@ const VardStugorNyRoute = VardStugorNyRouteImport.update({
   path: '/stugor/ny',
   getParentRoute: () => VardRoute,
 } as any)
+const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
+  id: '/lovable/email/suppression',
+  path: '/lovable/email/suppression',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
   id: '/stugor/$id/redigera',
   path: '/stugor/$id/redigera',
@@ -202,6 +216,18 @@ const VardStugorIdInsikterRoute = VardStugorIdInsikterRouteImport.update({
   path: '/stugor/$id/insikter',
   getParentRoute: () => VardRoute,
 } as any)
+const LovableEmailTransactionalSendRoute =
+  LovableEmailTransactionalSendRouteImport.update({
+    id: '/lovable/email/transactional/send',
+    path: '/lovable/email/transactional/send',
+    getParentRoute: () => rootRouteImport,
+  } as any)
+const LovableEmailTransactionalPreviewRoute =
+  LovableEmailTransactionalPreviewRouteImport.update({
+    id: '/lovable/email/transactional/preview',
+    path: '/lovable/email/transactional/preview',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailQueueProcessRoute =
   LovableEmailQueueProcessRouteImport.update({
     id: '/lovable/email/queue/process',
@@ -255,6 +281,7 @@ export interface FileRoutesByFullPath {
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -264,6 +291,7 @@ export interface FileRoutesByFullPath {
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
   '/vard/': typeof VardIndexRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -271,6 +299,8 @@ export interface FileRoutesByFullPath {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
@@ -293,6 +323,7 @@ export interface FileRoutesByTo {
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -302,6 +333,7 @@ export interface FileRoutesByTo {
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
   '/vard': typeof VardIndexRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -309,6 +341,8 @@ export interface FileRoutesByTo {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
@@ -333,6 +367,7 @@ export interface FileRoutesById {
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -342,6 +377,7 @@ export interface FileRoutesById {
   '/vard/faktura': typeof VardFakturaRoute
   '/vard/kalender': typeof VardKalenderRoute
   '/vard/': typeof VardIndexRoute
+  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
@@ -349,6 +385,8 @@ export interface FileRoutesById {
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
+  '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
+  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
@@ -374,6 +412,7 @@ export interface FileRouteTypes {
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
     | '/omrade/$slug'
@@ -383,6 +422,7 @@ export interface FileRouteTypes {
     | '/vard/faktura'
     | '/vard/kalender'
     | '/vard/'
+    | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -390,6 +430,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
@@ -412,6 +454,7 @@ export interface FileRouteTypes {
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
     | '/omrade/$slug'
@@ -421,6 +464,7 @@ export interface FileRouteTypes {
     | '/vard/faktura'
     | '/vard/kalender'
     | '/vard'
+    | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -428,6 +472,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   id:
@@ -451,6 +497,7 @@ export interface FileRouteTypes {
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
     | '/omrade/$slug'
@@ -460,6 +507,7 @@ export interface FileRouteTypes {
     | '/vard/faktura'
     | '/vard/kalender'
     | '/vard/'
+    | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
@@ -467,6 +515,8 @@ export interface FileRouteTypes {
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
+    | '/lovable/email/transactional/preview'
+    | '/lovable/email/transactional/send'
     | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
@@ -487,16 +537,20 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SokRoute: typeof SokRoute
   VardRoute: typeof VardRouteWithChildren
+  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
   RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
+  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   ApiPublicIcalTokenRoute: typeof ApiPublicIcalTokenRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
+  LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
+  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -669,6 +723,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ListorIdRouteImport
       parentRoute: typeof ListorRoute
     }
+    '/email/unsubscribe': {
+      id: '/email/unsubscribe'
+      path: '/email/unsubscribe'
+      fullPath: '/email/unsubscribe'
+      preLoaderRoute: typeof EmailUnsubscribeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/stadfirmor': {
       id: '/admin/stadfirmor'
       path: '/stadfirmor'
@@ -704,6 +765,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardStugorNyRouteImport
       parentRoute: typeof VardRoute
     }
+    '/lovable/email/suppression': {
+      id: '/lovable/email/suppression'
+      path: '/lovable/email/suppression'
+      fullPath: '/lovable/email/suppression'
+      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/vard/stugor/$id/redigera': {
       id: '/vard/stugor/$id/redigera'
       path: '/stugor/$id/redigera'
@@ -717,6 +785,20 @@ declare module '@tanstack/react-router' {
       fullPath: '/vard/stugor/$id/insikter'
       preLoaderRoute: typeof VardStugorIdInsikterRouteImport
       parentRoute: typeof VardRoute
+    }
+    '/lovable/email/transactional/send': {
+      id: '/lovable/email/transactional/send'
+      path: '/lovable/email/transactional/send'
+      fullPath: '/lovable/email/transactional/send'
+      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/lovable/email/transactional/preview': {
+      id: '/lovable/email/transactional/preview'
+      path: '/lovable/email/transactional/preview'
+      fullPath: '/lovable/email/transactional/preview'
+      preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
+      parentRoute: typeof rootRouteImport
     }
     '/lovable/email/queue/process': {
       id: '/lovable/email/queue/process'
@@ -828,10 +910,12 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SokRoute: SokRoute,
   VardRoute: VardRouteWithChildren,
+  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,
   RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
+  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
     ApiPublicHooksGenerateMonthlyInvoicesRoute,
@@ -839,6 +923,8 @@ const rootRouteChildren: RootRouteChildren = {
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
+  LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
+  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

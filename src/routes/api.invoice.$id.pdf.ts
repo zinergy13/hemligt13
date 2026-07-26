@@ -69,6 +69,16 @@ export const Route = createFileRoute("/api/invoice/$id/pdf")({
           host_name: profile?.full_name ?? "",
           host_email: hostEmail,
           rows,
+          commission_net: (invoice as { commission_net?: number }).commission_net ?? 0,
+          extras_net: (invoice as { extras_net?: number }).extras_net ?? 0,
+          vat_amount: (invoice as { vat_amount?: number }).vat_amount ?? 0,
+          vat_rate: Number((invoice as { vat_rate?: number | string }).vat_rate ?? 0.25),
+          due_date: (invoice as { due_date?: string | null }).due_date ?? null,
+          ocr_reference: (invoice as { ocr_reference?: string | null }).ocr_reference ?? null,
+          extras_breakdown:
+            ((invoice as { extras_breakdown?: Record<string, number> | null }).extras_breakdown ?? null) as
+              | { cleaning?: number; groceries?: number; firewood?: number; linen?: number }
+              | null,
         });
 
         return new Response(new Uint8Array(pdfBytes), {

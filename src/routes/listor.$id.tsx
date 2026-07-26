@@ -193,7 +193,7 @@ function WishlistDetailPage() {
                     <li key={c.id} className="flex items-center justify-between px-4 py-3">
                       <div>
                         <div className="text-sm font-medium text-foreground">{c.title}</div>
-                        <div className="text-xs text-muted-foreground">{c.area}</div>
+                        <div className="text-xs text-muted-foreground">{c.area_slug}</div>
                       </div>
                       <button
                         onClick={() => addCabin(c.id)}

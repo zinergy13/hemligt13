@@ -1440,6 +1440,14 @@ export type Database = {
         Args: { payload: Json; queue_name: string }
         Returns: number
       }
+      find_cleaning_match: {
+        Args: { _area_slug: string; _size_sqm: number }
+        Returns: {
+          firm_id: string
+          firm_name: string
+          price_to_firm: number
+        }[]
+      }
       generate_monthly_host_invoices: {
         Args: never
         Returns: {

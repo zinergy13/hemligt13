@@ -32,6 +32,7 @@ import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
+import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
 import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
@@ -151,6 +152,12 @@ const VardStugorIdRedigeraRoute = VardStugorIdRedigeraRouteImport.update({
   path: '/stugor/$id/redigera',
   getParentRoute: () => VardRoute,
 } as any)
+const LovableEmailQueueProcessRoute =
+  LovableEmailQueueProcessRouteImport.update({
+    id: '/lovable/email/queue/process',
+    path: '/lovable/email/queue/process',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicIcalTokenRoute = ApiPublicIcalTokenRouteImport.update({
   id: '/api/public/ical/$token',
   path: '/api/public/ical/$token',
@@ -194,6 +201,7 @@ export interface FileRoutesByFullPath {
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesByTo {
@@ -221,6 +229,7 @@ export interface FileRoutesByTo {
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRoutesById {
@@ -250,6 +259,7 @@ export interface FileRoutesById {
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
+  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
 export interface FileRouteTypes {
@@ -280,6 +290,7 @@ export interface FileRouteTypes {
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
+    | '/lovable/email/queue/process'
     | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
   to:
@@ -307,6 +318,7 @@ export interface FileRouteTypes {
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
+    | '/lovable/email/queue/process'
     | '/vard/stugor/$id/redigera'
   id:
     | '__root__'
@@ -335,6 +347,7 @@ export interface FileRouteTypes {
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
+    | '/lovable/email/queue/process'
     | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
 }
@@ -358,6 +371,7 @@ export interface RootRouteChildren {
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   ApiPublicIcalTokenRoute: typeof ApiPublicIcalTokenRoute
+  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -523,6 +537,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardStugorIdRedigeraRouteImport
       parentRoute: typeof VardRoute
     }
+    '/lovable/email/queue/process': {
+      id: '/lovable/email/queue/process'
+      path: '/lovable/email/queue/process'
+      fullPath: '/lovable/email/queue/process'
+      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/ical/$token': {
       id: '/api/public/ical/$token'
       path: '/api/public/ical/$token'
@@ -598,6 +619,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
     ApiPublicHooksGenerateMonthlyInvoicesRoute,
   ApiPublicIcalTokenRoute: ApiPublicIcalTokenRoute,
+  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

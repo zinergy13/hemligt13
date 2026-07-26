@@ -95,7 +95,7 @@ function BookkeepingPage() {
   const setSearch = (patch: Partial<z.infer<typeof searchSchema>>) => {
     navigate({
       to: '/admin/bokforing',
-      search: (prev) => ({ ...prev, ...patch }),
+      search: (prev: z.infer<typeof searchSchema>) => ({ ...prev, ...patch }),
       replace: true,
     })
   }

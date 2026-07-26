@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
 import { useEffect, useMemo, useState } from 'react'
 import { useServerFn } from '@tanstack/react-start'
-import { ArrowLeft, Download, FileSpreadsheet, Loader2, Send, ShieldAlert, Sparkles } from 'lucide-react'
+import { AlertTriangle, ArrowLeft, Download, FileSpreadsheet, Inbox, Loader2, RefreshCw, Send, ShieldAlert, Sparkles } from 'lucide-react'
 import { toast } from 'sonner'
 import { useAuth } from '@/hooks/useAuth'
 import {
@@ -45,6 +45,7 @@ function BookkeepingPage() {
   const [quarter, setQuarter] = useState<number>(currentQ)
   const [report, setReport] = useState<Awaited<ReturnType<typeof getAccountingReport>> | null>(null)
   const [busy, setBusy] = useState(false)
+  const [error, setError] = useState<string | null>(null)
   const [syncingId, setSyncingId] = useState<string | null>(null)
   const [fortnoxConnected, setFortnoxConnected] = useState<boolean | null>(null)
 
@@ -54,6 +55,7 @@ function BookkeepingPage() {
 
   const load = async () => {
     setBusy(true)
+    setError(null)
     try {
       const [r, f] = await Promise.all([
         fetchReport({ data: { year, quarter } }),
@@ -62,7 +64,10 @@ function BookkeepingPage() {
       setReport(r)
       setFortnoxConnected(f.connected)
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Kunde inte hämta rapport')
+      const msg = e instanceof Error ? e.message : 'Kunde inte hämta rapport'
+      setError(msg)
+      setReport(null)
+      toast.error(msg)
     } finally {
       setBusy(false)
     }
@@ -172,6 +177,13 @@ function BookkeepingPage() {
 
         <div className="ml-auto flex flex-wrap gap-2">
           <button
+            onClick={() => void load()}
+            disabled={busy}
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
+          >
+            {busy ? <Loader2 className="h-4 w-4 animate-spin" /> : <RefreshCw className="h-4 w-4" />} Uppdatera
+          </button>
+          <button
             onClick={doCsv}
             disabled={!report || report.invoices.length === 0}
             className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium hover:bg-muted disabled:opacity-50"
@@ -188,8 +200,46 @@ function BookkeepingPage() {
         </div>
       </div>
 
+      {/* Error banner */}
+      {error && (
+        <div className="mt-6 rounded-2xl border border-red-200 bg-red-50 p-5 text-sm text-red-900">
+          <div className="flex items-start gap-3">
+            <AlertTriangle className="mt-0.5 h-5 w-5 flex-none text-red-600" />
+            <div className="min-w-0 flex-1">
+              <div className="font-medium">Kunde inte hämta rapporten</div>
+              <p className="mt-1 break-words text-xs text-red-800/80">{error}</p>
+              <button
+                onClick={() => void load()}
+                disabled={busy}
+                className="mt-3 inline-flex items-center gap-2 rounded-full bg-red-600 px-3 py-1.5 text-xs font-medium text-white hover:bg-red-700 disabled:opacity-50"
+              >
+                {busy ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <RefreshCw className="h-3.5 w-3.5" />} Försök igen
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Loading skeleton */}
+      {busy && !report && !error && (
+        <div className="mt-6 space-y-4">
+          <div className="h-40 animate-pulse rounded-3xl border border-border bg-muted/40" />
+          <div className="h-24 animate-pulse rounded-3xl border border-border bg-muted/30" />
+          <div className="h-64 animate-pulse rounded-2xl border border-border bg-muted/20" />
+          <p className="text-center text-xs text-muted-foreground">Hämtar rapport för {periodLabel}…</p>
+        </div>
+      )}
+
+      {/* Empty state — no report loaded yet and not busy/erroring */}
+      {!report && !busy && !error && (
+        <div className="mt-6 rounded-3xl border border-dashed border-border bg-muted/10 p-10 text-center">
+          <Inbox className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
+          <p className="text-sm text-muted-foreground">Ingen rapport laddad. Välj period och klicka på Uppdatera.</p>
+        </div>
+      )}
+
       {/* VAT summary */}
-      {report && (
+      {report && !error && (
         <div className="mt-6 rounded-3xl border border-border bg-background p-6 md:p-8">
           <div className="flex items-center justify-between gap-4">
             <div>
@@ -242,7 +292,7 @@ function BookkeepingPage() {
       </div>
 
       {/* Invoice table */}
-      {report && (
+      {report && !error && (
         <div className="mt-6 overflow-x-auto rounded-2xl border border-border">
           <table className="w-full text-sm">
             <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
@@ -261,7 +311,8 @@ function BookkeepingPage() {
               {report.invoices.length === 0 ? (
                 <tr>
                   <td colSpan={8} className="px-4 py-10 text-center text-sm text-muted-foreground">
-                    Inga fakturor under perioden.
+                    <Inbox className="mx-auto mb-2 h-6 w-6 text-muted-foreground/70" />
+                    Inga fakturor under {periodLabel}. Prova ett annat kvartal.
                   </td>
                 </tr>
               ) : (

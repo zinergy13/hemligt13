@@ -7,6 +7,8 @@ export interface TemplateEntry {
   previewData?: Record<string, any>
   /** Fixed recipient — overrides caller-provided recipientEmail when set. */
   to?: string
+  /** Optional local-part override for the From address (e.g. "fakturor" -> fakturor@fjallportalen.com). Defaults to "noreply". */
+  fromLocal?: string
 }
 
 /**

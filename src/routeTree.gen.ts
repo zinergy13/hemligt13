@@ -30,6 +30,7 @@ import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as StugaSlugRouteImport } from './routes/stuga.$slug'
 import { Route as RegionSlugRouteImport } from './routes/region.$slug'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
+import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
@@ -147,6 +148,11 @@ const OmradeSlugRoute = OmradeSlugRouteImport.update({
   path: '/omrade/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
+const MeddelandenBookingIdRoute = MeddelandenBookingIdRouteImport.update({
+  id: '/meddelanden/$bookingId',
+  path: '/meddelanden/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
   id: '/stadfirmor',
   path: '/stadfirmor',
@@ -222,6 +228,7 @@ export interface FileRoutesByFullPath {
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -255,6 +262,7 @@ export interface FileRoutesByTo {
   '/sok': typeof SokRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -290,6 +298,7 @@ export interface FileRoutesById {
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
   '/region/$slug': typeof RegionSlugRoute
   '/stuga/$slug': typeof StugaSlugRoute
@@ -326,6 +335,7 @@ export interface FileRouteTypes {
     | '/vard'
     | '/admin/bokforing'
     | '/admin/stadfirmor'
+    | '/meddelanden/$bookingId'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -359,6 +369,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/admin/bokforing'
     | '/admin/stadfirmor'
+    | '/meddelanden/$bookingId'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -393,6 +404,7 @@ export interface FileRouteTypes {
     | '/vard'
     | '/admin/bokforing'
     | '/admin/stadfirmor'
+    | '/meddelanden/$bookingId'
     | '/omrade/$slug'
     | '/region/$slug'
     | '/stuga/$slug'
@@ -426,6 +438,7 @@ export interface RootRouteChildren {
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SokRoute: typeof SokRoute
   VardRoute: typeof VardRouteWithChildren
+  MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
   RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
@@ -586,6 +599,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof OmradeSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/meddelanden/$bookingId': {
+      id: '/meddelanden/$bookingId'
+      path: '/meddelanden/$bookingId'
+      fullPath: '/meddelanden/$bookingId'
+      preLoaderRoute: typeof MeddelandenBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/stadfirmor': {
       id: '/admin/stadfirmor'
       path: '/stadfirmor'
@@ -715,6 +735,7 @@ const rootRouteChildren: RootRouteChildren = {
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SokRoute: SokRoute,
   VardRoute: VardRouteWithChildren,
+  MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,
   RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,

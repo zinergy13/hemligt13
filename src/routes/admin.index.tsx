@@ -21,7 +21,7 @@ type Row = {
 
 type HostInfo = { id: string; full_name: string | null };
 
-export const Route = createFileRoute("/admin")({
+export const Route = createFileRoute("/admin/")({
   head: () => ({ meta: [{ title: "Admin — Fjällportalen" }] }),
   ssr: false,
   beforeLoad: async ({ location }) => {

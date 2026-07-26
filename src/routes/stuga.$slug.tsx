@@ -5,6 +5,8 @@ import { supabase } from "@/integrations/supabase/client";
 import { coverImage, AMENITY_OPTIONS, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
 import { BookingForm } from "@/components/BookingForm";
+import { FavoriteButton } from "@/components/FavoriteButton";
+import { ReviewsSection } from "@/components/ReviewsSection";
 
 export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({
@@ -107,10 +109,13 @@ function CabinPage() {
         </Link>
       )}
       <h1 className="font-serif text-3xl text-foreground md:text-5xl">{cabin.title}</h1>
-      <p className="mt-2 flex items-center gap-1 text-sm text-muted-foreground">
-        <MapPin className="h-4 w-4" /> {area?.name ?? cabin.area_slug}
-        {cabin.address ? ` · ${cabin.address}` : ""}
-      </p>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+        <p className="flex items-center gap-1 text-sm text-muted-foreground">
+          <MapPin className="h-4 w-4" /> {area?.name ?? cabin.area_slug}
+          {cabin.address ? ` · ${cabin.address}` : ""}
+        </p>
+        <FavoriteButton cabinId={cabin.id} variant="inline" />
+      </div>
 
       {/* Gallery */}
       <div className="mt-6 grid gap-2 md:grid-cols-4 md:grid-rows-2">
@@ -205,6 +210,8 @@ function CabinPage() {
           </div>
         </aside>
       </div>
+
+      <ReviewsSection cabinId={cabin.id} />
     </article>
   );
 }

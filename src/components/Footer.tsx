@@ -52,6 +52,7 @@ export function Footer() {
               <li><Link to="/sok" className="text-secondary-foreground/75 hover:text-secondary-foreground">Sök stuga</Link></li>
               <li><Link to="/hur-det-funkar" className="text-secondary-foreground/75 hover:text-secondary-foreground">Hur det funkar</Link></li>
               <li><Link to="/hyr-ut" className="text-secondary-foreground/75 hover:text-secondary-foreground">Hyr ut din stuga</Link></li>
+              <li><Link to="/favoriter" className="text-secondary-foreground/75 hover:text-secondary-foreground">Mina favoriter</Link></li>
               <li><Link to="/om-oss" className="text-secondary-foreground/75 hover:text-secondary-foreground">Om oss</Link></li>
               <li><Link to="/kontakt" className="text-secondary-foreground/75 hover:text-secondary-foreground">Hjälp & support</Link></li>
               <li><Link to="/logga-in" className="text-secondary-foreground/75 hover:text-secondary-foreground">Logga in</Link></li>

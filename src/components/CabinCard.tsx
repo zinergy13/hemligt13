@@ -2,6 +2,7 @@ import { Link } from "@tanstack/react-router";
 import { Users, Bed, MapPin } from "lucide-react";
 import { coverImage, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
+import { FavoriteButton } from "@/components/FavoriteButton";
 
 export function CabinCard({ cabin }: { cabin: CabinWithImages }) {
   const cover = coverImage(cabin);
@@ -10,8 +11,9 @@ export function CabinCard({ cabin }: { cabin: CabinWithImages }) {
     <Link
       to="/stuga/$slug"
       params={{ slug: cabin.slug }}
-      className="group flex flex-col overflow-hidden rounded-2xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-warm)]"
+      className="group relative flex flex-col overflow-hidden rounded-2xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-warm)]"
     >
+      <FavoriteButton cabinId={cabin.id} />
       <div className="aspect-[4/3] overflow-hidden bg-muted">
         {cover ? (
           <img

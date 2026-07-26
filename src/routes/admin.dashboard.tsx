@@ -1,6 +1,6 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useMemo, useState } from "react";
-import { Loader2, ShieldAlert, ArrowLeft, Users, Home, Coins, CalendarDays } from "lucide-react";
+import { Loader2, ShieldAlert, ArrowLeft, Users, Home, Coins, CalendarDays, Download } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { areas } from "@/data/areas";
@@ -28,7 +28,18 @@ type Booking = {
 };
 
 type Cabin = { id: string; title: string; area_slug: string; host_id: string };
-type Profile = { id: string; full_name: string | null; phone: string | null };
+type Profile = {
+  id: string;
+  full_name: string | null;
+  email: string | null;
+  phone: string | null;
+  address_line: string | null;
+  postal_code: string | null;
+  city: string | null;
+  country: string | null;
+  personal_number: string | null;
+  is_host: boolean | null;
+};
 
 const areaName = (slug: string) => areas.find((a) => a.slug === slug)?.name ?? slug;
 const areaRegion = (slug: string) => areas.find((a) => a.slug === slug)?.region ?? "";
@@ -57,15 +68,11 @@ function AdminDashboard() {
       setBookings(bs);
 
       const cabinIds = Array.from(new Set(bs.map((b) => b.cabin_id).filter(Boolean)));
-      const userIds = Array.from(new Set(bs.flatMap((b) => [b.guest_id, b.host_id]).filter(Boolean)));
-
       const [{ data: cs }, { data: ps }] = await Promise.all([
         cabinIds.length
           ? supabase.from("cabins").select("id, title, area_slug, host_id").in("id", cabinIds)
           : Promise.resolve({ data: [] as Cabin[] }),
-        userIds.length
-          ? supabase.from("profiles").select("id, full_name, phone").in("id", userIds)
-          : Promise.resolve({ data: [] as Profile[] }),
+        supabase.rpc("admin_list_profiles"),
       ]);
 
       const cmap: Record<string, Cabin> = {};
@@ -194,15 +201,24 @@ function AdminDashboard() {
       ) : tab === "bookings" ? (
         <BookingsTable bookings={bookings} cabins={cabins} profiles={profiles} />
       ) : tab === "guests" ? (
-        <PeopleTable rows={guests.map((g) => ({
-          id: g.id, name: profiles[g.id]?.full_name || "—", phone: profiles[g.id]?.phone || "—",
-          count: g.count, amount: g.spend, areas: Array.from(g.areas), last: g.last,
-        }))} amountLabel="Totalt spenderat" icon={<Users className="h-4 w-4" />} emptyText="Inga gäster ännu." />
+        <PeopleTable
+          filename="gaster.csv"
+          rows={guests.map((g) => ({
+            id: g.id,
+            profile: profiles[g.id],
+            count: g.count, amount: g.spend, areas: Array.from(g.areas), last: g.last,
+          }))}
+          amountLabel="Totalt spenderat" icon={<Users className="h-4 w-4" />} emptyText="Inga gäster ännu." />
       ) : (
-        <PeopleTable rows={hosts.map((h) => ({
-          id: h.id, name: profiles[h.id]?.full_name || "—", phone: profiles[h.id]?.phone || "—",
-          count: h.count, amount: h.gross, areas: Array.from(h.areas), last: h.last, extra: `Provision: ${fmt(h.commission)}`,
-        }))} amountLabel="Bruttoomsättning" icon={<Home className="h-4 w-4" />} emptyText="Inga värdar med bokningar ännu." />
+        <PeopleTable
+          filename="vardar.csv"
+          rows={hosts.map((h) => ({
+            id: h.id,
+            profile: profiles[h.id],
+            count: h.count, amount: h.gross, areas: Array.from(h.areas), last: h.last,
+            extra: `Provision: ${fmt(h.commission)}`,
+          }))}
+          amountLabel="Bruttoomsättning" icon={<Home className="h-4 w-4" />} emptyText="Inga värdar med bokningar ännu." />
       )}
     </section>
   );
@@ -319,16 +335,55 @@ function BookingsTable({ bookings, cabins, profiles }: { bookings: Booking[]; ca
   );
 }
 
-type PeopleRow = { id: string; name: string; phone: string; count: number; amount: number; areas: string[]; last: string; extra?: string };
-function PeopleTable({ rows, amountLabel, icon, emptyText }: { rows: PeopleRow[]; amountLabel: string; icon: React.ReactNode; emptyText: string }) {
+type PeopleRow = { id: string; profile?: Profile; count: number; amount: number; areas: string[]; last: string; extra?: string };
+function PeopleTable({ rows, amountLabel, icon, emptyText, filename }: { rows: PeopleRow[]; amountLabel: string; icon: React.ReactNode; emptyText: string; filename: string }) {
   if (rows.length === 0) return <Empty text={emptyText} />;
+
+  const exportCsv = () => {
+    const header = ["Namn","E-post","Telefon","Personnummer","Adress","Postnummer","Ort","Land","Bokningar",amountLabel,"Områden","Senast"];
+    const escape = (v: unknown) => {
+      const s = v == null ? "" : String(v);
+      return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s;
+    };
+    const lines = [header.join(";")];
+    rows.forEach((r) => {
+      const p = r.profile;
+      lines.push([
+        p?.full_name ?? "",
+        p?.email ?? "",
+        p?.phone ?? "",
+        p?.personal_number ?? "",
+        p?.address_line ?? "",
+        p?.postal_code ?? "",
+        p?.city ?? "",
+        p?.country ?? "",
+        r.count,
+        r.amount,
+        r.areas.map(areaName).join(" | "),
+        r.last,
+      ].map(escape).join(";"));
+    });
+    const blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url; a.download = filename; a.click();
+    URL.revokeObjectURL(url);
+  };
+
   return (
-    <div className="overflow-x-auto rounded-2xl border border-border">
+    <div>
+      <div className="mb-3 flex justify-end">
+        <button onClick={exportCsv} className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+          <Download className="h-4 w-4" /> Exportera CSV
+        </button>
+      </div>
+      <div className="overflow-x-auto rounded-2xl border border-border">
       <table className="w-full text-sm">
         <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
           <tr>
             <th className="px-4 py-3 font-medium"><span className="inline-flex items-center gap-1.5">{icon} Namn</span></th>
-            <th className="px-4 py-3 font-medium">Telefon</th>
+            <th className="px-4 py-3 font-medium">Kontakt</th>
+            <th className="px-4 py-3 font-medium">Adress</th>
             <th className="px-4 py-3 font-medium">Områden</th>
             <th className="px-4 py-3 font-medium text-right">Bokningar</th>
             <th className="px-4 py-3 font-medium text-right">{amountLabel}</th>
@@ -336,13 +391,21 @@ function PeopleTable({ rows, amountLabel, icon, emptyText }: { rows: PeopleRow[]
           </tr>
         </thead>
         <tbody className="divide-y divide-border bg-background">
-          {rows.map((r) => (
+          {rows.map((r) => {
+            const p = r.profile;
+            const addr = [p?.address_line, [p?.postal_code, p?.city].filter(Boolean).join(" "), p?.country].filter(Boolean).join(", ");
+            return (
             <tr key={r.id}>
               <td className="px-4 py-3 font-medium text-foreground">
-                {r.name}
+                {p?.full_name || "—"}
+                {p?.personal_number && <div className="text-xs font-normal text-muted-foreground">{p.personal_number}</div>}
                 {r.extra && <div className="text-xs font-normal text-muted-foreground">{r.extra}</div>}
               </td>
-              <td className="px-4 py-3 text-muted-foreground">{r.phone}</td>
+              <td className="px-4 py-3 text-muted-foreground">
+                <div>{p?.email || "—"}</div>
+                <div className="text-xs">{p?.phone || "—"}</div>
+              </td>
+              <td className="px-4 py-3 text-muted-foreground text-xs">{addr || "—"}</td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1">
                   {r.areas.length === 0 ? <span className="text-muted-foreground">—</span> : r.areas.map((s) => (
@@ -354,9 +417,10 @@ function PeopleTable({ rows, amountLabel, icon, emptyText }: { rows: PeopleRow[]
               <td className="px-4 py-3 text-right font-medium text-foreground">{fmt(r.amount)}</td>
               <td className="px-4 py-3 text-muted-foreground">{r.last}</td>
             </tr>
-          ))}
+          );})}
         </tbody>
       </table>
+      </div>
     </div>
   );
 }

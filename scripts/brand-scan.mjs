@@ -81,6 +81,8 @@ function scanText(text, label, hits) {
       /@lovable\.dev\//.test(line) ||
       /@\/integrations\/lovable/.test(line) ||
       /from\s+["']@lovable\.dev/.test(line) ||
+      // Interna Lovable-endpoints (webhook/kö/transaktionsmejl) — ej användarsynliga
+      /["']\/lovable\//.test(line) ||
       // SDK-identifier (ej användarsynlig text), t.ex. `lovable.auth.signIn(...)`
       /\blovable\s*\.\s*[a-zA-Z_]/.test(line)
     ) continue;

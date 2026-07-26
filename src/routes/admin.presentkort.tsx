@@ -62,6 +62,7 @@ function AdminGiftCardsPage() {
     if (!kr || kr <= 0) { toast.error("Ange giltigt belopp i kronor"); return; }
     setCreating(true);
     const code = randomCode();
+    const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
     const { error } = await supabase.from("gift_cards" as any).insert({
       code,
       amount_ore: kr * 100,
@@ -69,11 +70,49 @@ function AdminGiftCardsPage() {
       issued_to_name: name.trim() || null,
       message: message.trim() || null,
       created_by: user?.id,
-      expires_at: new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString(),
+      expires_at: expiresAt,
     });
+    if (error) { setCreating(false); toast.error(error.message); return; }
+
+    const recipient = email.trim();
+    if (recipient) {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        const res = await fetch("/lovable/email/transactional/send", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
+          },
+          body: JSON.stringify({
+            templateName: "gift-card",
+            recipientEmail: recipient,
+            idempotencyKey: `gift-card-${code}`,
+            templateData: {
+              recipientName: name.trim() || undefined,
+              code,
+              amountKr: kr,
+              expiresAt: new Date(expiresAt).toLocaleDateString("sv-SE"),
+              message: message.trim() || undefined,
+            },
+          }),
+        });
+        const body = await res.json().catch(() => ({}));
+        if (!res.ok || body?.success === false) {
+          toast.success(`Presentkort skapat: ${code}`);
+          toast.error(`Kunde inte skicka e-post: ${body?.error || body?.reason || res.statusText}`);
+        } else {
+          toast.success(`Presentkort skapat och skickat till ${recipient}`);
+        }
+      } catch (err: any) {
+        toast.success(`Presentkort skapat: ${code}`);
+        toast.error(`E-post kunde inte skickas: ${err?.message ?? "okänt fel"}`);
+      }
+    } else {
+      toast.success(`Presentkort skapat: ${code}`);
+    }
+
     setCreating(false);
-    if (error) { toast.error(error.message); return; }
-    toast.success(`Presentkort skapat: ${code}`);
     setEmail(""); setName(""); setMessage("");
     void load();
   };

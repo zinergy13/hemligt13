@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
-import { Loader2, CalendarDays, MapPin, Inbox, Wallet } from "lucide-react";
+import { Loader2, CalendarDays, MapPin, Inbox, Wallet, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
@@ -9,6 +9,7 @@ import { formatDateRange, statusLabel } from "@/lib/bookings";
 import { guestBookingsQuery } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
 import { supabase } from "@/integrations/supabase/client";
+import { ReviewForm } from "@/components/ReviewsSection";
 
 type Payout = {
   swish_number: string | null;

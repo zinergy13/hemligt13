@@ -55,6 +55,68 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
           });
         }
 
+        // Skicka e-postnotis till varje värd om ny månadsfaktura.
+        try {
+          const rows = (data ?? []) as Array<{ invoice_id: string; host_id: string; total_amount: number; booking_count: number }>;
+          if (rows.length > 0) {
+            const [{ render }, React, { template: hostInvoiceTemplate }] = await Promise.all([
+              import("@react-email/render"),
+              import("react"),
+              import("@/lib/email-templates/host-invoice"),
+            ]);
+            const origin = new URL(request.url).origin;
+            const { data: invoiceRows } = await admin
+              .from("host_invoices")
+              .select("id, invoice_number, period_start, period_end, total_amount, due_date, ocr_reference, host_id")
+              .in("id", rows.map((r) => r.invoice_id));
+
+            for (const inv of invoiceRows ?? []) {
+              const { data: userRes } = await admin.auth.admin.getUserById(inv.host_id as string);
+              const email = userRes?.user?.email;
+              if (!email) continue;
+              const { data: profile } = await admin
+                .from("profiles").select("full_name").eq("id", inv.host_id as string).maybeSingle();
+              const props = {
+                hostName: profile?.full_name?.split(" ")[0] ?? undefined,
+                invoiceNumber: inv.invoice_number,
+                periodLabel: `${inv.period_start} – ${inv.period_end}`,
+                amountKr: Math.round((inv.total_amount as number) / 100),
+                dueDate: inv.due_date ?? undefined,
+                ocrReference: inv.ocr_reference ?? undefined,
+                downloadUrl: `${origin}/api/invoice/${inv.id}/pdf`,
+              };
+              const html = await render(React.createElement(hostInvoiceTemplate.component, props));
+              const subject = typeof hostInvoiceTemplate.subject === "function"
+                ? hostInvoiceTemplate.subject(props)
+                : hostInvoiceTemplate.subject;
+              const messageId = crypto.randomUUID();
+              await admin.from("email_send_log").insert({
+                message_id: messageId,
+                template_name: "host-invoice",
+                recipient_email: email,
+                status: "pending",
+              });
+              await admin.rpc("enqueue_email", {
+                queue_name: "transactional_emails",
+                payload: {
+                  message_id: messageId,
+                  to: email,
+                  from: `Fjällportalen <fakturor@fjallportalen.com>`,
+                  sender_domain: "notify.fjallportalen.com",
+                  subject,
+                  html,
+                  purpose: "transactional",
+                  label: "host-invoice",
+                  idempotency_key: `host-invoice-${inv.id}`,
+                  queued_at: new Date().toISOString(),
+                },
+              });
+            }
+          }
+        } catch (e) {
+          console.error("Failed to enqueue invoice emails", e);
+        }
+
         return new Response(
           JSON.stringify({ success: true, generated: data?.length ?? 0, invoices: data ?? [] }),
           { status: 200, headers: { "Content-Type": "application/json" } },

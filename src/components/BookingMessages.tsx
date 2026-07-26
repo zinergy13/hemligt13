@@ -36,7 +36,7 @@ export function BookingMessages({ bookingId }: { bookingId: string }) {
     })();
 
     const channel = supabase
-      .channel(`msg-${bookingId}`)
+      .channel(`msg-${bookingId}-${Math.random().toString(36).slice(2, 10)}`)
       .on(
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "booking_messages", filter: `booking_id=eq.${bookingId}` },

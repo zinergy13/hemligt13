@@ -38,6 +38,7 @@ import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
 import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
+import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
@@ -197,6 +198,11 @@ const AdminPresentkortRoute = AdminPresentkortRouteImport.update({
   path: '/presentkort',
   getParentRoute: () => AdminRoute,
 } as any)
+const AdminDashboardRoute = AdminDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
   id: '/bokforing',
   path: '/bokforing',
@@ -285,6 +291,7 @@ export interface FileRoutesByFullPath {
   '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
@@ -328,6 +335,7 @@ export interface FileRoutesByTo {
   '/sok': typeof SokRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
@@ -373,6 +381,7 @@ export interface FileRoutesById {
   '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
+  '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
@@ -419,6 +428,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/dashboard'
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
@@ -462,6 +472,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/unsubscribe'
     | '/admin/bokforing'
+    | '/admin/dashboard'
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
@@ -506,6 +517,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/vard'
     | '/admin/bokforing'
+    | '/admin/dashboard'
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
@@ -771,6 +783,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminPresentkortRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/admin/dashboard': {
+      id: '/admin/dashboard'
+      path: '/dashboard'
+      fullPath: '/admin/dashboard'
+      preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
     '/admin/bokforing': {
       id: '/admin/bokforing'
       path: '/bokforing'
@@ -867,6 +886,7 @@ declare module '@tanstack/react-router' {
 
 interface AdminRouteChildren {
   AdminBokforingRoute: typeof AdminBokforingRoute
+  AdminDashboardRoute: typeof AdminDashboardRoute
   AdminPresentkortRoute: typeof AdminPresentkortRoute
   AdminRecensionerRoute: typeof AdminRecensionerRoute
   AdminStadfirmorRoute: typeof AdminStadfirmorRoute
@@ -874,6 +894,7 @@ interface AdminRouteChildren {
 
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBokforingRoute: AdminBokforingRoute,
+  AdminDashboardRoute: AdminDashboardRoute,
   AdminPresentkortRoute: AdminPresentkortRoute,
   AdminRecensionerRoute: AdminRecensionerRoute,
   AdminStadfirmorRoute: AdminStadfirmorRoute,

@@ -38,6 +38,7 @@ const WHITELIST_PATHS = [
   "scripts/brand-scan.mjs",
   "src/integrations/lovable",
   "src/integrations/supabase",
+  "src/routes/lovable",
   "src/routeTree.gen.ts",
   "src/router.tsx",
   "src/routes/__root.tsx",

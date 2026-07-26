@@ -203,7 +203,7 @@ export const translateCabin = createServerFn({ method: 'POST' })
 
     const { error: uErr } = await supabase
       .from('cabins')
-      .update(update)
+      .update(update as never)
       .eq('id', cabin.id)
     if (uErr) throw new Response(uErr.message, { status: 500 })
 

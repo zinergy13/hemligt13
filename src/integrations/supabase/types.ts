@@ -1088,33 +1088,51 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address_line: string | null
           avatar_url: string | null
           bio: string | null
+          city: string | null
+          country: string | null
           created_at: string
+          email: string | null
           full_name: string | null
           id: string
           is_host: boolean
+          personal_number: string | null
           phone: string | null
+          postal_code: string | null
           updated_at: string
         }
         Insert: {
+          address_line?: string | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id: string
           is_host?: boolean
+          personal_number?: string | null
           phone?: string | null
+          postal_code?: string | null
           updated_at?: string
         }
         Update: {
+          address_line?: string | null
           avatar_url?: string | null
           bio?: string | null
+          city?: string | null
+          country?: string | null
           created_at?: string
+          email?: string | null
           full_name?: string | null
           id?: string
           is_host?: boolean
+          personal_number?: string | null
           phone?: string | null
+          postal_code?: string | null
           updated_at?: string
         }
         Relationships: []
@@ -1396,6 +1414,22 @@ export type Database = {
       }
     }
     Functions: {
+      admin_list_profiles: {
+        Args: never
+        Returns: {
+          address_line: string
+          city: string
+          country: string
+          created_at: string
+          email: string
+          full_name: string
+          id: string
+          is_host: boolean
+          personal_number: string
+          phone: string
+          postal_code: string
+        }[]
+      }
       complete_past_bookings: { Args: never; Returns: number }
       delete_email: {
         Args: { message_id: number; queue_name: string }
@@ -1417,6 +1451,23 @@ export type Database = {
       }
       get_cron_secret: { Args: { _key: string }; Returns: string }
       get_my_phone: { Args: never; Returns: string }
+      get_my_profile: {
+        Args: never
+        Returns: {
+          address_line: string
+          avatar_url: string
+          bio: string
+          city: string
+          country: string
+          email: string
+          full_name: string
+          id: string
+          is_host: boolean
+          personal_number: string
+          phone: string
+          postal_code: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]

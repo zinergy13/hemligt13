@@ -199,6 +199,13 @@ function MyBookingsPage() {
                         Visa stuga
                       </Link>
                     )}
+                    <Link
+                      to="/meddelanden/$bookingId"
+                      params={{ bookingId: b.id }}
+                      className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
+                    >
+                      Meddelanden
+                    </Link>
                   </div>
                   {b.status === "confirmed" && (
                     <PayoutBox hostId={b.host_id} totalPrice={b.total_price} />

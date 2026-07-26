@@ -1,5 +1,4 @@
 import * as React from 'react'
-
 import {
   Body,
   Button,
@@ -11,6 +10,7 @@ import {
   Preview,
   Text,
 } from '@react-email/components'
+import { BRAND_NAME, styles } from './_brand'
 
 interface InviteEmailProps {
   siteName: string
@@ -18,31 +18,28 @@ interface InviteEmailProps {
   confirmationUrl: string
 }
 
-export const InviteEmail = ({
-  siteName,
-  siteUrl,
-  confirmationUrl,
-}: InviteEmailProps) => (
-  <Html lang="en" dir="ltr">
+export const InviteEmail = ({ siteUrl, confirmationUrl }: InviteEmailProps) => (
+  <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>You've been invited to join {siteName}</Preview>
-    <Body style={main}>
-      <Container style={container}>
-        <Heading style={h1}>You've been invited</Heading>
-        <Text style={text}>
-          You've been invited to join{' '}
-          <Link href={siteUrl} style={link}>
-            <strong>{siteName}</strong>
+    <Preview>Du är inbjuden till {BRAND_NAME}</Preview>
+    <Body style={styles.main}>
+      <Container style={styles.container}>
+        <Text style={styles.brandRow}>{BRAND_NAME}</Text>
+        <Heading style={styles.h1}>Du är inbjuden</Heading>
+        <Text style={styles.text}>
+          Du har blivit inbjuden att gå med i{' '}
+          <Link href={siteUrl} style={styles.link}>
+            <strong>{BRAND_NAME}</strong>
           </Link>
-          . Click the button below to accept the invitation and create your
-          account.
+          . Klicka på knappen nedan för att acceptera inbjudan och skapa ditt konto.
         </Text>
-        <Button style={button} href={confirmationUrl}>
-          Accept Invitation
-        </Button>
-        <Text style={footer}>
-          If you weren't expecting this invitation, you can safely ignore this
-          email.
+        <Text style={{ ...styles.text, textAlign: 'center' as const }}>
+          <Button style={styles.button} href={confirmationUrl}>Acceptera inbjudan</Button>
+        </Text>
+        <div style={styles.divider} />
+        <Text style={styles.footer}>
+          Om du inte väntade dig den här inbjudan kan du ignorera mejlet.<br />
+          {BRAND_NAME}
         </Text>
       </Container>
     </Body>
@@ -50,28 +47,3 @@ export const InviteEmail = ({
 )
 
 export default InviteEmail
-
-const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
-const container = { padding: '20px 25px' }
-const h1 = {
-  fontSize: '22px',
-  fontWeight: 'bold' as const,
-  color: '#000000',
-  margin: '0 0 20px',
-}
-const text = {
-  fontSize: '14px',
-  color: '#55575d',
-  lineHeight: '1.5',
-  margin: '0 0 25px',
-}
-const link = { color: 'inherit', textDecoration: 'underline' }
-const button = {
-  backgroundColor: '#000000',
-  color: '#ffffff',
-  fontSize: '14px',
-  borderRadius: '8px',
-  padding: '12px 20px',
-  textDecoration: 'none',
-}
-const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }

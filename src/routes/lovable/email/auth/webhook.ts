@@ -12,12 +12,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Confirm your email',
-  invite: "You've been invited",
-  magiclink: 'Your login link',
-  recovery: 'Reset your password',
-  email_change: 'Confirm your new email',
-  reauthentication: 'Your verification code',
+  signup: 'Bekräfta din e-post – Fjällportalen',
+  invite: 'Du är inbjuden till Fjällportalen',
+  magiclink: 'Din inloggningslänk till Fjällportalen',
+  recovery: 'Återställ ditt lösenord – Fjällportalen',
+  email_change: 'Bekräfta din nya e-postadress – Fjällportalen',
+  reauthentication: 'Din verifieringskod – Fjällportalen',
 }
 
 // Template mapping
@@ -31,7 +31,7 @@ const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
 }
 
 // Configuration
-const SITE_NAME = "klappen-fjall-share"
+const SITE_NAME = "Fjällportalen"
 const SENDER_DOMAIN = "notify.fjallportalen.com"
 const ROOT_DOMAIN = "fjallportalen.com"
 const FROM_DOMAIN = "notify.fjallportalen.com"

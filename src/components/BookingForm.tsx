@@ -22,6 +22,7 @@ import { BookingExtras } from "@/components/BookingExtras";
 import { extrasTotal, formatOreKr, type ExtraLine } from "@/lib/extras";
 import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 import { PaymentPayoutTimeline } from "@/components/PaymentPayoutTimeline";
+import { PayoutFAQ } from "@/components/PayoutFAQ";
 
 type Props = {
   cabinId: string;
@@ -282,7 +283,12 @@ export function BookingForm({
         </div>
       )}
 
-      {nights > 0 && !overlaps && <PaymentPayoutTimeline />}
+      {nights > 0 && !overlaps && (
+        <>
+          <PaymentPayoutTimeline />
+          <PayoutFAQ compact />
+        </>
+      )}
 
       {!user && !authLoading ? (
         <Link

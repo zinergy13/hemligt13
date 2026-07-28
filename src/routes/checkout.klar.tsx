@@ -4,6 +4,7 @@ import { useQuery } from '@tanstack/react-query';
 import { CheckCircle2, Download, MessageSquare, Printer, ShieldCheck } from 'lucide-react';
 import { getBookingReceipt } from '@/lib/payments.functions';
 import { PaymentPayoutTimeline } from '@/components/PaymentPayoutTimeline';
+import { PayoutFAQ } from '@/components/PayoutFAQ';
 import { useLiveBooking } from '@/hooks/useLiveBooking';
 import { Skeleton } from '@/components/ui/skeleton';
 
@@ -235,6 +236,8 @@ function CheckoutReceipt() {
           }
         />
       </div>
+
+      <PayoutFAQ />
 
       <p className="mt-8 text-center text-xs text-muted-foreground">
         Ett bekräftelsemejl med detta kvitto har skickats till din e-post. Du hittar det även under Mina bokningar.

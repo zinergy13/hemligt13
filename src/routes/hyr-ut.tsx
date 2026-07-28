@@ -44,6 +44,9 @@ function HostPage() {
                 Läs mer först
               </Link>
             </div>
+            <p className="mt-4 text-sm text-secondary-foreground/75">
+              Gratis att lägga upp. Gästen betalar tryggt via Fjällportalen — utbetalning till dig 24 timmar efter incheckning.
+            </p>
           </div>
         </div>
       </section>

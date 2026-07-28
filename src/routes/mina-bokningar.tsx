@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ReviewForm } from "@/components/ReviewsSection";
 import { useUnreadCounts } from "@/hooks/useUnreadCounts";
 import { MessageSquare } from "lucide-react";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 
 function ReviewCTA({ bookingId, cabinId }: { bookingId: string; cabinId: string }) {
   const [open, setOpen] = useState(false);

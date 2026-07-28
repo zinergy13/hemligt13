@@ -11,6 +11,7 @@ import { formatDateRange, statusLabel } from "@/lib/bookings";
 import { hostBookingsQuery, type HostBookingRow } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
 import { useUnreadCounts } from "@/hooks/useUnreadCounts";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
@@ -137,6 +138,7 @@ function HostBookingsPage() {
           </Link>
         </div>
       </div>
+      <TrustPaymentBanner variant="host" className="mb-6" />
 
       <div className="mb-6 flex flex-wrap gap-2">
         {(["all", "pending", "confirmed", "declined"] as Filter[]).map((f) => {

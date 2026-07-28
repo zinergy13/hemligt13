@@ -1,4 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 import { useEffect, useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2, Receipt, Wallet, Info, FileDown } from "lucide-react";
@@ -116,6 +117,7 @@ function HostInvoicePage() {
           </Link>
         </div>
       </div>
+      <TrustPaymentBanner variant="host" className="mb-8" />
 
       {initialBalance ? (
         <SummaryCardsSkeleton count={3} />

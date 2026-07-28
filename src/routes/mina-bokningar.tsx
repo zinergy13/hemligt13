@@ -12,6 +12,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { ReviewForm } from "@/components/ReviewsSection";
 import { useUnreadCounts } from "@/hooks/useUnreadCounts";
 import { MessageSquare } from "lucide-react";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 
 function ReviewCTA({ bookingId, cabinId }: { bookingId: string; cabinId: string }) {
   const [open, setOpen] = useState(false);
@@ -131,6 +132,8 @@ function MyBookingsPage() {
       <p className="mt-1 text-sm text-muted-foreground">
         Översikt av alla dina bokningar och förfrågningar.
       </p>
+
+      <TrustPaymentBanner className="mt-5" />
 
       {initialLoading ? (
         <div className="mt-8">

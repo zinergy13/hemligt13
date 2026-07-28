@@ -45,6 +45,7 @@ import { Route as VardIndexRouteImport } from './routes/vard.index'
 import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
+import { Route as AdminEpostStatusBookingIdRouteImport } from './routes/admin.epost-status.$bookingId'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
@@ -242,6 +243,12 @@ const VardKalenderRoute = VardKalenderRouteImport.update({
   path: '/kalender',
   getParentRoute: () => VardRoute,
 } as any)
+const AdminEpostStatusBookingIdRoute =
+  AdminEpostStatusBookingIdRouteImport.update({
+    id: '/$bookingId',
+    path: '/$bookingId',
+    getParentRoute: () => AdminEpostStatusRoute,
+  } as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -350,7 +357,7 @@ export interface FileRoutesByFullPath {
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/epost-status': typeof AdminEpostStatusRoute
+  '/admin/epost-status': typeof AdminEpostStatusRouteWithChildren
   '/admin/epost-test': typeof AdminEpostTestRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -368,6 +375,7 @@ export interface FileRoutesByFullPath {
   '/vard/kalender': typeof VardKalenderRoute
   '/admin/': typeof AdminIndexRoute
   '/vard/': typeof VardIndexRoute
+  '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
@@ -402,7 +410,7 @@ export interface FileRoutesByTo {
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/epost-status': typeof AdminEpostStatusRoute
+  '/admin/epost-status': typeof AdminEpostStatusRouteWithChildren
   '/admin/epost-test': typeof AdminEpostTestRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -420,6 +428,7 @@ export interface FileRoutesByTo {
   '/vard/kalender': typeof VardKalenderRoute
   '/admin': typeof AdminIndexRoute
   '/vard': typeof VardIndexRoute
+  '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
@@ -457,7 +466,7 @@ export interface FileRoutesById {
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
-  '/admin/epost-status': typeof AdminEpostStatusRoute
+  '/admin/epost-status': typeof AdminEpostStatusRouteWithChildren
   '/admin/epost-test': typeof AdminEpostTestRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -475,6 +484,7 @@ export interface FileRoutesById {
   '/vard/kalender': typeof VardKalenderRoute
   '/admin/': typeof AdminIndexRoute
   '/vard/': typeof VardIndexRoute
+  '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
@@ -531,6 +541,7 @@ export interface FileRouteTypes {
     | '/vard/kalender'
     | '/admin/'
     | '/vard/'
+    | '/admin/epost-status/$bookingId'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
@@ -583,6 +594,7 @@ export interface FileRouteTypes {
     | '/vard/kalender'
     | '/admin'
     | '/vard'
+    | '/admin/epost-status/$bookingId'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
@@ -637,6 +649,7 @@ export interface FileRouteTypes {
     | '/vard/kalender'
     | '/admin/'
     | '/vard/'
+    | '/admin/epost-status/$bookingId'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
@@ -948,6 +961,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof VardKalenderRouteImport
       parentRoute: typeof VardRoute
     }
+    '/admin/epost-status/$bookingId': {
+      id: '/admin/epost-status/$bookingId'
+      path: '/$bookingId'
+      fullPath: '/admin/epost-status/$bookingId'
+      preLoaderRoute: typeof AdminEpostStatusBookingIdRouteImport
+      parentRoute: typeof AdminEpostStatusRoute
+    }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -1063,10 +1083,21 @@ declare module '@tanstack/react-router' {
   }
 }
 
+interface AdminEpostStatusRouteChildren {
+  AdminEpostStatusBookingIdRoute: typeof AdminEpostStatusBookingIdRoute
+}
+
+const AdminEpostStatusRouteChildren: AdminEpostStatusRouteChildren = {
+  AdminEpostStatusBookingIdRoute: AdminEpostStatusBookingIdRoute,
+}
+
+const AdminEpostStatusRouteWithChildren =
+  AdminEpostStatusRoute._addFileChildren(AdminEpostStatusRouteChildren)
+
 interface AdminRouteChildren {
   AdminBokforingRoute: typeof AdminBokforingRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
-  AdminEpostStatusRoute: typeof AdminEpostStatusRoute
+  AdminEpostStatusRoute: typeof AdminEpostStatusRouteWithChildren
   AdminEpostTestRoute: typeof AdminEpostTestRoute
   AdminPresentkortRoute: typeof AdminPresentkortRoute
   AdminRecensionerRoute: typeof AdminRecensionerRoute
@@ -1077,7 +1108,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBokforingRoute: AdminBokforingRoute,
   AdminDashboardRoute: AdminDashboardRoute,
-  AdminEpostStatusRoute: AdminEpostStatusRoute,
+  AdminEpostStatusRoute: AdminEpostStatusRouteWithChildren,
   AdminEpostTestRoute: AdminEpostTestRoute,
   AdminPresentkortRoute: AdminPresentkortRoute,
   AdminRecensionerRoute: AdminRecensionerRoute,

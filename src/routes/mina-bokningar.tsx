@@ -10,6 +10,8 @@ import { guestBookingsQuery } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
 import { supabase } from "@/integrations/supabase/client";
 import { ReviewForm } from "@/components/ReviewsSection";
+import { useUnreadCounts } from "@/hooks/useUnreadCounts";
+import { MessageSquare } from "lucide-react";
 
 function ReviewCTA({ bookingId, cabinId }: { bookingId: string; cabinId: string }) {
   const [open, setOpen] = useState(false);
@@ -110,6 +112,8 @@ function MyBookingsPage() {
     enabled: !!user,
   });
   const rows = bookingsQ.data;
+  const bookingIds = (rows ?? []).map((b) => b.id);
+  const unread = useUnreadCounts(user?.id, bookingIds);
 
   if (loading || !user) {
     return (
@@ -202,9 +206,15 @@ function MyBookingsPage() {
                     <Link
                       to="/meddelanden/$bookingId"
                       params={{ bookingId: b.id }}
-                      className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
+                      className="relative inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
                     >
+                      <MessageSquare className="h-3.5 w-3.5" />
                       Meddelanden
+                      {unread[b.id] > 0 && (
+                        <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                          {unread[b.id]}
+                        </span>
+                      )}
                     </Link>
                   </div>
                   {b.status === "confirmed" && (

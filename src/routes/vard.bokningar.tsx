@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { Loader2, CalendarDays, MapPin, Inbox, Check, X, User } from "lucide-react";
+import { Loader2, CalendarDays, MapPin, Inbox, Check, X, User, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
@@ -10,6 +10,7 @@ import { coverImage } from "@/lib/cabins";
 import { formatDateRange, statusLabel } from "@/lib/bookings";
 import { hostBookingsQuery, type HostBookingRow } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
+import { useUnreadCounts } from "@/hooks/useUnreadCounts";
 
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
@@ -35,6 +36,8 @@ function HostBookingsPage() {
     enabled: !!user,
   });
   const rows = bookingsQ.data;
+  const bookingIds = (rows ?? []).map((b) => b.id);
+  const unread = useUnreadCounts(user?.id, bookingIds);
 
   const statusMutation = useMutation({
     mutationFn: async ({ id, status }: { id: string; status: "confirmed" | "declined" }) => {
@@ -231,9 +234,15 @@ function HostBookingsPage() {
                       <Link
                         to="/meddelanden/$bookingId"
                         params={{ bookingId: b.id }}
-                        className="rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
+                        className="relative inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
                       >
+                        <MessageSquare className="h-3.5 w-3.5" />
                         Meddelanden
+                        {unread[b.id] > 0 && (
+                          <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                            {unread[b.id]}
+                          </span>
+                        )}
                       </Link>
                       {isPending && (
                       <div className="flex gap-2">

@@ -32,7 +32,6 @@ import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort
 import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as CheckoutBookingIdRouteImport } from './routes/checkout.$bookingId'
-import { Route as CheckoutKlarRouteImport } from './routes/checkout.klar'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
@@ -171,11 +170,6 @@ const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
 const CheckoutBookingIdRoute = CheckoutBookingIdRouteImport.update({
   id: '/checkout/$bookingId',
   path: '/checkout/$bookingId',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CheckoutKlarRoute = CheckoutKlarRouteImport.update({
-  id: '/checkout/klar',
-  path: '/checkout/klar',
   getParentRoute: () => rootRouteImport,
 } as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
@@ -328,7 +322,6 @@ export interface FileRoutesByFullPath {
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/checkout/$bookingId': typeof CheckoutBookingIdRoute
-  '/checkout/klar': typeof CheckoutKlarRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -376,7 +369,6 @@ export interface FileRoutesByTo {
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/checkout/$bookingId': typeof CheckoutBookingIdRoute
-  '/checkout/klar': typeof CheckoutKlarRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -427,7 +419,6 @@ export interface FileRoutesById {
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/checkout/$bookingId': typeof CheckoutBookingIdRoute
-  '/checkout/klar': typeof CheckoutKlarRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -479,7 +470,6 @@ export interface FileRouteTypes {
     | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/checkout/$bookingId'
-    | '/checkout/klar'
     | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -527,7 +517,6 @@ export interface FileRouteTypes {
     | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/checkout/$bookingId'
-    | '/checkout/klar'
     | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -577,7 +566,6 @@ export interface FileRouteTypes {
     | '/admin/recensioner'
     | '/admin/stadfirmor'
     | '/checkout/$bookingId'
-    | '/checkout/klar'
     | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -623,7 +611,6 @@ export interface RootRouteChildren {
   UnsubscribeRoute: typeof UnsubscribeRoute
   VardRoute: typeof VardRouteWithChildren
   CheckoutBookingIdRoute: typeof CheckoutBookingIdRoute
-  CheckoutKlarRoute: typeof CheckoutKlarRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
@@ -803,13 +790,6 @@ declare module '@tanstack/react-router' {
       path: '/checkout/$bookingId'
       fullPath: '/checkout/$bookingId'
       preLoaderRoute: typeof CheckoutBookingIdRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/checkout/klar': {
-      id: '/checkout/klar'
-      path: '/checkout/klar'
-      fullPath: '/checkout/klar'
-      preLoaderRoute: typeof CheckoutKlarRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/email/unsubscribe': {
@@ -1054,7 +1034,6 @@ const rootRouteChildren: RootRouteChildren = {
   UnsubscribeRoute: UnsubscribeRoute,
   VardRoute: VardRouteWithChildren,
   CheckoutBookingIdRoute: CheckoutBookingIdRoute,
-  CheckoutKlarRoute: CheckoutKlarRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,

@@ -145,6 +145,9 @@ function SearchPage() {
               <Search className="h-4 w-4" /> Rensa filter
             </button>
           </div>
+          <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
+            Alla bokningar hos Fjällportalen är trygga — vi håller betalningen och släpper den till värden 24 timmar efter incheckning.
+          </p>
         </div>
       )}
 

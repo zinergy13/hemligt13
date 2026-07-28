@@ -49,6 +49,7 @@ import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/em
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
 import { Route as ApiPublicHooksBookingNotificationsRouteImport } from './routes/api.public.hooks.booking-notifications'
+import { Route as ApiPublicHooksEmailAlertRouteImport } from './routes/api.public.hooks.email-alert'
 import { Route as ApiPublicHooksEmailRetryRouteImport } from './routes/api.public.hooks.email-retry'
 import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
 import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
@@ -262,6 +263,12 @@ const ApiPublicHooksBookingNotificationsRoute =
     path: '/api/public/hooks/booking-notifications',
     getParentRoute: () => rootRouteImport,
   } as any)
+const ApiPublicHooksEmailAlertRoute =
+  ApiPublicHooksEmailAlertRouteImport.update({
+    id: '/api/public/hooks/email-alert',
+    path: '/api/public/hooks/email-alert',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksEmailRetryRoute =
   ApiPublicHooksEmailRetryRouteImport.update({
     id: '/api/public/hooks/email-retry',
@@ -365,6 +372,7 @@ export interface FileRoutesByFullPath {
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
+  '/api/public/hooks/email-alert': typeof ApiPublicHooksEmailAlertRoute
   '/api/public/hooks/email-retry': typeof ApiPublicHooksEmailRetryRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
@@ -416,6 +424,7 @@ export interface FileRoutesByTo {
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
+  '/api/public/hooks/email-alert': typeof ApiPublicHooksEmailAlertRoute
   '/api/public/hooks/email-retry': typeof ApiPublicHooksEmailRetryRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
@@ -470,6 +479,7 @@ export interface FileRoutesById {
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
+  '/api/public/hooks/email-alert': typeof ApiPublicHooksEmailAlertRoute
   '/api/public/hooks/email-retry': typeof ApiPublicHooksEmailRetryRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
@@ -525,6 +535,7 @@ export interface FileRouteTypes {
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/booking-notifications'
+    | '/api/public/hooks/email-alert'
     | '/api/public/hooks/email-retry'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
@@ -576,6 +587,7 @@ export interface FileRouteTypes {
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/booking-notifications'
+    | '/api/public/hooks/email-alert'
     | '/api/public/hooks/email-retry'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
@@ -629,6 +641,7 @@ export interface FileRouteTypes {
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/booking-notifications'
+    | '/api/public/hooks/email-alert'
     | '/api/public/hooks/email-retry'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
@@ -669,6 +682,7 @@ export interface RootRouteChildren {
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksBookingNotificationsRoute: typeof ApiPublicHooksBookingNotificationsRoute
+  ApiPublicHooksEmailAlertRoute: typeof ApiPublicHooksEmailAlertRoute
   ApiPublicHooksEmailRetryRoute: typeof ApiPublicHooksEmailRetryRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   ApiPublicIcalTokenRoute: typeof ApiPublicIcalTokenRoute
@@ -962,6 +976,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiPublicHooksBookingNotificationsRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/email-alert': {
+      id: '/api/public/hooks/email-alert'
+      path: '/api/public/hooks/email-alert'
+      fullPath: '/api/public/hooks/email-alert'
+      preLoaderRoute: typeof ApiPublicHooksEmailAlertRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/email-retry': {
       id: '/api/public/hooks/email-retry'
       path: '/api/public/hooks/email-retry'
@@ -1127,6 +1148,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksBookingNotificationsRoute:
     ApiPublicHooksBookingNotificationsRoute,
+  ApiPublicHooksEmailAlertRoute: ApiPublicHooksEmailAlertRoute,
   ApiPublicHooksEmailRetryRoute: ApiPublicHooksEmailRetryRoute,
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
     ApiPublicHooksGenerateMonthlyInvoicesRoute,

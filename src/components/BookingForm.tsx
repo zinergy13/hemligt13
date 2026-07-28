@@ -21,6 +21,7 @@ import { PriceBreakdown } from "@/components/PriceBreakdown";
 import { BookingExtras } from "@/components/BookingExtras";
 import { extrasTotal, formatOreKr, type ExtraLine } from "@/lib/extras";
 import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
+import { PaymentPayoutTimeline } from "@/components/PaymentPayoutTimeline";
 
 type Props = {
   cabinId: string;

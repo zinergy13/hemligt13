@@ -133,5 +133,9 @@ export const sendTestTemplateEmail = createServerFn({ method: 'POST' })
       templateData,
     });
 
-    return { ok: res.ok, status: res.status, body: res.body };
+    return {
+      ok: res.ok,
+      status: res.status,
+      body: typeof res.body === 'string' ? res.body : JSON.stringify(res.body),
+    };
   });

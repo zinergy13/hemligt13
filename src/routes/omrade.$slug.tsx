@@ -17,7 +17,7 @@ export const Route = createFileRoute("/omrade/$slug")({
     if (!area) return { meta: [{ title: "Område — Fjällportalen" }] };
     const region = regionBySlug(area.region);
     const regionName = region?.name ?? "svenska fjällen";
-    const url = `https://klappen-fjall-share.lovable.app/omrade/${area.slug}`;
+    const url = `https://fjallportalen.com/omrade/${area.slug}`;
     return {
       meta: [
         { title: `Stugor i ${area.name} — Fjällportalen` },
@@ -31,6 +31,21 @@ export const Route = createFileRoute("/omrade/$slug")({
         { name: "twitter:card", content: "summary_large_image" },
       ],
       links: [{ rel: "canonical", href: url }],
+      scripts: [
+        {
+          type: "application/ld+json",
+          children: JSON.stringify({
+            "@context": "https://schema.org",
+            "@type": "BreadcrumbList",
+            itemListElement: [
+              { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
+              { "@type": "ListItem", position: 2, name: "Sök", item: "https://fjallportalen.com/sok" },
+              { "@type": "ListItem", position: 3, name: regionName, item: `https://fjallportalen.com/omrade/${area.slug}` },
+              { "@type": "ListItem", position: 4, name: area.name, item: url },
+            ],
+          }),
+        },
+      ],
     };
   },
   notFoundComponent: () => (

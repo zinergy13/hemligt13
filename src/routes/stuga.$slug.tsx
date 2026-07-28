@@ -14,6 +14,20 @@ export const Route = createFileRoute("/stuga/$slug")({
       { title: `Stuga — Fjällportalen` },
       { name: "description", content: `Stuga ${params.slug} — boka tryggt via Fjällportalen med utbetalning till värden 24 timmar efter incheckning.` },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: 2, name: "Sök", item: "https://fjallportalen.com/sok" },
+            { "@type": "ListItem", position: 3, name: "Stuga", item: `https://fjallportalen.com/stuga/${params.slug}` },
+          ],
+        }),
+      },
+    ],
   }),
   notFoundComponent: () => (
     <div className="mx-auto max-w-2xl px-4 py-24 text-center">

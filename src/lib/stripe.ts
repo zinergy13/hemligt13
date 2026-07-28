@@ -12,7 +12,7 @@ function paymentsEnvironment(): StripeEnv {
   );
 }
 
-let stripePromise: Promise<Stripe | null> | null = null;
+let stripePromise: Promise<Stripe | null> | undefined;
 
 export function getStripe(): Promise<Stripe | null> {
   if (!stripePromise) {

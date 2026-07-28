@@ -27,11 +27,15 @@ async function guestEmailAndName(guestId: string): Promise<{ email: string | nul
 }
 
 async function sendCheckinNotifications(origin: string) {
-  const today = new Date().toISOString().slice(0, 10);
+  // Skicka påminnelsen inom ett 24h-fönster före incheckning: dagens datum
+  // och morgondagen (fångar även bokningar som råkat missas tidigare).
+  const tomorrow = new Date();
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+  const windowEnd = tomorrow.toISOString().slice(0, 10);
   const { data: rows, error } = await admin()
     .from('bookings')
     .select('id, guest_id, cabin_id, check_in, check_out, host_id')
-    .lte('check_in', today)
+    .lte('check_in', windowEnd)
     .eq('payment_status', 'paid')
     .in('escrow_status', ['holding', 'released'])
     .is('checkin_notified_at', null)
@@ -119,11 +123,12 @@ export const Route = createFileRoute('/api/public/hooks/booking-notifications')(
       POST: async ({ request }) => {
         const origin = new URL(request.url).origin;
         try {
-          const [checkin, payout] = await Promise.all([
+          const [confirmation, checkin, payout] = await Promise.all([
+            sendMissedBookingConfirmations(origin),
             sendCheckinNotifications(origin),
             sendPayoutNotifications(origin),
           ]);
-          return Response.json({ ok: true, checkin, payout });
+          return Response.json({ ok: true, confirmation, checkin, payout });
         } catch (e) {
           console.error('booking-notifications hook error', e);
           return Response.json({ ok: false, error: String(e) }, { status: 500 });

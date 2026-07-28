@@ -9,6 +9,10 @@ interface Props {
   areaName?: string
   checkIn?: string
   checkOut?: string
+  checkInLabel?: string
+  checkOutLabel?: string
+  bookingRef?: string
+  payoutAtLabel?: string
   nights?: number
   guests?: number
   totalKr?: number
@@ -21,6 +25,10 @@ const Email = ({
   areaName = '',
   checkIn = '',
   checkOut = '',
+  checkInLabel = '',
+  checkOutLabel = '',
+  bookingRef = '',
+  payoutAtLabel = '',
   nights = 0,
   guests = 0,
   totalKr = 0,
@@ -40,11 +48,13 @@ const Email = ({
         </Text>
 
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Vistelse</Text>
+          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
+            Vistelse{bookingRef ? ` · Bokning #${bookingRef}` : ''}
+          </Text>
           <Text style={{ ...styles.h1, fontSize: 20, margin: '0 0 10px' }}>{cabinName}</Text>
           <Text style={{ ...styles.muted, margin: 0 }}>
-            Incheckning: <strong>{checkIn}</strong><br />
-            Utcheckning: <strong>{checkOut}</strong><br />
+            Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
+            Utcheckning: <strong>{checkOutLabel || checkOut}</strong><br />
             {nights} nätter · {guests} gäster
           </Text>
         </Section>
@@ -52,6 +62,11 @@ const Email = ({
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
           <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Betalt (via {BRAND_NAME})</Text>
           <Text style={{ ...styles.h1, fontSize: 24, margin: 0 }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
+          {payoutAtLabel ? (
+            <Text style={{ ...styles.muted, margin: '10px 0 0' }}>
+              Utbetalning till värden: <strong>{payoutAtLabel}</strong> (24 timmar efter incheckning)
+            </Text>
+          ) : null}
         </Section>
 
         <Text style={styles.text}>
@@ -65,7 +80,8 @@ const Email = ({
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Avbokning mer än 48 timmar före incheckning återbetalas i sin helhet. Frågor? Svara på detta mejl.
+          Avbokning mer än 48 timmar före incheckning återbetalas i sin helhet.
+          {bookingRef ? ` Ange bokning #${bookingRef} vid kontakt.` : ''} Frågor? Svara på detta mejl.
         </Text>
       </Container>
     </Body>
@@ -75,7 +91,7 @@ const Email = ({
 export const template = {
   component: Email,
   subject: (d: Record<string, any>) =>
-    `Bokning bekräftad · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
+    `Bokning bekräftad${d?.bookingRef ? ` #${d.bookingRef}` : ''} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
   displayName: 'Bokningsbekräftelse till gäst',
   previewData: {
     guestName: 'Erik',
@@ -83,6 +99,10 @@ export const template = {
     areaName: 'Åre',
     checkIn: '2026-02-14',
     checkOut: '2026-02-21',
+    checkInLabel: 'lör 14 februari 2026',
+    checkOutLabel: 'lör 21 februari 2026',
+    bookingRef: 'A1B2C3D4',
+    payoutAtLabel: '15 februari 2026 15:00',
     nights: 7,
     guests: 4,
     totalKr: 12800,

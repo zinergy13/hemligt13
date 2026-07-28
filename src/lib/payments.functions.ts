@@ -142,6 +142,96 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
 
 type RefundResult = { refunded_ore: number } | { error: string };
 
+type ReceiptResult =
+  | {
+      booking: {
+        id: string;
+        check_in: string;
+        check_out: string;
+        nights: number;
+        guests: number;
+        nightly_total: number;
+        cleaning_fee: number;
+        total_price: number;
+        currency: string;
+        payment_status: string;
+        escrow_status: string;
+        escrow_released_at: string | null;
+        created_at: string;
+        stripe_payment_intent: string | null;
+      };
+      cabin: { title: string; area_slug: string | null } | null;
+      extras: Array<{ service_type: string; quantity: number; guest_price_ore: number }>;
+      gift_card_ore: number;
+    }
+  | { error: string };
+
+/**
+ * Fetch a detailed receipt for a booking (guest only).
+ * Used on the post-checkout receipt page.
+ */
+export const getBookingReceipt = createServerFn({ method: 'GET' })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((data: { bookingId: string }) => {
+    if (!/^[0-9a-f-]{36}$/.test(data.bookingId)) throw new Error('Invalid bookingId');
+    return data;
+  })
+  .handler(async ({ data, context }): Promise<ReceiptResult> => {
+    const { supabase, userId } = context;
+    const { data: booking, error } = await supabase
+      .from('bookings')
+      .select(
+        'id, guest_id, cabin_id, check_in, check_out, nights, guests, nightly_total, cleaning_fee, total_price, currency, payment_status, escrow_status, escrow_released_at, created_at, stripe_payment_intent',
+      )
+      .eq('id', data.bookingId)
+      .maybeSingle();
+    if (error || !booking) return { error: 'Bokning hittades inte' };
+    if (booking.guest_id !== userId) return { error: 'Åtkomst nekad' };
+
+    const { data: cabin } = await supabase
+      .from('cabins')
+      .select('title, area_slug')
+      .eq('id', booking.cabin_id)
+      .maybeSingle();
+
+    const { data: extras } = await supabase
+      .from('booking_extras')
+      .select('service_type, quantity, guest_price')
+      .eq('booking_id', booking.id);
+
+    const { data: gift } = await supabase
+      .from('gift_card_redemptions')
+      .select('amount_ore')
+      .eq('booking_id', booking.id);
+    const giftOre = (gift ?? []).reduce((s, r) => s + (r.amount_ore ?? 0), 0);
+
+    return {
+      booking: {
+        id: booking.id,
+        check_in: booking.check_in,
+        check_out: booking.check_out,
+        nights: booking.nights,
+        guests: booking.guests,
+        nightly_total: booking.nightly_total,
+        cleaning_fee: booking.cleaning_fee,
+        total_price: booking.total_price,
+        currency: booking.currency,
+        payment_status: booking.payment_status,
+        escrow_status: booking.escrow_status,
+        escrow_released_at: booking.escrow_released_at,
+        created_at: booking.created_at,
+        stripe_payment_intent: booking.stripe_payment_intent,
+      },
+      cabin: cabin ? { title: cabin.title, area_slug: cabin.area_slug } : null,
+      extras: (extras ?? []).map((e) => ({
+        service_type: e.service_type,
+        quantity: e.quantity,
+        guest_price_ore: e.guest_price,
+      })),
+      gift_card_ore: giftOre,
+    };
+  });
+
 /**
  * Cancel booking. If check-in is >48h away, issue full refund via Stripe.
  * Otherwise, cancel without refund (flexible policy).

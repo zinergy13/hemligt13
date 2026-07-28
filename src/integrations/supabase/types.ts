@@ -678,6 +678,68 @@ export type Database = {
         }
         Relationships: []
       }
+      email_attempts: {
+        Row: {
+          attempts: number
+          booking_id: string | null
+          created_at: string
+          id: string
+          idempotency_key: string | null
+          last_attempt_at: string | null
+          last_error: string | null
+          last_status_code: number | null
+          next_retry_at: string | null
+          recipient_email: string
+          sent_at: string | null
+          status: string
+          template_data: Json
+          template_name: string
+          updated_at: string
+        }
+        Insert: {
+          attempts?: number
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key?: string | null
+          last_attempt_at?: string | null
+          last_error?: string | null
+          last_status_code?: number | null
+          next_retry_at?: string | null
+          recipient_email: string
+          sent_at?: string | null
+          status?: string
+          template_data?: Json
+          template_name: string
+          updated_at?: string
+        }
+        Update: {
+          attempts?: number
+          booking_id?: string | null
+          created_at?: string
+          id?: string
+          idempotency_key?: string | null
+          last_attempt_at?: string | null
+          last_error?: string | null
+          last_status_code?: number | null
+          next_retry_at?: string | null
+          recipient_email?: string
+          sent_at?: string | null
+          status?: string
+          template_data?: Json
+          template_name?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "email_attempts_booking_id_fkey"
+            columns: ["booking_id"]
+            isOneToOne: false
+            referencedRelation: "bookings"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       email_send_log: {
         Row: {
           created_at: string

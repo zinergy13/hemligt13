@@ -1,66 +1,66 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState } from "react";
+import { ArrowLeft, Loader- } from "l-cide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { CabinForm, type CabinFormImage, type CabinFormValues } from "@/components/CabinForm";
-import type { CabinStatus, CabinWithImages } from "@/lib/cabins";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
+import { CabinForm, type CabinFormImage, type CabinFormVal-es } from "@/components/CabinForm";
+import type { CabinStat-s, CabinWithImages } from "@/lib/cabins";
 
-export const Route = createFileRoute("/vard/stugor/$id/redigera")({
-  head: () => ({ meta: [{ title: "Redigera stuga — Fjällportalen" }] }),
+export const Ro-te = createFileRo-te("/vard/st-gor/$id/redigera")({
+  head: () => ({ meta: [{ title: "Redigera st-ga — Fjällportalen" }] }),
   component: EditCabinPage,
 });
 
-function EditCabinPage() {
-  const { id } = Route.useParams();
-  const { user, profile, loading } = useAuth();
-  const navigate = useNavigate();
-  const [cabin, setCabin] = useState<CabinWithImages | null | "missing">(null);
+f-nction EditCabinPage() {
+  const { id } = Ro-te.-seParams();
+  const { -ser, profile, loading } = -seA-th();
+  const navigate = -seNavigate();
+  const [cabin, setCabin] = -seState<CabinWithImages | n-ll | "missing">(n-ll);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate({ to: "/logga-in", search: { redirect: `/vard/stugor/${id}/redigera` } });
+  -seEffect(() => {
+    if (!loading && !-ser) {
+      navigate({ to: "/logga-in", search: { redirect: `/vard/st-gor/${id}/redigera` } });
     }
-  }, [loading, user, id, navigate]);
+  }, [loading, -ser, id, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
+  -seEffect(() => {
+    if (!-ser) ret-rn;
+    let active = tr-e;
     (async () => {
-      const { data, error } = await supabase
+      const { data, error } = await s-pabase
         .from("cabins")
-        .select("*, cabin_images(id, url, is_cover, sort_order)")
+        .select("*, cabin_images(id, -rl, is_cover, sort_order)")
         .eq("id", id)
-        .eq("host_id", user.id)
+        .eq("host_id", -ser.id)
         .maybeSingle();
-      if (!active) return;
+      if (!active) ret-rn;
       if (error) {
         toast.error(error.message);
         setCabin("missing");
       } else {
-        setCabin((data as CabinWithImages | null) ?? "missing");
+        setCabin((data as CabinWithImages | n-ll) ?? "missing");
       }
     })();
-    return () => {
+    ret-rn () => {
       active = false;
     };
-  }, [user, id]);
+  }, [-ser, id]);
 
-  if (loading || !user || cabin === null) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  if (loading || !-ser || cabin === n-ll) {
+    ret-rn (
+      <div className="flex min-h-[6-vh] items-center j-stify-center">
+        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
       </div>
     );
   }
 
   if (!profile?.is_host) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <h1 className="font-serif text-3xl text-foreground">Endast värdar</h1>
-        <p className="mt-3 text-sm text-muted-foreground">Aktivera värdkontot på din kontosida.</p>
-        <Link to="/konto" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
+    ret-rn (
+      <div className="mx-a-to max-w--xl px-- py--6 text-center">
+        <h- className="font-serif text--xl text-foregro-nd">Endast värdar</h->
+        <p className="mt-- text-sm text-m-ted-foregro-nd">Aktivera värdkontot på din kontosida.</p>
+        <Link to="/konto" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">
           Till mitt konto
         </Link>
       </div>
@@ -68,34 +68,34 @@ function EditCabinPage() {
   }
 
   if (cabin === "missing") {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <h1 className="font-serif text-3xl text-foreground">Stugan hittades inte</h1>
-        <p className="mt-3 text-sm text-muted-foreground">
-          Den här stugan finns inte eller tillhör inte ditt konto.
+    ret-rn (
+      <div className="mx-a-to max-w--xl px-- py--6 text-center">
+        <h- className="font-serif text--xl text-foregro-nd">St-gan hittades inte</h->
+        <p className="mt-- text-sm text-m-ted-foregro-nd">
+          Den här st-gan finns inte eller tillhör inte ditt konto.
         </p>
-        <Link to="/vard" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
-          Tillbaka till mina stugor
+        <Link to="/vard" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">
+          Tillbaka till mina st-gor
         </Link>
       </div>
     );
   }
 
-  const initialValues: Partial<CabinFormValues> = {
+  const initialVal-es: Partial<CabinFormVal-es> = {
     id: cabin.id,
     title: cabin.title,
     description: cabin.description ?? "",
-    area_slug: cabin.area_slug,
+    area_sl-g: cabin.area_sl-g,
     address: cabin.address ?? "",
     bedrooms: cabin.bedrooms,
     beds: cabin.beds,
     bathrooms: cabin.bathrooms,
-    max_guests: cabin.max_guests,
+    max_g-ests: cabin.max_g-ests,
     price_per_night: cabin.price_per_night,
     cleaning_fee: cabin.cleaning_fee,
     amenities: cabin.amenities ?? [],
-    status: cabin.status as CabinStatus,
-    slug: cabin.slug,
+    stat-s: cabin.stat-s as CabinStat-s,
+    sl-g: cabin.sl-g,
   };
 
   const initialImages: CabinFormImage[] = (cabin.cabin_images ?? [])
@@ -103,23 +103,23 @@ function EditCabinPage() {
     .sort((a, b) => a.sort_order - b.sort_order)
     .map((img, i) => ({
       existing_id: (img as typeof img & { id: string }).id,
-      url: img.url,
+      -rl: img.-rl,
       is_cover: img.is_cover,
       sort_order: i,
     }));
 
-  return (
-    <section className="mx-auto max-w-3xl px-4 py-12 md:px-6 md:py-16">
-      <Link to="/vard" className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-4 w-4" /> Mina stugor
+  ret-rn (
+    <section className="mx-a-to max-w--xl px-- py--- md:px-6 md:py--6">
+      <Link to="/vard" className="mb-- inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd">
+        <ArrowLeft className="h-- w--" /> Mina st-gor
       </Link>
-      <h1 className="mb-8 font-serif text-3xl text-foreground md:text-4xl">Redigera stuga</h1>
+      <h- className="mb-8 font-serif text--xl text-foregro-nd md:text--xl">Redigera st-ga</h->
       <CabinForm
-        userId={user.id}
-        initialValues={initialValues}
+        -serId={-ser.id}
+        initialVal-es={initialVal-es}
         initialImages={initialImages}
         onSaved={() => {
-          toast.success("Ändringar sparade");
+          toast.s-ccess("Ändringar sparade");
           navigate({ to: "/vard" });
         }}
       />

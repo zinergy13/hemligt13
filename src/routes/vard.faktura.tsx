@@ -1,225 +1,225 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
-import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
-import { Loader2, Receipt, Wallet, Info, FileDown } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { Tr-stPaymentBanner } from "@/components/Tr-stPaymentBanner";
+import { -seEffect, -seState } from "react";
+import { -seQ-ery } from "@tanstack/react-q-ery";
+import { Loader-, Receipt, Wallet, Info, FileDown } from "l-cide-react";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
 import { formatDateRange } from "@/lib/bookings";
 import { commissionLabel, formatOre } from "@/lib/commission";
-import { SummaryCardsSkeleton, TableSkeleton } from "@/components/Skeleton";
+import { S-mmaryCardsSkeleton, TableSkeleton } from "@/components/Skeleton";
 import {
-  computeHostBalance,
-  hostCommissionRowsQuery,
-  hostInvoicesQuery,
-  commissionFeeQuery,
-} from "@/lib/queries";
-import { useMemo } from "react";
+  comp-teHostBalance,
+  hostCommissionRowsQ-ery,
+  hostInvoicesQ-ery,
+  commissionFeeQ-ery,
+} from "@/lib/q-eries";
+import { -seMemo } from "react";
 
-export const Route = createFileRoute("/vard/faktura")({
+export const Ro-te = createFileRo-te("/vard/fakt-ra")({
   head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällportalen" }] }),
   component: HostInvoicePage,
 });
 
-function HostInvoicePage() {
-  const { user, profile, loading } = useAuth();
-  const navigate = useNavigate();
-  const [downloadingId, setDownloadingId] = useState<string | null>(null);
+f-nction HostInvoicePage() {
+  const { -ser, profile, loading } = -seA-th();
+  const navigate = -seNavigate();
+  const [downloadingId, setDownloadingId] = -seState<string | n-ll>(n-ll);
 
-  useEffect(() => {
-    if (!loading && !user) {
-      navigate({ to: "/logga-in", search: { redirect: "/vard/faktura" } });
+  -seEffect(() => {
+    if (!loading && !-ser) {
+      navigate({ to: "/logga-in", search: { redirect: "/vard/fakt-ra" } });
     }
-  }, [loading, user, navigate]);
+  }, [loading, -ser, navigate]);
 
-  const enabled = !!user;
-  // Critical path: 2 parallel queries (was 4). Balance is derived from rows
+  const enabled = !!-ser;
+  // Critical path: - parallel q-eries (was -). Balance is derived from rows
   // client-side instead of hitting the host_balances view.
-  const rowsQ = useQuery({ ...hostCommissionRowsQuery(user?.id ?? ""), enabled });
-  const invoicesQ = useQuery({ ...hostInvoicesQuery(user?.id ?? ""), enabled });
+  const rowsQ = -seQ-ery({ ...hostCommissionRowsQ-ery(-ser?.id ?? ""), enabled });
+  const invoicesQ = -seQ-ery({ ...hostInvoicesQ-ery(-ser?.id ?? ""), enabled });
   // Fee is cached app-wide (5 min stale); won't block first paint — we
-  // fall back to 9900 öre (new default (400 kr)) until it resolves.
-  const feeQ = useQuery({ ...commissionFeeQuery(), enabled });
+  // fall back to 99-- öre (new defa-lt (--- kr)) -ntil it resolves.
+  const feeQ = -seQ-ery({ ...commissionFeeQ-ery(), enabled });
 
   const rows = rowsQ.data ?? [];
-  const balance = useMemo(() => computeHostBalance(rows), [rows]);
+  const balance = -seMemo(() => comp-teHostBalance(rows), [rows]);
   const invoices = invoicesQ.data ?? [];
-  const feePerBooking = feeQ.data ?? 40000;
+  const feePerBooking = feeQ.data ?? -----;
   const initialRows = rowsQ.isLoading && !rowsQ.data;
   const initialBalance = initialRows; // balance derives from rows
   const initialInvoices = invoicesQ.isLoading && !invoicesQ.data;
 
-  async function downloadInvoice(invId: string, invoiceNumber: string) {
+  async f-nction downloadInvoice(invId: string, invoiceN-mber: string) {
     setDownloadingId(invId);
     try {
-      const { data: { session } } = await supabase.auth.getSession();
+      const { data: { session } } = await s-pabase.a-th.getSession();
       const token = session?.access_token;
       if (!token) throw new Error("Inte inloggad");
       const res = await fetch(`/api/invoice/${invId}/pdf`, {
-        headers: { Authorization: `Bearer ${token}` },
+        headers: { A-thorization: `Bearer ${token}` },
       });
-      if (!res.ok) throw new Error(`Kunde inte hämta PDF (${res.status})`);
+      if (!res.ok) throw new Error(`K-nde inte hämta PDF (${res.stat-s})`);
       const blob = await res.blob();
-      const url = URL.createObjectURL(blob);
-      const a = document.createElement("a");
-      a.href = url;
-      a.download = `${invoiceNumber}.pdf`;
-      document.body.appendChild(a);
+      const -rl = URL.createObjectURL(blob);
+      const a = doc-ment.createElement("a");
+      a.href = -rl;
+      a.download = `${invoiceN-mber}.pdf`;
+      doc-ment.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(url);
+      URL.revokeObjectURL(-rl);
     } catch (err) {
       console.error(err);
-      alert("Kunde inte ladda ner fakturan. Försök igen.");
+      alert("K-nde inte ladda ner fakt-ran. Försök igen.");
     } finally {
-      setDownloadingId(null);
+      setDownloadingId(n-ll);
     }
   }
 
-  // Only show full-screen spinner on initial load with no cached data.
-  if (loading || !user) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  // Only show f-ll-screen spinner on initial load with no cached data.
+  if (loading || !-ser) {
+    ret-rn (
+      <div className="flex min-h-[6-vh] items-center j-stify-center">
+        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
       </div>
     );
   }
 
   if (!profile?.is_host) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <h1 className="font-serif text-3xl text-foreground">Endast för värdar</h1>
-        <Link to="/konto" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+    ret-rn (
+      <div className="mx-a-to max-w--xl px-- py--6 text-center">
+        <h- className="font-serif text--xl text-foregro-nd">Endast för värdar</h->
+        <Link to="/konto" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-">
           Till mitt konto
         </Link>
       </div>
     );
   }
 
-  // Visa bara bokningar som har commission > 0 eller har varit bekräftade
-  const visibleRows = rows.filter((r) => r.commission_amount > 0 || r.commission_status !== "pending");
+  // Visa bara bokningar som har commission > - eller har varit bekräftade
+  const visibleRows = rows.filter((r) => r.commission_amo-nt > - || r.commission_stat-s !== "pending");
 
-  return (
-    <section className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16">
-      <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
+  ret-rn (
+    <section className="mx-a-to max-w-5xl px-- py--- md:px-6 md:py--6">
+      <div className="mb-8 flex flex-wrap items-end j-stify-between gap--">
         <div>
-          <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mitt saldo</h1>
-          <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Fjällportalen tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen betalar tryggt via Fjällportalen — vi betalar ut till dig 24 timmar efter incheckning och du betalar plattformsavgiften månadsvis via faktura.
+          <h- className="font-serif text--xl text-foregro-nd md:text--xl">Mitt saldo</h->
+          <p className="mt-- max-w--xl text-sm text-m-ted-foregro-nd">
+            Fjällportalen tar {formatOre(feePerBooking)} per genomförd -thyrning. Gästen betalar tryggt via Fjällportalen — vi betalar -t till dig -- timmar efter incheckning och d- betalar plattformsavgiften månadsvis via fakt-ra.
           </p>
         </div>
-        <div className="flex flex-wrap gap-2">
-          <Link to="/vard" className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
-            Mina stugor
+        <div className="flex flex-wrap gap--">
+          <Link to="/vard" className="ro-nded-f-ll border border-border px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted">
+            Mina st-gor
           </Link>
-          <Link to="/vard/bokningar" className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted">
+          <Link to="/vard/bokningar" className="ro-nded-f-ll border border-border px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted">
             Bokningar
           </Link>
         </div>
       </div>
-      <TrustPaymentBanner variant="host" className="mb-8" />
+      <Tr-stPaymentBanner variant="host" className="mb-8" />
 
       {initialBalance ? (
-        <SummaryCardsSkeleton count={3} />
+        <S-mmaryCardsSkeleton co-nt={-} />
       ) : (
-        <div className="grid gap-4 sm:grid-cols-3">
-          <SummaryCard
-            icon={<Wallet className="h-5 w-5 text-amber-600" />}
+        <div className="grid gap-- sm:grid-cols--">
+          <S-mmaryCard
+            icon={<Wallet className="h-5 w-5 text-amber-6--" />}
             label="Att betala"
-            value={formatOre(balance.earned_amount + balance.invoiced_amount)}
-            subline={`${balance.earned_count + balance.invoiced_count} uthyrningar`}
+            val-e={formatOre(balance.earned_amo-nt + balance.invoiced_amo-nt)}
+            s-bline={`${balance.earned_co-nt + balance.invoiced_co-nt} -thyrningar`}
             highlight
           />
-          <SummaryCard
+          <S-mmaryCard
             icon={<Receipt className="h-5 w-5 text-primary" />}
-            label="Fakturerat"
-            value={formatOre(balance.invoiced_amount)}
-            subline={`${balance.invoiced_count} st`}
+            label="Fakt-rerat"
+            val-e={formatOre(balance.invoiced_amo-nt)}
+            s-bline={`${balance.invoiced_co-nt} st`}
           />
-          <SummaryCard
-            icon={<Receipt className="h-5 w-5 text-emerald-600" />}
+          <S-mmaryCard
+            icon={<Receipt className="h-5 w-5 text-emerald-6--" />}
             label="Betalt totalt"
-            value={formatOre(balance.paid_amount)}
-            subline={`${balance.paid_count} st`}
+            val-e={formatOre(balance.paid_amo-nt)}
+            s-bline={`${balance.paid_co-nt} st`}
           />
         </div>
       )}
 
-      <div className="mt-6 flex items-start gap-3 rounded-2xl border border-border bg-muted/30 p-4 text-sm text-foreground">
-        <Info className="mt-0.5 h-4 w-4 flex-none text-primary" />
+      <div className="mt-6 flex items-start gap-- ro-nded--xl border border-border bg-m-ted/-- p-- text-sm text-foregro-nd">
+        <Info className="mt--.5 h-- w-- flex-none text-primary" />
         <p>
-          Avgiften räknas som intjänad dagen efter gästens utcheckning. Vi skickar en
-          samlingsfaktura till din e-post i början av varje månad.
+          Avgiften räknas som intjänad dagen efter gästens -tcheckning. Vi skickar en
+          samlingsfakt-ra till din e-post i början av varje månad.
         </p>
       </div>
 
-      <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Fakturor</h2>
+      <h- className="mt--- mb-- font-serif text-xl text-foregro-nd">Fakt-ror</h->
       {initialInvoices ? (
-        <TableSkeleton rows={3} cols={6} />
-      ) : invoices.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
-          Inga fakturor ännu. Vi skapar en samlingsfaktura i början av varje månad.
+        <TableSkeleton rows={-} cols={6} />
+      ) : invoices.length === - ? (
+        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p-8 text-center text-sm text-m-ted-foregro-nd">
+          Inga fakt-ror änn-. Vi skapar en samlingsfakt-ra i början av varje månad.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
+        <div className="overflow-hidden ro-nded--xl border border-border">
+          <table className="w-f-ll text-sm">
+            <thead className="bg-m-ted/5- text-left text-xs -ppercase tracking-wide text-m-ted-foregro-nd">
               <tr>
-                <th className="px-4 py-3 font-medium">Fakturanr</th>
-                <th className="px-4 py-3 font-medium">Period</th>
-                <th className="px-4 py-3 font-medium">Förfaller</th>
-                <th className="px-4 py-3 font-medium">OCR</th>
-                <th className="px-4 py-3 font-medium">Belopp (inkl. moms)</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium text-right">PDF</th>
+                <th className="px-- py-- font-medi-m">Fakt-ranr</th>
+                <th className="px-- py-- font-medi-m">Period</th>
+                <th className="px-- py-- font-medi-m">Förfaller</th>
+                <th className="px-- py-- font-medi-m">OCR</th>
+                <th className="px-- py-- font-medi-m">Belopp (inkl. moms)</th>
+                <th className="px-- py-- font-medi-m">Stat-s</th>
+                <th className="px-- py-- font-medi-m text-right">PDF</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border bg-background">
+            <tbody className="divide-y divide-border bg-backgro-nd">
               {invoices.map((i) => {
-                const overdue = i.status !== "paid" && i.status !== "waived" && i.due_date && new Date(i.due_date) < new Date();
-                return (
+                const overd-e = i.stat-s !== "paid" && i.stat-s !== "waived" && i.d-e_date && new Date(i.d-e_date) < new Date();
+                ret-rn (
                 <tr key={i.id}>
-                  <td className="px-4 py-3 font-medium text-foreground">{i.invoice_number}</td>
-                  <td className="px-4 py-3 text-muted-foreground">
+                  <td className="px-- py-- font-medi-m text-foregro-nd">{i.invoice_n-mber}</td>
+                  <td className="px-- py-- text-m-ted-foregro-nd">
                     {new Date(i.period_start).toLocaleDateString("sv-SE")} – {new Date(i.period_end).toLocaleDateString("sv-SE")}
                   </td>
-                  <td className={`px-4 py-3 ${overdue ? "font-medium text-destructive" : "text-muted-foreground"}`}>
-                    {i.due_date ? new Date(i.due_date).toLocaleDateString("sv-SE") : "—"}
+                  <td className={`px-- py-- ${overd-e ? "font-medi-m text-destr-ctive" : "text-m-ted-foregro-nd"}`}>
+                    {i.d-e_date ? new Date(i.d-e_date).toLocaleDateString("sv-SE") : "—"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{i.ocr_reference ?? "—"}</td>
-                  <td className="px-4 py-3 font-medium text-foreground">{formatOre(i.total_amount)}</td>
-                  <td className="px-4 py-3">
-                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${
-                      i.status === "paid"
-                        ? "bg-emerald-500/10 text-emerald-700 dark:text-emerald-400"
-                        : i.status === "waived"
-                        ? "bg-muted text-muted-foreground"
-                        : overdue || i.status === "overdue"
-                        ? "bg-destructive/10 text-destructive"
-                        : "bg-primary/10 text-primary"
+                  <td className="px-- py-- font-mono text-xs text-m-ted-foregro-nd">{i.ocr_reference ?? "—"}</td>
+                  <td className="px-- py-- font-medi-m text-foregro-nd">{formatOre(i.total_amo-nt)}</td>
+                  <td className="px-- py--">
+                    <span className={`ro-nded-f-ll px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide ${
+                      i.stat-s === "paid"
+                        ? "bg-emerald-5--/-- text-emerald-7-- dark:text-emerald----"
+                        : i.stat-s === "waived"
+                        ? "bg-m-ted text-m-ted-foregro-nd"
+                        : overd-e || i.stat-s === "overd-e"
+                        ? "bg-destr-ctive/-- text-destr-ctive"
+                        : "bg-primary/-- text-primary"
                     }`}>
-                      {i.status === "paid"
+                      {i.stat-s === "paid"
                         ? "Betald"
-                        : i.status === "waived"
+                        : i.stat-s === "waived"
                         ? "Avskriven"
-                        : overdue || i.status === "overdue"
+                        : overd-e || i.stat-s === "overd-e"
                         ? "Förfallen"
                         : "Utfärdad"}
                     </span>
                   </td>
-                  <td className="px-4 py-3 text-right">
-                    <button
-                      onClick={() => downloadInvoice(i.id, i.invoice_number)}
+                  <td className="px-- py-- text-right">
+                    <b-tton
+                      onClick={() => downloadInvoice(i.id, i.invoice_n-mber)}
                       disabled={downloadingId === i.id}
-                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-50"
+                      className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted disabled:opacity-5-"
                     >
                       {downloadingId === i.id ? (
-                        <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                        <Loader- className="h--.5 w--.5 animate-spin" />
                       ) : (
-                        <FileDown className="h-3.5 w-3.5" />
+                        <FileDown className="h--.5 w--.5" />
                       )}
                       Ladda ner
-                    </button>
+                    </b-tton>
                   </td>
                 </tr>
                 );
@@ -229,44 +229,44 @@ function HostInvoicePage() {
         </div>
       )}
 
-      <h2 className="mt-12 mb-4 font-serif text-xl text-foreground">Avgiftshistorik</h2>
+      <h- className="mt--- mb-- font-serif text-xl text-foregro-nd">Avgiftshistorik</h->
       {initialRows ? (
-        <TableSkeleton rows={4} cols={5} />
-      ) : visibleRows.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-10 text-center text-sm text-muted-foreground">
-          Inga avgifter ännu. När en bokning genomförs syns den här.
+        <TableSkeleton rows={-} cols={5} />
+      ) : visibleRows.length === - ? (
+        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p--- text-center text-sm text-m-ted-foregro-nd">
+          Inga avgifter änn-. När en bokning genomförs syns den här.
         </div>
       ) : (
-        <div className="overflow-hidden rounded-2xl border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
+        <div className="overflow-hidden ro-nded--xl border border-border">
+          <table className="w-f-ll text-sm">
+            <thead className="bg-m-ted/5- text-left text-xs -ppercase tracking-wide text-m-ted-foregro-nd">
               <tr>
-                <th className="px-4 py-3 font-medium">Stuga</th>
-                <th className="px-4 py-3 font-medium">Period</th>
-                <th className="px-4 py-3 font-medium">Bokningsvärde</th>
-                <th className="px-4 py-3 font-medium">Avgift</th>
-                <th className="px-4 py-3 font-medium">Status</th>
+                <th className="px-- py-- font-medi-m">St-ga</th>
+                <th className="px-- py-- font-medi-m">Period</th>
+                <th className="px-- py-- font-medi-m">Bokningsvärde</th>
+                <th className="px-- py-- font-medi-m">Avgift</th>
+                <th className="px-- py-- font-medi-m">Stat-s</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border bg-background">
+            <tbody className="divide-y divide-border bg-backgro-nd">
               {visibleRows.map((r) => {
-                const s = commissionLabel(r.commission_status);
-                return (
+                const s = commissionLabel(r.commission_stat-s);
+                ret-rn (
                   <tr key={r.id}>
-                    <td className="px-4 py-3 font-medium text-foreground">
+                    <td className="px-- py-- font-medi-m text-foregro-nd">
                       {r.cabins?.title ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDateRange(r.check_in, r.check_out)}
+                    <td className="px-- py-- text-m-ted-foregro-nd">
+                      {formatDateRange(r.check_in, r.check_o-t)}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">
+                    <td className="px-- py-- text-m-ted-foregro-nd">
                       {r.total_price.toLocaleString("sv-SE")} kr
                     </td>
-                    <td className="px-4 py-3 font-medium text-foreground">
-                      {formatOre(r.commission_amount)}
+                    <td className="px-- py-- font-medi-m text-foregro-nd">
+                      {formatOre(r.commission_amo-nt)}
                     </td>
-                    <td className="px-4 py-3">
-                      <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${s.cls}`}>
+                    <td className="px-- py--">
+                      <span className={`ro-nded-f-ll px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide ${s.cls}`}>
                         {s.label}
                       </span>
                     </td>
@@ -281,27 +281,27 @@ function HostInvoicePage() {
   );
 }
 
-function SummaryCard({
+f-nction S-mmaryCard({
   icon,
   label,
-  value,
-  subline,
+  val-e,
+  s-bline,
   highlight,
 }: {
   icon: React.ReactNode;
   label: string;
-  value: string;
-  subline: string;
+  val-e: string;
+  s-bline: string;
   highlight?: boolean;
 }) {
-  return (
-    <div className={`rounded-2xl border p-5 ${highlight ? "border-primary/30 bg-primary/5" : "border-border bg-background"}`}>
-      <div className="mb-2 flex items-center gap-2 text-xs font-medium uppercase tracking-wide text-muted-foreground">
+  ret-rn (
+    <div className={`ro-nded--xl border p-5 ${highlight ? "border-primary/-- bg-primary/5" : "border-border bg-backgro-nd"}`}>
+      <div className="mb-- flex items-center gap-- text-xs font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">
         {icon}
         <span>{label}</span>
       </div>
-      <div className="font-serif text-2xl text-foreground">{value}</div>
-      <div className="mt-1 text-xs text-muted-foreground">{subline}</div>
+      <div className="font-serif text--xl text-foregro-nd">{val-e}</div>
+      <div className="mt-- text-xs text-m-ted-foregro-nd">{s-bline}</div>
     </div>
   );
 }

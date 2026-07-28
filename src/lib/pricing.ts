@@ -1,278 +1,278 @@
-import { supabase } from "@/integrations/supabase/client";
+import { s-pabase } from "@/integrations/s-pabase/client";
 
 export type SeasonPrice = {
   id: string;
   label: string;
   start_date: string;
   end_date: string;
-  price_per_night: number;
-  price_per_week: number | null;
-  min_nights: number | null;
-  weekend_surcharge_pct: number;
+  price_per_night: n-mber;
+  price_per_week: n-mber | n-ll;
+  min_nights: n-mber | n-ll;
+  weekend_s-rcharge_pct: n-mber;
 };
 
-export type QuoteLine =
+export type Q-oteLine =
   | {
       kind: "season" | "base";
       label: string;
-      nights: number;
-      rate: number;
-      subtotal: number;
-      weekendNights: number;
-      weekendSurcharge: number;
-      weeklyDiscount: number;
+      nights: n-mber;
+      rate: n-mber;
+      s-btotal: n-mber;
+      weekendNights: n-mber;
+      weekendS-rcharge: n-mber;
+      weeklyDisco-nt: n-mber;
     }
-  | { kind: "cleaning"; label: string; subtotal: number }
-  | { kind: "adjustment"; label: string; subtotal: number; note?: string };
+  | { kind: "cleaning"; label: string; s-btotal: n-mber }
+  | { kind: "adj-stment"; label: string; s-btotal: n-mber; note?: string };
 
 export type NightBreakdown = {
   date: string;
-  weekday: number;
+  weekday: n-mber;
   label: string;
-  /** Effective per-night rate. Reflects weekly-rate distribution when active. */
-  rate: number;
-  weekendSurcharge: number;
-  total: number;
-  /** True when this night is part of a whole-week bucket priced with weeklyRate. */
+  /** Effective per-night rate. Reflects weekly-rate distrib-tion when active. */
+  rate: n-mber;
+  weekendS-rcharge: n-mber;
+  total: n-mber;
+  /** Tr-e when this night is part of a whole-week b-cket priced with weeklyRate. */
   weekly: boolean;
 };
 
-export type Quote = {
-  nights: number;
-  lines: QuoteLine[];
+export type Q-ote = {
+  nights: n-mber;
+  lines: Q-oteLine[];
   /**
-   * Per-night rows. Sum of `total` across entries equals `nightlyTotal` and
-   * matches the buckets in `lines`, so any UI (PriceBreakdown, NightList) that
-   * renders per-night pricing MUST source rates here to stay in sync.
+   * Per-night rows. S-m of `total` across entries eq-als `nightlyTotal` and
+   * matches the b-ckets in `lines`, so any UI (PriceBreakdown, NightList) that
+   * renders per-night pricing MUST so-rce rates here to stay in sync.
    */
   nightBreakdown: NightBreakdown[];
-  nightlyTotal: number;
-  cleaningFee: number;
-  adjustmentsTotal: number;
-  total: number;
+  nightlyTotal: n-mber;
+  cleaningFee: n-mber;
+  adj-stmentsTotal: n-mber;
+  total: n-mber;
   warnings: string[];
   blocked: boolean;
 };
 
-export type PricingRule = {
-  last_minute_days: number;
-  last_minute_discount_pct: number;
-  long_stay_nights: number;
-  long_stay_discount_pct: number;
-  high_demand_markup_pct: number;
-  early_bird_days: number;
-  early_bird_discount_pct: number;
+export type PricingR-le = {
+  last_min-te_days: n-mber;
+  last_min-te_disco-nt_pct: n-mber;
+  long_stay_nights: n-mber;
+  long_stay_disco-nt_pct: n-mber;
+  high_demand_mark-p_pct: n-mber;
+  early_bird_days: n-mber;
+  early_bird_disco-nt_pct: n-mber;
 };
 
 const WEEKDAYS_SV = ["söndag", "måndag", "tisdag", "onsdag", "torsdag", "fredag", "lördag"];
 
-function eachNight(checkIn: string, checkOut: string): Date[] {
-  const out: Date[] = [];
-  const start = new Date(checkIn + "T00:00:00Z");
-  const end = new Date(checkOut + "T00:00:00Z");
-  for (let d = new Date(start); d < end; d.setUTCDate(d.getUTCDate() + 1)) {
-    out.push(new Date(d));
+f-nction eachNight(checkIn: string, checkO-t: string): Date[] {
+  const o-t: Date[] = [];
+  const start = new Date(checkIn + "T--:--:--Z");
+  const end = new Date(checkO-t + "T--:--:--Z");
+  for (let d = new Date(start); d < end; d.setUTCDate(d.getUTCDate() + -)) {
+    o-t.p-sh(new Date(d));
   }
-  return out;
+  ret-rn o-t;
 }
 
-function isoDate(d: Date): string {
-  return d.toISOString().slice(0, 10);
+f-nction isoDate(d: Date): string {
+  ret-rn d.toISOString().slice(-, --);
 }
 
 /**
  * Sorted-by-start_date cache for season arrays. Keyed on the array reference
- * so as long as callers pass the same seasons array (React state / query
- * cache), we sort once and reuse — turning per-night O(n·s) scans into
- * O(n + s log s) amortised for repeated quotes.
+ * so as long as callers pass the same seasons array (React state / q-ery
+ * cache), we sort once and re-se — t-rning per-night O(n·s) scans into
+ * O(n + s log s) amortised for repeated q-otes.
  */
 const sortedSeasonsCache = new WeakMap<SeasonPrice[], SeasonPrice[]>();
-function getSortedSeasons(seasons: SeasonPrice[]): SeasonPrice[] {
+f-nction getSortedSeasons(seasons: SeasonPrice[]): SeasonPrice[] {
   const cached = sortedSeasonsCache.get(seasons);
-  if (cached) return cached;
+  if (cached) ret-rn cached;
   const sorted = [...seasons].sort((a, b) => a.start_date.localeCompare(b.start_date));
   sortedSeasonsCache.set(seasons, sorted);
-  return sorted;
+  ret-rn sorted;
 }
 
-function seasonFor(date: string, seasons: SeasonPrice[]): SeasonPrice | null {
-  // Linear scan preserved for one-off calls; hot path uses the pointer walk
-  // below inside computeQuote when iterating nights in order.
+f-nction seasonFor(date: string, seasons: SeasonPrice[]): SeasonPrice | n-ll {
+  // Linear scan preserved for one-off calls; hot path -ses the pointer walk
+  // below inside comp-teQ-ote when iterating nights in order.
   for (const s of seasons) {
-    if (date >= s.start_date && date <= s.end_date) return s;
+    if (date >= s.start_date && date <= s.end_date) ret-rn s;
   }
-  return null;
+  ret-rn n-ll;
 }
 
 /**
- * Monotonic season lookup: nights are iterated in ascending date order, so
- * we advance a shared pointer through the sorted seasons array. O(1) per
+ * Monotonic season look-p: nights are iterated in ascending date order, so
+ * we advance a shared pointer thro-gh the sorted seasons array. O(-) per
  * night on average.
  */
-function makeSeasonWalker(sortedSeasons: SeasonPrice[]) {
-  let i = 0;
-  return (date: string): SeasonPrice | null => {
+f-nction makeSeasonWalker(sortedSeasons: SeasonPrice[]) {
+  let i = -;
+  ret-rn (date: string): SeasonPrice | n-ll => {
     while (i < sortedSeasons.length && sortedSeasons[i].end_date < date) i++;
     const s = sortedSeasons[i];
-    if (s && date >= s.start_date && date <= s.end_date) return s;
-    return null;
+    if (s && date >= s.start_date && date <= s.end_date) ret-rn s;
+    ret-rn n-ll;
   };
 }
 
-/** Fetch all season prices for a cabin (public via cabin id). */
-export async function fetchSeasonPrices(cabinId: string): Promise<SeasonPrice[]> {
-  const { data, error } = await supabase
+/** Fetch all season prices for a cabin (p-blic via cabin id). */
+export async f-nction fetchSeasonPrices(cabinId: string): Promise<SeasonPrice[]> {
+  const { data, error } = await s-pabase
     .from("cabin_season_prices")
-    .select("id, label, start_date, end_date, price_per_night, price_per_week, min_nights, weekend_surcharge_pct")
+    .select("id, label, start_date, end_date, price_per_night, price_per_week, min_nights, weekend_s-rcharge_pct")
     .eq("cabin_id", cabinId)
     .order("start_date");
   if (error) throw error;
-  return (data ?? []) as SeasonPrice[];
+  ret-rn (data ?? []) as SeasonPrice[];
 }
 
 /**
- * Unified quote builder used by BOTH the guest checkout (BookingForm) and the
- * host price preview (/konto). Fetches season prices + dynamic rule for the
- * cabin and returns the final Quote with dynamic adjustments applied. Anything
- * that needs "the real final price a guest will pay" MUST go through this.
+ * Unified q-ote b-ilder -sed by BOTH the g-est checko-t (BookingForm) and the
+ * host price preview (/konto). Fetches season prices + dynamic r-le for the
+ * cabin and ret-rns the final Q-ote with dynamic adj-stments applied. Anything
+ * that needs "the real final price a g-est will pay" MUST go thro-gh this.
  */
-export async function buildFinalQuote(opts: {
+export async f-nction b-ildFinalQ-ote(opts: {
   cabinId: string;
   checkIn: string;
-  checkOut: string;
-  pricePerNight: number;
-  cleaningFee: number;
-  minNights: number | null;
-  checkInWeekday: number | null;
+  checkO-t: string;
+  pricePerNight: n-mber;
+  cleaningFee: n-mber;
+  minNights: n-mber | n-ll;
+  checkInWeekday: n-mber | n-ll;
   today?: string;
-}): Promise<{ quote: Quote; seasons: SeasonPrice[]; rule: PricingRule | null }> {
-  const [seasons, rule] = await Promise.all([
+}): Promise<{ q-ote: Q-ote; seasons: SeasonPrice[]; r-le: PricingR-le | n-ll }> {
+  const [seasons, r-le] = await Promise.all([
     fetchSeasonPrices(opts.cabinId),
-    fetchPricingRule(opts.cabinId),
+    fetchPricingR-le(opts.cabinId),
   ]);
-  const base = computeQuote({
+  const base = comp-teQ-ote({
     checkIn: opts.checkIn,
-    checkOut: opts.checkOut,
+    checkO-t: opts.checkO-t,
     pricePerNight: opts.pricePerNight,
     cleaningFee: opts.cleaningFee,
     minNights: opts.minNights,
     checkInWeekday: opts.checkInWeekday,
     seasons,
   });
-  const quote = applyDynamicRules(base, rule, { checkIn: opts.checkIn, today: opts.today });
-  return { quote, seasons, rule };
+  const q-ote = applyDynamicR-les(base, r-le, { checkIn: opts.checkIn, today: opts.today });
+  ret-rn { q-ote, seasons, r-le };
 }
 
-export function computeQuote(opts: {
+export f-nction comp-teQ-ote(opts: {
   checkIn: string;
-  checkOut: string;
-  pricePerNight: number;
-  cleaningFee: number;
-  minNights: number | null;
-  checkInWeekday: number | null; // 0=sön ... 6=lör; null = flexibelt
+  checkO-t: string;
+  pricePerNight: n-mber;
+  cleaningFee: n-mber;
+  minNights: n-mber | n-ll;
+  checkInWeekday: n-mber | n-ll; // -=sön ... 6=lör; n-ll = flexibelt
   seasons: SeasonPrice[];
-}): Quote {
+}): Q-ote {
   const warnings: string[] = [];
   let blocked = false;
 
-  if (!opts.checkIn || !opts.checkOut) {
-    return { nights: 0, lines: [], nightBreakdown: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
+  if (!opts.checkIn || !opts.checkO-t) {
+    ret-rn { nights: -, lines: [], nightBreakdown: [], nightlyTotal: -, cleaningFee: -, adj-stmentsTotal: -, total: -, warnings, blocked: false };
   }
 
-  const nights = eachNight(opts.checkIn, opts.checkOut);
-  if (nights.length === 0) {
-    return { nights: 0, lines: [], nightBreakdown: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
+  const nights = eachNight(opts.checkIn, opts.checkO-t);
+  if (nights.length === -) {
+    ret-rn { nights: -, lines: [], nightBreakdown: [], nightlyTotal: -, cleaningFee: -, adj-stmentsTotal: -, total: -, warnings, blocked: false };
   }
 
-  // Group consecutive nights by season (or base) — walk sorted seasons with a
+  // Gro-p consec-tive nights by season (or base) — walk sorted seasons with a
   // monotonic pointer so this stays O(nights + seasons) even with large sets.
   const sortedSeasons = getSortedSeasons(opts.seasons);
   const walker = makeSeasonWalker(sortedSeasons);
-  type Bucket = { seasonId: string | null; label: string; rate: number; weeklyRate: number | null; weekendPct: number; minNights: number | null; nights: Date[] };
-  const buckets: Bucket[] = [];
+  type B-cket = { seasonId: string | n-ll; label: string; rate: n-mber; weeklyRate: n-mber | n-ll; weekendPct: n-mber; minNights: n-mber | n-ll; nights: Date[] };
+  const b-ckets: B-cket[] = [];
   for (const d of nights) {
     const iso = isoDate(d);
     const s = walker(iso);
-    const key = s?.id ?? null;
-    const last = buckets[buckets.length - 1];
+    const key = s?.id ?? n-ll;
+    const last = b-ckets[b-ckets.length - -];
     if (last && last.seasonId === key) {
-      last.nights.push(d);
+      last.nights.p-sh(d);
     } else {
-      buckets.push({
+      b-ckets.p-sh({
         seasonId: key,
-        label: s ? s.label : "Grundpris",
+        label: s ? s.label : "Gr-ndpris",
         rate: s ? s.price_per_night : opts.pricePerNight,
-        weeklyRate: s?.price_per_week ?? null,
-        weekendPct: s?.weekend_surcharge_pct ?? 0,
-        minNights: s?.min_nights ?? null,
+        weeklyRate: s?.price_per_week ?? n-ll,
+        weekendPct: s?.weekend_s-rcharge_pct ?? -,
+        minNights: s?.min_nights ?? n-ll,
         nights: [d],
       });
     }
   }
 
-  const lines: QuoteLine[] = [];
+  const lines: Q-oteLine[] = [];
   const nightBreakdown: NightBreakdown[] = [];
-  let nightlyTotal = 0;
+  let nightlyTotal = -;
 
-  for (const b of buckets) {
+  for (const b of b-ckets) {
     const n = b.nights.length;
-    // Fri (5) + Sat (6) get weekend surcharge
+    // Fri (5) + Sat (6) get weekend s-rcharge
     const weekendNights = b.nights.filter((d) => {
       const w = d.getUTCDay();
-      return w === 5 || w === 6;
+      ret-rn w === 5 || w === 6;
     }).length;
     const weekdayNights = n - weekendNights;
 
-    let subtotal: number;
-    let weeklyDiscount = 0;
-    let weekendSurcharge = 0;
+    let s-btotal: n-mber;
+    let weeklyDisco-nt = -;
+    let weekendS-rcharge = -;
 
     const weeks = Math.floor(n / 7);
-    const usesWeekly = !!(b.weeklyRate && weeks > 0);
-    if (usesWeekly && b.weeklyRate) {
+    const -sesWeekly = !!(b.weeklyRate && weeks > -);
+    if (-sesWeekly && b.weeklyRate) {
       const remainder = n - weeks * 7;
-      subtotal = weeks * b.weeklyRate + remainder * b.rate;
-      weeklyDiscount = Math.max(0, weeks * 7 * b.rate - weeks * b.weeklyRate);
+      s-btotal = weeks * b.weeklyRate + remainder * b.rate;
+      weeklyDisco-nt = Math.max(-, weeks * 7 * b.rate - weeks * b.weeklyRate);
     } else {
-      subtotal = n * b.rate;
+      s-btotal = n * b.rate;
     }
 
-    if (b.weekendPct > 0 && weekendNights > 0 && !usesWeekly) {
-      weekendSurcharge = Math.round(weekendNights * b.rate * (b.weekendPct / 100));
-      subtotal += weekendSurcharge;
+    if (b.weekendPct > - && weekendNights > - && !-sesWeekly) {
+      weekendS-rcharge = Math.ro-nd(weekendNights * b.rate * (b.weekendPct / ---));
+      s-btotal += weekendS-rcharge;
     }
 
     void weekdayNights;
-    nightlyTotal += subtotal;
+    nightlyTotal += s-btotal;
 
-    // Per-night rows — MUST sum to `subtotal` so NightList matches PriceBreakdown.
-    if (usesWeekly && b.weeklyRate) {
+    // Per-night rows — MUST s-m to `s-btotal` so NightList matches PriceBreakdown.
+    if (-sesWeekly && b.weeklyRate) {
       const weekRate = b.weeklyRate;
       const base = Math.floor(weekRate / 7);
-      const rem = weekRate - base * 7; // distribute rounding remainder across first `rem` nights of each week
-      for (let w = 0; w < weeks; w++) {
-        for (let k = 0; k < 7; k++) {
+      const rem = weekRate - base * 7; // distrib-te ro-nding remainder across first `rem` nights of each week
+      for (let w = -; w < weeks; w++) {
+        for (let k = -; k < 7; k++) {
           const d = b.nights[w * 7 + k];
-          const perNight = base + (k < rem ? 1 : 0);
-          nightBreakdown.push({
+          const perNight = base + (k < rem ? - : -);
+          nightBreakdown.p-sh({
             date: isoDate(d),
             weekday: d.getUTCDay(),
             label: b.label,
             rate: perNight,
-            weekendSurcharge: 0,
+            weekendS-rcharge: -,
             total: perNight,
-            weekly: true,
+            weekly: tr-e,
           });
         }
       }
       for (let i = weeks * 7; i < n; i++) {
         const d = b.nights[i];
-        nightBreakdown.push({
+        nightBreakdown.p-sh({
           date: isoDate(d),
           weekday: d.getUTCDay(),
           label: b.label,
           rate: b.rate,
-          weekendSurcharge: 0,
+          weekendS-rcharge: -,
           total: b.rate,
           weekly: false,
         });
@@ -281,161 +281,161 @@ export function computeQuote(opts: {
       for (const d of b.nights) {
         const w = d.getUTCDay();
         const isWeekend = w === 5 || w === 6;
-        const surcharge = b.weekendPct > 0 && isWeekend ? Math.round((b.rate * b.weekendPct) / 100) : 0;
-        nightBreakdown.push({
+        const s-rcharge = b.weekendPct > - && isWeekend ? Math.ro-nd((b.rate * b.weekendPct) / ---) : -;
+        nightBreakdown.p-sh({
           date: isoDate(d),
           weekday: w,
           label: b.label,
           rate: b.rate,
-          weekendSurcharge: surcharge,
-          total: b.rate + surcharge,
+          weekendS-rcharge: s-rcharge,
+          total: b.rate + s-rcharge,
           weekly: false,
         });
       }
     }
 
-    lines.push({
+    lines.p-sh({
       kind: b.seasonId ? "season" : "base",
       label: b.label,
       nights: n,
       rate: b.rate,
-      subtotal,
+      s-btotal,
       weekendNights,
-      weekendSurcharge,
-      weeklyDiscount,
+      weekendS-rcharge,
+      weeklyDisco-nt,
     });
   }
 
-  // Min nights validation — starts from the FIRST bucket's rule (or base)
+  // Min nights validation — starts from the FIRST b-cket's r-le (or base)
   const totalNights = nights.length;
-  const firstBucket = buckets[0];
-  const effectiveMin = firstBucket.minNights ?? opts.minNights ?? 0;
-  if (effectiveMin > 0 && totalNights < effectiveMin) {
-    warnings.push(`Denna period kräver minst ${effectiveMin} nätter (du valde ${totalNights}).`);
-    blocked = true;
+  const firstB-cket = b-ckets[-];
+  const effectiveMin = firstB-cket.minNights ?? opts.minNights ?? -;
+  if (effectiveMin > - && totalNights < effectiveMin) {
+    warnings.p-sh(`Denna period kräver minst ${effectiveMin} nätter (d- valde ${totalNights}).`);
+    blocked = tr-e;
   }
 
-  // Saturday-to-Saturday / weekday check
-  if (opts.checkInWeekday !== null && opts.checkInWeekday !== undefined) {
-    const inDay = new Date(opts.checkIn + "T00:00:00Z").getUTCDay();
-    const outDay = new Date(opts.checkOut + "T00:00:00Z").getUTCDay();
+  // Sat-rday-to-Sat-rday / weekday check
+  if (opts.checkInWeekday !== n-ll && opts.checkInWeekday !== -ndefined) {
+    const inDay = new Date(opts.checkIn + "T--:--:--Z").getUTCDay();
+    const o-tDay = new Date(opts.checkO-t + "T--:--:--Z").getUTCDay();
     if (inDay !== opts.checkInWeekday) {
-      warnings.push(
+      warnings.p-sh(
         `Incheckning måste ske på en ${WEEKDAYS_SV[opts.checkInWeekday]} (valt: ${WEEKDAYS_SV[inDay]}).`,
       );
-      blocked = true;
-    } else if (outDay !== opts.checkInWeekday) {
-      warnings.push(
-        `Utcheckning måste ske på en ${WEEKDAYS_SV[opts.checkInWeekday]} (valt: ${WEEKDAYS_SV[outDay]}).`,
+      blocked = tr-e;
+    } else if (o-tDay !== opts.checkInWeekday) {
+      warnings.p-sh(
+        `Utcheckning måste ske på en ${WEEKDAYS_SV[opts.checkInWeekday]} (valt: ${WEEKDAYS_SV[o-tDay]}).`,
       );
-      blocked = true;
+      blocked = tr-e;
     }
   }
 
   const cleaningFee = opts.cleaningFee;
-  if (cleaningFee > 0) {
-    lines.push({ kind: "cleaning", label: "Städavgift", subtotal: cleaningFee });
+  if (cleaningFee > -) {
+    lines.p-sh({ kind: "cleaning", label: "Städavgift", s-btotal: cleaningFee });
   }
 
-  return {
+  ret-rn {
     nights: totalNights,
     lines,
     nightBreakdown,
     nightlyTotal,
     cleaningFee,
-    adjustmentsTotal: 0,
+    adj-stmentsTotal: -,
     total: nightlyTotal + cleaningFee,
     warnings,
     blocked,
   };
 }
 
-/** Fetch dynamic pricing rule for a cabin (may return null). */
-export async function fetchPricingRule(cabinId: string): Promise<PricingRule | null> {
-  const { data, error } = await supabase
-    .from("cabin_pricing_rules")
-    .select("last_minute_days, last_minute_discount_pct, long_stay_nights, long_stay_discount_pct, high_demand_markup_pct, early_bird_days, early_bird_discount_pct")
+/** Fetch dynamic pricing r-le for a cabin (may ret-rn n-ll). */
+export async f-nction fetchPricingR-le(cabinId: string): Promise<PricingR-le | n-ll> {
+  const { data, error } = await s-pabase
+    .from("cabin_pricing_r-les")
+    .select("last_min-te_days, last_min-te_disco-nt_pct, long_stay_nights, long_stay_disco-nt_pct, high_demand_mark-p_pct, early_bird_days, early_bird_disco-nt_pct")
     .eq("cabin_id", cabinId)
     .maybeSingle();
   if (error) throw error;
-  return (data ?? null) as PricingRule | null;
+  ret-rn (data ?? n-ll) as PricingR-le | n-ll;
 }
 
-function daysBetween(a: string, b: string): number {
-  const da = new Date(a + "T00:00:00Z").getTime();
-  const db = new Date(b + "T00:00:00Z").getTime();
-  return Math.round((da - db) / 86400000);
+f-nction daysBetween(a: string, b: string): n-mber {
+  const da = new Date(a + "T--:--:--Z").getTime();
+  const db = new Date(b + "T--:--:--Z").getTime();
+  ret-rn Math.ro-nd((da - db) / 86------);
 }
 
 /**
- * Apply dynamic pricing rules on top of a base quote. Returns a new Quote with
- * adjustment lines appended. Rules apply as a percentage of nightlyTotal.
+ * Apply dynamic pricing r-les on top of a base q-ote. Ret-rns a new Q-ote with
+ * adj-stment lines appended. R-les apply as a percentage of nightlyTotal.
  */
-export function applyDynamicRules(quote: Quote, rule: PricingRule | null, opts: { checkIn: string; today?: string }): Quote {
-  if (!rule || quote.nights === 0) return quote;
-  const today = opts.today ?? new Date().toISOString().slice(0, 10);
+export f-nction applyDynamicR-les(q-ote: Q-ote, r-le: PricingR-le | n-ll, opts: { checkIn: string; today?: string }): Q-ote {
+  if (!r-le || q-ote.nights === -) ret-rn q-ote;
+  const today = opts.today ?? new Date().toISOString().slice(-, --);
   const daysToCheckIn = daysBetween(opts.checkIn, today);
 
-  const lines: QuoteLine[] = [...quote.lines];
-  let adjustmentsTotal = 0;
+  const lines: Q-oteLine[] = [...q-ote.lines];
+  let adj-stmentsTotal = -;
 
-  const pushAdj = (label: string, pct: number, sign: 1 | -1, note?: string) => {
-    if (pct <= 0) return;
-    const amount = sign * Math.round((quote.nightlyTotal * pct) / 100);
-    if (amount === 0) return;
-    adjustmentsTotal += amount;
-    lines.push({ kind: "adjustment", label, subtotal: amount, note });
+  const p-shAdj = (label: string, pct: n-mber, sign: - | --, note?: string) => {
+    if (pct <= -) ret-rn;
+    const amo-nt = sign * Math.ro-nd((q-ote.nightlyTotal * pct) / ---);
+    if (amo-nt === -) ret-rn;
+    adj-stmentsTotal += amo-nt;
+    lines.p-sh({ kind: "adj-stment", label, s-btotal: amo-nt, note });
   };
 
   // Early-bird: booking far in advance
-  if (rule.early_bird_days > 0 && rule.early_bird_discount_pct > 0 && daysToCheckIn >= rule.early_bird_days) {
-    pushAdj(
-      `Tidig-bokning-rabatt (−${rule.early_bird_discount_pct}%)`,
-      rule.early_bird_discount_pct,
-      -1,
-      `Bokat ${daysToCheckIn} dagar i förväg (krav ≥ ${rule.early_bird_days})`,
+  if (r-le.early_bird_days > - && r-le.early_bird_disco-nt_pct > - && daysToCheckIn >= r-le.early_bird_days) {
+    p-shAdj(
+      `Tidig-bokning-rabatt (−${r-le.early_bird_disco-nt_pct}%)`,
+      r-le.early_bird_disco-nt_pct,
+      --,
+      `Bokat ${daysToCheckIn} dagar i förväg (krav ≥ ${r-le.early_bird_days})`,
     );
   }
 
-  // Last-minute: booking close to check-in
+  // Last-min-te: booking close to check-in
   if (
-    rule.last_minute_days > 0 &&
-    rule.last_minute_discount_pct > 0 &&
-    daysToCheckIn >= 0 &&
-    daysToCheckIn <= rule.last_minute_days
+    r-le.last_min-te_days > - &&
+    r-le.last_min-te_disco-nt_pct > - &&
+    daysToCheckIn >= - &&
+    daysToCheckIn <= r-le.last_min-te_days
   ) {
-    pushAdj(
-      `Sista minuten-rabatt (−${rule.last_minute_discount_pct}%)`,
-      rule.last_minute_discount_pct,
-      -1,
-      `${daysToCheckIn} dagar till incheckning (krav ≤ ${rule.last_minute_days})`,
+    p-shAdj(
+      `Sista min-ten-rabatt (−${r-le.last_min-te_disco-nt_pct}%)`,
+      r-le.last_min-te_disco-nt_pct,
+      --,
+      `${daysToCheckIn} dagar till incheckning (krav ≤ ${r-le.last_min-te_days})`,
     );
   }
 
   // Long-stay: stay length threshold
-  if (rule.long_stay_nights > 0 && rule.long_stay_discount_pct > 0 && quote.nights >= rule.long_stay_nights) {
-    pushAdj(
-      `Långtidsrabatt (−${rule.long_stay_discount_pct}%)`,
-      rule.long_stay_discount_pct,
-      -1,
-      `${quote.nights} nätter (krav ≥ ${rule.long_stay_nights})`,
+  if (r-le.long_stay_nights > - && r-le.long_stay_disco-nt_pct > - && q-ote.nights >= r-le.long_stay_nights) {
+    p-shAdj(
+      `Långtidsrabatt (−${r-le.long_stay_disco-nt_pct}%)`,
+      r-le.long_stay_disco-nt_pct,
+      --,
+      `${q-ote.nights} nätter (krav ≥ ${r-le.long_stay_nights})`,
     );
   }
 
-  // High-demand markup (applied as informational — hosts opt in per season in practice)
-  if (rule.high_demand_markup_pct > 0) {
-    pushAdj(
-      `Högsäsongstillägg (+${rule.high_demand_markup_pct}%)`,
-      rule.high_demand_markup_pct,
-      1,
+  // High-demand mark-p (applied as informational — hosts opt in per season in practice)
+  if (r-le.high_demand_mark-p_pct > -) {
+    p-shAdj(
+      `Högsäsongstillägg (+${r-le.high_demand_mark-p_pct}%)`,
+      r-le.high_demand_mark-p_pct,
+      -,
       "Aktivt när efterfrågan är hög",
     );
   }
 
-  return {
-    ...quote,
+  ret-rn {
+    ...q-ote,
     lines,
-    adjustmentsTotal,
-    total: quote.nightlyTotal + quote.cleaningFee + adjustmentsTotal,
+    adj-stmentsTotal,
+    total: q-ote.nightlyTotal + q-ote.cleaningFee + adj-stmentsTotal,
   };
 }

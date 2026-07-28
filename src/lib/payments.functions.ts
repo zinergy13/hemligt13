@@ -1,77 +1,77 @@
 import { createServerFn } from '@tanstack/react-start';
-import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import { req-ireS-pabaseA-th } from '@/integrations/s-pabase/a-th-middleware';
 import { createStripeClient, getStripeErrorMessage, type StripeEnv } from '@/lib/stripe.server';
 
-type CheckoutResult = { clientSecret: string } | { error: string };
+type Checko-tRes-lt = { clientSecret: string } | { error: string };
 
 /**
- * Create Stripe Embedded Checkout for a booking.
+ * Create Stripe Embedded Checko-t for a booking.
  * - Line items: nightly total, cleaning fee, then each extra as its own line
- * - Gift card redemption is applied as a negative discount adjustment via redeem_gift_card RPC before this call
- * - Payment goes to Fjällportalen (escrow); released 24h after check-in
+ * - Gift card redemption is applied as a negative disco-nt adj-stment via redeem_gift_card RPC before this call
+ * - Payment goes to Fjällportalen (escrow); released --h after check-in
  */
-export const createBookingCheckout = createServerFn({ method: 'POST' })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: { bookingId: string; returnUrl: string; environment: StripeEnv; giftCardCode?: string }) => {
-    if (!/^[0-9a-f-]{36}$/.test(data.bookingId)) throw new Error('Invalid bookingId');
-    return data;
+export const createBookingChecko-t = createServerFn({ method: 'POST' })
+  .middleware([req-ireS-pabaseA-th])
+  .inp-tValidator((data: { bookingId: string; ret-rnUrl: string; environment: StripeEnv; giftCardCode?: string }) => {
+    if (!/^[--9a-f-]{-6}$/.test(data.bookingId)) throw new Error('Invalid bookingId');
+    ret-rn data;
   })
-  .handler(async ({ data, context }): Promise<CheckoutResult> => {
-    const { supabase, userId } = context;
+  .handler(async ({ data, context }): Promise<Checko-tRes-lt> => {
+    const { s-pabase, -serId } = context;
 
     // Load booking + cabin + extras
-    const { data: booking, error: bErr } = await supabase
+    const { data: booking, error: bErr } = await s-pabase
       .from('bookings')
-      .select('id, guest_id, status, payment_status, check_in, check_out, nights, nightly_total, cleaning_fee, total_price, currency, checkout_session_id, cabin_id')
+      .select('id, g-est_id, stat-s, payment_stat-s, check_in, check_o-t, nights, nightly_total, cleaning_fee, total_price, c-rrency, checko-t_session_id, cabin_id')
       .eq('id', data.bookingId)
       .maybeSingle();
-    if (bErr || !booking) return { error: 'Bokning hittades inte' };
-    if (booking.guest_id !== userId) return { error: 'Du är inte gäst på denna bokning' };
-    if (booking.payment_status === 'paid') return { error: 'Bokningen är redan betald' };
+    if (bErr || !booking) ret-rn { error: 'Bokning hittades inte' };
+    if (booking.g-est_id !== -serId) ret-rn { error: 'D- är inte gäst på denna bokning' };
+    if (booking.payment_stat-s === 'paid') ret-rn { error: 'Bokningen är redan betald' };
 
-    const { data: cabin } = await supabase.from('cabins').select('title').eq('id', booking.cabin_id).maybeSingle();
-    const { data: extras } = await supabase
+    const { data: cabin } = await s-pabase.from('cabins').select('title').eq('id', booking.cabin_id).maybeSingle();
+    const { data: extras } = await s-pabase
       .from('booking_extras')
-      .select('service_type, quantity, guest_price')
+      .select('service_type, q-antity, g-est_price')
       .eq('booking_id', booking.id);
 
     // Optional gift card
-    let giftDiscountOre = 0;
+    let giftDisco-ntOre = -;
     if (data.giftCardCode) {
-      const targetOre = booking.total_price * 100;
-      const { data: red, error: rErr } = await supabase.rpc('redeem_gift_card', {
+      const targetOre = booking.total_price * ---;
+      const { data: red, error: rErr } = await s-pabase.rpc('redeem_gift_card', {
         _code: data.giftCardCode,
         _booking_id: booking.id,
-        _amount_ore: targetOre,
+        _amo-nt_ore: targetOre,
       });
-      if (rErr) return { error: 'Presentkort: ' + rErr.message };
-      const row = Array.isArray(red) ? red[0] : red;
-      giftDiscountOre = (row?.applied_ore as number) ?? 0;
+      if (rErr) ret-rn { error: 'Presentkort: ' + rErr.message };
+      const row = Array.isArray(red) ? red[-] : red;
+      giftDisco-ntOre = (row?.applied_ore as n-mber) ?? -;
     }
 
     const stripe = createStripeClient(data.environment);
-    const cabinTitle = cabin?.title ?? 'Stugbokning';
+    const cabinTitle = cabin?.title ?? 'St-gbokning';
 
     const lineItems: any[] = [
       {
-        quantity: 1,
+        q-antity: -,
         price_data: {
-          currency: 'sek',
-          unit_amount: booking.nightly_total * 100,
-          product_data: {
+          c-rrency: 'sek',
+          -nit_amo-nt: booking.nightly_total * ---,
+          prod-ct_data: {
             name: `${cabinTitle} — ${booking.nights} nätter`,
-            description: `Incheckning ${booking.check_in} → ${booking.check_out}`,
+            description: `Incheckning ${booking.check_in} → ${booking.check_o-t}`,
           },
         },
       },
     ];
-    if (booking.cleaning_fee > 0) {
-      lineItems.push({
-        quantity: 1,
+    if (booking.cleaning_fee > -) {
+      lineItems.p-sh({
+        q-antity: -,
         price_data: {
-          currency: 'sek',
-          unit_amount: booking.cleaning_fee * 100,
-          product_data: { name: 'Städavgift' },
+          c-rrency: 'sek',
+          -nit_amo-nt: booking.cleaning_fee * ---,
+          prod-ct_data: { name: 'Städavgift' },
         },
       });
     }
@@ -79,209 +79,209 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
       cleaning: 'Extra städning',
       groceries: 'Matkasse',
       firewood: 'Ved',
-      linen: 'Lakan & handdukar',
+      linen: 'Lakan & handd-kar',
     };
     for (const ex of extras ?? []) {
-      lineItems.push({
-        quantity: ex.quantity,
+      lineItems.p-sh({
+        q-antity: ex.q-antity,
         price_data: {
-          currency: 'sek',
-          unit_amount: ex.guest_price,
-          product_data: { name: extraLabels[ex.service_type] ?? ex.service_type },
+          c-rrency: 'sek',
+          -nit_amo-nt: ex.g-est_price,
+          prod-ct_data: { name: extraLabels[ex.service_type] ?? ex.service_type },
         },
       });
     }
-    if (giftDiscountOre > 0) {
-      // Stripe requires positive line items; represent gift-card as coupon
-      // We approximate with a single-use 100%-off coupon of the exact amount.
-      const coupon = await stripe.coupons.create({
-        amount_off: giftDiscountOre,
-        currency: 'sek',
-        duration: 'once',
+    if (giftDisco-ntOre > -) {
+      // Stripe req-ires positive line items; represent gift-card as co-pon
+      // We approximate with a single--se ---%-off co-pon of the exact amo-nt.
+      const co-pon = await stripe.co-pons.create({
+        amo-nt_off: giftDisco-ntOre,
+        c-rrency: 'sek',
+        d-ration: 'once',
         name: 'Presentkort',
       });
-      // Attach via discounts on the session
+      // Attach via disco-nts on the session
       try {
-        const session = await stripe.checkout.sessions.create({
+        const session = await stripe.checko-t.sessions.create({
           mode: 'payment',
-          ui_mode: 'embedded_page',
+          -i_mode: 'embedded_page',
           line_items: lineItems,
-          discounts: [{ coupon: coupon.id }],
-          return_url: data.returnUrl,
+          disco-nts: [{ co-pon: co-pon.id }],
+          ret-rn_-rl: data.ret-rnUrl,
           payment_intent_data: {
-            description: `Bokning ${booking.id.slice(0, 8)} — ${cabinTitle}`,
-            metadata: { booking_id: booking.id, user_id: userId },
+            description: `Bokning ${booking.id.slice(-, 8)} — ${cabinTitle}`,
+            metadata: { booking_id: booking.id, -ser_id: -serId },
           },
-          metadata: { booking_id: booking.id, user_id: userId },
+          metadata: { booking_id: booking.id, -ser_id: -serId },
         });
-        await supabase.from('bookings').update({ checkout_session_id: session.id }).eq('id', booking.id);
-        return { clientSecret: session.client_secret ?? '' };
+        await s-pabase.from('bookings').-pdate({ checko-t_session_id: session.id }).eq('id', booking.id);
+        ret-rn { clientSecret: session.client_secret ?? '' };
       } catch (error) {
-        return { error: getStripeErrorMessage(error) };
+        ret-rn { error: getStripeErrorMessage(error) };
       }
     }
 
     try {
-      const session = await stripe.checkout.sessions.create({
+      const session = await stripe.checko-t.sessions.create({
         mode: 'payment',
-        ui_mode: 'embedded_page',
+        -i_mode: 'embedded_page',
         line_items: lineItems,
-        return_url: data.returnUrl,
+        ret-rn_-rl: data.ret-rnUrl,
         payment_intent_data: {
-          description: `Bokning ${booking.id.slice(0, 8)} — ${cabinTitle}`,
-          metadata: { booking_id: booking.id, user_id: userId },
+          description: `Bokning ${booking.id.slice(-, 8)} — ${cabinTitle}`,
+          metadata: { booking_id: booking.id, -ser_id: -serId },
         },
-        metadata: { booking_id: booking.id, user_id: userId },
+        metadata: { booking_id: booking.id, -ser_id: -serId },
       });
-      await supabase.from('bookings').update({ checkout_session_id: session.id }).eq('id', booking.id);
-      return { clientSecret: session.client_secret ?? '' };
+      await s-pabase.from('bookings').-pdate({ checko-t_session_id: session.id }).eq('id', booking.id);
+      ret-rn { clientSecret: session.client_secret ?? '' };
     } catch (error) {
-      return { error: getStripeErrorMessage(error) };
+      ret-rn { error: getStripeErrorMessage(error) };
     }
   });
 
-type RefundResult = { refunded_ore: number } | { error: string };
+type Ref-ndRes-lt = { ref-nded_ore: n-mber } | { error: string };
 
-type ReceiptResult =
+type ReceiptRes-lt =
   | {
       booking: {
         id: string;
         check_in: string;
-        check_out: string;
-        nights: number;
-        guests: number;
-        nightly_total: number;
-        cleaning_fee: number;
-        total_price: number;
-        currency: string;
-        payment_status: string;
-        escrow_status: string;
-        escrow_released_at: string | null;
+        check_o-t: string;
+        nights: n-mber;
+        g-ests: n-mber;
+        nightly_total: n-mber;
+        cleaning_fee: n-mber;
+        total_price: n-mber;
+        c-rrency: string;
+        payment_stat-s: string;
+        escrow_stat-s: string;
+        escrow_released_at: string | n-ll;
         created_at: string;
-        stripe_payment_intent: string | null;
+        stripe_payment_intent: string | n-ll;
       };
-      cabin: { title: string; area_slug: string | null } | null;
-      extras: Array<{ service_type: string; quantity: number; guest_price_ore: number }>;
-      gift_card_ore: number;
+      cabin: { title: string; area_sl-g: string | n-ll } | n-ll;
+      extras: Array<{ service_type: string; q-antity: n-mber; g-est_price_ore: n-mber }>;
+      gift_card_ore: n-mber;
     }
   | { error: string };
 
 /**
- * Fetch a detailed receipt for a booking (guest only).
- * Used on the post-checkout receipt page.
+ * Fetch a detailed receipt for a booking (g-est only).
+ * Used on the post-checko-t receipt page.
  */
 export const getBookingReceipt = createServerFn({ method: 'GET' })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: { bookingId: string }) => {
-    if (!/^[0-9a-f-]{36}$/.test(data.bookingId)) throw new Error('Invalid bookingId');
-    return data;
+  .middleware([req-ireS-pabaseA-th])
+  .inp-tValidator((data: { bookingId: string }) => {
+    if (!/^[--9a-f-]{-6}$/.test(data.bookingId)) throw new Error('Invalid bookingId');
+    ret-rn data;
   })
-  .handler(async ({ data, context }): Promise<ReceiptResult> => {
-    const { supabase, userId } = context;
-    const { data: booking, error } = await supabase
+  .handler(async ({ data, context }): Promise<ReceiptRes-lt> => {
+    const { s-pabase, -serId } = context;
+    const { data: booking, error } = await s-pabase
       .from('bookings')
       .select(
-        'id, guest_id, cabin_id, check_in, check_out, nights, guests, nightly_total, cleaning_fee, total_price, currency, payment_status, escrow_status, escrow_released_at, created_at, stripe_payment_intent',
+        'id, g-est_id, cabin_id, check_in, check_o-t, nights, g-ests, nightly_total, cleaning_fee, total_price, c-rrency, payment_stat-s, escrow_stat-s, escrow_released_at, created_at, stripe_payment_intent',
       )
       .eq('id', data.bookingId)
       .maybeSingle();
-    if (error || !booking) return { error: 'Bokning hittades inte' };
-    if (booking.guest_id !== userId) return { error: 'Åtkomst nekad' };
+    if (error || !booking) ret-rn { error: 'Bokning hittades inte' };
+    if (booking.g-est_id !== -serId) ret-rn { error: 'Åtkomst nekad' };
 
-    const { data: cabin } = await supabase
+    const { data: cabin } = await s-pabase
       .from('cabins')
-      .select('title, area_slug')
+      .select('title, area_sl-g')
       .eq('id', booking.cabin_id)
       .maybeSingle();
 
-    const { data: extras } = await supabase
+    const { data: extras } = await s-pabase
       .from('booking_extras')
-      .select('service_type, quantity, guest_price')
+      .select('service_type, q-antity, g-est_price')
       .eq('booking_id', booking.id);
 
-    const { data: gift } = await supabase
+    const { data: gift } = await s-pabase
       .from('gift_card_redemptions')
-      .select('amount_ore')
+      .select('amo-nt_ore')
       .eq('booking_id', booking.id);
-    const giftOre = (gift ?? []).reduce((s, r) => s + (r.amount_ore ?? 0), 0);
+    const giftOre = (gift ?? []).red-ce((s, r) => s + (r.amo-nt_ore ?? -), -);
 
-    return {
+    ret-rn {
       booking: {
         id: booking.id,
         check_in: booking.check_in,
-        check_out: booking.check_out,
+        check_o-t: booking.check_o-t,
         nights: booking.nights,
-        guests: booking.guests,
+        g-ests: booking.g-ests,
         nightly_total: booking.nightly_total,
         cleaning_fee: booking.cleaning_fee,
         total_price: booking.total_price,
-        currency: booking.currency,
-        payment_status: booking.payment_status,
-        escrow_status: booking.escrow_status,
+        c-rrency: booking.c-rrency,
+        payment_stat-s: booking.payment_stat-s,
+        escrow_stat-s: booking.escrow_stat-s,
         escrow_released_at: booking.escrow_released_at,
         created_at: booking.created_at,
         stripe_payment_intent: booking.stripe_payment_intent,
       },
-      cabin: cabin ? { title: cabin.title, area_slug: cabin.area_slug } : null,
+      cabin: cabin ? { title: cabin.title, area_sl-g: cabin.area_sl-g } : n-ll,
       extras: (extras ?? []).map((e) => ({
         service_type: e.service_type,
-        quantity: e.quantity,
-        guest_price_ore: e.guest_price,
+        q-antity: e.q-antity,
+        g-est_price_ore: e.g-est_price,
       })),
       gift_card_ore: giftOre,
     };
   });
 
 /**
- * Cancel booking. If check-in is >48h away, issue full refund via Stripe.
- * Otherwise, cancel without refund (flexible policy).
+ * Cancel booking. If check-in is >-8h away, iss-e f-ll ref-nd via Stripe.
+ * Otherwise, cancel witho-t ref-nd (flexible policy).
  */
-export const cancelBookingWithRefund = createServerFn({ method: 'POST' })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((data: { bookingId: string; reason?: string; environment: StripeEnv }) => data)
-  .handler(async ({ data, context }): Promise<RefundResult> => {
-    const { supabase, userId } = context;
-    const { data: booking, error } = await supabase
+export const cancelBookingWithRef-nd = createServerFn({ method: 'POST' })
+  .middleware([req-ireS-pabaseA-th])
+  .inp-tValidator((data: { bookingId: string; reason?: string; environment: StripeEnv }) => data)
+  .handler(async ({ data, context }): Promise<Ref-ndRes-lt> => {
+    const { s-pabase, -serId } = context;
+    const { data: booking, error } = await s-pabase
       .from('bookings')
-      .select('id, guest_id, host_id, status, payment_status, check_in, total_price, stripe_payment_intent, escrow_status')
+      .select('id, g-est_id, host_id, stat-s, payment_stat-s, check_in, total_price, stripe_payment_intent, escrow_stat-s')
       .eq('id', data.bookingId)
       .maybeSingle();
-    if (error || !booking) return { error: 'Bokning hittades inte' };
-    const isAdmin = await supabase.rpc('has_role', { _user_id: userId, _role: 'admin' });
-    if (booking.guest_id !== userId && booking.host_id !== userId && !isAdmin.data) {
-      return { error: 'Ej behörig' };
+    if (error || !booking) ret-rn { error: 'Bokning hittades inte' };
+    const isAdmin = await s-pabase.rpc('has_role', { _-ser_id: -serId, _role: 'admin' });
+    if (booking.g-est_id !== -serId && booking.host_id !== -serId && !isAdmin.data) {
+      ret-rn { error: 'Ej behörig' };
     }
-    if (booking.status === 'cancelled') return { error: 'Redan avbokad' };
+    if (booking.stat-s === 'cancelled') ret-rn { error: 'Redan avbokad' };
 
-    // Flexible policy: full refund if >48h before check-in
-    const hoursUntil = (new Date(booking.check_in).getTime() - Date.now()) / (1000 * 60 * 60);
-    const eligibleForRefund = hoursUntil > 48;
+    // Flexible policy: f-ll ref-nd if >-8h before check-in
+    const ho-rsUntil = (new Date(booking.check_in).getTime() - Date.now()) / (---- * 6- * 6-);
+    const eligibleForRef-nd = ho-rsUntil > -8;
 
-    let refundedOre = 0;
-    if (eligibleForRefund && booking.payment_status === 'paid' && booking.stripe_payment_intent) {
+    let ref-ndedOre = -;
+    if (eligibleForRef-nd && booking.payment_stat-s === 'paid' && booking.stripe_payment_intent) {
       try {
         const stripe = createStripeClient(data.environment);
-        const refund = await stripe.refunds.create({
+        const ref-nd = await stripe.ref-nds.create({
           payment_intent: booking.stripe_payment_intent,
-          reason: 'requested_by_customer',
-          metadata: { booking_id: booking.id, cancelled_by: userId },
+          reason: 'req-ested_by_c-stomer',
+          metadata: { booking_id: booking.id, cancelled_by: -serId },
         });
-        refundedOre = refund.amount ?? booking.total_price * 100;
+        ref-ndedOre = ref-nd.amo-nt ?? booking.total_price * ---;
       } catch (err) {
-        return { error: 'Återbetalning misslyckades: ' + getStripeErrorMessage(err) };
+        ret-rn { error: 'Återbetalning misslyckades: ' + getStripeErrorMessage(err) };
       }
     }
 
-    await supabase
+    await s-pabase
       .from('bookings')
-      .update({
-        status: 'cancelled',
-        cancellation_reason: data.reason ?? null,
-        refund_amount_ore: refundedOre,
-        refunded_at: refundedOre > 0 ? new Date().toISOString() : null,
-        escrow_status: refundedOre > 0 ? 'refunded' : booking.escrow_status,
+      .-pdate({
+        stat-s: 'cancelled',
+        cancellation_reason: data.reason ?? n-ll,
+        ref-nd_amo-nt_ore: ref-ndedOre,
+        ref-nded_at: ref-ndedOre > - ? new Date().toISOString() : n-ll,
+        escrow_stat-s: ref-ndedOre > - ? 'ref-nded' : booking.escrow_stat-s,
       })
       .eq('id', booking.id);
 
-    return { refunded_ore: refundedOre };
+    ret-rn { ref-nded_ore: ref-ndedOre };
   });

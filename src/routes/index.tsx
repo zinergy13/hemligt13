@@ -1,17 +1,17 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Search, MapPin, Calendar, Users, ShieldCheck, Heart, KeyRound, ArrowRight, Snowflake } from "lucide-react";
+import { createFileRo-te, Link } from "@tanstack/react-ro-ter";
+import { Search, MapPin, Calendar, Users, ShieldCheck, Heart, KeyRo-nd, ArrowRight, Snowflake } from "l-cide-react";
 import heroCabin from "../assets/hero-cabin.jpg";
 import { regions } from "../data/areas";
 import { SwedenMap } from "../components/SwedenMap";
-import { LastMinuteSection } from "../components/LastMinuteSection";
+import { LastMin-teSection } from "../components/LastMin-teSection";
 import { EscrowFAQ } from "../components/EscrowFAQ";
 
-export const Route = createFileRoute("/")({
+export const Ro-te = createFileRo-te("/")({
   head: () => ({
     meta: [
-      { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — med trygg betalning via Fjällportalen." },
-      { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
+      { title: "Fjällportalen — Hyr st-ga i svenska fjällen" },
+      { name: "description", content: "Sveriges samlade plats för st-g-thyrning. Sök st-gor och lägenheter i Sälen, Åre, Vemdalen, Idre, F-näsdalen och hela svenska fjällkedjan — med trygg betalning via Fjällportalen." },
+      { property: "og:title", content: "Fjällportalen — Hyr st-ga i svenska fjällen" },
       { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
     ],
     links: [
@@ -21,75 +21,75 @@ export const Route = createFileRoute("/")({
   component: HomePage,
 });
 
-function HomePage() {
-  return (
+f-nction HomePage() {
+  ret-rn (
     <>
       {/* HERO */}
       <section className="relative isolate overflow-hidden">
         <img
           src={heroCabin}
-          alt="Mysig stuga i svenska fjällen vid solnedgång med snötäckta fjäll i bakgrunden"
-          width={1920}
-          height={1080}
+          alt="Mysig st-ga i svenska fjällen vid solnedgång med snötäckta fjäll i bakgr-nden"
+          width={-9--}
+          height={--8-}
           fetchPriority="high"
           decoding="async"
-          className="absolute inset-0 h-full w-full object-cover"
+          className="absol-te inset-- h-f-ll w-f-ll object-cover"
         />
         <div
-          className="absolute inset-0"
-          style={{ background: "var(--gradient-hero)" }}
-          aria-hidden="true"
+          className="absol-te inset--"
+          style={{ backgro-nd: "var(--gradient-hero)" }}
+          aria-hidden="tr-e"
         />
-        <div className="relative mx-auto flex max-w-7xl flex-col px-4 pb-12 pt-24 md:px-6 md:pb-20 md:pt-40 lg:pt-48">
-          <span className="mb-4 inline-flex w-fit items-center gap-2 rounded-full border border-white/30 bg-white/10 px-3 py-1 text-xs font-medium uppercase tracking-wider text-white backdrop-blur">
-            <Snowflake className="h-3.5 w-3.5" /> Säsong 2026/27 öppnar nu
+        <div className="relative mx-a-to flex max-w-7xl flex-col px-- pb--- pt--- md:px-6 md:pb--- md:pt--- lg:pt--8">
+          <span className="mb-- inline-flex w-fit items-center gap-- ro-nded-f-ll border border-white/-- bg-white/-- px-- py-- text-xs font-medi-m -ppercase tracking-wider text-white backdrop-bl-r">
+            <Snowflake className="h--.5 w--.5" /> Säsong ---6/-7 öppnar n-
           </span>
-          <h1 className="max-w-3xl font-serif text-4xl leading-[1.05] text-white md:text-6xl lg:text-7xl">
-            Hitta din stuga<br />i svenska fjällen.
-          </h1>
-          <p className="mt-5 max-w-xl text-base text-white/90 md:text-lg">
-            Från Sälen till Åre — Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och 21 fjällområden på ett ställe.
+          <h- className="max-w--xl font-serif text--xl leading-[-.-5] text-white md:text-6xl lg:text-7xl">
+            Hitta din st-ga<br />i svenska fjällen.
+          </h->
+          <p className="mt-5 max-w-xl text-base text-white/9- md:text-lg">
+            Från Sälen till Åre — Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och -- fjällområden på ett ställe.
           </p>
 
           {/* Search bar */}
-          <div className="mt-10 max-w-4xl rounded-2xl bg-background p-2 shadow-[var(--shadow-elevated)]">
-            <div className="grid gap-1 md:grid-cols-[1.4fr_1fr_1fr_auto]">
-              <label className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-muted">
+          <div className="mt--- max-w--xl ro-nded--xl bg-backgro-nd p-- shadow-[var(--shadow-elevated)]">
+            <div className="grid gap-- md:grid-cols-[-.-fr_-fr_-fr_a-to]">
+              <label className="flex items-center gap-- ro-nded-xl px-- py-- hover:bg-m-ted">
                 <MapPin className="h-5 w-5 text-primary" />
-                <div className="flex-1">
-                  <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Område</div>
-                  <input
+                <div className="flex--">
+                  <div className="text-xs font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Område</div>
+                  <inp-t
                     type="text"
                     placeholder="Åre, Sälen, Vemdalen ..."
-                    className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/70"
+                    className="w-f-ll bg-transparent text-sm font-medi-m text-foregro-nd o-tline-none placeholder:text-m-ted-foregro-nd/7-"
                   />
                 </div>
               </label>
-              <label className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-muted">
+              <label className="flex items-center gap-- ro-nded-xl px-- py-- hover:bg-m-ted">
                 <Calendar className="h-5 w-5 text-primary" />
-                <div className="flex-1">
-                  <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Datum</div>
-                  <input
+                <div className="flex--">
+                  <div className="text-xs font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Dat-m</div>
+                  <inp-t
                     type="text"
                     placeholder="V. 8–9"
-                    className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/70"
+                    className="w-f-ll bg-transparent text-sm font-medi-m text-foregro-nd o-tline-none placeholder:text-m-ted-foregro-nd/7-"
                   />
                 </div>
               </label>
-              <label className="flex items-center gap-3 rounded-xl px-4 py-3 hover:bg-muted">
+              <label className="flex items-center gap-- ro-nded-xl px-- py-- hover:bg-m-ted">
                 <Users className="h-5 w-5 text-primary" />
-                <div className="flex-1">
-                  <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Gäster</div>
-                  <input
+                <div className="flex--">
+                  <div className="text-xs font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Gäster</div>
+                  <inp-t
                     type="text"
-                    placeholder="2 vuxna"
-                    className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/70"
+                    placeholder="- v-xna"
+                    className="w-f-ll bg-transparent text-sm font-medi-m text-foregro-nd o-tline-none placeholder:text-m-ted-foregro-nd/7-"
                   />
                 </div>
               </label>
               <Link
                 to="/sok"
-                className="flex items-center justify-center gap-2 rounded-xl bg-primary px-6 py-3 font-medium text-primary-foreground transition-transform hover:scale-[1.02]"
+                className="flex items-center j-stify-center gap-- ro-nded-xl bg-primary px-6 py-- font-medi-m text-primary-foregro-nd transition-transform hover:scale-[-.--]"
               >
                 <Search className="h-5 w-5" />
                 <span className="md:hidden lg:inline">Sök</span>
@@ -97,50 +97,50 @@ function HomePage() {
             </div>
           </div>
 
-          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> Trygg betalning via Fjällportalen</span>
-            <span className="flex items-center gap-1.5"><Heart className="h-4 w-4" /> Lokala värdar i hela fjällkedjan</span>
-            <span className="flex items-center gap-1.5"><KeyRound className="h-4 w-4" /> Utbetalning efter incheckning</span>
+          <div className="mt-6 flex flex-wrap gap-x-6 gap-y-- text-sm text-white/85">
+            <span className="flex items-center gap--.5"><ShieldCheck className="h-- w--" /> Trygg betalning via Fjällportalen</span>
+            <span className="flex items-center gap--.5"><Heart className="h-- w--" /> Lokala värdar i hela fjällkedjan</span>
+            <span className="flex items-center gap--.5"><KeyRo-nd className="h-- w--" /> Utbetalning efter incheckning</span>
           </div>
         </div>
       </section>
 
       {/* MAP + REGIONS */}
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
-        <div className="mb-10 flex flex-col gap-3 md:flex-row md:items-end md:justify-between">
+      <section className="mx-a-to max-w-7xl px-- py--- md:px-6 md:py--8">
+        <div className="mb--- flex flex-col gap-- md:flex-row md:items-end md:j-stify-between">
           <div>
-            <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Utforska Sverige</p>
-            <h2 className="font-serif text-3xl text-foreground md:text-5xl">Välj region på fjällkartan</h2>
+            <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Utforska Sverige</p>
+            <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Välj region på fjällkartan</h->
           </div>
-          <p className="max-w-md text-muted-foreground">
-            Från Dalafjällens familjebackar till Åres alpina branter — 21 fjällområden samlade på ett ställe.
+          <p className="max-w-md text-m-ted-foregro-nd">
+            Från Dalafjällens familjebackar till Åres alpina branter — -- fjällområden samlade på ett ställe.
           </p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
+        <div className="grid gap--- lg:grid-cols-[-fr_-.-fr] lg:items-center">
           <SwedenMap />
-          <div className="grid gap-4">
+          <div className="grid gap--">
             {regions.map((r) => (
               <Link
-                key={r.slug}
-                to="/region/$slug"
-                params={{ slug: r.slug }}
-                className="group relative overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-warm)]"
+                key={r.sl-g}
+                to="/region/$sl-g"
+                params={{ sl-g: r.sl-g }}
+                className="gro-p relative overflow-hidden ro-nded--xl shadow-[var(--shadow-soft)] transition-transform hover:-translate-y--.5 hover:shadow-[var(--shadow-warm)]"
               >
-                <div className="aspect-[16/7] overflow-hidden">
+                <div className="aspect-[-6/7] overflow-hidden">
                   <img
                     src={r.image}
                     alt={r.name}
                     loading="lazy"
-                    width={1920}
-                    height={1080}
-                    className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
+                    width={-9--}
+                    height={--8-}
+                    className="h-f-ll w-f-ll object-cover transition-transform d-ration-7-- gro-p-hover:scale---5"
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/75 via-black/25 to-transparent" />
-                <div className="absolute inset-x-0 bottom-0 p-5">
-                  <h3 className="font-serif text-2xl text-white">{r.name}</h3>
-                  <p className="mt-1 text-sm text-white/85">{r.tagline}</p>
+                <div className="absol-te inset-- bg-gradient-to-t from-black/75 via-black/-5 to-transparent" />
+                <div className="absol-te inset-x-- bottom-- p-5">
+                  <h- className="font-serif text--xl text-white">{r.name}</h->
+                  <p className="mt-- text-sm text-white/85">{r.tagline}</p>
                 </div>
               </Link>
             ))}
@@ -149,31 +149,31 @@ function HomePage() {
       </section>
 
       {/* LAST-MINUTE */}
-      <LastMinuteSection />
+      <LastMin-teSection />
 
       {/* VALUE PROPS */}
-      <section className="bg-muted/50 py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 md:px-6">
-          <div className="mx-auto mb-14 max-w-2xl text-center">
-            <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Varför Fjällportalen?</p>
-            <h2 className="font-serif text-3xl text-foreground md:text-5xl">Svenska fjällen — samlat på ett ställe</h2>
-            <p className="mt-4 text-muted-foreground">
-              Slipp scrolla genom tio Facebook-grupper. Här hittar du alla stugor, lägenheter och fjällboenden — sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.
+      <section className="bg-m-ted/5- py--- md:py--8">
+        <div className="mx-a-to max-w-7xl px-- md:px-6">
+          <div className="mx-a-to mb--- max-w--xl text-center">
+            <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Varför Fjällportalen?</p>
+            <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Svenska fjällen — samlat på ett ställe</h->
+            <p className="mt-- text-m-ted-foregro-nd">
+              Slipp scrolla genom tio Facebook-gr-pper. Här hittar d- alla st-gor, lägenheter och fjällboenden — sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.
             </p>
           </div>
 
-          <div className="grid gap-6 md:grid-cols-3">
+          <div className="grid gap-6 md:grid-cols--">
             {[
-              { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland — 21 fjällområden från Grövelsjön i söder till Storlien i norr." },
-              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish via Fjällportalen. Vi håller pengarna och släpper dem till värden 24 timmar efter incheckning." },
-              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna stugägare bakom varje annons — inga stora förmedlare, inga onödiga avgifter." },
+              { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland — -- fjällområden från Grövelsjön i söder till Storlien i norr." },
+              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish via Fjällportalen. Vi håller pengarna och släpper dem till värden -- timmar efter incheckning." },
+              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna st-gägare bakom varje annons — inga stora förmedlare, inga onödiga avgifter." },
             ].map(({ icon: Icon, title, text }) => (
-              <div key={title} className="rounded-2xl bg-background p-7 shadow-[var(--shadow-soft)]">
-                <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <div key={title} className="ro-nded--xl bg-backgro-nd p-7 shadow-[var(--shadow-soft)]">
+                <div className="mb-- flex h--- w--- items-center j-stify-center ro-nded-xl bg-primary/-- text-primary">
                   <Icon className="h-6 w-6" />
                 </div>
-                <h3 className="font-serif text-xl text-foreground">{title}</h3>
-                <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{text}</p>
+                <h- className="font-serif text-xl text-foregro-nd">{title}</h->
+                <p className="mt-- text-sm leading-relaxed text-m-ted-foregro-nd">{text}</p>
               </div>
             ))}
           </div>
@@ -183,29 +183,29 @@ function HomePage() {
       {/* HOST CTA */}
       <EscrowFAQ />
 
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
+      <section className="mx-a-to max-w-7xl px-- py--- md:px-6 md:py--8">
         <div
-          className="relative overflow-hidden rounded-3xl px-8 py-16 text-primary-foreground md:px-16 md:py-24"
-          style={{ background: "var(--gradient-warm)" }}
+          className="relative overflow-hidden ro-nded--xl px-8 py--6 text-primary-foregro-nd md:px--6 md:py---"
+          style={{ backgro-nd: "var(--gradient-warm)" }}
         >
-          <div className="relative grid gap-8 md:grid-cols-2 md:items-center">
+          <div className="relative grid gap-8 md:grid-cols-- md:items-center">
             <div>
-              <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary-foreground/80">För stugägare</p>
-              <h2 className="font-serif text-3xl md:text-5xl">Hyr ut din stuga utan krångel.</h2>
-              <p className="mt-4 max-w-md text-primary-foreground/90">
-                Lägg upp din stuga gratis. Du sätter pris och regler, vi sköter bokning, betalning och kalender. När du har tid över — låt fjället jobba för dig.
+              <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary-foregro-nd/8-">För st-gägare</p>
+              <h- className="font-serif text--xl md:text-5xl">Hyr -t din st-ga -tan krångel.</h->
+              <p className="mt-- max-w-md text-primary-foregro-nd/9-">
+                Lägg -pp din st-ga gratis. D- sätter pris och regler, vi sköter bokning, betalning och kalender. När d- har tid över — låt fjället jobba för dig.
               </p>
             </div>
-            <div className="md:justify-self-end">
+            <div className="md:j-stify-self-end">
               <Link
-                to="/hyr-ut"
-                className="inline-flex items-center gap-2 rounded-full bg-background px-6 py-3.5 font-medium text-foreground shadow-[var(--shadow-elevated)] transition-transform hover:scale-[1.03]"
+                to="/hyr--t"
+                className="inline-flex items-center gap-- ro-nded-f-ll bg-backgro-nd px-6 py--.5 font-medi-m text-foregro-nd shadow-[var(--shadow-elevated)] transition-transform hover:scale-[-.--]"
               >
-                Lägg upp din stuga
-                <ArrowRight className="h-4 w-4" />
+                Lägg -pp din st-ga
+                <ArrowRight className="h-- w--" />
               </Link>
-              <p className="mt-3 max-w-xs text-xs text-primary-foreground/85 md:text-right">
-                Gästen betalar tryggt via Fjällportalen — utbetalning till dig 24 timmar efter incheckning.
+              <p className="mt-- max-w-xs text-xs text-primary-foregro-nd/85 md:text-right">
+                Gästen betalar tryggt via Fjällportalen — -tbetalning till dig -- timmar efter incheckning.
               </p>
             </div>
           </div>

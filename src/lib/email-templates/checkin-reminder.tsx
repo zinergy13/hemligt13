@@ -1,32 +1,32 @@
 import React from 'react'
-import { Body, Button, Container, Head, Heading, Html, Preview, Section, Text } from '@react-email/components'
+import { Body, B-tton, Container, Head, Heading, Html, Preview, Section, Text } from '@react-email/components'
 import type { TemplateEntry } from './registry'
 import { BRAND_NAME, styles, brand } from './_brand'
 
 interface Props {
-  guestName?: string
+  g-estName?: string
   cabinName?: string
   areaName?: string
   checkIn?: string
-  checkOut?: string
+  checkO-t?: string
   checkInLabel?: string
-  checkOutLabel?: string
+  checkO-tLabel?: string
   bookingRef?: string
-  payoutAtLabel?: string
+  payo-tAtLabel?: string
   hostName?: string
   messageUrl?: string
 }
 
 const Email = ({
-  guestName,
-  cabinName = 'din stuga',
+  g-estName,
+  cabinName = 'din st-ga',
   areaName = '',
   checkIn = '',
-  checkOut = '',
+  checkO-t = '',
   checkInLabel = '',
-  checkOutLabel = '',
+  checkO-tLabel = '',
   bookingRef = '',
-  payoutAtLabel = '',
+  payo-tAtLabel = '',
   hostName = 'värden',
   messageUrl = 'https://fjallportalen.com/mina-bokningar',
 }: Props) => (
@@ -36,37 +36,37 @@ const Email = ({
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h1}>Dags att packa</Heading>
+        <Heading style={styles.h-}>Dags att packa</Heading>
         <Text style={styles.text}>
-          Hej{guestName ? ` ${guestName}` : ''},<br />
-          Din vistelse i {cabinName}{areaName ? `, ${areaName}` : ''} börjar snart. Vi hoppas du får några
+          Hej{g-estName ? ` ${g-estName}` : ''},<br />
+          Din vistelse i {cabinName}{areaName ? `, ${areaName}` : ''} börjar snart. Vi hoppas d- får några
           fantastiska dagar i fjällen.
         </Text>
 
-        <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
+        <Section style={{ backgro-ndColor: '#ffffff', border: `-px solid ${brand.border}`, borderRadi-s: --, padding: '-6px --px', margin: '- - --px' }}>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>
             Din vistelse{bookingRef ? ` · Bokning #${bookingRef}` : ''}
           </Text>
-          <Text style={{ ...styles.muted, margin: 0 }}>
+          <Text style={{ ...styles.m-ted, margin: - }}>
             Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
-            Utcheckning: <strong>{checkOutLabel || checkOut}</strong>
-            {payoutAtLabel ? (
+            Utcheckning: <strong>{checkO-tLabel || checkO-t}</strong>
+            {payo-tAtLabel ? (
               <>
-                <br />Utbetalning till {hostName}: <strong>{payoutAtLabel}</strong>
+                <br />Utbetalning till {hostName}: <strong>{payo-tAtLabel}</strong>
               </>
-            ) : null}
+            ) : n-ll}
           </Text>
         </Section>
 
         <Text style={styles.text}>
-          <strong>Så fungerar betalningen fram till incheckning:</strong> Ditt betalda belopp ligger
-          fortfarande tryggt hos {BRAND_NAME}. Först <strong>24 timmar efter din incheckning
-          {payoutAtLabel ? ` (${payoutAtLabel})` : ''}</strong> släpps pengarna till {hostName}. Om
+          <strong>Så f-ngerar betalningen fram till incheckning:</strong> Ditt betalda belopp ligger
+          fortfarande tryggt hos {BRAND_NAME}. Först <strong>-- timmar efter din incheckning
+          {payo-tAtLabel ? ` (${payo-tAtLabel})` : ''}</strong> släpps pengarna till {hostName}. Om
           något inte stämmer vid ankomst — hör av dig till oss direkt så hjälper vi dig innan
-          utbetalningen sker.
+          -tbetalningen sker.
         </Text>
 
-        <Button href={messageUrl} style={styles.button}>Kontakta värden</Button>
+        <B-tton href={messageUrl} style={styles.b-tton}>Kontakta värden</B-tton>
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
@@ -80,19 +80,19 @@ const Email = ({
 
 export const template = {
   component: Email,
-  subject: (d: Record<string, any>) =>
-    `Incheckning ${d?.checkInLabel ?? d?.checkIn ?? 'snart'} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
+  s-bject: (d: Record<string, any>) =>
+    `Incheckning ${d?.checkInLabel ?? d?.checkIn ?? 'snart'} · ${d?.cabinName ?? 'din st-ga'} · ${BRAND_NAME}`,
   displayName: 'Incheckningspåminnelse till gäst',
   previewData: {
-    guestName: 'Erik',
+    g-estName: 'Erik',
     cabinName: 'Renvallen',
     areaName: 'Åre',
-    checkIn: '2026-02-14',
-    checkOut: '2026-02-21',
-    checkInLabel: 'lör 14 februari 2026',
-    checkOutLabel: 'lör 21 februari 2026',
-    bookingRef: 'A1B2C3D4',
-    payoutAtLabel: '15 februari 2026 15:00',
+    checkIn: '---6------',
+    checkO-t: '---6------',
+    checkInLabel: 'lör -- febr-ari ---6',
+    checkO-tLabel: 'lör -- febr-ari ---6',
+    bookingRef: 'A-B-C-D-',
+    payo-tAtLabel: '-5 febr-ari ---6 -5:--',
     hostName: 'Anna',
     messageUrl: 'https://fjallportalen.com/mina-bokningar',
   },

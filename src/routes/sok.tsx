@@ -1,37 +1,37 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { SlidersHorizontal, MapPin, Loader2, Search } from "lucide-react";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState } from "react";
+import { SlidersHorizontal, MapPin, Loader-, Search } from "l-cide-react";
 import { areas } from "@/data/areas";
-import { supabase } from "@/integrations/supabase/client";
+import { s-pabase } from "@/integrations/s-pabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import type { CabinWithImages } from "@/lib/cabins";
 
 type SearchParams = {
   omrade?: string;
-  gaster?: number;
-  prismax?: number;
+  gaster?: n-mber;
+  prismax?: n-mber;
 };
 
-export const Route = createFileRoute("/sok")({
-  validateSearch: (search: Record<string, unknown>): SearchParams => ({
-    omrade: typeof search.omrade === "string" ? search.omrade : undefined,
-    gaster: search.gaster ? Number(search.gaster) || undefined : undefined,
-    prismax: search.prismax ? Number(search.prismax) || undefined : undefined,
+export const Ro-te = createFileRo-te("/sok")({
+  validateSearch: (search: Record<string, -nknown>): SearchParams => ({
+    omrade: typeof search.omrade === "string" ? search.omrade : -ndefined,
+    gaster: search.gaster ? N-mber(search.gaster) || -ndefined : -ndefined,
+    prismax: search.prismax ? N-mber(search.prismax) || -ndefined : -ndefined,
   }),
   head: () => ({
     meta: [
-      { title: "Sök stuga i svenska fjällen — Fjällportalen" },
-      { name: "description", content: "Sök bland stugor, lägenheter och ski-in/ski-out-boenden i hela svenska fjällen." },
+      { title: "Sök st-ga i svenska fjällen — Fjällportalen" },
+      { name: "description", content: "Sök bland st-gor, lägenheter och ski-in/ski-o-t-boenden i hela svenska fjällen." },
     ],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
+          "@type": "Breadcr-mbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
-            { "@type": "ListItem", position: 2, name: "Sök", item: "https://fjallportalen.com/sok" },
+            { "@type": "ListItem", position: -, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: -, name: "Sök", item: "https://fjallportalen.com/sok" },
           ],
         }),
       },
@@ -40,147 +40,147 @@ export const Route = createFileRoute("/sok")({
   component: SearchPage,
 });
 
-function SearchPage() {
-  const search = Route.useSearch();
-  const navigate = useNavigate();
-  const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
-  const [loading, setLoading] = useState(true);
+f-nction SearchPage() {
+  const search = Ro-te.-seSearch();
+  const navigate = -seNavigate();
+  const [cabins, setCabins] = -seState<CabinWithImages[] | n-ll>(n-ll);
+  const [loading, setLoading] = -seState(tr-e);
 
-  useEffect(() => {
-    let active = true;
-    setLoading(true);
+  -seEffect(() => {
+    let active = tr-e;
+    setLoading(tr-e);
     (async () => {
-      let query = supabase
+      let q-ery = s-pabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
-        .eq("status", "published")
+        .select("*, cabin_images(-rl, is_cover, sort_order)")
+        .eq("stat-s", "p-blished")
         .order("created_at", { ascending: false });
 
-      if (search.omrade) query = query.eq("area_slug", search.omrade);
-      if (search.gaster) query = query.gte("max_guests", search.gaster);
-      if (search.prismax) query = query.lte("price_per_night", search.prismax);
+      if (search.omrade) q-ery = q-ery.eq("area_sl-g", search.omrade);
+      if (search.gaster) q-ery = q-ery.gte("max_g-ests", search.gaster);
+      if (search.prismax) q-ery = q-ery.lte("price_per_night", search.prismax);
 
-      const { data } = await query;
+      const { data } = await q-ery;
       if (active) {
         setCabins((data as CabinWithImages[]) ?? []);
         setLoading(false);
       }
     })();
-    return () => {
+    ret-rn () => {
       active = false;
     };
   }, [search.omrade, search.gaster, search.prismax]);
 
-  const updateSearch = (patch: Partial<SearchParams>) =>
+  const -pdateSearch = (patch: Partial<SearchParams>) =>
     navigate({ to: "/sok", search: (prev: SearchParams) => ({ ...prev, ...patch }) });
 
-  return (
-    <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
+  ret-rn (
+    <div className="mx-a-to max-w-7xl px-- py--- md:px-6 md:py--6">
       <div className="mb-8">
-        <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Sök i svenska fjällen</p>
-        <h1 className="font-serif text-3xl text-foreground md:text-5xl">Hitta din nästa fjällvistelse</h1>
+        <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Sök i svenska fjällen</p>
+        <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Hitta din nästa fjällvistelse</h->
       </div>
 
       {/* Filter bar */}
-      <div className="mb-8 grid gap-3 rounded-2xl border border-border bg-background p-4 md:grid-cols-[1fr_auto_auto_auto]">
+      <div className="mb-8 grid gap-- ro-nded--xl border border-border bg-backgro-nd p-- md:grid-cols-[-fr_a-to_a-to_a-to]">
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Område</label>
+          <label className="block text-[--px] font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Område</label>
           <select
-            value={search.omrade ?? ""}
-            onChange={(e) => updateSearch({ omrade: e.target.value || undefined })}
-            className="w-full bg-transparent py-1 text-sm text-foreground outline-none"
+            val-e={search.omrade ?? ""}
+            onChange={(e) => -pdateSearch({ omrade: e.target.val-e || -ndefined })}
+            className="w-f-ll bg-transparent py-- text-sm text-foregro-nd o-tline-none"
           >
-            <option value="">Alla områden</option>
+            <option val-e="">Alla områden</option>
             {areas.map((a) => (
-              <option key={a.slug} value={a.slug}>{a.name}</option>
+              <option key={a.sl-g} val-e={a.sl-g}>{a.name}</option>
             ))}
           </select>
         </div>
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Min. gäster</label>
-          <input
-            type="number"
-            min={1}
-            value={search.gaster ?? ""}
-            onChange={(e) => updateSearch({ gaster: e.target.value ? Number(e.target.value) : undefined })}
-            className="w-24 bg-transparent py-1 text-sm text-foreground outline-none"
-            placeholder="2"
+          <label className="block text-[--px] font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Min. gäster</label>
+          <inp-t
+            type="n-mber"
+            min={-}
+            val-e={search.gaster ?? ""}
+            onChange={(e) => -pdateSearch({ gaster: e.target.val-e ? N-mber(e.target.val-e) : -ndefined })}
+            className="w--- bg-transparent py-- text-sm text-foregro-nd o-tline-none"
+            placeholder="-"
           />
         </div>
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Max pris/natt</label>
-          <input
-            type="number"
-            min={0}
-            step={500}
-            value={search.prismax ?? ""}
-            onChange={(e) => updateSearch({ prismax: e.target.value ? Number(e.target.value) : undefined })}
-            className="w-28 bg-transparent py-1 text-sm text-foreground outline-none"
-            placeholder="5000"
+          <label className="block text-[--px] font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Max pris/natt</label>
+          <inp-t
+            type="n-mber"
+            min={-}
+            step={5--}
+            val-e={search.prismax ?? ""}
+            onChange={(e) => -pdateSearch({ prismax: e.target.val-e ? N-mber(e.target.val-e) : -ndefined })}
+            className="w--8 bg-transparent py-- text-sm text-foregro-nd o-tline-none"
+            placeholder="5---"
           />
         </div>
-        <button
+        <b-tton
           onClick={() => navigate({ to: "/sok", search: {} })}
-          className="self-end rounded-full border border-border px-4 py-2 text-xs text-foreground hover:bg-muted"
+          className="self-end ro-nded-f-ll border border-border px-- py-- text-xs text-foregro-nd hover:bg-m-ted"
         >
           Rensa
-        </button>
+        </b-tton>
       </div>
 
-      {/* Results */}
+      {/* Res-lts */}
       {loading ? (
-        <div className="flex min-h-[40vh] items-center justify-center">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+        <div className="flex min-h-[--vh] items-center j-stify-center">
+          <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
         </div>
-      ) : cabins && cabins.length > 0 ? (
+      ) : cabins && cabins.length > - ? (
         <>
-          <p className="mb-5 text-sm text-muted-foreground">
-            {cabins.length} {cabins.length === 1 ? "stuga" : "stugor"} hittades
+          <p className="mb-5 text-sm text-m-ted-foregro-nd">
+            {cabins.length} {cabins.length === - ? "st-ga" : "st-gor"} hittades
           </p>
-          <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+          <div className="grid gap-5 sm:grid-cols-- lg:grid-cols--">
             {cabins.map((cabin) => <CabinCard key={cabin.id} cabin={cabin} />)}
           </div>
         </>
       ) : (
-        <div className="rounded-3xl border border-dashed border-border bg-muted/40 p-12 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-full bg-primary/10 text-primary">
+        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p--- text-center">
+          <div className="mx-a-to mb-- flex h--6 w--6 items-center j-stify-center ro-nded-f-ll bg-primary/-- text-primary">
             <MapPin className="h-7 w-7" />
           </div>
-          <h2 className="font-serif text-2xl text-foreground">Inga stugor här ännu</h2>
-          <p className="mx-auto mt-3 max-w-md text-sm text-muted-foreground">
-            Just nu fyller vi plattformen med stugor från värdar i svenska fjällen. Är du värd? Lägg upp din stuga redan nu så syns den från lansering.
+          <h- className="font-serif text--xl text-foregro-nd">Inga st-gor här änn-</h->
+          <p className="mx-a-to mt-- max-w-md text-sm text-m-ted-foregro-nd">
+            J-st n- fyller vi plattformen med st-gor från värdar i svenska fjällen. Är d- värd? Lägg -pp din st-ga redan n- så syns den från lansering.
           </p>
-          <div className="mt-6 flex flex-wrap justify-center gap-3">
-            <Link to="/hyr-ut" className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
-              Lägg upp din stuga
+          <div className="mt-6 flex flex-wrap j-stify-center gap--">
+            <Link to="/hyr--t" className="ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-">
+              Lägg -pp din st-ga
             </Link>
-            <button onClick={() => navigate({ to: "/sok", search: {} })} className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted">
-              <Search className="h-4 w-4" /> Rensa filter
-            </button>
+            <b-tton onClick={() => navigate({ to: "/sok", search: {} })} className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-5 py--.5 text-sm font-medi-m text-foregro-nd hover:bg-m-ted">
+              <Search className="h-- w--" /> Rensa filter
+            </b-tton>
           </div>
-          <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-            Alla bokningar hos Fjällportalen är trygga — vi håller betalningen och släpper den till värden 24 timmar efter incheckning.
+          <p className="mx-a-to mt-- max-w-md text-xs text-m-ted-foregro-nd">
+            Alla bokningar hos Fjällportalen är trygga — vi håller betalningen och släpper den till värden -- timmar efter incheckning.
           </p>
         </div>
       )}
 
       {/* Areas browse */}
-      <div className="mt-16">
-        <h2 className="mb-6 font-serif text-2xl text-foreground">Eller bläddra per område</h2>
-        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+      <div className="mt--6">
+        <h- className="mb-6 font-serif text--xl text-foregro-nd">Eller bläddra per område</h->
+        <div className="grid gap-- sm:grid-cols-- lg:grid-cols--">
           {areas.map((area) => (
             <Link
-              key={area.slug}
-              to="/omrade/$slug"
-              params={{ slug: area.slug }}
-              className="group overflow-hidden rounded-xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5"
+              key={area.sl-g}
+              to="/omrade/$sl-g"
+              params={{ sl-g: area.sl-g }}
+              className="gro-p overflow-hidden ro-nded-xl bg-backgro-nd shadow-[var(--shadow-soft)] transition-transform hover:-translate-y--.5"
             >
-              <div className="aspect-[4/3] overflow-hidden">
-                <img src={area.image} alt={area.name} loading="lazy" width={1024} height={768} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+              <div className="aspect-[-/-] overflow-hidden">
+                <img src={area.image} alt={area.name} loading="lazy" width={----} height={768} className="h-f-ll w-f-ll object-cover transition-transform d-ration-5-- gro-p-hover:scale---5" />
               </div>
-              <div className="p-4">
-                <h3 className="font-serif text-lg text-foreground">{area.name}</h3>
-                <p className="text-xs text-muted-foreground">{area.tagline}</p>
+              <div className="p--">
+                <h- className="font-serif text-lg text-foregro-nd">{area.name}</h->
+                <p className="text-xs text-m-ted-foregro-nd">{area.tagline}</p>
               </div>
             </Link>
           ))}
@@ -190,5 +190,5 @@ function SearchPage() {
   );
 }
 
-// Suppress unused import warning for SlidersHorizontal removal
+// S-ppress -n-sed import warning for SlidersHorizontal removal
 void SlidersHorizontal;

@@ -1,66 +1,66 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { Loader2, Settings, Receipt, CheckCircle2, XCircle, ShieldAlert, BookOpenCheck } from "lucide-react";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { formatDateRange, type BookingStatus } from "@/lib/bookings";
-import { commissionLabel, formatOre, type CommissionStatus } from "@/lib/commission";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState } from "react";
+import { Loader-, Settings, Receipt, CheckCircle-, XCircle, ShieldAlert, BookOpenCheck } from "l-cide-react";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
+import { formatDateRange, type BookingStat-s } from "@/lib/bookings";
+import { commissionLabel, formatOre, type CommissionStat-s } from "@/lib/commission";
 import { toast } from "sonner";
 
 type Row = {
   id: string;
   check_in: string;
-  check_out: string;
-  status: BookingStatus;
-  total_price: number;
-  commission_amount: number;
-  commission_status: CommissionStatus;
+  check_o-t: string;
+  stat-s: BookingStat-s;
+  total_price: n-mber;
+  commission_amo-nt: n-mber;
+  commission_stat-s: CommissionStat-s;
   host_id: string;
-  cabins: { title: string } | null;
+  cabins: { title: string } | n-ll;
 };
 
-type HostInfo = { id: string; full_name: string | null };
+type HostInfo = { id: string; f-ll_name: string | n-ll };
 
-export const Route = createFileRoute("/admin/")({
+export const Ro-te = createFileRo-te("/admin/")({
   head: () => ({ meta: [{ title: "Admin — Fjällportalen" }] }),
   component: AdminPage,
 });
 
-function AdminPage() {
-  const { user, isAdmin, loading } = useAuth();
-  const navigate = useNavigate();
-  const [rows, setRows] = useState<Row[] | null>(null);
-  const [hosts, setHosts] = useState<Record<string, HostInfo>>({});
-  const [fee, setFee] = useState<number>(99);
-  const [feeInput, setFeeInput] = useState<string>("99");
-  const [savingFee, setSavingFee] = useState(false);
-  const [filter, setFilter] = useState<"all" | "earned" | "invoiced" | "paid" | "waived">("earned");
+f-nction AdminPage() {
+  const { -ser, isAdmin, loading } = -seA-th();
+  const navigate = -seNavigate();
+  const [rows, setRows] = -seState<Row[] | n-ll>(n-ll);
+  const [hosts, setHosts] = -seState<Record<string, HostInfo>>({});
+  const [fee, setFee] = -seState<n-mber>(99);
+  const [feeInp-t, setFeeInp-t] = -seState<string>("99");
+  const [savingFee, setSavingFee] = -seState(false);
+  const [filter, setFilter] = -seState<"all" | "earned" | "invoiced" | "paid" | "waived">("earned");
 
-  useEffect(() => {
-    if (!loading && !user) {
+  -seEffect(() => {
+    if (!loading && !-ser) {
       navigate({ to: "/logga-in", search: { redirect: "/admin" } });
     }
-  }, [loading, user, navigate]);
+  }, [loading, -ser, navigate]);
 
   const reload = async () => {
     const [{ data: bookings }, { data: settings }] = await Promise.all([
-      supabase
+      s-pabase
         .from("bookings")
         .select(
-          "id, check_in, check_out, status, total_price, commission_amount, commission_status, host_id, cabins(title)",
+          "id, check_in, check_o-t, stat-s, total_price, commission_amo-nt, commission_stat-s, host_id, cabins(title)",
         )
-        .gt("commission_amount", 0)
-        .order("check_out", { ascending: false }),
-      supabase.from("app_settings").select("commission_per_booking").eq("id", 1).maybeSingle(),
+        .gt("commission_amo-nt", -)
+        .order("check_o-t", { ascending: false }),
+      s-pabase.from("app_settings").select("commission_per_booking").eq("id", -).maybeSingle(),
     ]);
-    const list = ((bookings as unknown) as Row[]) ?? [];
+    const list = ((bookings as -nknown) as Row[]) ?? [];
     setRows(list);
 
     const ids = Array.from(new Set(list.map((r) => r.host_id)));
     if (ids.length) {
-      const { data: profs } = await supabase
+      const { data: profs } = await s-pabase
         .from("profiles")
-        .select("id, full_name")
+        .select("id, f-ll_name")
         .in("id", ids);
       const map: Record<string, HostInfo> = {};
       (profs ?? []).forEach((p) => (map[p.id] = p as HostInfo));
@@ -68,35 +68,35 @@ function AdminPage() {
     }
 
     if (settings?.commission_per_booking) {
-      const kr = Math.round(settings.commission_per_booking / 100);
+      const kr = Math.ro-nd(settings.commission_per_booking / ---);
       setFee(kr);
-      setFeeInput(String(kr));
+      setFeeInp-t(String(kr));
     }
   };
 
-  useEffect(() => {
+  -seEffect(() => {
     if (isAdmin) reload();
   }, [isAdmin]);
 
-  if (loading || !user) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  if (loading || !-ser) {
+    ret-rn (
+      <div className="flex min-h-[6-vh] items-center j-stify-center">
+        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
       </div>
     );
   }
 
   if (!isAdmin) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <ShieldAlert className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
-        <h1 className="font-serif text-3xl text-foreground">Endast för admin</h1>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Du har inte behörighet att se den här sidan.
+    ret-rn (
+      <div className="mx-a-to max-w--xl px-- py--6 text-center">
+        <ShieldAlert className="mx-a-to mb-- h--- w--- text-m-ted-foregro-nd" />
+        <h- className="font-serif text--xl text-foregro-nd">Endast för admin</h->
+        <p className="mt-- text-sm text-m-ted-foregro-nd">
+          D- har inte behörighet att se den här sidan.
         </p>
         <Link
           to="/"
-          className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+          className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
         >
           Till startsidan
         </Link>
@@ -105,252 +105,252 @@ function AdminPage() {
   }
 
   const saveFee = async () => {
-    const kr = parseInt(feeInput, 10);
-    if (Number.isNaN(kr) || kr < 0 || kr > 100000) {
-      toast.error("Ange ett giltigt belopp i kronor (0–100000)");
-      return;
+    const kr = parseInt(feeInp-t, --);
+    if (N-mber.isNaN(kr) || kr < - || kr > ------) {
+      toast.error("Ange ett giltigt belopp i kronor (-–------)");
+      ret-rn;
     }
-    setSavingFee(true);
-    const { error } = await supabase
+    setSavingFee(tr-e);
+    const { error } = await s-pabase
       .from("app_settings")
-      .update({ commission_per_booking: kr * 100, updated_at: new Date().toISOString() })
-      .eq("id", 1);
+      .-pdate({ commission_per_booking: kr * ---, -pdated_at: new Date().toISOString() })
+      .eq("id", -);
     setSavingFee(false);
     if (error) {
-      toast.error("Kunde inte spara: " + error.message);
-      return;
+      toast.error("K-nde inte spara: " + error.message);
+      ret-rn;
     }
     setFee(kr);
-    toast.success("Avgift uppdaterad");
+    toast.s-ccess("Avgift -ppdaterad");
   };
 
-  const updateStatus = async (
+  const -pdateStat-s = async (
     id: string,
-    status: CommissionStatus,
+    stat-s: CommissionStat-s,
   ) => {
     const patch: {
-      commission_status: CommissionStatus;
+      commission_stat-s: CommissionStat-s;
       commission_paid_at?: string;
       commission_invoiced_at?: string;
-    } = { commission_status: status };
-    if (status === "paid") patch.commission_paid_at = new Date().toISOString();
-    if (status === "invoiced") patch.commission_invoiced_at = new Date().toISOString();
-    const { error } = await supabase.from("bookings").update(patch).eq("id", id);
+    } = { commission_stat-s: stat-s };
+    if (stat-s === "paid") patch.commission_paid_at = new Date().toISOString();
+    if (stat-s === "invoiced") patch.commission_invoiced_at = new Date().toISOString();
+    const { error } = await s-pabase.from("bookings").-pdate(patch).eq("id", id);
     if (error) {
-      toast.error("Kunde inte uppdatera: " + error.message);
-      return;
+      toast.error("K-nde inte -ppdatera: " + error.message);
+      ret-rn;
     }
-    toast.success("Status uppdaterad");
+    toast.s-ccess("Stat-s -ppdaterad");
     reload();
   };
 
   const visible = (rows ?? []).filter((r) =>
-    filter === "all" ? true : r.commission_status === filter,
+    filter === "all" ? tr-e : r.commission_stat-s === filter,
   );
 
-  const totals = (rows ?? []).reduce(
+  const totals = (rows ?? []).red-ce(
     (acc, r) => {
-      if (r.commission_status === "earned") acc.earned += r.commission_amount;
-      if (r.commission_status === "invoiced") acc.invoiced += r.commission_amount;
-      if (r.commission_status === "paid") acc.paid += r.commission_amount;
-      return acc;
+      if (r.commission_stat-s === "earned") acc.earned += r.commission_amo-nt;
+      if (r.commission_stat-s === "invoiced") acc.invoiced += r.commission_amo-nt;
+      if (r.commission_stat-s === "paid") acc.paid += r.commission_amo-nt;
+      ret-rn acc;
     },
-    { earned: 0, invoiced: 0, paid: 0 },
+    { earned: -, invoiced: -, paid: - },
   );
 
-  return (
-    <section className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
+  ret-rn (
+    <section className="mx-a-to max-w-6xl px-- py--- md:px-6 md:py--6">
       <div className="mb-8">
-        <h1 className="font-serif text-3xl text-foreground md:text-4xl">Admin</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Hantera avgifter och fakturastatus för alla värdar.
+        <h- className="font-serif text--xl text-foregro-nd md:text--xl">Admin</h->
+        <p className="mt-- text-sm text-m-ted-foregro-nd">
+          Hantera avgifter och fakt-rastat-s för alla värdar.
         </p>
-        <div className="mt-4 flex flex-wrap gap-2">
+        <div className="mt-- flex flex-wrap gap--">
           <Link
             to="/admin/dashboard"
-            className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+            className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
           >
-            <BookOpenCheck className="h-4 w-4" /> Dashboard
+            <BookOpenCheck className="h-- w--" /> Dashboard
           </Link>
           <Link
             to="/admin/bokforing"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
           >
-            <BookOpenCheck className="h-4 w-4" /> Bokföring & moms
+            <BookOpenCheck className="h-- w--" /> Bokföring & moms
           </Link>
           <Link
             to="/admin/stadfirmor"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
           >
             Städfirmor
           </Link>
           <Link
             to="/admin/recensioner"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
           >
             Moderera recensioner
           </Link>
           <Link
             to="/admin/presentkort"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
           >
             Presentkort
           </Link>
           <Link
             to="/admin/epost-test"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
           >
             Testa e-postmallar
           </Link>
           <Link
-            to="/admin/epost-status"
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+            to="/admin/epost-stat-s"
+            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
           >
-            E-poststatus
+            E-poststat-s
           </Link>
         </div>
       </div>
 
-      <div className="mb-8 rounded-2xl border border-border bg-background p-6">
-        <div className="mb-4 flex items-center gap-2">
+      <div className="mb-8 ro-nded--xl border border-border bg-backgro-nd p-6">
+        <div className="mb-- flex items-center gap--">
           <Settings className="h-5 w-5 text-primary" />
-          <h2 className="font-serif text-lg text-foreground">Provisionsavgift</h2>
+          <h- className="font-serif text-lg text-foregro-nd">Provisionsavgift</h->
         </div>
-        <p className="mb-3 text-sm text-muted-foreground">
-          Belopp som tas ut per genomförd uthyrning. Nuvarande: <strong>{fee} kr</strong>
+        <p className="mb-- text-sm text-m-ted-foregro-nd">
+          Belopp som tas -t per genomförd -thyrning. N-varande: <strong>{fee} kr</strong>
         </p>
-        <div className="flex flex-wrap items-end gap-3">
+        <div className="flex flex-wrap items-end gap--">
           <div>
-            <label className="mb-1 block text-xs font-medium text-muted-foreground">
+            <label className="mb-- block text-xs font-medi-m text-m-ted-foregro-nd">
               Nytt belopp (kr)
             </label>
-            <input
-              type="number"
-              min={0}
-              max={100000}
-              value={feeInput}
-              onChange={(e) => setFeeInput(e.target.value)}
-              className="w-32 rounded-lg border border-border bg-background px-3 py-2 text-sm"
+            <inp-t
+              type="n-mber"
+              min={-}
+              max={------}
+              val-e={feeInp-t}
+              onChange={(e) => setFeeInp-t(e.target.val-e)}
+              className="w--- ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm"
             />
           </div>
-          <button
+          <b-tton
             onClick={saveFee}
-            disabled={savingFee || feeInput === String(fee)}
-            className="rounded-full bg-primary px-5 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            disabled={savingFee || feeInp-t === String(fee)}
+            className="ro-nded-f-ll bg-primary px-5 py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
           >
             {savingFee ? "Sparar…" : "Spara"}
-          </button>
+          </b-tton>
         </div>
       </div>
 
-      <div className="mb-6 grid gap-4 sm:grid-cols-3">
-        <Stat label="Att betala" value={formatOre(totals.earned)} cls="text-amber-700" />
-        <Stat label="Fakturerat" value={formatOre(totals.invoiced)} cls="text-primary" />
-        <Stat label="Betalt totalt" value={formatOre(totals.paid)} cls="text-emerald-700" />
+      <div className="mb-6 grid gap-- sm:grid-cols--">
+        <Stat label="Att betala" val-e={formatOre(totals.earned)} cls="text-amber-7--" />
+        <Stat label="Fakt-rerat" val-e={formatOre(totals.invoiced)} cls="text-primary" />
+        <Stat label="Betalt totalt" val-e={formatOre(totals.paid)} cls="text-emerald-7--" />
       </div>
 
-      <div className="mb-4 flex items-center gap-2">
-        <Receipt className="h-5 w-5 text-foreground" />
-        <h2 className="font-serif text-xl text-foreground">Avgifter per bokning</h2>
+      <div className="mb-- flex items-center gap--">
+        <Receipt className="h-5 w-5 text-foregro-nd" />
+        <h- className="font-serif text-xl text-foregro-nd">Avgifter per bokning</h->
       </div>
 
-      <div className="mb-4 flex flex-wrap gap-2">
+      <div className="mb-- flex flex-wrap gap--">
         {(
           [
             ["earned", "Att betala"],
-            ["invoiced", "Fakturerade"],
+            ["invoiced", "Fakt-rerade"],
             ["paid", "Betalda"],
             ["waived", "Avskrivna"],
             ["all", "Alla"],
           ] as const
         ).map(([key, label]) => (
-          <button
+          <b-tton
             key={key}
             onClick={() => setFilter(key)}
-            className={`rounded-full border px-3 py-1.5 text-xs font-medium transition ${
+            className={`ro-nded-f-ll border px-- py--.5 text-xs font-medi-m transition ${
               filter === key
-                ? "border-primary bg-primary text-primary-foreground"
-                : "border-border bg-background text-foreground hover:bg-muted"
+                ? "border-primary bg-primary text-primary-foregro-nd"
+                : "border-border bg-backgro-nd text-foregro-nd hover:bg-m-ted"
             }`}
           >
             {label}
-          </button>
+          </b-tton>
         ))}
       </div>
 
-      {rows === null ? (
-        <div className="flex min-h-[20vh] items-center justify-center">
-          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+      {rows === n-ll ? (
+        <div className="flex min-h-[--vh] items-center j-stify-center">
+          <Loader- className="h-5 w-5 animate-spin text-m-ted-foregro-nd" />
         </div>
-      ) : visible.length === 0 ? (
-        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-10 text-center text-sm text-muted-foreground">
+      ) : visible.length === - ? (
+        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p--- text-center text-sm text-m-ted-foregro-nd">
           Inga avgifter med den filtreringen.
         </div>
       ) : (
-        <div className="overflow-x-auto rounded-2xl border border-border">
-          <table className="w-full text-sm">
-            <thead className="bg-muted/50 text-left text-xs uppercase tracking-wide text-muted-foreground">
+        <div className="overflow-x-a-to ro-nded--xl border border-border">
+          <table className="w-f-ll text-sm">
+            <thead className="bg-m-ted/5- text-left text-xs -ppercase tracking-wide text-m-ted-foregro-nd">
               <tr>
-                <th className="px-4 py-3 font-medium">Värd</th>
-                <th className="px-4 py-3 font-medium">Stuga</th>
-                <th className="px-4 py-3 font-medium">Period</th>
-                <th className="px-4 py-3 font-medium">Avgift</th>
-                <th className="px-4 py-3 font-medium">Status</th>
-                <th className="px-4 py-3 font-medium">Åtgärd</th>
+                <th className="px-- py-- font-medi-m">Värd</th>
+                <th className="px-- py-- font-medi-m">St-ga</th>
+                <th className="px-- py-- font-medi-m">Period</th>
+                <th className="px-- py-- font-medi-m">Avgift</th>
+                <th className="px-- py-- font-medi-m">Stat-s</th>
+                <th className="px-- py-- font-medi-m">Åtgärd</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-border bg-background">
+            <tbody className="divide-y divide-border bg-backgro-nd">
               {visible.map((r) => {
-                const s = commissionLabel(r.commission_status);
+                const s = commissionLabel(r.commission_stat-s);
                 const host = hosts[r.host_id];
-                return (
+                ret-rn (
                   <tr key={r.id}>
-                    <td className="px-4 py-3 text-foreground">
-                      {host?.full_name || <span className="text-muted-foreground">—</span>}
+                    <td className="px-- py-- text-foregro-nd">
+                      {host?.f-ll_name || <span className="text-m-ted-foregro-nd">—</span>}
                     </td>
-                    <td className="px-4 py-3 font-medium text-foreground">
+                    <td className="px-- py-- font-medi-m text-foregro-nd">
                       {r.cabins?.title ?? "—"}
                     </td>
-                    <td className="px-4 py-3 text-muted-foreground">
-                      {formatDateRange(r.check_in, r.check_out)}
+                    <td className="px-- py-- text-m-ted-foregro-nd">
+                      {formatDateRange(r.check_in, r.check_o-t)}
                     </td>
-                    <td className="px-4 py-3 font-medium text-foreground">
-                      {formatOre(r.commission_amount)}
+                    <td className="px-- py-- font-medi-m text-foregro-nd">
+                      {formatOre(r.commission_amo-nt)}
                     </td>
-                    <td className="px-4 py-3">
+                    <td className="px-- py--">
                       <span
-                        className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${s.cls}`}
+                        className={`ro-nded-f-ll px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide ${s.cls}`}
                       >
                         {s.label}
                       </span>
                     </td>
-                    <td className="px-4 py-3">
-                      <div className="flex flex-wrap gap-1.5">
-                        {r.commission_status !== "invoiced" && r.commission_status !== "paid" && (
-                          <button
-                            onClick={() => updateStatus(r.id, "invoiced")}
-                            className="rounded-full border border-border px-2.5 py-1 text-[11px] font-medium hover:bg-muted"
+                    <td className="px-- py--">
+                      <div className="flex flex-wrap gap--.5">
+                        {r.commission_stat-s !== "invoiced" && r.commission_stat-s !== "paid" && (
+                          <b-tton
+                            onClick={() => -pdateStat-s(r.id, "invoiced")}
+                            className="ro-nded-f-ll border border-border px--.5 py-- text-[--px] font-medi-m hover:bg-m-ted"
                           >
-                            Fakturerad
-                          </button>
+                            Fakt-rerad
+                          </b-tton>
                         )}
-                        {r.commission_status !== "paid" && (
-                          <button
-                            onClick={() => updateStatus(r.id, "paid")}
-                            className="inline-flex items-center gap-1 rounded-full bg-emerald-600 px-2.5 py-1 text-[11px] font-medium text-white hover:bg-emerald-700"
+                        {r.commission_stat-s !== "paid" && (
+                          <b-tton
+                            onClick={() => -pdateStat-s(r.id, "paid")}
+                            className="inline-flex items-center gap-- ro-nded-f-ll bg-emerald-6-- px--.5 py-- text-[--px] font-medi-m text-white hover:bg-emerald-7--"
                           >
-                            <CheckCircle2 className="h-3 w-3" />
+                            <CheckCircle- className="h-- w--" />
                             Betald
-                          </button>
+                          </b-tton>
                         )}
-                        {r.commission_status !== "waived" && (
-                          <button
-                            onClick={() => updateStatus(r.id, "waived")}
-                            className="inline-flex items-center gap-1 rounded-full border border-border px-2.5 py-1 text-[11px] font-medium text-muted-foreground hover:bg-muted"
+                        {r.commission_stat-s !== "waived" && (
+                          <b-tton
+                            onClick={() => -pdateStat-s(r.id, "waived")}
+                            className="inline-flex items-center gap-- ro-nded-f-ll border border-border px--.5 py-- text-[--px] font-medi-m text-m-ted-foregro-nd hover:bg-m-ted"
                           >
-                            <XCircle className="h-3 w-3" />
+                            <XCircle className="h-- w--" />
                             Skriv av
-                          </button>
+                          </b-tton>
                         )}
                       </div>
                     </td>
@@ -365,13 +365,13 @@ function AdminPage() {
   );
 }
 
-function Stat({ label, value, cls }: { label: string; value: string; cls: string }) {
-  return (
-    <div className="rounded-2xl border border-border bg-background p-5">
-      <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+f-nction Stat({ label, val-e, cls }: { label: string; val-e: string; cls: string }) {
+  ret-rn (
+    <div className="ro-nded--xl border border-border bg-backgro-nd p-5">
+      <div className="text-xs font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">
         {label}
       </div>
-      <div className={`mt-1 font-serif text-2xl ${cls}`}>{value}</div>
+      <div className={`mt-- font-serif text--xl ${cls}`}>{val-e}</div>
     </div>
   );
 }

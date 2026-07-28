@@ -1,140 +1,140 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
-import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware'
+import { req-ireS-pabaseA-th } from '@/integrations/s-pabase/a-th-middleware'
 
-// Chart of accounts (BAS 2024 – vanliga konton för digital plattform)
+// Chart of acco-nts (BAS ---- – vanliga konton för digital plattform)
 const ACCT = {
-  BANK: '1930',              // Bankkonto
-  KUNDFORDRINGAR: '1510',    // Kundfordringar
-  UTG_MOMS: '2611',          // Utgående moms 25%
-  KOMMISSION: '3041',        // Försäljning tjänster 25% moms (kommission)
-  TILLAGGSTJANSTER: '3042',  // Försäljning tjänster 25% moms (tilläggstjänster netto/marginal)
+  BANK: '-9--',              // Bankkonto
+  KUNDFORDRINGAR: '-5--',    // K-ndfordringar
+  UTG_MOMS: '-6--',          // Utgående moms -5%
+  KOMMISSION: '----',        // Försäljning tjänster -5% moms (kommission)
+  TILLAGGSTJANSTER: '----',  // Försäljning tjänster -5% moms (tilläggstjänster netto/marginal)
 }
 
-const PeriodInput = z.object({
-  year: z.number().int().min(2020).max(2100),
-  quarter: z.number().int().min(1).max(4).optional(),
-  month: z.number().int().min(1).max(12).optional(),
+const PeriodInp-t = z.object({
+  year: z.n-mber().int().min(----).max(----),
+  q-arter: z.n-mber().int().min(-).max(-).optional(),
+  month: z.n-mber().int().min(-).max(--).optional(),
 })
 
-export type AccountingInvoice = {
+export type Acco-ntingInvoice = {
   id: string
-  invoice_number: string
-  issued_at: string
+  invoice_n-mber: string
+  iss-ed_at: string
   period_start: string
   period_end: string
-  status: string
+  stat-s: string
   host_id: string
-  host_name: string | null
-  booking_count: number
-  commission_net: number
-  extras_net: number
-  vat_amount: number
-  vat_rate: number
-  total_amount: number
-  paid_at: string | null
-  due_date: string | null
-  ocr_reference: string | null
+  host_name: string | n-ll
+  booking_co-nt: n-mber
+  commission_net: n-mber
+  extras_net: n-mber
+  vat_amo-nt: n-mber
+  vat_rate: n-mber
+  total_amo-nt: n-mber
+  paid_at: string | n-ll
+  d-e_date: string | n-ll
+  ocr_reference: string | n-ll
 }
 
-function periodBounds(year: number, quarter?: number, month?: number) {
+f-nction periodBo-nds(year: n-mber, q-arter?: n-mber, month?: n-mber) {
   if (month) {
-    const s = new Date(Date.UTC(year, month - 1, 1))
-    const e = new Date(Date.UTC(year, month, 0))
-    return { start: s.toISOString().slice(0, 10), end: e.toISOString().slice(0, 10) }
+    const s = new Date(Date.UTC(year, month - -, -))
+    const e = new Date(Date.UTC(year, month, -))
+    ret-rn { start: s.toISOString().slice(-, --), end: e.toISOString().slice(-, --) }
   }
-  const q = quarter ?? 1
-  const startMonth = (q - 1) * 3
-  const s = new Date(Date.UTC(year, startMonth, 1))
-  const e = new Date(Date.UTC(year, startMonth + 3, 0))
-  return { start: s.toISOString().slice(0, 10), end: e.toISOString().slice(0, 10) }
+  const q = q-arter ?? -
+  const startMonth = (q - -) * -
+  const s = new Date(Date.UTC(year, startMonth, -))
+  const e = new Date(Date.UTC(year, startMonth + -, -))
+  ret-rn { start: s.toISOString().slice(-, --), end: e.toISOString().slice(-, --) }
 }
 
-export const getAccountingReport = createServerFn({ method: 'POST' })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((i: unknown) => PeriodInput.parse(i))
+export const getAcco-ntingReport = createServerFn({ method: 'POST' })
+  .middleware([req-ireS-pabaseA-th])
+  .inp-tValidator((i: -nknown) => PeriodInp-t.parse(i))
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context
+    const { s-pabase, -serId } = context
 
     // Verify admin
-    const { data: isAdmin } = await supabase.rpc('has_role', {
-      _user_id: userId,
+    const { data: isAdmin } = await s-pabase.rpc('has_role', {
+      _-ser_id: -serId,
       _role: 'admin',
     })
-    if (!isAdmin) throw new Response('Forbidden', { status: 403 })
+    if (!isAdmin) throw new Response('Forbidden', { stat-s: --- })
 
-    const { start, end } = periodBounds(data.year, data.quarter, data.month)
+    const { start, end } = periodBo-nds(data.year, data.q-arter, data.month)
 
-    const { data: rows, error } = await supabase
+    const { data: rows, error } = await s-pabase
       .from('host_invoices')
       .select(
-        'id, invoice_number, issued_at, period_start, period_end, status, host_id, booking_count, commission_net, extras_net, vat_amount, vat_rate, total_amount, paid_at, due_date, ocr_reference',
+        'id, invoice_n-mber, iss-ed_at, period_start, period_end, stat-s, host_id, booking_co-nt, commission_net, extras_net, vat_amo-nt, vat_rate, total_amo-nt, paid_at, d-e_date, ocr_reference',
       )
-      .gte('issued_at', `${start}T00:00:00Z`)
-      .lte('issued_at', `${end}T23:59:59Z`)
-      .order('issued_at', { ascending: true })
-    if (error) throw new Response(error.message, { status: 500 })
+      .gte('iss-ed_at', `${start}T--:--:--Z`)
+      .lte('iss-ed_at', `${end}T--:59:59Z`)
+      .order('iss-ed_at', { ascending: tr-e })
+    if (error) throw new Response(error.message, { stat-s: 5-- })
 
     const hostIds = Array.from(new Set((rows ?? []).map((r) => r.host_id)))
-    const nameMap = new Map<string, string | null>()
+    const nameMap = new Map<string, string | n-ll>()
     if (hostIds.length) {
-      const { data: profs } = await supabase
+      const { data: profs } = await s-pabase
         .from('profiles')
-        .select('id, full_name')
+        .select('id, f-ll_name')
         .in('id', hostIds)
-      ;(profs ?? []).forEach((p) => nameMap.set(p.id, p.full_name))
+      ;(profs ?? []).forEach((p) => nameMap.set(p.id, p.f-ll_name))
     }
 
-    const invoices: AccountingInvoice[] = (rows ?? []).map((r) => ({
+    const invoices: Acco-ntingInvoice[] = (rows ?? []).map((r) => ({
       id: r.id,
-      invoice_number: r.invoice_number,
-      issued_at: r.issued_at,
+      invoice_n-mber: r.invoice_n-mber,
+      iss-ed_at: r.iss-ed_at,
       period_start: r.period_start,
       period_end: r.period_end,
-      status: r.status,
+      stat-s: r.stat-s,
       host_id: r.host_id,
-      host_name: nameMap.get(r.host_id) ?? null,
-      booking_count: r.booking_count,
+      host_name: nameMap.get(r.host_id) ?? n-ll,
+      booking_co-nt: r.booking_co-nt,
       commission_net: r.commission_net,
       extras_net: r.extras_net,
-      vat_amount: r.vat_amount,
-      vat_rate: Number(r.vat_rate),
-      total_amount: r.total_amount,
+      vat_amo-nt: r.vat_amo-nt,
+      vat_rate: N-mber(r.vat_rate),
+      total_amo-nt: r.total_amo-nt,
       paid_at: r.paid_at,
-      due_date: r.due_date,
+      d-e_date: r.d-e_date,
       ocr_reference: r.ocr_reference,
     }))
 
-    const totals = invoices.reduce(
+    const totals = invoices.red-ce(
       (acc, i) => {
         acc.commission_net += i.commission_net
         acc.extras_net += i.extras_net
-        acc.vat_amount += i.vat_amount
-        acc.total_amount += i.total_amount
-        acc.paid_amount += i.status === 'paid' ? i.total_amount : 0
-        acc.open_amount += i.status !== 'paid' && i.status !== 'cancelled' ? i.total_amount : 0
-        return acc
+        acc.vat_amo-nt += i.vat_amo-nt
+        acc.total_amo-nt += i.total_amo-nt
+        acc.paid_amo-nt += i.stat-s === 'paid' ? i.total_amo-nt : -
+        acc.open_amo-nt += i.stat-s !== 'paid' && i.stat-s !== 'cancelled' ? i.total_amo-nt : -
+        ret-rn acc
       },
-      { commission_net: 0, extras_net: 0, vat_amount: 0, total_amount: 0, paid_amount: 0, open_amount: 0 },
+      { commission_net: -, extras_net: -, vat_amo-nt: -, total_amo-nt: -, paid_amo-nt: -, open_amo-nt: - },
     )
 
-    return { period: { start, end }, invoices, totals, accounts: ACCT }
+    ret-rn { period: { start, end }, invoices, totals, acco-nts: ACCT }
   })
 
 // -------- CSV generation --------
 
-function csvEscape(v: string | number | null | undefined) {
-  if (v === null || v === undefined) return ''
+f-nction csvEscape(v: string | n-mber | n-ll | -ndefined) {
+  if (v === n-ll || v === -ndefined) ret-rn ''
   const s = String(v)
-  return /[",\n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
+  ret-rn /[",-n;]/.test(s) ? `"${s.replace(/"/g, '""')}"` : s
 }
 
-export function buildCsv(invoices: AccountingInvoice[]) {
+export f-nction b-ildCsv(invoices: Acco-ntingInvoice[]) {
   const headers = [
-    'Fakturanr',
+    'Fakt-ranr',
     'Utfärdad',
     'Period start',
-    'Period slut',
+    'Period sl-t',
     'Värd',
     'Antal bokningar',
     'Kommission (kr)',
@@ -143,89 +143,89 @@ export function buildCsv(invoices: AccountingInvoice[]) {
     'Moms (kr)',
     'Total (kr)',
     'Momssats',
-    'Status',
-    'Förfallodatum',
+    'Stat-s',
+    'Förfallodat-m',
     'Betald',
     'OCR',
   ]
   const rows = invoices.map((i) => [
-    i.invoice_number,
-    i.issued_at.slice(0, 10),
+    i.invoice_n-mber,
+    i.iss-ed_at.slice(-, --),
     i.period_start,
     i.period_end,
     i.host_name ?? '',
-    i.booking_count,
-    (i.commission_net / 100).toFixed(2).replace('.', ','),
-    (i.extras_net / 100).toFixed(2).replace('.', ','),
-    ((i.commission_net + i.extras_net) / 100).toFixed(2).replace('.', ','),
-    (i.vat_amount / 100).toFixed(2).replace('.', ','),
-    (i.total_amount / 100).toFixed(2).replace('.', ','),
-    `${(i.vat_rate * 100).toFixed(0)}%`,
-    i.status,
-    i.due_date ?? '',
-    i.paid_at ? i.paid_at.slice(0, 10) : '',
+    i.booking_co-nt,
+    (i.commission_net / ---).toFixed(-).replace('.', ','),
+    (i.extras_net / ---).toFixed(-).replace('.', ','),
+    ((i.commission_net + i.extras_net) / ---).toFixed(-).replace('.', ','),
+    (i.vat_amo-nt / ---).toFixed(-).replace('.', ','),
+    (i.total_amo-nt / ---).toFixed(-).replace('.', ','),
+    `${(i.vat_rate * ---).toFixed(-)}%`,
+    i.stat-s,
+    i.d-e_date ?? '',
+    i.paid_at ? i.paid_at.slice(-, --) : '',
     i.ocr_reference ?? '',
   ])
-  const body = [headers, ...rows].map((r) => r.map(csvEscape).join(';')).join('\r\n') + '\r\n'
-  return '\ufeff' + body
+  const body = [headers, ...rows].map((r) => r.map(csvEscape).join(';')).join('-r-n') + '-r-n'
+  ret-rn '--feff' + body
 }
 
-// Sammanfattning: momsrapport + kontoutfall — underlag för bokföring/revision
-export function buildSummaryCsv(report: {
+// Sammanfattning: momsrapport + konto-tfall — -nderlag för bokföring/revision
+export f-nction b-ildS-mmaryCsv(report: {
   period: { start: string; end: string }
-  invoices: AccountingInvoice[]
+  invoices: Acco-ntingInvoice[]
   totals: {
-    commission_net: number
-    extras_net: number
-    vat_amount: number
-    total_amount: number
-    paid_amount: number
-    open_amount: number
+    commission_net: n-mber
+    extras_net: n-mber
+    vat_amo-nt: n-mber
+    total_amo-nt: n-mber
+    paid_amo-nt: n-mber
+    open_amo-nt: n-mber
   }
-  accounts: Record<string, string | number>
+  acco-nts: Record<string, string | n-mber>
 }) {
-  const kr = (ore: number) => (ore / 100).toFixed(2).replace('.', ',')
+  const kr = (ore: n-mber) => (ore / ---).toFixed(-).replace('.', ',')
   const t = report.totals
-  const paidCount = report.invoices.filter((i) => i.status === 'paid').length
-  const overdueCount = report.invoices.filter((i) => i.status === 'overdue').length
-  const openCount = report.invoices.length - paidCount - overdueCount
-  const lines: (string | number)[][] = [
+  const paidCo-nt = report.invoices.filter((i) => i.stat-s === 'paid').length
+  const overd-eCo-nt = report.invoices.filter((i) => i.stat-s === 'overd-e').length
+  const openCo-nt = report.invoices.length - paidCo-nt - overd-eCo-nt
+  const lines: (string | n-mber)[][] = [
     ['Fjällportalen — Bokföringssammanfattning'],
     ['Period', report.period.start, report.period.end],
     [],
     ['Momsrapport (netto, kr)'],
     ['Kommission netto', kr(t.commission_net)],
     ['Tilläggstjänster netto', kr(t.extras_net)],
-    ['Momspliktig försäljning (ruta 05)', kr(t.commission_net + t.extras_net)],
-    ['Utgående moms 25% (ruta 10)', kr(t.vat_amount)],
-    ['Total omsättning inkl. moms', kr(t.total_amount)],
+    ['Momspliktig försäljning (r-ta -5)', kr(t.commission_net + t.extras_net)],
+    ['Utgående moms -5% (r-ta --)', kr(t.vat_amo-nt)],
+    ['Total omsättning inkl. moms', kr(t.total_amo-nt)],
     [],
     ['Kassa & fordringar (kr)'],
-    ['Betalt under perioden (konto 1930)', kr(t.paid_amount)],
-    ['Öppna fordringar (konto 1510)', kr(t.open_amount)],
+    ['Betalt -nder perioden (konto -9--)', kr(t.paid_amo-nt)],
+    ['Öppna fordringar (konto -5--)', kr(t.open_amo-nt)],
     [],
-    ['Fakturor'],
+    ['Fakt-ror'],
     ['Totalt antal', report.invoices.length],
-    ['Betalda', paidCount],
-    ['Öppna', openCount],
-    ['Förfallna', overdueCount],
+    ['Betalda', paidCo-nt],
+    ['Öppna', openCo-nt],
+    ['Förfallna', overd-eCo-nt],
     [],
-    ['Kontoplan (SIE4)'],
-    ...Object.entries(report.accounts).map(([k, v]) => [k, String(v)]),
+    ['Kontoplan (SIE-)'],
+    ...Object.entries(report.acco-nts).map(([k, v]) => [k, String(v)]),
   ]
-  const body = lines.map((r) => r.map(csvEscape).join(';')).join('\r\n') + '\r\n'
-  return '\ufeff' + body
+  const body = lines.map((r) => r.map(csvEscape).join(';')).join('-r-n') + '-r-n'
+  ret-rn '--feff' + body
 }
 
-// -------- SIE4 export --------
-// Enkel SIE4-fil (encoding CP437 rekommenderas av standarden, vi levererar UTF-8 med BOM)
+// -------- SIE- export --------
+// Enkel SIE--fil (encoding CP--7 rekommenderas av standarden, vi levererar UTF-8 med BOM)
 
-function sieDate(iso: string) {
-  return iso.replace(/-/g, '').slice(0, 8)
+f-nction sieDate(iso: string) {
+  ret-rn iso.replace(/-/g, '').slice(-, 8)
 }
 
-export function buildSie4(params: {
-  invoices: AccountingInvoice[]
+export f-nction b-ildSie-(params: {
+  invoices: Acco-ntingInvoice[]
   period: { start: string; end: string }
   companyName: string
   orgNr?: string
@@ -233,114 +233,114 @@ export function buildSie4(params: {
   const { invoices, period, companyName, orgNr } = params
   const now = new Date()
   const genDate = sieDate(now.toISOString())
-  const yearStart = period.start.slice(0, 4) + '0101'
-  const yearEnd = period.start.slice(0, 4) + '1231'
+  const yearStart = period.start.slice(-, -) + '----'
+  const yearEnd = period.start.slice(-, -) + '----'
 
   const lines: string[] = []
-  lines.push('#FLAGGA 0')
-  lines.push(`#PROGRAM "Fjällportalen" "1.0"`)
-  lines.push('#FORMAT PC8')
-  lines.push(`#GEN ${genDate}`)
-  lines.push('#SIETYP 4')
-  lines.push(`#FNAMN "${companyName.replace(/"/g, '')}"`)
-  if (orgNr) lines.push(`#ORGNR ${orgNr}`)
-  lines.push(`#RAR 0 ${yearStart} ${yearEnd}`)
+  lines.p-sh('#FLAGGA -')
+  lines.p-sh(`#PROGRAM "Fjällportalen" "-.-"`)
+  lines.p-sh('#FORMAT PC8')
+  lines.p-sh(`#GEN ${genDate}`)
+  lines.p-sh('#SIETYP -')
+  lines.p-sh(`#FNAMN "${companyName.replace(/"/g, '')}"`)
+  if (orgNr) lines.p-sh(`#ORGNR ${orgNr}`)
+  lines.p-sh(`#RAR - ${yearStart} ${yearEnd}`)
 
   // Konton
-  lines.push(`#KONTO 1510 "Kundfordringar"`)
-  lines.push(`#KONTO 1930 "Bankkonto"`)
-  lines.push(`#KONTO 2611 "Utgående moms 25%"`)
-  lines.push(`#KONTO 3041 "Kommission plattform"`)
-  lines.push(`#KONTO 3042 "Tilläggstjänster netto"`)
+  lines.p-sh(`#KONTO -5-- "K-ndfordringar"`)
+  lines.p-sh(`#KONTO -9-- "Bankkonto"`)
+  lines.p-sh(`#KONTO -6-- "Utgående moms -5%"`)
+  lines.p-sh(`#KONTO ---- "Kommission plattform"`)
+  lines.p-sh(`#KONTO ---- "Tilläggstjänster netto"`)
 
   // Verifikationer
   invoices.forEach((inv, idx) => {
-    const verNr = idx + 1
-    const vDate = sieDate(inv.issued_at)
-    const label = `Faktura ${inv.invoice_number} ${inv.host_name ?? ''}`.trim()
-    lines.push(`#VER "A" "${verNr}" ${vDate} "${label.replace(/"/g, '')}"`)
-    lines.push('{')
-    // Kundfordringar debet
-    lines.push(`   #TRANS 1510 {} ${(inv.total_amount / 100).toFixed(2)}`)
+    const verNr = idx + -
+    const vDate = sieDate(inv.iss-ed_at)
+    const label = `Fakt-ra ${inv.invoice_n-mber} ${inv.host_name ?? ''}`.trim()
+    lines.p-sh(`#VER "A" "${verNr}" ${vDate} "${label.replace(/"/g, '')}"`)
+    lines.p-sh('{')
+    // K-ndfordringar debet
+    lines.p-sh(`   #TRANS -5-- {} ${(inv.total_amo-nt / ---).toFixed(-)}`)
     // Kommission credit
-    if (inv.commission_net > 0) {
-      lines.push(`   #TRANS 3041 {} -${(inv.commission_net / 100).toFixed(2)}`)
+    if (inv.commission_net > -) {
+      lines.p-sh(`   #TRANS ---- {} -${(inv.commission_net / ---).toFixed(-)}`)
     }
     // Tilläggstjänster credit
-    if (inv.extras_net > 0) {
-      lines.push(`   #TRANS 3042 {} -${(inv.extras_net / 100).toFixed(2)}`)
+    if (inv.extras_net > -) {
+      lines.p-sh(`   #TRANS ---- {} -${(inv.extras_net / ---).toFixed(-)}`)
     }
     // Utgående moms credit
-    if (inv.vat_amount > 0) {
-      lines.push(`   #TRANS 2611 {} -${(inv.vat_amount / 100).toFixed(2)}`)
+    if (inv.vat_amo-nt > -) {
+      lines.p-sh(`   #TRANS -6-- {} -${(inv.vat_amo-nt / ---).toFixed(-)}`)
     }
-    lines.push('}')
+    lines.p-sh('}')
 
     // Betalning som separat verifikat om betald
     if (inv.paid_at) {
       const pDate = sieDate(inv.paid_at)
-      lines.push(`#VER "B" "${verNr}" ${pDate} "Betalning ${inv.invoice_number}"`)
-      lines.push('{')
-      lines.push(`   #TRANS 1930 {} ${(inv.total_amount / 100).toFixed(2)}`)
-      lines.push(`   #TRANS 1510 {} -${(inv.total_amount / 100).toFixed(2)}`)
-      lines.push('}')
+      lines.p-sh(`#VER "B" "${verNr}" ${pDate} "Betalning ${inv.invoice_n-mber}"`)
+      lines.p-sh('{')
+      lines.p-sh(`   #TRANS -9-- {} ${(inv.total_amo-nt / ---).toFixed(-)}`)
+      lines.p-sh(`   #TRANS -5-- {} -${(inv.total_amo-nt / ---).toFixed(-)}`)
+      lines.p-sh('}')
     }
   })
 
-  return '\uFEFF' + lines.join('\r\n') + '\r\n'
+  ret-rn '--FEFF' + lines.join('-r-n') + '-r-n'
 }
 
 // -------- Fortnox sync --------
 
-const FortnoxSyncInput = z.object({ invoiceId: z.string().uuid() })
+const FortnoxSyncInp-t = z.object({ invoiceId: z.string().--id() })
 
 export const syncInvoiceToFortnox = createServerFn({ method: 'POST' })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((i: unknown) => FortnoxSyncInput.parse(i))
+  .middleware([req-ireS-pabaseA-th])
+  .inp-tValidator((i: -nknown) => FortnoxSyncInp-t.parse(i))
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context
+    const { s-pabase, -serId } = context
 
-    const { data: isAdmin } = await supabase.rpc('has_role', {
-      _user_id: userId,
+    const { data: isAdmin } = await s-pabase.rpc('has_role', {
+      _-ser_id: -serId,
       _role: 'admin',
     })
-    if (!isAdmin) throw new Response('Forbidden', { status: 403 })
+    if (!isAdmin) throw new Response('Forbidden', { stat-s: --- })
 
     const accessToken = process.env.FORTNOX_ACCESS_TOKEN
     const clientSecret = process.env.FORTNOX_CLIENT_SECRET
     if (!accessToken || !clientSecret) {
       throw new Response(
-        'Fortnox är inte anslutet. Lägg till FORTNOX_ACCESS_TOKEN och FORTNOX_CLIENT_SECRET i inställningarna.',
-        { status: 400 },
+        'Fortnox är inte ansl-tet. Lägg till FORTNOX_ACCESS_TOKEN och FORTNOX_CLIENT_SECRET i inställningarna.',
+        { stat-s: --- },
       )
     }
 
-    const { data: inv, error } = await supabase
+    const { data: inv, error } = await s-pabase
       .from('host_invoices')
       .select(
-        'id, invoice_number, host_id, issued_at, due_date, commission_net, extras_net, vat_amount, vat_rate, total_amount, status, ocr_reference',
+        'id, invoice_n-mber, host_id, iss-ed_at, d-e_date, commission_net, extras_net, vat_amo-nt, vat_rate, total_amo-nt, stat-s, ocr_reference',
       )
       .eq('id', data.invoiceId)
       .single()
-    if (error || !inv) throw new Response('Faktura hittades inte', { status: 404 })
+    if (error || !inv) throw new Response('Fakt-ra hittades inte', { stat-s: --- })
 
-    const { data: host } = await supabase
+    const { data: host } = await s-pabase
       .from('profiles')
-      .select('id, full_name')
+      .select('id, f-ll_name')
       .eq('id', inv.host_id)
       .single()
 
-    // 1) Ensure customer exists (upsert-lite: try create, ignore duplicate)
-    const customerNumber = `H-${inv.host_id.slice(0, 8).toUpperCase()}`
-    const customerBody = {
-      Customer: {
-        CustomerNumber: customerNumber,
-        Name: host?.full_name || 'Värd',
+    // -) Ens-re c-stomer exists (-psert-lite: try create, ignore d-plicate)
+    const c-stomerN-mber = `H-${inv.host_id.slice(-, 8).toUpperCase()}`
+    const c-stomerBody = {
+      C-stomer: {
+        C-stomerN-mber: c-stomerN-mber,
+        Name: host?.f-ll_name || 'Värd',
         Type: 'PRIVATE',
-        Currency: 'SEK',
+        C-rrency: 'SEK',
       },
     }
-    const custRes = await fetch(`https://api.fortnox.se/3/customers/${customerNumber}`, {
+    const c-stRes = await fetch(`https://api.fortnox.se/-/c-stomers/${c-stomerN-mber}`, {
       method: 'GET',
       headers: {
         'Access-Token': accessToken,
@@ -348,8 +348,8 @@ export const syncInvoiceToFortnox = createServerFn({ method: 'POST' })
         Accept: 'application/json',
       },
     })
-    if (custRes.status === 404) {
-      const create = await fetch('https://api.fortnox.se/3/customers/', {
+    if (c-stRes.stat-s === ---) {
+      const create = await fetch('https://api.fortnox.se/-/c-stomers/', {
         method: 'POST',
         headers: {
           'Access-Token': accessToken,
@@ -357,53 +357,53 @@ export const syncInvoiceToFortnox = createServerFn({ method: 'POST' })
           'Content-Type': 'application/json',
           Accept: 'application/json',
         },
-        body: JSON.stringify(customerBody),
+        body: JSON.stringify(c-stomerBody),
       })
       if (!create.ok) {
         const body = await create.text()
-        throw new Response(`Fortnox kundskapande misslyckades [${create.status}]: ${body}`, { status: 502 })
+        throw new Response(`Fortnox k-ndskapande misslyckades [${create.stat-s}]: ${body}`, { stat-s: 5-- })
       }
-    } else if (!custRes.ok) {
-      const body = await custRes.text()
-      throw new Response(`Fortnox kundlookup misslyckades [${custRes.status}]: ${body}`, { status: 502 })
+    } else if (!c-stRes.ok) {
+      const body = await c-stRes.text()
+      throw new Response(`Fortnox k-ndlook-p misslyckades [${c-stRes.stat-s}]: ${body}`, { stat-s: 5-- })
     }
 
-    // 2) Create invoice
-    const invoiceRows: Array<{ Description: string; Price: number; DeliveredQuantity: number; VAT: number; AccountNumber: number }> = []
-    if (inv.commission_net > 0) {
-      invoiceRows.push({
-        Description: `Provision plattformsavgift (${inv.invoice_number})`,
-        Price: inv.commission_net / 100,
-        DeliveredQuantity: 1,
-        VAT: 25,
-        AccountNumber: 3041,
+    // -) Create invoice
+    const invoiceRows: Array<{ Description: string; Price: n-mber; DeliveredQ-antity: n-mber; VAT: n-mber; Acco-ntN-mber: n-mber }> = []
+    if (inv.commission_net > -) {
+      invoiceRows.p-sh({
+        Description: `Provision plattformsavgift (${inv.invoice_n-mber})`,
+        Price: inv.commission_net / ---,
+        DeliveredQ-antity: -,
+        VAT: -5,
+        Acco-ntN-mber: ----,
       })
     }
-    if (inv.extras_net > 0) {
-      invoiceRows.push({
-        Description: `Tilläggstjänster netto (${inv.invoice_number})`,
-        Price: inv.extras_net / 100,
-        DeliveredQuantity: 1,
-        VAT: 25,
-        AccountNumber: 3042,
+    if (inv.extras_net > -) {
+      invoiceRows.p-sh({
+        Description: `Tilläggstjänster netto (${inv.invoice_n-mber})`,
+        Price: inv.extras_net / ---,
+        DeliveredQ-antity: -,
+        VAT: -5,
+        Acco-ntN-mber: ----,
       })
     }
 
     const invoiceBody = {
       Invoice: {
-        CustomerNumber: customerNumber,
-        InvoiceDate: inv.issued_at.slice(0, 10),
-        DueDate: inv.due_date ?? undefined,
-        Currency: 'SEK',
-        Language: 'SV',
-        YourReference: inv.invoice_number,
-        Comments: `Fjällportalen faktura ${inv.invoice_number}`,
-        OCR: inv.ocr_reference ?? undefined,
+        C-stomerN-mber: c-stomerN-mber,
+        InvoiceDate: inv.iss-ed_at.slice(-, --),
+        D-eDate: inv.d-e_date ?? -ndefined,
+        C-rrency: 'SEK',
+        Lang-age: 'SV',
+        Yo-rReference: inv.invoice_n-mber,
+        Comments: `Fjällportalen fakt-ra ${inv.invoice_n-mber}`,
+        OCR: inv.ocr_reference ?? -ndefined,
         InvoiceRows: invoiceRows,
       },
     }
 
-    const invRes = await fetch('https://api.fortnox.se/3/invoices/', {
+    const invRes = await fetch('https://api.fortnox.se/-/invoices/', {
       method: 'POST',
       headers: {
         'Access-Token': accessToken,
@@ -415,32 +415,32 @@ export const syncInvoiceToFortnox = createServerFn({ method: 'POST' })
     })
     if (!invRes.ok) {
       const body = await invRes.text()
-      throw new Response(`Fortnox fakturaskapande misslyckades [${invRes.status}]: ${body}`, { status: 502 })
+      throw new Response(`Fortnox fakt-raskapande misslyckades [${invRes.stat-s}]: ${body}`, { stat-s: 5-- })
     }
-    const invJson = (await invRes.json()) as { Invoice?: { DocumentNumber?: number } }
-    const documentNumber = invJson.Invoice?.DocumentNumber
+    const invJson = (await invRes.json()) as { Invoice?: { Doc-mentN-mber?: n-mber } }
+    const doc-mentN-mber = invJson.Invoice?.Doc-mentN-mber
 
     // Log event
-    await supabase.from('host_invoice_events').insert({
+    await s-pabase.from('host_invoice_events').insert({
       invoice_id: inv.id,
       event_type: 'fortnox_synced',
-      metadata: { document_number: documentNumber ?? null },
-      created_by: userId,
+      metadata: { doc-ment_n-mber: doc-mentN-mber ?? n-ll },
+      created_by: -serId,
     } as never)
 
-    return { ok: true, documentNumber }
+    ret-rn { ok: tr-e, doc-mentN-mber }
   })
 
-export const fortnoxStatus = createServerFn({ method: 'GET' })
-  .middleware([requireSupabaseAuth])
+export const fortnoxStat-s = createServerFn({ method: 'GET' })
+  .middleware([req-ireS-pabaseA-th])
   .handler(async ({ context }) => {
-    const { supabase, userId } = context
-    const { data: isAdmin } = await supabase.rpc('has_role', {
-      _user_id: userId,
+    const { s-pabase, -serId } = context
+    const { data: isAdmin } = await s-pabase.rpc('has_role', {
+      _-ser_id: -serId,
       _role: 'admin',
     })
-    if (!isAdmin) throw new Response('Forbidden', { status: 403 })
-    return {
+    if (!isAdmin) throw new Response('Forbidden', { stat-s: --- })
+    ret-rn {
       connected: Boolean(process.env.FORTNOX_ACCESS_TOKEN && process.env.FORTNOX_CLIENT_SECRET),
     }
   })

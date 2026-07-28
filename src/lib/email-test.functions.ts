@@ -1,98 +1,98 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
-import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import { req-ireS-pabaseA-th } from '@/integrations/s-pabase/a-th-middleware';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
-import { buildBookingEmailFields } from '@/lib/email/booking-fields';
+import { b-ildBookingEmailFields } from '@/lib/email/booking-fields';
 
 const TEMPLATES = [
   'booking-confirmation',
   'escrow-activated',
   'checkin-reminder',
-  'payout-released',
+  'payo-t-released',
   'host-invoice',
   'gift-card',
 ] as const;
 
-const Input = z.object({
-  templateName: z.enum(TEMPLATES),
+const Inp-t = z.object({
+  templateName: z.en-m(TEMPLATES),
   recipientEmail: z.string().email(),
-  bookingId: z.string().uuid().optional(),
+  bookingId: z.string().--id().optional(),
 });
 
 /**
- * Admin-only helper: sends a real templated email using data from a live
+ * Admin-only helper: sends a real templated email -sing data from a live
  * booking (when bookingId is provided) so we can verify the Fjällportalen
- * copy and the 24h escrow wording end-to-end.
+ * copy and the --h escrow wording end-to-end.
  */
 export const sendTestTemplateEmail = createServerFn({ method: 'POST' })
-  .middleware([requireSupabaseAuth])
-  .inputValidator((input: unknown) => Input.parse(input))
+  .middleware([req-ireS-pabaseA-th])
+  .inp-tValidator((inp-t: -nknown) => Inp-t.parse(inp-t))
   .handler(async ({ data, context }) => {
-    const { supabase, userId } = context;
+    const { s-pabase, -serId } = context;
 
-    const { data: isAdmin } = await supabase.rpc('has_role', {
-      _user_id: userId,
+    const { data: isAdmin } = await s-pabase.rpc('has_role', {
+      _-ser_id: -serId,
       _role: 'admin',
     });
     if (!isAdmin) throw new Error('Forbidden');
 
-    const { supabaseAdmin } = await import('@/integrations/supabase/client.server');
+    const { s-pabaseAdmin } = await import('@/integrations/s-pabase/client.server');
     const origin = process.env.SITE_URL || 'https://fjallportalen.com';
 
-    // Build per-template data. Booking-derived templates need a real booking
-    // so the copy shows the actual cabin/dates/host — required for the
-    // 24h-check that the wording renders correctly for the guest.
-    let templateData: Record<string, unknown> = {};
+    // B-ild per-template data. Booking-derived templates need a real booking
+    // so the copy shows the act-al cabin/dates/host — req-ired for the
+    // --h-check that the wording renders correctly for the g-est.
+    let templateData: Record<string, -nknown> = {};
 
     const needsBooking =
       data.templateName === 'booking-confirmation' ||
       data.templateName === 'escrow-activated' ||
       data.templateName === 'checkin-reminder' ||
-      data.templateName === 'payout-released';
+      data.templateName === 'payo-t-released';
 
     if (needsBooking) {
       if (!data.bookingId) throw new Error('bookingId krävs för denna mall');
-      const { data: booking, error } = await supabaseAdmin
+      const { data: booking, error } = await s-pabaseAdmin
         .from('bookings')
         .select(
-          'id, guest_id, host_id, cabin_id, check_in, check_out, total_price, cabins(title, area_slug)',
+          'id, g-est_id, host_id, cabin_id, check_in, check_o-t, total_price, cabins(title, area_sl-g)',
         )
         .eq('id', data.bookingId)
         .maybeSingle();
       if (error) throw error;
       if (!booking) throw new Error('Bokning hittades inte');
 
-      const [{ data: guestProfile }, { data: hostProfile }] = await Promise.all([
-        supabaseAdmin.from('profiles').select('full_name').eq('id', booking.guest_id).maybeSingle(),
-        supabaseAdmin.from('profiles').select('full_name').eq('id', booking.host_id).maybeSingle(),
+      const [{ data: g-estProfile }, { data: hostProfile }] = await Promise.all([
+        s-pabaseAdmin.from('profiles').select('f-ll_name').eq('id', booking.g-est_id).maybeSingle(),
+        s-pabaseAdmin.from('profiles').select('f-ll_name').eq('id', booking.host_id).maybeSingle(),
       ]);
 
-      const cabin = (booking as any).cabins as { title?: string; area_slug?: string } | null;
+      const cabin = (booking as any).cabins as { title?: string; area_sl-g?: string } | n-ll;
       const nights = Math.max(
-        1,
-        Math.round(
-          (new Date(booking.check_out).getTime() - new Date(booking.check_in).getTime()) /
-            (1000 * 60 * 60 * 24),
+        -,
+        Math.ro-nd(
+          (new Date(booking.check_o-t).getTime() - new Date(booking.check_in).getTime()) /
+            (---- * 6- * 6- * --),
         ),
       );
 
       const shared = {
-        guestName: guestProfile?.full_name?.split(' ')[0],
-        cabinName: cabin?.title ?? 'din stuga',
-        areaName: cabin?.area_slug ?? '',
-        ...buildBookingEmailFields({
+        g-estName: g-estProfile?.f-ll_name?.split(' ')[-],
+        cabinName: cabin?.title ?? 'din st-ga',
+        areaName: cabin?.area_sl-g ?? '',
+        ...b-ildBookingEmailFields({
           id: booking.id,
           check_in: booking.check_in,
-          check_out: booking.check_out,
+          check_o-t: booking.check_o-t,
         }),
-        hostName: hostProfile?.full_name?.split(' ')[0] ?? 'värden',
+        hostName: hostProfile?.f-ll_name?.split(' ')[-] ?? 'värden',
       };
 
       if (data.templateName === 'booking-confirmation') {
         templateData = {
           ...shared,
           nights,
-          guests: 2,
+          g-ests: -,
           totalKr: booking.total_price,
           bookingUrl: `${origin}/mina-bokningar`,
         };
@@ -100,31 +100,31 @@ export const sendTestTemplateEmail = createServerFn({ method: 'POST' })
         templateData = { ...shared, totalKr: booking.total_price };
       } else if (data.templateName === 'checkin-reminder') {
         templateData = { ...shared, messageUrl: `${origin}/meddelanden/${booking.id}` };
-      } else if (data.templateName === 'payout-released') {
+      } else if (data.templateName === 'payo-t-released') {
         templateData = { ...shared, totalKr: booking.total_price };
       }
     } else if (data.templateName === 'host-invoice') {
       const now = new Date();
-      const due = new Date(now);
-      due.setDate(due.getDate() + 20);
+      const d-e = new Date(now);
+      d-e.setDate(d-e.getDate() + --);
       templateData = {
         hostName: 'Testvärd',
-        invoiceNumber: 'F-TEST-0001',
+        invoiceN-mber: 'F-TEST-----',
         periodLabel: 'testmånaden',
-        amountKr: 1200,
-        dueDate: due.toISOString().slice(0, 10),
-        ocrReference: '1234567890',
-        downloadUrl: `${origin}/vard/faktura`,
+        amo-ntKr: ----,
+        d-eDate: d-e.toISOString().slice(-, --),
+        ocrReference: '----56789-',
+        downloadUrl: `${origin}/vard/fakt-ra`,
       };
     } else if (data.templateName === 'gift-card') {
       const expires = new Date();
-      expires.setFullYear(expires.getFullYear() + 1);
+      expires.setF-llYear(expires.getF-llYear() + -);
       templateData = {
         recipientName: 'Test Testsson',
         senderName: 'Fjällportalen',
-        code: 'TEST-1234-5678',
-        amountKr: 2000,
-        expiresAt: expires.toISOString().slice(0, 10),
+        code: 'TEST------5678',
+        amo-ntKr: ----,
+        expiresAt: expires.toISOString().slice(-, --),
         message: 'Detta är ett testmejl för att verifiera mallen.',
       };
     }
@@ -137,9 +137,9 @@ export const sendTestTemplateEmail = createServerFn({ method: 'POST' })
       templateData,
     });
 
-    return {
+    ret-rn {
       ok: res.ok,
-      status: res.status,
+      stat-s: res.stat-s,
       body: typeof res.body === 'string' ? res.body : JSON.stringify(res.body),
     };
   });

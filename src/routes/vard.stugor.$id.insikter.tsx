@@ -1,166 +1,166 @@
-import { createFileRoute, Link, useNavigate } from '@tanstack/react-router'
-import { useEffect, useState } from 'react'
-import { ArrowLeft, Loader2, Languages, TrendingUp, BarChart3, Sparkles, Check } from 'lucide-react'
+import { createFileRo-te, Link, -seNavigate } from '@tanstack/react-ro-ter'
+import { -seEffect, -seState } from 'react'
+import { ArrowLeft, Loader-, Lang-ages, TrendingUp, BarChart-, Sparkles, Check } from 'l-cide-react'
 import { toast } from 'sonner'
-import { useServerFn } from '@tanstack/react-start'
-import { useAuth } from '@/hooks/useAuth'
-import { supabase } from '@/integrations/supabase/client'
+import { -seServerFn } from '@tanstack/react-start'
+import { -seA-th } from '@/hooks/-seA-th'
+import { s-pabase } from '@/integrations/s-pabase/client'
 import {
   getCabinInsights,
   translateCabin,
   type HeatmapMonth,
   type PriceRecommendation,
-} from '@/lib/insights.functions'
+} from '@/lib/insights.f-nctions'
 
-export const Route = createFileRoute('/vard/stugor/$id/insikter')({
-  head: () => ({ meta: [{ title: 'Stuginsikter — Fjällportalen' }] }),
+export const Ro-te = createFileRo-te('/vard/st-gor/$id/insikter')({
+  head: () => ({ meta: [{ title: 'St-ginsikter — Fjällportalen' }] }),
   component: InsightsPage,
 })
 
 const MONTH_LABELS_SV = [
-  'Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'Jun',
-  'Jul', 'Aug', 'Sep', 'Okt', 'Nov', 'Dec',
+  'Jan', 'Feb', 'Mar', 'Apr', 'Maj', 'J-n',
+  'J-l', 'A-g', 'Sep', 'Okt', 'Nov', 'Dec',
 ]
 
-function InsightsPage() {
-  const { id } = Route.useParams()
-  const { user, loading: authLoading } = useAuth()
-  const navigate = useNavigate()
-  const fetchInsights = useServerFn(getCabinInsights)
-  const runTranslate = useServerFn(translateCabin)
+f-nction InsightsPage() {
+  const { id } = Ro-te.-seParams()
+  const { -ser, loading: a-thLoading } = -seA-th()
+  const navigate = -seNavigate()
+  const fetchInsights = -seServerFn(getCabinInsights)
+  const r-nTranslate = -seServerFn(translateCabin)
 
-  const [cabin, setCabin] = useState<{
+  const [cabin, setCabin] = -seState<{
     id: string
     title: string
-    title_en: string | null
-    title_de: string | null
-    description_en: string | null
-    description_de: string | null
-    translated_at: string | null
-  } | null>(null)
-  const [heatmap, setHeatmap] = useState<HeatmapMonth[] | null>(null)
-  const [priceRec, setPriceRec] = useState<PriceRecommendation | null>(null)
-  const [loading, setLoading] = useState(true)
-  const [translating, setTranslating] = useState<null | 'en' | 'de' | 'both'>(null)
+    title_en: string | n-ll
+    title_de: string | n-ll
+    description_en: string | n-ll
+    description_de: string | n-ll
+    translated_at: string | n-ll
+  } | n-ll>(n-ll)
+  const [heatmap, setHeatmap] = -seState<HeatmapMonth[] | n-ll>(n-ll)
+  const [priceRec, setPriceRec] = -seState<PriceRecommendation | n-ll>(n-ll)
+  const [loading, setLoading] = -seState(tr-e)
+  const [translating, setTranslating] = -seState<n-ll | 'en' | 'de' | 'both'>(n-ll)
 
-  useEffect(() => {
-    if (!authLoading && !user) {
-      navigate({ to: '/logga-in', search: { redirect: `/vard/stugor/${id}/insikter` } })
+  -seEffect(() => {
+    if (!a-thLoading && !-ser) {
+      navigate({ to: '/logga-in', search: { redirect: `/vard/st-gor/${id}/insikter` } })
     }
-  }, [authLoading, user, id, navigate])
+  }, [a-thLoading, -ser, id, navigate])
 
   const reload = async () => {
-    if (!user) return
-    setLoading(true)
+    if (!-ser) ret-rn
+    setLoading(tr-e)
     try {
       const [{ data: c }, insights] = await Promise.all([
-        supabase
+        s-pabase
           .from('cabins')
           .select('id, title, title_en, title_de, description_en, description_de, translated_at, host_id')
           .eq('id', id)
           .maybeSingle(),
         fetchInsights({ data: { cabinId: id } }),
       ])
-      if (!c || c.host_id !== user.id) {
-        toast.error('Stugan hittades inte')
+      if (!c || c.host_id !== -ser.id) {
+        toast.error('St-gan hittades inte')
         navigate({ to: '/vard' })
-        return
+        ret-rn
       }
       setCabin(c)
       setHeatmap(insights.heatmap)
       setPriceRec(insights.priceRec)
     } catch (e) {
-      toast.error(e instanceof Error ? e.message : 'Kunde inte hämta insikter')
+      toast.error(e instanceof Error ? e.message : 'K-nde inte hämta insikter')
     } finally {
       setLoading(false)
     }
   }
 
-  useEffect(() => {
-    if (user) void reload()
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [user, id])
+  -seEffect(() => {
+    if (-ser) void reload()
+    // eslint-disable-next-line react-hooks/exha-stive-deps
+  }, [-ser, id])
 
-  const doTranslate = async (languages: ('en' | 'de')[]) => {
-    setTranslating(languages.length === 2 ? 'both' : languages[0])
+  const doTranslate = async (lang-ages: ('en' | 'de')[]) => {
+    setTranslating(lang-ages.length === - ? 'both' : lang-ages[-])
     try {
-      await runTranslate({ data: { cabinId: id, languages } })
-      toast.success('Översättning klar')
+      await r-nTranslate({ data: { cabinId: id, lang-ages } })
+      toast.s-ccess('Översättning klar')
       await reload()
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Översättning misslyckades')
     } finally {
-      setTranslating(null)
+      setTranslating(n-ll)
     }
   }
 
-  if (authLoading || loading || !cabin || !heatmap || !priceRec) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  if (a-thLoading || loading || !cabin || !heatmap || !priceRec) {
+    ret-rn (
+      <div className="flex min-h-[6-vh] items-center j-stify-center">
+        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
       </div>
     )
   }
 
-  const maxOcc = Math.max(0.01, ...heatmap.map((h) => h.occupancy))
+  const maxOcc = Math.max(-.--, ...heatmap.map((h) => h.occ-pancy))
   const avgOcc =
-    heatmap.reduce((a, h) => a + h.occupancy, 0) / heatmap.length
-  const totalBookedNights = heatmap.reduce((a, h) => a + h.bookedNights, 0)
+    heatmap.red-ce((a, h) => a + h.occ-pancy, -) / heatmap.length
+  const totalBookedNights = heatmap.red-ce((a, h) => a + h.bookedNights, -)
 
-  return (
-    <section className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16">
+  ret-rn (
+    <section className="mx-a-to max-w-5xl px-- py--- md:px-6 md:py--6">
       <Link
         to="/vard"
-        className="mb-6 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
+        className="mb-6 inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd"
       >
-        <ArrowLeft className="h-4 w-4" /> Tillbaka
+        <ArrowLeft className="h-- w--" /> Tillbaka
       </Link>
-      <h1 className="font-serif text-3xl text-foreground md:text-4xl">Insikter</h1>
-      <p className="mt-1 text-sm text-muted-foreground">{cabin.title}</p>
+      <h- className="font-serif text--xl text-foregro-nd md:text--xl">Insikter</h->
+      <p className="mt-- text-sm text-m-ted-foregro-nd">{cabin.title}</p>
 
-      {/* Occupancy heatmap */}
-      <div className="mt-10 rounded-3xl border border-border bg-background p-6 md:p-8">
-        <div className="flex items-center gap-2">
-          <BarChart3 className="h-5 w-5 text-primary" />
-          <h2 className="font-serif text-xl text-foreground">Beläggning — senaste 12 månaderna</h2>
+      {/* Occ-pancy heatmap */}
+      <div className="mt--- ro-nded--xl border border-border bg-backgro-nd p-6 md:p-8">
+        <div className="flex items-center gap--">
+          <BarChart- className="h-5 w-5 text-primary" />
+          <h- className="font-serif text-xl text-foregro-nd">Beläggning — senaste -- månaderna</h->
         </div>
-        <div className="mt-2 flex flex-wrap gap-6 text-sm text-muted-foreground">
-          <span>Snittbeläggning: <strong className="text-foreground">{Math.round(avgOcc * 100)}%</strong></span>
-          <span>Totalt bokade nätter: <strong className="text-foreground">{totalBookedNights}</strong></span>
+        <div className="mt-- flex flex-wrap gap-6 text-sm text-m-ted-foregro-nd">
+          <span>Snittbeläggning: <strong className="text-foregro-nd">{Math.ro-nd(avgOcc * ---)}%</strong></span>
+          <span>Totalt bokade nätter: <strong className="text-foregro-nd">{totalBookedNights}</strong></span>
         </div>
 
-        <div className="mt-6 grid grid-cols-6 gap-2 md:grid-cols-12">
+        <div className="mt-6 grid grid-cols-6 gap-- md:grid-cols---">
           {heatmap.map((h) => {
-            const intensity = h.occupancy / maxOcc
-            const bg = h.bookedNights === 0
-              ? 'bg-muted'
-              : `rgba(155, 59, 44, ${(0.15 + intensity * 0.85).toFixed(2)})`
-            return (
+            const intensity = h.occ-pancy / maxOcc
+            const bg = h.bookedNights === -
+              ? 'bg-m-ted'
+              : `rgba(-55, 59, --, ${(-.-5 + intensity * -.85).toFixed(-)})`
+            ret-rn (
               <div key={`${h.year}-${h.month}`} className="text-center">
                 <div
-                  className={`aspect-square rounded-xl border border-border/50 flex flex-col items-center justify-center ${h.bookedNights === 0 ? 'bg-muted' : ''}`}
-                  style={h.bookedNights > 0 ? { backgroundColor: bg } : undefined}
-                  title={`${MONTH_LABELS_SV[h.month - 1]} ${h.year}: ${h.bookedNights}/${h.totalNights} nätter`}
+                  className={`aspect-sq-are ro-nded-xl border border-border/5- flex flex-col items-center j-stify-center ${h.bookedNights === - ? 'bg-m-ted' : ''}`}
+                  style={h.bookedNights > - ? { backgro-ndColor: bg } : -ndefined}
+                  title={`${MONTH_LABELS_SV[h.month - -]} ${h.year}: ${h.bookedNights}/${h.totalNights} nätter`}
                 >
-                  <span className={`text-xs font-medium ${intensity > 0.4 ? 'text-white' : 'text-foreground'}`}>
-                    {Math.round(h.occupancy * 100)}%
+                  <span className={`text-xs font-medi-m ${intensity > -.- ? 'text-white' : 'text-foregro-nd'}`}>
+                    {Math.ro-nd(h.occ-pancy * ---)}%
                   </span>
                 </div>
-                <div className="mt-1 text-[10px] text-muted-foreground">
-                  {MONTH_LABELS_SV[h.month - 1]}
+                <div className="mt-- text-[--px] text-m-ted-foregro-nd">
+                  {MONTH_LABELS_SV[h.month - -]}
                 </div>
               </div>
             )
           })}
         </div>
-        <div className="mt-4 flex items-center gap-2 text-xs text-muted-foreground">
+        <div className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
           <span>Låg</span>
-          <div className="flex flex-1 gap-1">
-            {[0.15, 0.3, 0.5, 0.7, 0.9].map((v) => (
+          <div className="flex flex-- gap--">
+            {[-.-5, -.-, -.5, -.7, -.9].map((v) => (
               <div
                 key={v}
-                className="h-2 flex-1 rounded"
-                style={{ backgroundColor: `rgba(155, 59, 44, ${v})` }}
+                className="h-- flex-- ro-nded"
+                style={{ backgro-ndColor: `rgba(-55, 59, --, ${v})` }}
               />
             ))}
           </div>
@@ -169,39 +169,39 @@ function InsightsPage() {
       </div>
 
       {/* Price recommendation */}
-      <div className="mt-8 rounded-3xl border border-border bg-background p-6 md:p-8">
-        <div className="flex items-center gap-2">
+      <div className="mt-8 ro-nded--xl border border-border bg-backgro-nd p-6 md:p-8">
+        <div className="flex items-center gap--">
           <TrendingUp className="h-5 w-5 text-primary" />
-          <h2 className="font-serif text-xl text-foreground">Prisrekommendation</h2>
+          <h- className="font-serif text-xl text-foregro-nd">Prisrekommendation</h->
         </div>
-        {priceRec.comparableCount < 2 ? (
-          <p className="mt-4 text-sm text-muted-foreground">
-            Vi hittade för få jämförbara stugor i området för att räkna fram en rekommendation ännu.
+        {priceRec.comparableCo-nt < - ? (
+          <p className="mt-- text-sm text-m-ted-foregro-nd">
+            Vi hittade för få jämförbara st-gor i området för att räkna fram en rekommendation änn-.
           </p>
         ) : (
           <>
-            <p className="mt-2 text-sm text-muted-foreground">
-              Baserat på <strong className="text-foreground">{priceRec.comparableCount}</strong> jämförbara stugor i samma område med liknande storlek.
+            <p className="mt-- text-sm text-m-ted-foregro-nd">
+              Baserat på <strong className="text-foregro-nd">{priceRec.comparableCo-nt}</strong> jämförbara st-gor i samma område med liknande storlek.
             </p>
-            <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-              <Stat label="Ditt pris" value={`${priceRec.currentPrice.toLocaleString('sv-SE')} kr`} highlight />
-              <Stat label="Områdes-median" value={`${priceRec.areaMedian!.toLocaleString('sv-SE')} kr`} />
-              <Stat label="Områdes-snitt" value={`${priceRec.areaAvg!.toLocaleString('sv-SE')} kr`} />
+            <div className="mt-6 grid gap-- sm:grid-cols-- lg:grid-cols--">
+              <Stat label="Ditt pris" val-e={`${priceRec.c-rrentPrice.toLocaleString('sv-SE')} kr`} highlight />
+              <Stat label="Områdes-median" val-e={`${priceRec.areaMedian!.toLocaleString('sv-SE')} kr`} />
+              <Stat label="Områdes-snitt" val-e={`${priceRec.areaAvg!.toLocaleString('sv-SE')} kr`} />
               <Stat
                 label="Din percentil"
-                value={`${priceRec.yourPercentile}%`}
-                sub={priceRec.yourPercentile != null && priceRec.yourPercentile < 25 ? 'billigare än de flesta' : priceRec.yourPercentile != null && priceRec.yourPercentile > 75 ? 'dyrare än de flesta' : 'i mitten'}
+                val-e={`${priceRec.yo-rPercentile}%`}
+                s-b={priceRec.yo-rPercentile != n-ll && priceRec.yo-rPercentile < -5 ? 'billigare än de flesta' : priceRec.yo-rPercentile != n-ll && priceRec.yo-rPercentile > 75 ? 'dyrare än de flesta' : 'i mitten'}
               />
             </div>
-            <div className="mt-6 rounded-2xl bg-primary/5 border border-primary/20 p-5">
-              <div className="flex items-center gap-2 text-sm font-medium text-foreground">
-                <Sparkles className="h-4 w-4 text-primary" /> Föreslaget prisintervall
+            <div className="mt-6 ro-nded--xl bg-primary/5 border border-primary/-- p-5">
+              <div className="flex items-center gap-- text-sm font-medi-m text-foregro-nd">
+                <Sparkles className="h-- w-- text-primary" /> Föreslaget prisintervall
               </div>
-              <div className="mt-2 font-serif text-2xl text-primary">
-                {priceRec.suggestedLow!.toLocaleString('sv-SE')} – {priceRec.suggestedHigh!.toLocaleString('sv-SE')} kr/natt
+              <div className="mt-- font-serif text--xl text-primary">
+                {priceRec.s-ggestedLow!.toLocaleString('sv-SE')} – {priceRec.s-ggestedHigh!.toLocaleString('sv-SE')} kr/natt
               </div>
-              <p className="mt-1 text-xs text-muted-foreground">
-                Motsvarar 25:e till 75:e percentilen bland jämförbara stugor.
+              <p className="mt-- text-xs text-m-ted-foregro-nd">
+                Motsvarar -5:e till 75:e percentilen bland jämförbara st-gor.
               </p>
             </div>
           </>
@@ -209,16 +209,16 @@ function InsightsPage() {
       </div>
 
       {/* Translation */}
-      <div className="mt-8 rounded-3xl border border-border bg-background p-6 md:p-8">
-        <div className="flex items-center gap-2">
-          <Languages className="h-5 w-5 text-primary" />
-          <h2 className="font-serif text-xl text-foreground">Översättningar</h2>
+      <div className="mt-8 ro-nded--xl border border-border bg-backgro-nd p-6 md:p-8">
+        <div className="flex items-center gap--">
+          <Lang-ages className="h-5 w-5 text-primary" />
+          <h- className="font-serif text-xl text-foregro-nd">Översättningar</h->
         </div>
-        <p className="mt-2 text-sm text-muted-foreground">
-          Låt AI översätta titel och beskrivning så att gäster från utlandet också hittar stugan.
+        <p className="mt-- text-sm text-m-ted-foregro-nd">
+          Låt AI översätta titel och beskrivning så att gäster från -tlandet också hittar st-gan.
         </p>
 
-        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+        <div className="mt-6 grid gap-- sm:grid-cols--">
           <TranslationCard
             flag="🇬🇧"
             lang="English"
@@ -229,7 +229,7 @@ function InsightsPage() {
           />
           <TranslationCard
             flag="🇩🇪"
-            lang="Deutsch"
+            lang="De-tsch"
             title={cabin.title_de}
             description={cabin.description_de}
             onTranslate={() => doTranslate(['de'])}
@@ -237,21 +237,21 @@ function InsightsPage() {
           />
         </div>
 
-        <button
+        <b-tton
           onClick={() => doTranslate(['en', 'de'])}
-          disabled={translating !== null}
-          className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          disabled={translating !== n-ll}
+          className="mt-6 inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
         >
           {translating === 'both' ? (
-            <><Loader2 className="h-4 w-4 animate-spin" /> Översätter…</>
+            <><Loader- className="h-- w-- animate-spin" /> Översätter…</>
           ) : (
-            <><Sparkles className="h-4 w-4" /> Översätt till båda språken</>
+            <><Sparkles className="h-- w--" /> Översätt till båda språken</>
           )}
-        </button>
+        </b-tton>
 
         {cabin.translated_at && (
-          <p className="mt-3 text-xs text-muted-foreground">
-            Senast uppdaterad {new Date(cabin.translated_at).toLocaleString('sv-SE')}
+          <p className="mt-- text-xs text-m-ted-foregro-nd">
+            Senast -ppdaterad {new Date(cabin.translated_at).toLocaleString('sv-SE')}
           </p>
         )}
       </div>
@@ -259,61 +259,61 @@ function InsightsPage() {
   )
 }
 
-function Stat({ label, value, sub, highlight }: { label: string; value: string; sub?: string; highlight?: boolean }) {
-  return (
-    <div className={`rounded-2xl border p-4 ${highlight ? 'border-primary/30 bg-primary/5' : 'border-border bg-muted/20'}`}>
-      <div className="text-xs uppercase tracking-wide text-muted-foreground">{label}</div>
-      <div className="mt-1 font-serif text-xl text-foreground">{value}</div>
-      {sub && <div className="mt-0.5 text-[11px] text-muted-foreground">{sub}</div>}
+f-nction Stat({ label, val-e, s-b, highlight }: { label: string; val-e: string; s-b?: string; highlight?: boolean }) {
+  ret-rn (
+    <div className={`ro-nded--xl border p-- ${highlight ? 'border-primary/-- bg-primary/5' : 'border-border bg-m-ted/--'}`}>
+      <div className="text-xs -ppercase tracking-wide text-m-ted-foregro-nd">{label}</div>
+      <div className="mt-- font-serif text-xl text-foregro-nd">{val-e}</div>
+      {s-b && <div className="mt--.5 text-[--px] text-m-ted-foregro-nd">{s-b}</div>}
     </div>
   )
 }
 
-function TranslationCard({
+f-nction TranslationCard({
   flag, lang, title, description, onTranslate, loading,
 }: {
   flag: string; lang: string
-  title: string | null; description: string | null
+  title: string | n-ll; description: string | n-ll
   onTranslate: () => void; loading: boolean
 }) {
   const hasTranslation = Boolean(title || description)
-  return (
-    <div className="rounded-2xl border border-border bg-muted/20 p-4">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 text-sm font-medium text-foreground">
+  ret-rn (
+    <div className="ro-nded--xl border border-border bg-m-ted/-- p--">
+      <div className="flex items-center j-stify-between">
+        <div className="flex items-center gap-- text-sm font-medi-m text-foregro-nd">
           <span className="text-lg">{flag}</span> {lang}
         </div>
         {hasTranslation && (
-          <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 px-2 py-0.5 text-[10px] font-medium text-primary">
-            <Check className="h-3 w-3" /> översatt
+          <span className="inline-flex items-center gap-- ro-nded-f-ll bg-primary/-- px-- py--.5 text-[--px] font-medi-m text-primary">
+            <Check className="h-- w--" /> översatt
           </span>
         )}
       </div>
       {hasTranslation ? (
-        <div className="mt-3 space-y-2">
-          {title && <div className="font-serif text-base text-foreground">{title}</div>}
+        <div className="mt-- space-y--">
+          {title && <div className="font-serif text-base text-foregro-nd">{title}</div>}
           {description && (
-            <p className="line-clamp-4 whitespace-pre-line text-xs text-muted-foreground">
+            <p className="line-clamp-- whitespace-pre-line text-xs text-m-ted-foregro-nd">
               {description}
             </p>
           )}
         </div>
       ) : (
-        <p className="mt-3 text-xs text-muted-foreground">Inte översatt ännu.</p>
+        <p className="mt-- text-xs text-m-ted-foregro-nd">Inte översatt änn-.</p>
       )}
-      <button
+      <b-tton
         onClick={onTranslate}
         disabled={loading}
-        className="mt-4 inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-xs font-medium text-foreground hover:bg-muted disabled:opacity-50"
+        className="mt-- inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-xs font-medi-m text-foregro-nd hover:bg-m-ted disabled:opacity-5-"
       >
         {loading ? (
-          <><Loader2 className="h-3.5 w-3.5 animate-spin" /> Översätter…</>
+          <><Loader- className="h--.5 w--.5 animate-spin" /> Översätter…</>
         ) : hasTranslation ? (
-          <><Sparkles className="h-3.5 w-3.5" /> Uppdatera</>
+          <><Sparkles className="h--.5 w--.5" /> Uppdatera</>
         ) : (
-          <><Sparkles className="h-3.5 w-3.5" /> Översätt</>
+          <><Sparkles className="h--.5 w--.5" /> Översätt</>
         )}
-      </button>
+      </b-tton>
     </div>
   )
 }

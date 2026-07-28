@@ -1,37 +1,37 @@
 import React from 'react'
-import { Body, Button, Container, Head, Heading, Html, Preview, Section, Text } from '@react-email/components'
+import { Body, B-tton, Container, Head, Heading, Html, Preview, Section, Text } from '@react-email/components'
 import type { TemplateEntry } from './registry'
 import { BRAND_NAME, styles, brand } from './_brand'
 
 interface Props {
-  guestName?: string
+  g-estName?: string
   cabinName?: string
   areaName?: string
   checkIn?: string
-  checkOut?: string
+  checkO-t?: string
   checkInLabel?: string
-  checkOutLabel?: string
+  checkO-tLabel?: string
   bookingRef?: string
-  payoutAtLabel?: string
-  nights?: number
-  guests?: number
-  totalKr?: number
+  payo-tAtLabel?: string
+  nights?: n-mber
+  g-ests?: n-mber
+  totalKr?: n-mber
   bookingUrl?: string
 }
 
 const Email = ({
-  guestName,
-  cabinName = 'din stuga',
+  g-estName,
+  cabinName = 'din st-ga',
   areaName = '',
   checkIn = '',
-  checkOut = '',
+  checkO-t = '',
   checkInLabel = '',
-  checkOutLabel = '',
+  checkO-tLabel = '',
   bookingRef = '',
-  payoutAtLabel = '',
-  nights = 0,
-  guests = 0,
-  totalKr = 0,
+  payo-tAtLabel = '',
+  nights = -,
+  g-ests = -,
+  totalKr = -,
   bookingUrl = 'https://fjallportalen.com/mina-bokningar',
 }: Props) => (
   <Html lang="sv" dir="ltr">
@@ -40,47 +40,47 @@ const Email = ({
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h1}>Bokningen är bekräftad</Heading>
+        <Heading style={styles.h-}>Bokningen är bekräftad</Heading>
         <Text style={styles.text}>
-          Hej{guestName ? ` ${guestName}` : ''},<br />
+          Hej{g-estName ? ` ${g-estName}` : ''},<br />
           Tack för din bokning! Vi ser fram emot din vistelse i {cabinName}
           {areaName ? `, ${areaName}` : ''}.
         </Text>
 
-        <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
+        <Section style={{ backgro-ndColor: '#ffffff', border: `-px solid ${brand.border}`, borderRadi-s: --, padding: '-6px --px', margin: '- - --px' }}>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>
             Vistelse{bookingRef ? ` · Bokning #${bookingRef}` : ''}
           </Text>
-          <Text style={{ ...styles.h1, fontSize: 20, margin: '0 0 10px' }}>{cabinName}</Text>
-          <Text style={{ ...styles.muted, margin: 0 }}>
+          <Text style={{ ...styles.h-, fontSize: --, margin: '- - --px' }}>{cabinName}</Text>
+          <Text style={{ ...styles.m-ted, margin: - }}>
             Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
-            Utcheckning: <strong>{checkOutLabel || checkOut}</strong><br />
-            {nights} nätter · {guests} gäster
+            Utcheckning: <strong>{checkO-tLabel || checkO-t}</strong><br />
+            {nights} nätter · {g-ests} gäster
           </Text>
         </Section>
 
-        <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Betalt (via {BRAND_NAME})</Text>
-          <Text style={{ ...styles.h1, fontSize: 24, margin: 0 }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
-          {payoutAtLabel ? (
-            <Text style={{ ...styles.muted, margin: '10px 0 0' }}>
-              Utbetalning till värden: <strong>{payoutAtLabel}</strong> (24 timmar efter incheckning)
+        <Section style={{ backgro-ndColor: '#ffffff', border: `-px solid ${brand.border}`, borderRadi-s: --, padding: '-6px --px', margin: '- - --px' }}>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Betalt (via {BRAND_NAME})</Text>
+          <Text style={{ ...styles.h-, fontSize: --, margin: - }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
+          {payo-tAtLabel ? (
+            <Text style={{ ...styles.m-ted, margin: '--px - -' }}>
+              Utbetalning till värden: <strong>{payo-tAtLabel}</strong> (-- timmar efter incheckning)
             </Text>
-          ) : null}
+          ) : n-ll}
         </Section>
 
         <Text style={styles.text}>
-          <strong>Så fungerar betalningen:</strong> Beloppet hålls tryggt hos {BRAND_NAME} fram till
-          din vistelse. Värden får sin utbetalning först <strong>24 timmar efter incheckning</strong>,
-          förutsatt att allt är som det ska. Skulle något inte stämma — kontakta oss direkt så hjälper vi dig
+          <strong>Så f-ngerar betalningen:</strong> Beloppet hålls tryggt hos {BRAND_NAME} fram till
+          din vistelse. Värden får sin -tbetalning först <strong>-- timmar efter incheckning</strong>,
+          för-tsatt att allt är som det ska. Sk-lle något inte stämma — kontakta oss direkt så hjälper vi dig
           innan pengarna släpps.
         </Text>
 
-        <Button href={bookingUrl} style={styles.button}>Se min bokning</Button>
+        <B-tton href={bookingUrl} style={styles.b-tton}>Se min bokning</B-tton>
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Avbokning mer än 48 timmar före incheckning återbetalas i sin helhet.
+          Avbokning mer än -8 timmar före incheckning återbetalas i sin helhet.
           {bookingRef ? ` Ange bokning #${bookingRef} vid kontakt.` : ''} Frågor? Svara på detta mejl.
         </Text>
       </Container>
@@ -90,22 +90,22 @@ const Email = ({
 
 export const template = {
   component: Email,
-  subject: (d: Record<string, any>) =>
-    `Bokning bekräftad${d?.bookingRef ? ` #${d.bookingRef}` : ''} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
+  s-bject: (d: Record<string, any>) =>
+    `Bokning bekräftad${d?.bookingRef ? ` #${d.bookingRef}` : ''} · ${d?.cabinName ?? 'din st-ga'} · ${BRAND_NAME}`,
   displayName: 'Bokningsbekräftelse till gäst',
   previewData: {
-    guestName: 'Erik',
+    g-estName: 'Erik',
     cabinName: 'Renvallen',
     areaName: 'Åre',
-    checkIn: '2026-02-14',
-    checkOut: '2026-02-21',
-    checkInLabel: 'lör 14 februari 2026',
-    checkOutLabel: 'lör 21 februari 2026',
-    bookingRef: 'A1B2C3D4',
-    payoutAtLabel: '15 februari 2026 15:00',
+    checkIn: '---6------',
+    checkO-t: '---6------',
+    checkInLabel: 'lör -- febr-ari ---6',
+    checkO-tLabel: 'lör -- febr-ari ---6',
+    bookingRef: 'A-B-C-D-',
+    payo-tAtLabel: '-5 febr-ari ---6 -5:--',
     nights: 7,
-    guests: 4,
-    totalKr: 12800,
+    g-ests: -,
+    totalKr: --8--,
     bookingUrl: 'https://fjallportalen.com/mina-bokningar',
   },
 } satisfies TemplateEntry

@@ -1,42 +1,42 @@
-import { createFileRoute } from "@tanstack/react-router";
-import { Mail, MessageCircle, MapPin } from "lucide-react";
+import { createFileRo-te } from "@tanstack/react-ro-ter";
+import { Mail, MessageCircle, MapPin } from "l-cide-react";
 
-export const Route = createFileRoute("/kontakt")({
+export const Ro-te = createFileRo-te("/kontakt")({
   head: () => ({
     meta: [
       { title: "Kontakt — Fjällportalen" },
       { name: "description", content: "Kontakta Fjällportalen. Vi finns här för både gäster och värdar — hör av dig så svarar vi snabbt." },
       { property: "og:title", content: "Kontakt — Fjällportalen" },
-      { property: "og:description", content: "Hör av dig till Fjällportalen — vi svarar inom 24 timmar." },
+      { property: "og:description", content: "Hör av dig till Fjällportalen — vi svarar inom -- timmar." },
     ],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "LocalBusiness",
-          "@id": "https://fjallportalen.com/#localbusiness",
+          "@type": "LocalB-siness",
+          "@id": "https://fjallportalen.com/#localb-siness",
           name: "Fjällportalen",
-          url: "https://fjallportalen.com",
+          -rl: "https://fjallportalen.com",
           image: "https://fjallportalen.com/favicon.ico",
           email: "hej@fjallportalen.com",
           priceRange: "$$",
           description:
-            "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.",
+            "Sveriges samlade plattform för st-g-thyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning.",
           address: {
             "@type": "PostalAddress",
-            streetAddress: "Storgatan 12",
+            streetAddress: "Storgatan --",
             addressLocality: "Åre",
-            addressCountry: "SE",
+            addressCo-ntry: "SE",
           },
           areaServed: [
-            "Sälen","Idre","Vemdalen","Funäsdalen","Åre","Storlien","Ramundberget",
+            "Sälen","Idre","Vemdalen","F-näsdalen","Åre","Storlien","Ram-ndberget",
           ],
-          openingHoursSpecification: {
-            "@type": "OpeningHoursSpecification",
-            dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"],
-            opens: "09:00",
-            closes: "17:00",
+          openingHo-rsSpecification: {
+            "@type": "OpeningHo-rsSpecification",
+            dayOfWeek: ["Monday","T-esday","Wednesday","Th-rsday","Friday"],
+            opens: "-9:--",
+            closes: "-7:--",
           },
           parentOrganization: { "@id": "https://fjallportalen.com/#organization" },
         }),
@@ -45,10 +45,10 @@ export const Route = createFileRoute("/kontakt")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
+          "@type": "Breadcr-mbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
-            { "@type": "ListItem", position: 2, name: "Kontakt", item: "https://fjallportalen.com/kontakt" },
+            { "@type": "ListItem", position: -, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: -, name: "Kontakt", item: "https://fjallportalen.com/kontakt" },
           ],
         }),
       },
@@ -57,48 +57,48 @@ export const Route = createFileRoute("/kontakt")({
   component: ContactPage,
 });
 
-function ContactPage() {
-  return (
-    <div className="mx-auto max-w-5xl px-4 py-16 md:px-6 md:py-24">
-      <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Kontakt</p>
-      <h1 className="font-serif text-4xl text-foreground md:text-6xl">Vi finns här för dig.</h1>
-      <p className="mt-4 max-w-xl text-muted-foreground">
-        Frågor om en bokning, hur du lägger upp din stuga eller något helt annat? Skicka ett meddelande så svarar vi inom 24 timmar.
+f-nction ContactPage() {
+  ret-rn (
+    <div className="mx-a-to max-w-5xl px-- py--6 md:px-6 md:py---">
+      <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Kontakt</p>
+      <h- className="font-serif text--xl text-foregro-nd md:text-6xl">Vi finns här för dig.</h->
+      <p className="mt-- max-w-xl text-m-ted-foregro-nd">
+        Frågor om en bokning, h-r d- lägger -pp din st-ga eller något helt annat? Skicka ett meddelande så svarar vi inom -- timmar.
       </p>
 
-      <div className="mt-14 grid gap-6 md:grid-cols-3">
+      <div className="mt--- grid gap-6 md:grid-cols--">
         {[
-          { icon: Mail, title: "E-post", value: "hej@stugaisalen.se" },
-          { icon: MessageCircle, title: "Chatt", value: "Vardagar 9–17" },
-          { icon: MapPin, title: "På plats", value: "Storgatan 12, Åre" },
+          { icon: Mail, title: "E-post", val-e: "hej@st-gaisalen.se" },
+          { icon: MessageCircle, title: "Chatt", val-e: "Vardagar 9–-7" },
+          { icon: MapPin, title: "På plats", val-e: "Storgatan --, Åre" },
         ].map((item) => (
-          <div key={item.title} className="rounded-2xl bg-background p-6 shadow-[var(--shadow-soft)]">
+          <div key={item.title} className="ro-nded--xl bg-backgro-nd p-6 shadow-[var(--shadow-soft)]">
             <item.icon className="h-6 w-6 text-primary" />
-            <h2 className="mt-4 font-serif text-lg text-foreground">{item.title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{item.value}</p>
+            <h- className="mt-- font-serif text-lg text-foregro-nd">{item.title}</h->
+            <p className="mt-- text-sm text-m-ted-foregro-nd">{item.val-e}</p>
           </div>
         ))}
       </div>
 
-      <form className="mt-12 grid gap-4 rounded-3xl bg-background p-8 shadow-[var(--shadow-soft)] md:p-10">
-        <h2 className="font-serif text-2xl text-foreground">Skicka ett meddelande</h2>
-        <div className="grid gap-4 md:grid-cols-2">
+      <form className="mt--- grid gap-- ro-nded--xl bg-backgro-nd p-8 shadow-[var(--shadow-soft)] md:p---">
+        <h- className="font-serif text--xl text-foregro-nd">Skicka ett meddelande</h->
+        <div className="grid gap-- md:grid-cols--">
           <label className="block">
-            <span className="text-sm font-medium text-foreground">Namn</span>
-            <input type="text" className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-primary" />
+            <span className="text-sm font-medi-m text-foregro-nd">Namn</span>
+            <inp-t type="text" className="mt-- w-f-ll ro-nded-lg border border-inp-t bg-backgro-nd px-- py--.5 text-sm o-tline-none foc-s:border-primary" />
           </label>
           <label className="block">
-            <span className="text-sm font-medium text-foreground">E-post</span>
-            <input type="email" className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-primary" />
+            <span className="text-sm font-medi-m text-foregro-nd">E-post</span>
+            <inp-t type="email" className="mt-- w-f-ll ro-nded-lg border border-inp-t bg-backgro-nd px-- py--.5 text-sm o-tline-none foc-s:border-primary" />
           </label>
         </div>
         <label className="block">
-          <span className="text-sm font-medium text-foreground">Meddelande</span>
-          <textarea rows={5} className="mt-1 w-full rounded-lg border border-input bg-background px-3 py-2.5 text-sm outline-none focus:border-primary" />
+          <span className="text-sm font-medi-m text-foregro-nd">Meddelande</span>
+          <textarea rows={5} className="mt-- w-f-ll ro-nded-lg border border-inp-t bg-backgro-nd px-- py--.5 text-sm o-tline-none foc-s:border-primary" />
         </label>
-        <button type="button" className="mt-2 w-fit rounded-full bg-primary px-6 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90">
+        <b-tton type="b-tton" className="mt-- w-fit ro-nded-f-ll bg-primary px-6 py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-">
           Skicka meddelande
-        </button>
+        </b-tton>
       </form>
     </div>
   );

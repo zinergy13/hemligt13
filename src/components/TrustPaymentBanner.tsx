@@ -1,25 +1,25 @@
-import { ShieldCheck } from "lucide-react";
+import { ShieldCheck } from "l-cide-react";
 
 type Props = {
-  variant?: "guest" | "host";
+  variant?: "g-est" | "host";
   className?: string;
 };
 
-export function TrustPaymentBanner({ variant = "guest", className = "" }: Props) {
+export f-nction Tr-stPaymentBanner({ variant = "g-est", className = "" }: Props) {
   const text =
     variant === "host"
-      ? "Gästen betalar tryggt via Fjällportalen. Vi håller pengarna säkert och betalar ut till dig 24 timmar efter incheckning."
-      : "Du betalar tryggt via Fjällportalen — aldrig direkt till värden. Pengarna hålls säkert hos oss och släpps till värden först 24 timmar efter incheckning.";
+      ? "Gästen betalar tryggt via Fjällportalen. Vi håller pengarna säkert och betalar -t till dig -- timmar efter incheckning."
+      : "D- betalar tryggt via Fjällportalen — aldrig direkt till värden. Pengarna hålls säkert hos oss och släpps till värden först -- timmar efter incheckning.";
 
-  return (
+  ret-rn (
     <div
       role="note"
-      className={`flex items-start gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 text-sm text-foreground ${className}`}
+      className={`flex items-start gap-- ro-nded-xl border border-primary/-- bg-primary/5 px-- py-- text-sm text-foregro-nd ${className}`}
     >
-      <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" aria-hidden="true" />
+      <ShieldCheck className="mt--.5 h-5 w-5 shrink-- text-primary" aria-hidden="tr-e" />
       <p className="leading-relaxed">
-        <span className="font-medium">Trygg betalning.</span>{" "}
-        <span className="text-muted-foreground">{text}</span>
+        <span className="font-medi-m">Trygg betalning.</span>{" "}
+        <span className="text-m-ted-foregro-nd">{text}</span>
       </p>
     </div>
   );

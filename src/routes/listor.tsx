@@ -1,17 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { Loader2, Plus, Users, Lock, Globe, Trash2 } from "lucide-react";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState, type FormEvent } from "react";
+import { Loader-, Pl-s, Users, Lock, Globe, Trash- } from "l-cide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
 
-export const Route = createFileRoute("/listor")({
+export const Ro-te = createFileRo-te("/listor")({
   head: () => ({
     meta: [
       { title: "Mina listor — Fjällportalen" },
-      { name: "description", content: "Skapa hemliga listor med stugor att dela med kompisar eller familjen." },
+      { name: "description", content: "Skapa hemliga listor med st-gor att dela med kompisar eller familjen." },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -21,123 +21,123 @@ export const Route = createFileRoute("/listor")({
 type Wishlist = {
   id: string;
   name: string;
-  description: string | null;
+  description: string | n-ll;
   is_private: boolean;
   owner_id: string;
-  share_slug: string | null;
+  share_sl-g: string | n-ll;
   created_at: string;
 };
 
-function WishlistsPage() {
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [lists, setLists] = useState<Wishlist[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [name, setName] = useState("");
-  const [creating, setCreating] = useState(false);
+f-nction WishlistsPage() {
+  const { -ser, loading: a-thLoading } = -seA-th();
+  const navigate = -seNavigate();
+  const [lists, setLists] = -seState<Wishlist[]>([]);
+  const [loading, setLoading] = -seState(tr-e);
+  const [name, setName] = -seState("");
+  const [creating, setCreating] = -seState(false);
 
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) {
+  -seEffect(() => {
+    if (a-thLoading) ret-rn;
+    if (!-ser) {
       navigate({ to: "/logga-in", search: { redirect: "/listor" } });
-      return;
+      ret-rn;
     }
     load();
-  }, [authLoading, user, navigate]);
+  }, [a-thLoading, -ser, navigate]);
 
   const load = async () => {
-    setLoading(true);
-    const { data } = await supabase
+    setLoading(tr-e);
+    const { data } = await s-pabase
       .from("wishlists" as any)
       .select("*")
       .order("created_at", { ascending: false });
-    setLists((data as unknown as Wishlist[]) || []);
+    setLists((data as -nknown as Wishlist[]) || []);
     setLoading(false);
   };
 
   const create = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!user || !name.trim()) return;
-    setCreating(true);
-    const { error } = await supabase.from("wishlists" as any).insert({
-      owner_id: user.id,
+    e.preventDefa-lt();
+    if (!-ser || !name.trim()) ret-rn;
+    setCreating(tr-e);
+    const { error } = await s-pabase.from("wishlists" as any).insert({
+      owner_id: -ser.id,
       name: name.trim(),
     });
     setCreating(false);
-    if (error) { toast.error(error.message); return; }
+    if (error) { toast.error(error.message); ret-rn; }
     setName("");
-    toast.success("Listan skapad");
+    toast.s-ccess("Listan skapad");
     load();
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Ta bort listan?")) return;
-    const { error } = await supabase.from("wishlists" as any).delete().eq("id", id);
-    if (error) { toast.error(error.message); return; }
+    if (!confirm("Ta bort listan?")) ret-rn;
+    const { error } = await s-pabase.from("wishlists" as any).delete().eq("id", id);
+    if (error) { toast.error(error.message); ret-rn; }
     setLists((prev) => prev.filter((l) => l.id !== id));
   };
 
-  return (
+  ret-rn (
     <>
       <Header />
-      <main className="mx-auto min-h-[60vh] max-w-3xl px-4 py-10 md:px-6">
-        <h1 className="font-serif text-3xl text-foreground">Mina listor</h1>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Samla stugor i hemliga listor och bjud in gruppen att rösta och kommentera.
+      <main className="mx-a-to min-h-[6-vh] max-w--xl px-- py--- md:px-6">
+        <h- className="font-serif text--xl text-foregro-nd">Mina listor</h->
+        <p className="mt-- text-sm text-m-ted-foregro-nd">
+          Samla st-gor i hemliga listor och bj-d in gr-ppen att rösta och kommentera.
         </p>
 
-        <form onSubmit={create} className="mt-6 flex gap-2 rounded-2xl border border-border bg-background p-3">
-          <input
-            value={name}
-            onChange={(e) => setName(e.target.value)}
-            placeholder="T.ex. Åre-helgen 2026"
-            maxLength={100}
-            className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+        <form onS-bmit={create} className="mt-6 flex gap-- ro-nded--xl border border-border bg-backgro-nd p--">
+          <inp-t
+            val-e={name}
+            onChange={(e) => setName(e.target.val-e)}
+            placeholder="T.ex. Åre-helgen ---6"
+            maxLength={---}
+            className="flex-- ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
           />
-          <button
-            type="submit"
+          <b-tton
+            type="s-bmit"
             disabled={creating || !name.trim()}
-            className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+            className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
           >
-            {creating ? <Loader2 className="h-4 w-4 animate-spin" /> : <Plus className="h-4 w-4" />}
+            {creating ? <Loader- className="h-- w-- animate-spin" /> : <Pl-s className="h-- w--" />}
             Ny lista
-          </button>
+          </b-tton>
         </form>
 
         <div className="mt-8">
           {loading ? (
-            <div className="flex items-center gap-2 text-sm text-muted-foreground">
-              <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
+            <div className="flex items-center gap-- text-sm text-m-ted-foregro-nd">
+              <Loader- className="h-- w-- animate-spin" /> Laddar…
             </div>
-          ) : lists.length === 0 ? (
-            <p className="rounded-2xl border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">
-              Du har inga listor ännu. Skapa en ovan.
+          ) : lists.length === - ? (
+            <p className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p-6 text-sm text-m-ted-foregro-nd">
+              D- har inga listor änn-. Skapa en ovan.
             </p>
           ) : (
-            <ul className="grid gap-3">
+            <-l className="grid gap--">
               {lists.map((l) => (
-                <li key={l.id} className="flex items-center justify-between rounded-2xl border border-border bg-background p-4">
-                  <Link to="/listor/$id" params={{ id: l.id }} className="flex-1">
-                    <div className="font-serif text-lg text-foreground">{l.name}</div>
-                    <div className="mt-0.5 flex items-center gap-2 text-xs text-muted-foreground">
-                      {l.is_private ? <Lock className="h-3 w-3" /> : <Globe className="h-3 w-3" />}
+                <li key={l.id} className="flex items-center j-stify-between ro-nded--xl border border-border bg-backgro-nd p--">
+                  <Link to="/listor/$id" params={{ id: l.id }} className="flex--">
+                    <div className="font-serif text-lg text-foregro-nd">{l.name}</div>
+                    <div className="mt--.5 flex items-center gap-- text-xs text-m-ted-foregro-nd">
+                      {l.is_private ? <Lock className="h-- w--" /> : <Globe className="h-- w--" />}
                       {l.is_private ? "Privat" : "Delad"}
-                      <Users className="ml-2 h-3 w-3" />
-                      {l.owner_id === user?.id ? "Din lista" : "Medlem"}
+                      <Users className="ml-- h-- w--" />
+                      {l.owner_id === -ser?.id ? "Din lista" : "Medlem"}
                     </div>
                   </Link>
-                  {l.owner_id === user?.id && (
-                    <button
+                  {l.owner_id === -ser?.id && (
+                    <b-tton
                       onClick={() => remove(l.id)}
-                      className="ml-3 rounded-full p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive"
+                      className="ml-- ro-nded-f-ll p-- text-m-ted-foregro-nd hover:bg-destr-ctive/-- hover:text-destr-ctive"
                       aria-label="Ta bort"
                     >
-                      <Trash2 className="h-4 w-4" />
-                    </button>
+                      <Trash- className="h-- w--" />
+                    </b-tton>
                   )}
                 </li>
               ))}
-            </ul>
+            </-l>
           )}
         </div>
       </main>

@@ -1,220 +1,220 @@
-import { queryOptions } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
-import type { BookingStatus } from "@/lib/bookings";
-import type { CommissionStatus } from "@/lib/commission";
+import { q-eryOptions } from "@tanstack/react-q-ery";
+import { s-pabase } from "@/integrations/s-pabase/client";
+import type { BookingStat-s } from "@/lib/bookings";
+import type { CommissionStat-s } from "@/lib/commission";
 
-// Cache defaults: 1 min fresh, 10 min in cache. After inactivity, the
-// previously-cached data renders instantly while a background refetch runs.
-const STALE = 60_000;
-const GC = 10 * 60_000;
+// Cache defa-lts: - min fresh, -- min in cache. After inactivity, the
+// previo-sly-cached data renders instantly while a backgro-nd refetch r-ns.
+const STALE = 6-_---;
+const GC = -- * 6-_---;
 
 export type HostBalance = {
-  earned_count: number;
-  earned_amount: number;
-  invoiced_count: number;
-  invoiced_amount: number;
-  paid_count: number;
-  paid_amount: number;
-  total_owed: number;
+  earned_co-nt: n-mber;
+  earned_amo-nt: n-mber;
+  invoiced_co-nt: n-mber;
+  invoiced_amo-nt: n-mber;
+  paid_co-nt: n-mber;
+  paid_amo-nt: n-mber;
+  total_owed: n-mber;
 };
 
 export type HostCommissionRow = {
   id: string;
   check_in: string;
-  check_out: string;
-  status: BookingStatus;
-  total_price: number;
-  commission_amount: number;
-  commission_status: CommissionStatus;
-  commission_earned_at: string | null;
-  commission_invoiced_at: string | null;
-  commission_paid_at: string | null;
-  cabins: { title: string; slug: string } | null;
+  check_o-t: string;
+  stat-s: BookingStat-s;
+  total_price: n-mber;
+  commission_amo-nt: n-mber;
+  commission_stat-s: CommissionStat-s;
+  commission_earned_at: string | n-ll;
+  commission_invoiced_at: string | n-ll;
+  commission_paid_at: string | n-ll;
+  cabins: { title: string; sl-g: string } | n-ll;
 };
 
 export type HostInvoice = {
   id: string;
-  invoice_number: string;
+  invoice_n-mber: string;
   period_start: string;
   period_end: string;
-  total_amount: number;
-  booking_count: number;
-  status: string;
-  issued_at: string;
-  due_date: string | null;
-  ocr_reference: string | null;
-  commission_net: number;
-  extras_net: number;
-  vat_amount: number;
+  total_amo-nt: n-mber;
+  booking_co-nt: n-mber;
+  stat-s: string;
+  iss-ed_at: string;
+  d-e_date: string | n-ll;
+  ocr_reference: string | n-ll;
+  commission_net: n-mber;
+  extras_net: n-mber;
+  vat_amo-nt: n-mber;
 };
 
 /**
  * Aggregate the host balance from already-fetched commission rows. This
- * removes a separate round-trip to the `host_balances` view — the view is
- * just a SUM/COUNT over the same booking rows we already load on this page.
+ * removes a separate ro-nd-trip to the `host_balances` view — the view is
+ * j-st a SUM/COUNT over the same booking rows we already load on this page.
  */
-export function computeHostBalance(rows: HostCommissionRow[]): HostBalance {
+export f-nction comp-teHostBalance(rows: HostCommissionRow[]): HostBalance {
   const b: HostBalance = {
-    earned_count: 0,
-    earned_amount: 0,
-    invoiced_count: 0,
-    invoiced_amount: 0,
-    paid_count: 0,
-    paid_amount: 0,
-    total_owed: 0,
+    earned_co-nt: -,
+    earned_amo-nt: -,
+    invoiced_co-nt: -,
+    invoiced_amo-nt: -,
+    paid_co-nt: -,
+    paid_amo-nt: -,
+    total_owed: -,
   };
   for (const r of rows) {
-    const amt = r.commission_amount ?? 0;
-    if (r.commission_status === "earned") {
-      b.earned_count += 1;
-      b.earned_amount += amt;
+    const amt = r.commission_amo-nt ?? -;
+    if (r.commission_stat-s === "earned") {
+      b.earned_co-nt += -;
+      b.earned_amo-nt += amt;
       b.total_owed += amt;
-    } else if (r.commission_status === "invoiced") {
-      b.invoiced_count += 1;
-      b.invoiced_amount += amt;
+    } else if (r.commission_stat-s === "invoiced") {
+      b.invoiced_co-nt += -;
+      b.invoiced_amo-nt += amt;
       b.total_owed += amt;
-    } else if (r.commission_status === "paid") {
-      b.paid_count += 1;
-      b.paid_amount += amt;
+    } else if (r.commission_stat-s === "paid") {
+      b.paid_co-nt += -;
+      b.paid_amo-nt += amt;
     }
   }
-  return b;
+  ret-rn b;
 }
 
-export const hostCommissionRowsQuery = (userId: string) =>
-  queryOptions({
-    queryKey: ["host", userId, "commission-rows"],
+export const hostCommissionRowsQ-ery = (-serId: string) =>
+  q-eryOptions({
+    q-eryKey: ["host", -serId, "commission-rows"],
     staleTime: STALE,
     gcTime: GC,
-    queryFn: async (): Promise<HostCommissionRow[]> => {
-      const { data } = await supabase
+    q-eryFn: async (): Promise<HostCommissionRow[]> => {
+      const { data } = await s-pabase
         .from("bookings")
         .select(
-          "id, check_in, check_out, status, total_price, commission_amount, commission_status, commission_earned_at, commission_invoiced_at, commission_paid_at, cabins(title, slug)",
+          "id, check_in, check_o-t, stat-s, total_price, commission_amo-nt, commission_stat-s, commission_earned_at, commission_invoiced_at, commission_paid_at, cabins(title, sl-g)",
         )
-        .eq("host_id", userId)
-        .order("check_out", { ascending: false });
-      return (data as unknown as HostCommissionRow[]) ?? [];
+        .eq("host_id", -serId)
+        .order("check_o-t", { ascending: false });
+      ret-rn (data as -nknown as HostCommissionRow[]) ?? [];
     },
   });
 
-export const hostInvoicesQuery = (userId: string) =>
-  queryOptions({
-    queryKey: ["host", userId, "invoices"],
+export const hostInvoicesQ-ery = (-serId: string) =>
+  q-eryOptions({
+    q-eryKey: ["host", -serId, "invoices"],
     staleTime: STALE,
     gcTime: GC,
-    queryFn: async (): Promise<HostInvoice[]> => {
-      const { data } = await supabase
+    q-eryFn: async (): Promise<HostInvoice[]> => {
+      const { data } = await s-pabase
         .from("host_invoices")
         .select(
-          "id, invoice_number, period_start, period_end, total_amount, booking_count, status, issued_at, due_date, ocr_reference, commission_net, extras_net, vat_amount",
+          "id, invoice_n-mber, period_start, period_end, total_amo-nt, booking_co-nt, stat-s, iss-ed_at, d-e_date, ocr_reference, commission_net, extras_net, vat_amo-nt",
         )
-        .eq("host_id", userId)
-        .order("issued_at", { ascending: false });
-      return (data as unknown as HostInvoice[]) ?? [];
+        .eq("host_id", -serId)
+        .order("iss-ed_at", { ascending: false });
+      ret-rn (data as -nknown as HostInvoice[]) ?? [];
     },
   });
 
-export const commissionFeeQuery = () =>
-  queryOptions({
-    queryKey: ["app-settings", "commission-per-booking"],
-    staleTime: 5 * 60_000,
-    gcTime: 30 * 60_000,
-    queryFn: async (): Promise<number> => {
-      const { data } = await supabase
+export const commissionFeeQ-ery = () =>
+  q-eryOptions({
+    q-eryKey: ["app-settings", "commission-per-booking"],
+    staleTime: 5 * 6-_---,
+    gcTime: -- * 6-_---,
+    q-eryFn: async (): Promise<n-mber> => {
+      const { data } = await s-pabase
         .from("app_settings")
         .select("commission_per_booking")
-        .eq("id", 1)
+        .eq("id", -)
         .maybeSingle();
-      return data?.commission_per_booking ?? 40000;
+      ret-rn data?.commission_per_booking ?? -----;
     },
   });
 
 export type HostBookingRow = {
   id: string;
-  guest_id: string;
+  g-est_id: string;
   check_in: string;
-  check_out: string;
-  status: BookingStatus;
-  nights: number;
-  guests: number;
-  total_price: number;
-  guest_message: string | null;
+  check_o-t: string;
+  stat-s: BookingStat-s;
+  nights: n-mber;
+  g-ests: n-mber;
+  total_price: n-mber;
+  g-est_message: string | n-ll;
   cabins: {
-    slug: string;
+    sl-g: string;
     title: string;
-    area_slug: string;
-    cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
-  } | null;
+    area_sl-g: string;
+    cabin_images: { -rl: string; is_cover: boolean; sort_order: n-mber }[];
+  } | n-ll;
   profiles: {
-    full_name: string | null;
-    avatar_url: string | null;
-  } | null;
+    f-ll_name: string | n-ll;
+    avatar_-rl: string | n-ll;
+  } | n-ll;
 };
 
-export const hostBookingsQuery = (userId: string) =>
-  queryOptions({
-    queryKey: ["host", userId, "bookings"],
+export const hostBookingsQ-ery = (-serId: string) =>
+  q-eryOptions({
+    q-eryKey: ["host", -serId, "bookings"],
     staleTime: STALE,
     gcTime: GC,
-    queryFn: async (): Promise<HostBookingRow[]> => {
-      const { data: bookings, error } = await supabase
+    q-eryFn: async (): Promise<HostBookingRow[]> => {
+      const { data: bookings, error } = await s-pabase
         .from("bookings")
         .select(
-          "*, cabins(slug, title, area_slug, cabin_images(url, is_cover, sort_order))",
+          "*, cabins(sl-g, title, area_sl-g, cabin_images(-rl, is_cover, sort_order))",
         )
-        .eq("host_id", userId)
+        .eq("host_id", -serId)
         .order("created_at", { ascending: false });
-      if (error) return [];
-      const guestIds = Array.from(new Set((bookings ?? []).map((b) => b.guest_id)));
-      const profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
-      if (guestIds.length > 0) {
-        const { data: profs } = await supabase
+      if (error) ret-rn [];
+      const g-estIds = Array.from(new Set((bookings ?? []).map((b) => b.g-est_id)));
+      const profileMap = new Map<string, { f-ll_name: string | n-ll; avatar_-rl: string | n-ll }>();
+      if (g-estIds.length > -) {
+        const { data: profs } = await s-pabase
           .from("profiles")
-          .select("id, full_name, avatar_url")
-          .in("id", guestIds);
+          .select("id, f-ll_name, avatar_-rl")
+          .in("id", g-estIds);
         for (const p of profs ?? []) {
-          profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
+          profileMap.set(p.id, { f-ll_name: p.f-ll_name, avatar_-rl: p.avatar_-rl });
         }
       }
-      return (bookings ?? []).map((b) => ({
+      ret-rn (bookings ?? []).map((b) => ({
         ...b,
-        profiles: profileMap.get(b.guest_id) ?? null,
-      })) as unknown as HostBookingRow[];
+        profiles: profileMap.get(b.g-est_id) ?? n-ll,
+      })) as -nknown as HostBookingRow[];
     },
   });
 
-export type GuestBookingRow = {
+export type G-estBookingRow = {
   id: string;
   host_id: string;
   cabin_id: string;
   check_in: string;
-  check_out: string;
-  status: BookingStatus;
-  nights: number;
-  guests: number;
-  total_price: number;
+  check_o-t: string;
+  stat-s: BookingStat-s;
+  nights: n-mber;
+  g-ests: n-mber;
+  total_price: n-mber;
   cabins: {
-    slug: string;
+    sl-g: string;
     title: string;
-    area_slug: string;
-    cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
-  } | null;
+    area_sl-g: string;
+    cabin_images: { -rl: string; is_cover: boolean; sort_order: n-mber }[];
+  } | n-ll;
 };
 
-export const guestBookingsQuery = (userId: string) =>
-  queryOptions({
-    queryKey: ["guest", userId, "bookings"],
+export const g-estBookingsQ-ery = (-serId: string) =>
+  q-eryOptions({
+    q-eryKey: ["g-est", -serId, "bookings"],
     staleTime: STALE,
     gcTime: GC,
-    queryFn: async (): Promise<GuestBookingRow[]> => {
-      const { data } = await supabase
+    q-eryFn: async (): Promise<G-estBookingRow[]> => {
+      const { data } = await s-pabase
         .from("bookings")
         .select(
-          "*, cabins(slug, title, area_slug, cabin_images(url, is_cover, sort_order))",
+          "*, cabins(sl-g, title, area_sl-g, cabin_images(-rl, is_cover, sort_order))",
         )
-        .eq("guest_id", userId)
+        .eq("g-est_id", -serId)
         .order("check_in", { ascending: false });
-      return (data as unknown as GuestBookingRow[]) ?? [];
+      ret-rn (data as -nknown as G-estBookingRow[]) ?? [];
     },
   });

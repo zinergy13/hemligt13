@@ -1,17 +1,17 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { Loader2, ArrowLeft, UserPlus, X, Search } from "lucide-react";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState, type FormEvent } from "react";
+import { Loader-, ArrowLeft, UserPl-s, X, Search } from "l-cide-react";
 import { toast } from "sonner";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import type { CabinWithImages } from "@/lib/cabins";
 
 type CabinCardData = CabinWithImages;
 
-export const Route = createFileRoute("/listor/$id")({
+export const Ro-te = createFileRo-te("/listor/$id")({
   head: () => ({
     meta: [
       { title: "Lista — Fjällportalen" },
@@ -21,41 +21,41 @@ export const Route = createFileRoute("/listor/$id")({
   component: WishlistDetailPage,
 });
 
-function WishlistDetailPage() {
-  const { id } = Route.useParams();
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [list, setList] = useState<any>(null);
-  const [cabins, setCabins] = useState<CabinCardData[]>([]);
-  const [members, setMembers] = useState<{ user_id: string; full_name: string | null }[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [inviteEmail, setInviteEmail] = useState("");
-  const [searchQ, setSearchQ] = useState("");
-  const [searchResults, setSearchResults] = useState<CabinCardData[]>([]);
+f-nction WishlistDetailPage() {
+  const { id } = Ro-te.-seParams();
+  const { -ser, loading: a-thLoading } = -seA-th();
+  const navigate = -seNavigate();
+  const [list, setList] = -seState<any>(n-ll);
+  const [cabins, setCabins] = -seState<CabinCardData[]>([]);
+  const [members, setMembers] = -seState<{ -ser_id: string; f-ll_name: string | n-ll }[]>([]);
+  const [loading, setLoading] = -seState(tr-e);
+  const [inviteEmail, setInviteEmail] = -seState("");
+  const [searchQ, setSearchQ] = -seState("");
+  const [searchRes-lts, setSearchRes-lts] = -seState<CabinCardData[]>([]);
 
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) { navigate({ to: "/logga-in", search: { redirect: `/listor/${id}` } }); return; }
+  -seEffect(() => {
+    if (a-thLoading) ret-rn;
+    if (!-ser) { navigate({ to: "/logga-in", search: { redirect: `/listor/${id}` } }); ret-rn; }
     void load();
-  }, [authLoading, user, id, navigate]);
+  }, [a-thLoading, -ser, id, navigate]);
 
   const load = async () => {
-    setLoading(true);
+    setLoading(tr-e);
     const [{ data: w }, { data: wc }, { data: wm }] = await Promise.all([
-      supabase.from("wishlists" as any).select("*").eq("id", id).maybeSingle(),
-      supabase
+      s-pabase.from("wishlists" as any).select("*").eq("id", id).maybeSingle(),
+      s-pabase
         .from("wishlist_cabins" as any)
-        .select("cabin_id, note, cabin:cabins(id, slug, title, area_slug, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order))")
+        .select("cabin_id, note, cabin:cabins(id, sl-g, title, area_sl-g, price_per_night, max_g-ests, bedrooms, images:cabin_images(-rl, sort_order))")
         .eq("wishlist_id", id),
-      supabase.from("wishlist_members" as any).select("user_id").eq("wishlist_id", id),
+      s-pabase.from("wishlist_members" as any).select("-ser_id").eq("wishlist_id", id),
     ]);
     setList(w);
     setCabins(((wc as any[]) || []).map((row) => row.cabin as CabinCardData).filter(Boolean));
     // Load member names
-    const memberIds = ((wm as any[]) || []).map((m) => m.user_id);
+    const memberIds = ((wm as any[]) || []).map((m) => m.-ser_id);
     if (memberIds.length) {
-      const { data: profs } = await supabase.from("profiles").select("id, full_name").in("id", memberIds);
-      setMembers(((profs as any[]) || []).map((p) => ({ user_id: p.id, full_name: p.full_name })));
+      const { data: profs } = await s-pabase.from("profiles").select("id, f-ll_name").in("id", memberIds);
+      setMembers(((profs as any[]) || []).map((p) => ({ -ser_id: p.id, f-ll_name: p.f-ll_name })));
     } else {
       setMembers([]);
     }
@@ -63,168 +63,168 @@ function WishlistDetailPage() {
   };
 
   const doSearch = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!searchQ.trim()) return;
-    const { data } = await supabase
+    e.preventDefa-lt();
+    if (!searchQ.trim()) ret-rn;
+    const { data } = await s-pabase
       .from("cabins")
-      .select("id, slug, title, area_slug, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order)")
-      .eq("status", "published")
+      .select("id, sl-g, title, area_sl-g, price_per_night, max_g-ests, bedrooms, images:cabin_images(-rl, sort_order)")
+      .eq("stat-s", "p-blished")
       .or(`title.ilike.%${searchQ}%,area.ilike.%${searchQ}%`)
       .limit(8);
-    setSearchResults(((data as any[]) || []) as CabinCardData[]);
+    setSearchRes-lts(((data as any[]) || []) as CabinCardData[]);
   };
 
   const addCabin = async (cabinId: string) => {
-    if (!user) return;
-    const { error } = await supabase.from("wishlist_cabins" as any).insert({
+    if (!-ser) ret-rn;
+    const { error } = await s-pabase.from("wishlist_cabins" as any).insert({
       wishlist_id: id,
       cabin_id: cabinId,
-      added_by: user.id,
+      added_by: -ser.id,
     });
-    if (error) { toast.error(error.message); return; }
-    toast.success("Tillagd i listan");
-    setSearchResults([]);
+    if (error) { toast.error(error.message); ret-rn; }
+    toast.s-ccess("Tillagd i listan");
+    setSearchRes-lts([]);
     setSearchQ("");
     void load();
   };
 
   const removeCabin = async (cabinId: string) => {
-    const { error } = await supabase.from("wishlist_cabins" as any).delete().eq("wishlist_id", id).eq("cabin_id", cabinId);
-    if (error) { toast.error(error.message); return; }
+    const { error } = await s-pabase.from("wishlist_cabins" as any).delete().eq("wishlist_id", id).eq("cabin_id", cabinId);
+    if (error) { toast.error(error.message); ret-rn; }
     setCabins((prev) => prev.filter((c) => c.id !== cabinId));
   };
 
   const invite = async (e: FormEvent) => {
-    e.preventDefault();
-    const userId = inviteEmail.trim();
-    if (!userId) return;
-    const { error } = await supabase.from("wishlist_members" as any).insert({
+    e.preventDefa-lt();
+    const -serId = inviteEmail.trim();
+    if (!-serId) ret-rn;
+    const { error } = await s-pabase.from("wishlist_members" as any).insert({
       wishlist_id: id,
-      user_id: userId,
+      -ser_id: -serId,
     });
-    if (error) { toast.error(error.message); return; }
-    toast.success("Medlem tillagd");
+    if (error) { toast.error(error.message); ret-rn; }
+    toast.s-ccess("Medlem tillagd");
     setInviteEmail("");
     void load();
   };
 
-  const removeMember = async (userId: string) => {
-    const { error } = await supabase.from("wishlist_members" as any).delete().eq("wishlist_id", id).eq("user_id", userId);
-    if (error) { toast.error(error.message); return; }
-    setMembers((prev) => prev.filter((m) => m.user_id !== userId));
+  const removeMember = async (-serId: string) => {
+    const { error } = await s-pabase.from("wishlist_members" as any).delete().eq("wishlist_id", id).eq("-ser_id", -serId);
+    if (error) { toast.error(error.message); ret-rn; }
+    setMembers((prev) => prev.filter((m) => m.-ser_id !== -serId));
   };
 
-  const isOwner = user?.id === list?.owner_id;
+  const isOwner = -ser?.id === list?.owner_id;
 
-  return (
+  ret-rn (
     <>
       <Header />
-      <main className="mx-auto min-h-[60vh] max-w-5xl px-4 py-8 md:px-6">
-        <Link to="/listor" className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground">
-          <ArrowLeft className="h-4 w-4" /> Alla listor
+      <main className="mx-a-to min-h-[6-vh] max-w-5xl px-- py-8 md:px-6">
+        <Link to="/listor" className="mb-- inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd">
+          <ArrowLeft className="h-- w--" /> Alla listor
         </Link>
         {loading ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
+          <div className="flex items-center gap-- text-sm text-m-ted-foregro-nd">
+            <Loader- className="h-- w-- animate-spin" /> Laddar…
           </div>
         ) : !list ? (
-          <p className="text-sm text-muted-foreground">Listan hittades inte.</p>
+          <p className="text-sm text-m-ted-foregro-nd">Listan hittades inte.</p>
         ) : (
           <>
-            <h1 className="font-serif text-3xl text-foreground">{list.name}</h1>
-            {list.description && <p className="mt-1 text-sm text-muted-foreground">{list.description}</p>}
+            <h- className="font-serif text--xl text-foregro-nd">{list.name}</h->
+            {list.description && <p className="mt-- text-sm text-m-ted-foregro-nd">{list.description}</p>}
 
             <section className="mt-8">
-              <h2 className="mb-3 font-serif text-xl text-foreground">Medlemmar</h2>
-              <div className="flex flex-wrap gap-2">
-                <span className="rounded-full bg-primary/10 px-3 py-1 text-xs text-primary">Ägare</span>
+              <h- className="mb-- font-serif text-xl text-foregro-nd">Medlemmar</h->
+              <div className="flex flex-wrap gap--">
+                <span className="ro-nded-f-ll bg-primary/-- px-- py-- text-xs text-primary">Ägare</span>
                 {members.map((m) => (
-                  <span key={m.user_id} className="inline-flex items-center gap-1 rounded-full bg-muted px-3 py-1 text-xs text-foreground">
-                    {m.full_name || "Medlem"}
+                  <span key={m.-ser_id} className="inline-flex items-center gap-- ro-nded-f-ll bg-m-ted px-- py-- text-xs text-foregro-nd">
+                    {m.f-ll_name || "Medlem"}
                     {isOwner && (
-                      <button onClick={() => removeMember(m.user_id)} className="text-muted-foreground hover:text-destructive">
-                        <X className="h-3 w-3" />
-                      </button>
+                      <b-tton onClick={() => removeMember(m.-ser_id)} className="text-m-ted-foregro-nd hover:text-destr-ctive">
+                        <X className="h-- w--" />
+                      </b-tton>
                     )}
                   </span>
                 ))}
               </div>
               {isOwner && (
-                <form onSubmit={invite} className="mt-3 flex gap-2">
-                  <input
+                <form onS-bmit={invite} className="mt-- flex gap--">
+                  <inp-t
                     type="text"
-                    value={inviteEmail}
-                    onChange={(e) => setInviteEmail(e.target.value)}
+                    val-e={inviteEmail}
+                    onChange={(e) => setInviteEmail(e.target.val-e)}
                     placeholder="Klistra in medlemmens användar-ID"
-                    className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
+                    className="flex-- ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
                   />
-                  <button
-                    type="submit"
-                    className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                  <b-tton
+                    type="s-bmit"
+                    className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
                   >
-                    <UserPlus className="h-4 w-4" /> Bjud in
-                  </button>
+                    <UserPl-s className="h-- w--" /> Bj-d in
+                  </b-tton>
                 </form>
               )}
             </section>
 
             <section className="mt-8">
-              <h2 className="mb-3 font-serif text-xl text-foreground">Lägg till stuga</h2>
-              <form onSubmit={doSearch} className="flex gap-2">
-                <div className="relative flex-1">
-                  <Search className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
-                  <input
-                    value={searchQ}
-                    onChange={(e) => setSearchQ(e.target.value)}
+              <h- className="mb-- font-serif text-xl text-foregro-nd">Lägg till st-ga</h->
+              <form onS-bmit={doSearch} className="flex gap--">
+                <div className="relative flex--">
+                  <Search className="pointer-events-none absol-te left-- top--/- h-- w-- -translate-y--/- text-m-ted-foregro-nd" />
+                  <inp-t
+                    val-e={searchQ}
+                    onChange={(e) => setSearchQ(e.target.val-e)}
                     placeholder="Sök på titel eller område"
-                    className="w-full rounded-lg border border-border bg-background py-2 pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
+                    className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py-- pl-9 pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
                   />
                 </div>
-                <button
-                  type="submit"
-                  className="rounded-full border border-border px-4 py-2 text-sm hover:bg-muted"
+                <b-tton
+                  type="s-bmit"
+                  className="ro-nded-f-ll border border-border px-- py-- text-sm hover:bg-m-ted"
                 >
                   Sök
-                </button>
+                </b-tton>
               </form>
-              {searchResults.length > 0 && (
-                <ul className="mt-3 divide-y divide-border rounded-2xl border border-border bg-background">
-                  {searchResults.map((c) => (
-                    <li key={c.id} className="flex items-center justify-between px-4 py-3">
+              {searchRes-lts.length > - && (
+                <-l className="mt-- divide-y divide-border ro-nded--xl border border-border bg-backgro-nd">
+                  {searchRes-lts.map((c) => (
+                    <li key={c.id} className="flex items-center j-stify-between px-- py--">
                       <div>
-                        <div className="text-sm font-medium text-foreground">{c.title}</div>
-                        <div className="text-xs text-muted-foreground">{c.area_slug}</div>
+                        <div className="text-sm font-medi-m text-foregro-nd">{c.title}</div>
+                        <div className="text-xs text-m-ted-foregro-nd">{c.area_sl-g}</div>
                       </div>
-                      <button
+                      <b-tton
                         onClick={() => addCabin(c.id)}
-                        className="rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90"
+                        className="ro-nded-f-ll bg-primary px-- py--.5 text-xs font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
                       >
                         Lägg till
-                      </button>
+                      </b-tton>
                     </li>
                   ))}
-                </ul>
+                </-l>
               )}
             </section>
 
-            <section className="mt-10">
-              <h2 className="mb-3 font-serif text-xl text-foreground">Sparade stugor ({cabins.length})</h2>
-              {cabins.length === 0 ? (
-                <p className="rounded-2xl border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">
-                  Inga stugor sparade ännu.
+            <section className="mt---">
+              <h- className="mb-- font-serif text-xl text-foregro-nd">Sparade st-gor ({cabins.length})</h->
+              {cabins.length === - ? (
+                <p className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p-6 text-sm text-m-ted-foregro-nd">
+                  Inga st-gor sparade änn-.
                 </p>
               ) : (
-                <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                <div className="grid gap-- sm:grid-cols-- lg:grid-cols--">
                   {cabins.map((c) => (
                     <div key={c.id} className="relative">
                       <CabinCard cabin={c} />
-                      <button
+                      <b-tton
                         onClick={() => removeCabin(c.id)}
-                        className="absolute right-3 top-3 z-10 rounded-full bg-background/90 p-2 text-destructive shadow hover:bg-destructive hover:text-destructive-foreground"
+                        className="absol-te right-- top-- z--- ro-nded-f-ll bg-backgro-nd/9- p-- text-destr-ctive shadow hover:bg-destr-ctive hover:text-destr-ctive-foregro-nd"
                         aria-label="Ta bort"
                       >
-                        <X className="h-4 w-4" />
-                      </button>
+                        <X className="h-- w--" />
+                      </b-tton>
                     </div>
                   ))}
                 </div>

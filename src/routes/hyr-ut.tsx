@@ -17,7 +17,7 @@ function HostPage() {
   const steps = [
     { icon: Camera, title: "Lägg upp din stuga", text: "Bilder, beskrivning, faciliteter och läge — vi guidar dig steg för steg." },
     { icon: Calendar, title: "Sätt pris & kalender", text: "Du bestämmer pris per vecka, helg eller dygn. Blockera datum när du vill bo själv." },
-    { icon: Wallet, title: "Få betalt tryggt", text: "Vi tar emot betalning vid bokning och betalar ut till dig efter incheckning." },
+    { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Vi håller pengarna och betalar ut till dig 24 timmar efter incheckning." },
   ];
 
   return (

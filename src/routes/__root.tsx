@@ -68,7 +68,7 @@ export const Route = createRootRoute({
       { name: "author", content: "Fjällportalen" },
       { property: "og:site_name", content: "Fjällportalen" },
       { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt — vi håller betalningen tills du har checkat in." },
+      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt — vi håller betalningen och släpper den till värden 24 timmar efter incheckning." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],

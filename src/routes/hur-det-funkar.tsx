@@ -17,7 +17,7 @@ function HowItWorks() {
   const guestSteps = [
     { icon: Search, title: "Sök & hitta", text: "Filtrera på område, datum, antal bäddar, ski-in/ski-out och pris. Karta och lista sida vid sida." },
     { icon: MessageCircle, title: "Boka eller fråga värden", text: "Direktboka när stugan är klar, eller skicka en förfrågan till värden om du har frågor först." },
-    { icon: CreditCard, title: "Betala tryggt", text: "Betala med kort eller Swish. Pengarna släpps till värden först efter incheckning." },
+    { icon: CreditCard, title: "Betala tryggt", text: "Betala med kort eller Swish via Fjällportalen. Pengarna släpps till värden 24 timmar efter incheckning." },
     { icon: Key, title: "Checka in & njut", text: "Värden delar nyckelinfo, husregler och eventuella tillval — sedan är det bara att åka." },
     { icon: Star, title: "Lämna recension", text: "Efter resan recenserar du både stugan och värden — så hjälper du nästa gäst." },
   ];

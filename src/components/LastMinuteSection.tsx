@@ -54,7 +54,7 @@ export function LastMinuteSection() {
           </p>
           <h2 className="font-serif text-3xl text-foreground md:text-4xl">Lediga stugor de närmaste veckorna</h2>
           <p className="mt-2 max-w-xl text-muted-foreground">
-            Snabba bokningar för spontana fjällresor — direkt från värden.
+            Snabba bokningar för spontana fjällresor — tryggt via Fjällportalen.
           </p>
         </div>
         <Link to="/sok" className="inline-flex items-center gap-1.5 text-sm font-medium text-primary hover:underline">

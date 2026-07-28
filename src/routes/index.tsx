@@ -10,7 +10,7 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — direkt från värd." },
+      { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — med trygg betalning via Fjällportalen." },
       { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
       { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
     ],
@@ -165,7 +165,7 @@ function HomePage() {
           <div className="grid gap-6 md:grid-cols-3">
             {[
               { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland — 21 fjällområden från Grövelsjön i söder till Storlien i norr." },
-              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish. Fjällportalen håller pengarna och släpper dem till värden först efter incheckning." },
+              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish via Fjällportalen. Vi håller pengarna och släpper dem till värden 24 timmar efter incheckning." },
               { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna stugägare bakom varje annons — inga stora förmedlare, inga onödiga avgifter." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-2xl bg-background p-7 shadow-[var(--shadow-soft)]">

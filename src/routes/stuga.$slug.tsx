@@ -12,7 +12,7 @@ export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({
     meta: [
       { title: `Stuga — Fjällportalen` },
-      { name: "description", content: `Stuga ${params.slug} . Boka direkt från värd via Fjällportalen.` },
+      { name: "description", content: `Stuga ${params.slug} — boka tryggt via Fjällportalen med utbetalning till värden 24 timmar efter incheckning.` },
     ],
   }),
   notFoundComponent: () => (

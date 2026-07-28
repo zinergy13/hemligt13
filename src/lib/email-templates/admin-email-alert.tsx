@@ -26,7 +26,7 @@ const Email = ({
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>E-postutskick misslyckades efter {attempts} försök</Preview>
+      <Preview>{`E-postutskick misslyckades efter ${attempts} försök`}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME} · Systemvarning</Text>

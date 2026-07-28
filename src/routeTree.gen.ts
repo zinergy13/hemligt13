@@ -28,6 +28,7 @@ import { Route as VardRouteImport } from './routes/vard'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
+import { Route as AdminEpostStatusRouteImport } from './routes/admin.epost-status'
 import { Route as AdminEpostTestRouteImport } from './routes/admin.epost-test'
 import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
 import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
@@ -153,6 +154,11 @@ const AdminBokforingRoute = AdminBokforingRouteImport.update({
 const AdminDashboardRoute = AdminDashboardRouteImport.update({
   id: '/dashboard',
   path: '/dashboard',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminEpostStatusRoute = AdminEpostStatusRouteImport.update({
+  id: '/epost-status',
+  path: '/epost-status',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminEpostTestRoute = AdminEpostTestRouteImport.update({
@@ -337,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/epost-status': typeof AdminEpostStatusRoute
   '/admin/epost-test': typeof AdminEpostTestRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -387,6 +394,7 @@ export interface FileRoutesByTo {
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/epost-status': typeof AdminEpostStatusRoute
   '/admin/epost-test': typeof AdminEpostTestRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -440,6 +448,7 @@ export interface FileRoutesById {
   '/vard': typeof VardRouteWithChildren
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
+  '/admin/epost-status': typeof AdminEpostStatusRoute
   '/admin/epost-test': typeof AdminEpostTestRoute
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
@@ -494,6 +503,7 @@ export interface FileRouteTypes {
     | '/vard'
     | '/admin/bokforing'
     | '/admin/dashboard'
+    | '/admin/epost-status'
     | '/admin/epost-test'
     | '/admin/presentkort'
     | '/admin/recensioner'
@@ -544,6 +554,7 @@ export interface FileRouteTypes {
     | '/unsubscribe'
     | '/admin/bokforing'
     | '/admin/dashboard'
+    | '/admin/epost-status'
     | '/admin/epost-test'
     | '/admin/presentkort'
     | '/admin/recensioner'
@@ -596,6 +607,7 @@ export interface FileRouteTypes {
     | '/vard'
     | '/admin/bokforing'
     | '/admin/dashboard'
+    | '/admin/epost-status'
     | '/admin/epost-test'
     | '/admin/presentkort'
     | '/admin/recensioner'
@@ -801,6 +813,13 @@ declare module '@tanstack/react-router' {
       path: '/dashboard'
       fullPath: '/admin/dashboard'
       preLoaderRoute: typeof AdminDashboardRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/epost-status': {
+      id: '/admin/epost-status'
+      path: '/epost-status'
+      fullPath: '/admin/epost-status'
+      preLoaderRoute: typeof AdminEpostStatusRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/epost-test': {
@@ -1026,6 +1045,7 @@ declare module '@tanstack/react-router' {
 interface AdminRouteChildren {
   AdminBokforingRoute: typeof AdminBokforingRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
+  AdminEpostStatusRoute: typeof AdminEpostStatusRoute
   AdminEpostTestRoute: typeof AdminEpostTestRoute
   AdminPresentkortRoute: typeof AdminPresentkortRoute
   AdminRecensionerRoute: typeof AdminRecensionerRoute
@@ -1036,6 +1056,7 @@ interface AdminRouteChildren {
 const AdminRouteChildren: AdminRouteChildren = {
   AdminBokforingRoute: AdminBokforingRoute,
   AdminDashboardRoute: AdminDashboardRoute,
+  AdminEpostStatusRoute: AdminEpostStatusRoute,
   AdminEpostTestRoute: AdminEpostTestRoute,
   AdminPresentkortRoute: AdminPresentkortRoute,
   AdminRecensionerRoute: AdminRecensionerRoute,

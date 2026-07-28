@@ -18,6 +18,17 @@ export const Route = createFileRoute("/om-oss")({
           mainEntity: { "@id": "https://fjallportalen.com/#organization" },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: 2, name: "Om oss", item: "https://fjallportalen.com/om-oss" },
+          ],
+        }),
+      },
     ],
   }),
   component: AboutPage,

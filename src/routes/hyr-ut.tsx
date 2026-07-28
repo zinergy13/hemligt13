@@ -21,6 +21,17 @@ export const Route = createFileRoute("/hyr-ut")({
           provider: { "@id": "https://fjallportalen.com/#organization" },
         }),
       },
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: 2, name: "Hyr ut", item: "https://fjallportalen.com/hyr-ut" },
+          ],
+        }),
+      },
     ],
   }),
   component: HostPage,

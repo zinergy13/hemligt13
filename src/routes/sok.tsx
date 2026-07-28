@@ -23,6 +23,19 @@ export const Route = createFileRoute("/sok")({
       { title: "Sök stuga i svenska fjällen — Fjällportalen" },
       { name: "description", content: "Sök bland stugor, lägenheter och ski-in/ski-out-boenden i hela svenska fjällen." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "BreadcrumbList",
+          itemListElement: [
+            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: 2, name: "Sök", item: "https://fjallportalen.com/sok" },
+          ],
+        }),
+      },
+    ],
   }),
   component: SearchPage,
 });

@@ -15,7 +15,8 @@ export const Route = createFileRoute('/checkout/$bookingId')({
     meta: [
       { title: 'Betala din bokning — Fjällportalen' },
       { name: 'description', content: 'Slutför din stugbokning tryggt via Fjällportalen.' },
-      { name: 'robots', content: 'noindex' },
+      { name: 'robots', content: 'noindex, nofollow' },
+      { name: 'googlebot', content: 'noindex, nofollow' },
     ],
   }),
   component: CheckoutPage,

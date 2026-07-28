@@ -9,6 +9,18 @@ export const Route = createFileRoute("/hur-det-funkar")({
       { property: "og:title", content: "Hur det funkar — Fjällportalen" },
       { property: "og:description", content: "Sök, boka, betala, checka in. Så enkelt funkar Fjällportalen." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          url: "https://fjallportalen.com/hur-det-funkar",
+          isPartOf: { "@id": "https://fjallportalen.com/#website" },
+          about: { "@id": "https://fjallportalen.com/#organization" },
+        }),
+      },
+    ],
   }),
   component: HowItWorks,
 });

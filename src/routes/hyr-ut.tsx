@@ -9,6 +9,19 @@ export const Route = createFileRoute("/hyr-ut")({
       { property: "og:title", content: "Hyr ut din stuga i svenska fjällen" },
       { property: "og:description", content: "Tjäna pengar på din stuga i svenska fjällen — utan krångel och utan höga avgifter." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "WebPage",
+          url: "https://fjallportalen.com/hyr-ut",
+          isPartOf: { "@id": "https://fjallportalen.com/#website" },
+          about: { "@id": "https://fjallportalen.com/#organization" },
+          provider: { "@id": "https://fjallportalen.com/#organization" },
+        }),
+      },
+    ],
   }),
   component: HostPage,
 });

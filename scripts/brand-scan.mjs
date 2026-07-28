@@ -39,6 +39,7 @@ const WHITELIST_PATHS = [
   "src/integrations/lovable",
   "src/integrations/supabase",
   "src/lib/stripe.server.ts",
+  "src/lib/email/send-internal.ts",
   "src/routes/lovable",
   "src/routeTree.gen.ts",
   "src/router.tsx",

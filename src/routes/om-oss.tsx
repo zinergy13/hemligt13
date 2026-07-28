@@ -25,7 +25,7 @@ function AboutPage() {
           Här samlas hela svenska fjällkedjan — Dalafjällen med Sälen och Idre, Härjedalens vidsträckta vidder kring Vemdalen och Funäsdalen, och Jämtlands alpina toppar från Åre till Storlien. Stugor, lägenheter, ski-in/ski-out och allt däremellan.
         </p>
         <p>
-          Vi tror på att hålla det enkelt: bra bilder, ärliga beskrivningar, tryggt betalningsflöde och recensioner från riktiga gäster. Inga onödiga avgifter, inga mellanhänder.
+          Vi tror på att hålla det enkelt: bra bilder, ärliga beskrivningar och recensioner från riktiga gäster. Betalningen sker tryggt via Fjällportalen — pengarna släpps till värden först efter incheckning, så både gäst och värd vet att allt stämmer innan nyckeln byter hand.
         </p>
         <p className="font-serif text-foreground">Välkommen till fjället.</p>
       </div>

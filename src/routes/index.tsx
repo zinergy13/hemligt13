@@ -11,7 +11,7 @@ export const Route = createFileRoute("/")({
       { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
       { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — direkt från värd." },
       { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, direkt och utan mellanhänder." },
+      { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
     ],
     links: [
       { rel: "preload", as: "image", href: heroCabin, fetchpriority: "high" },
@@ -47,7 +47,7 @@ function HomePage() {
             Hitta din stuga<br />i svenska fjällen.
           </h1>
           <p className="mt-5 max-w-xl text-base text-white/90 md:text-lg">
-            Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, direkt och utan mellanhänder.
+            Från Sälen till Åre — Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och 21 fjällområden på ett ställe.
           </p>
 
           {/* Search bar */}
@@ -97,9 +97,9 @@ function HomePage() {
           </div>
 
           <div className="mt-6 flex flex-wrap gap-x-6 gap-y-2 text-sm text-white/85">
-            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> Trygg betalning</span>
-            <span className="flex items-center gap-1.5"><Heart className="h-4 w-4" /> Direkt från lokala värdar</span>
-            <span className="flex items-center gap-1.5"><KeyRound className="h-4 w-4" /> Inga mellanhänder</span>
+            <span className="flex items-center gap-1.5"><ShieldCheck className="h-4 w-4" /> Trygg betalning via Fjällportalen</span>
+            <span className="flex items-center gap-1.5"><Heart className="h-4 w-4" /> Lokala värdar i hela fjällkedjan</span>
+            <span className="flex items-center gap-1.5"><KeyRound className="h-4 w-4" /> Utbetalning efter incheckning</span>
           </div>
         </div>
       </section>
@@ -164,8 +164,8 @@ function HomePage() {
           <div className="grid gap-6 md:grid-cols-3">
             {[
               { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland — 21 fjällområden från Grövelsjön i söder till Storlien i norr." },
-              { icon: ShieldCheck, title: "Tryggt och enkelt", text: "Säker betalning, tydliga villkor och recensioner från riktiga gäster — för båda parter." },
-              { icon: Heart, title: "Lokalt och äkta", text: "Direkt från fjällets egna stugägare. Inga mellanhänder, inga onödiga avgifter." },
+              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish. Fjällportalen håller pengarna och släpper dem till värden först efter incheckning." },
+              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna stugägare bakom varje annons — inga stora förmedlare, inga onödiga avgifter." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-2xl bg-background p-7 shadow-[var(--shadow-soft)]">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">

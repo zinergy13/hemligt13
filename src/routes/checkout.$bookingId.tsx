@@ -4,6 +4,7 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe
 import { getStripe, getStripeEnvironment, isPaymentsConfigured } from '@/lib/stripe';
 import { createBookingCheckout } from '@/lib/payments.functions';
 import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
+import { EscrowFAQ } from '@/components/EscrowFAQ';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 
@@ -76,6 +77,7 @@ function CheckoutPage() {
             </EmbeddedCheckoutProvider>
           </div>
         )}
+        <EscrowFAQ compact />
       </div>
     </div>
   );

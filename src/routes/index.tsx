@@ -4,6 +4,7 @@ import heroCabin from "../assets/hero-cabin.jpg";
 import { regions } from "../data/areas";
 import { SwedenMap } from "../components/SwedenMap";
 import { LastMinuteSection } from "../components/LastMinuteSection";
+import { EscrowFAQ } from "../components/EscrowFAQ";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -180,6 +181,8 @@ function HomePage() {
       </section>
 
       {/* HOST CTA */}
+      <EscrowFAQ />
+
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
         <div
           className="relative overflow-hidden rounded-3xl px-8 py-16 text-primary-foreground md:px-16 md:py-24"

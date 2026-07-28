@@ -2,6 +2,7 @@ import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
+import { buildBookingEmailFields } from '@/lib/email/booking-fields';
 
 const TEMPLATES = [
   'booking-confirmation',
@@ -79,8 +80,11 @@ export const sendTestTemplateEmail = createServerFn({ method: 'POST' })
         guestName: guestProfile?.full_name?.split(' ')[0],
         cabinName: cabin?.title ?? 'din stuga',
         areaName: cabin?.area_slug ?? '',
-        checkIn: booking.check_in,
-        checkOut: booking.check_out,
+        ...buildBookingEmailFields({
+          id: booking.id,
+          check_in: booking.check_in,
+          check_out: booking.check_out,
+        }),
         hostName: hostProfile?.full_name?.split(' ')[0] ?? 'värden',
       };
 

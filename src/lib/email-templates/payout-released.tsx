@@ -8,6 +8,9 @@ interface Props {
   cabinName?: string
   hostName?: string
   checkIn?: string
+  checkInLabel?: string
+  bookingRef?: string
+  payoutAtLabel?: string
   totalKr?: number
   reviewUrl?: string
 }
@@ -17,6 +20,9 @@ const Email = ({
   cabinName = 'din stuga',
   hostName = 'värden',
   checkIn = '',
+  checkInLabel = '',
+  bookingRef = '',
+  payoutAtLabel = '',
   totalKr = 0,
   reviewUrl = 'https://fjallportalen.com/mina-bokningar',
 }: Props) => (
@@ -29,15 +35,24 @@ const Email = ({
         <Heading style={styles.h1}>Vi hoppas du hade en fin vistelse</Heading>
         <Text style={styles.text}>
           Hej{guestName ? ` ${guestName}` : ''},<br />
-          Det har nu gått <strong>24 timmar sedan din incheckning</strong> i {cabinName}, och därmed har
-          {BRAND_NAME} släppt betalningen till {hostName}. Din bokning är därmed helt slutförd.
+          Det har nu gått <strong>24 timmar sedan din incheckning
+          {checkInLabel ? ` ${checkInLabel}` : ''}</strong> i {cabinName}, och därmed har
+          {BRAND_NAME} släppt betalningen till {hostName}
+          {payoutAtLabel ? ` (${payoutAtLabel})` : ''}. Din bokning är därmed helt slutförd.
         </Text>
 
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Utbetalt till värden</Text>
+          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
+            Utbetalt till värden{bookingRef ? ` · Bokning #${bookingRef}` : ''}
+          </Text>
           <Text style={{ ...styles.h1, fontSize: 22, margin: '0 0 10px' }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
           <Text style={{ ...styles.muted, margin: 0 }}>
-            Incheckning: <strong>{checkIn}</strong><br />
+            Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
+            {payoutAtLabel ? (
+              <>
+                Utbetalning: <strong>{payoutAtLabel}</strong><br />
+              </>
+            ) : null}
             Betalning hanterad av {BRAND_NAME}
           </Text>
         </Section>
@@ -50,7 +65,8 @@ const Email = ({
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Om något inte stod rätt till under vistelsen — svara på detta mejl inom 48 timmar så tittar vi på det.
+          Om något inte stod rätt till under vistelsen — svara på detta mejl
+          {bookingRef ? ` och ange bokning #${bookingRef}` : ''} inom 48 timmar så tittar vi på det.
         </Text>
       </Container>
     </Body>
@@ -60,13 +76,16 @@ const Email = ({
 export const template = {
   component: Email,
   subject: (d: Record<string, any>) =>
-    `Bokningen är slutförd · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
+    `Bokningen är slutförd${d?.bookingRef ? ` #${d.bookingRef}` : ''} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
   displayName: 'Utbetalning släppt till gäst',
   previewData: {
     guestName: 'Erik',
     cabinName: 'Renvallen',
     hostName: 'Anna',
     checkIn: '2026-02-14',
+    checkInLabel: 'lör 14 februari 2026',
+    bookingRef: 'A1B2C3D4',
+    payoutAtLabel: '15 februari 2026 15:00',
     totalKr: 12800,
     reviewUrl: 'https://fjallportalen.com/mina-bokningar',
   },

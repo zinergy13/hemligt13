@@ -9,6 +9,10 @@ interface Props {
   areaName?: string
   checkIn?: string
   checkOut?: string
+  checkInLabel?: string
+  checkOutLabel?: string
+  bookingRef?: string
+  payoutAtLabel?: string
   hostName?: string
   messageUrl?: string
 }
@@ -19,6 +23,10 @@ const Email = ({
   areaName = '',
   checkIn = '',
   checkOut = '',
+  checkInLabel = '',
+  checkOutLabel = '',
+  bookingRef = '',
+  payoutAtLabel = '',
   hostName = 'värden',
   messageUrl = 'https://fjallportalen.com/mina-bokningar',
 }: Props) => (
@@ -36,25 +44,34 @@ const Email = ({
         </Text>
 
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Din vistelse</Text>
+          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
+            Din vistelse{bookingRef ? ` · Bokning #${bookingRef}` : ''}
+          </Text>
           <Text style={{ ...styles.muted, margin: 0 }}>
-            Incheckning: <strong>{checkIn}</strong><br />
-            Utcheckning: <strong>{checkOut}</strong>
+            Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
+            Utcheckning: <strong>{checkOutLabel || checkOut}</strong>
+            {payoutAtLabel ? (
+              <>
+                <br />Utbetalning till {hostName}: <strong>{payoutAtLabel}</strong>
+              </>
+            ) : null}
           </Text>
         </Section>
 
         <Text style={styles.text}>
           <strong>Så fungerar betalningen fram till incheckning:</strong> Ditt betalda belopp ligger
-          fortfarande tryggt hos {BRAND_NAME}. Först <strong>24 timmar efter din incheckning</strong> släpps
-          pengarna till {hostName}. Om något inte stämmer vid ankomst — hör av dig till oss direkt så
-          hjälper vi dig innan utbetalningen sker.
+          fortfarande tryggt hos {BRAND_NAME}. Först <strong>24 timmar efter din incheckning
+          {payoutAtLabel ? ` (${payoutAtLabel})` : ''}</strong> släpps pengarna till {hostName}. Om
+          något inte stämmer vid ankomst — hör av dig till oss direkt så hjälper vi dig innan
+          utbetalningen sker.
         </Text>
 
         <Button href={messageUrl} style={styles.button}>Kontakta värden</Button>
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Trevlig resa! Frågor eller problem vid incheckning? Svara på detta mejl så är vi här.
+          Trevlig resa! Frågor eller problem vid incheckning? Svara på detta mejl
+          {bookingRef ? ` och ange bokning #${bookingRef}` : ''} så är vi här.
         </Text>
       </Container>
     </Body>
@@ -64,7 +81,7 @@ const Email = ({
 export const template = {
   component: Email,
   subject: (d: Record<string, any>) =>
-    `Incheckning ${d?.checkIn ?? 'snart'} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
+    `Incheckning ${d?.checkInLabel ?? d?.checkIn ?? 'snart'} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
   displayName: 'Incheckningspåminnelse till gäst',
   previewData: {
     guestName: 'Erik',
@@ -72,6 +89,10 @@ export const template = {
     areaName: 'Åre',
     checkIn: '2026-02-14',
     checkOut: '2026-02-21',
+    checkInLabel: 'lör 14 februari 2026',
+    checkOutLabel: 'lör 21 februari 2026',
+    bookingRef: 'A1B2C3D4',
+    payoutAtLabel: '15 februari 2026 15:00',
     hostName: 'Anna',
     messageUrl: 'https://fjallportalen.com/mina-bokningar',
   },

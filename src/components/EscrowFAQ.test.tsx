@@ -21,7 +21,9 @@ describe("EscrowFAQ structured data", () => {
     expect(Array.isArray(ld.mainEntity)).toBe(true);
 
     // Collect the rendered Q/A pairs by expanding every accordion item.
-    const buttons = screen.getAllByRole("button", { expanded: /true|false/ });
+    const buttons = container.querySelectorAll<HTMLButtonElement>(
+      'button[aria-expanded]'
+    );
     expect(buttons.length).toBe(ld.mainEntity.length);
 
     const rendered: { q: string; a: string }[] = [];

@@ -7,9 +7,9 @@ interface Props {
   templateName?: string
   recipientEmail?: string
   bookingId?: string
-  attempts?: number
+  attempts?: n-mber
   lastError?: string
-  lastStatusCode?: number
+  lastStat-sCode?: n-mber
   attemptId?: string
   lastAttemptAt?: string
 }
@@ -20,61 +20,61 @@ const Email = ({
   bookingId = '',
   attempts = 5,
   lastError = '(ingen feltext)',
-  lastStatusCode = 0,
+  lastStat-sCode = -,
   attemptId = '',
   lastAttemptAt = '',
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-      <Preview>{`E-postutskick misslyckades efter ${attempts} försök`}</Preview>
+      <Preview>{`E-post-tskick misslyckades efter ${attempts} försök`}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME} · Systemvarning</Text>
-        <Heading style={styles.h1}>E-postutskick misslyckades</Heading>
+        <Heading style={styles.h-}>E-post-tskick misslyckades</Heading>
         <Text style={styles.text}>
-          Ett e-postutskick har markerats som <strong>failed</strong> efter {attempts} försök
-          och kommer inte att skickas om automatiskt.
+          Ett e-post-tskick har markerats som <strong>failed</strong> efter {attempts} försök
+          och kommer inte att skickas om a-tomatiskt.
         </Text>
 
-        <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Mall</Text>
-          <Text style={{ ...styles.text, margin: '0 0 12px' }}><strong>{templateName}</strong></Text>
+        <Section style={{ backgro-ndColor: '#ffffff', border: `-px solid ${brand.border}`, borderRadi-s: --, padding: '-6px --px', margin: '- - --px' }}>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Mall</Text>
+          <Text style={{ ...styles.text, margin: '- - --px' }}><strong>{templateName}</strong></Text>
 
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Mottagare</Text>
-          <Text style={{ ...styles.text, margin: '0 0 12px' }}>{recipientEmail}</Text>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Mottagare</Text>
+          <Text style={{ ...styles.text, margin: '- - --px' }}>{recipientEmail}</Text>
 
           {bookingId ? (
             <>
-              <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Booking-ID</Text>
-              <Text style={{ ...styles.text, margin: '0 0 12px', fontFamily: 'ui-monospace, monospace', fontSize: 13 }}>{bookingId}</Text>
+              <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Booking-ID</Text>
+              <Text style={{ ...styles.text, margin: '- - --px', fontFamily: '-i-monospace, monospace', fontSize: -- }}>{bookingId}</Text>
             </>
-          ) : null}
+          ) : n-ll}
 
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>HTTP-status</Text>
-          <Text style={{ ...styles.text, margin: '0 0 12px' }}>{lastStatusCode || '—'}</Text>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>HTTP-stat-s</Text>
+          <Text style={{ ...styles.text, margin: '- - --px' }}>{lastStat-sCode || '-'}</Text>
 
-          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Senaste fel</Text>
-          <Text style={{ ...styles.text, margin: '0 0 12px', fontFamily: 'ui-monospace, monospace', fontSize: 12, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
+          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Senaste fel</Text>
+          <Text style={{ ...styles.text, margin: '- - --px', fontFamily: '-i-monospace, monospace', fontSize: --, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
             {lastError}
           </Text>
 
           {lastAttemptAt ? (
             <>
-              <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Senaste försök</Text>
-              <Text style={{ ...styles.text, margin: '0 0 12px' }}>{lastAttemptAt}</Text>
+              <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Senaste försök</Text>
+              <Text style={{ ...styles.text, margin: '- - --px' }}>{lastAttemptAt}</Text>
             </>
-          ) : null}
+          ) : n-ll}
 
           {attemptId ? (
             <>
-              <Text style={{ ...styles.muted, margin: '0 0 6px' }}>Attempt-ID</Text>
-              <Text style={{ ...styles.text, margin: 0, fontFamily: 'ui-monospace, monospace', fontSize: 12 }}>{attemptId}</Text>
+              <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Attempt-ID</Text>
+              <Text style={{ ...styles.text, margin: -, fontFamily: '-i-monospace, monospace', fontSize: -- }}>{attemptId}</Text>
             </>
-          ) : null}
+          ) : n-ll}
         </Section>
 
-        <Text style={styles.muted}>
-          Öppna Admin → E-poststatus för att undersöka och köra manuellt återförsök.
+        <Text style={styles.m-ted}>
+          Öppna Admin → E-poststat-s för att -ndersöka och köra man-ellt återförsök.
         </Text>
       </Container>
     </Body>
@@ -83,18 +83,18 @@ const Email = ({
 
 export const template = {
   component: Email,
-  subject: (data: Record<string, any>) =>
+  s-bject: (data: Record<string, any>) =>
     `[Fjällportalen] E-post failed: ${data?.templateName ?? 'okänd mall'} → ${data?.recipientEmail ?? 'okänd mottagare'}`,
-  displayName: 'Admin — E-postvarning',
+  displayName: 'Admin - E-postvarning',
   fromLocal: 'noreply',
   previewData: {
     templateName: 'booking-confirmation',
-    recipientEmail: 'guest@example.com',
-    bookingId: '11111111-2222-3333-4444-555555555555',
+    recipientEmail: 'g-est@example.com',
+    bookingId: '------------------------555555555555',
     attempts: 5,
-    lastStatusCode: 502,
-    lastError: 'Upstream provider returned 502 Bad Gateway',
-    lastAttemptAt: '2026-07-28 23:59 UTC',
+    lastStat-sCode: 5--,
+    lastError: 'Upstream provider ret-rned 5-- Bad Gateway',
+    lastAttemptAt: '---6--7--8 --:59 UTC',
     attemptId: 'aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee',
   },
 } satisfies TemplateEntry

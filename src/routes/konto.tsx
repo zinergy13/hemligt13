@@ -1,194 +1,194 @@
-import { createFileRoute, Link, redirect, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState, type FormEvent } from "react";
-import { User, Phone, FileText, Home, Loader2, LogOut, Check, ShieldCheck, Heart, Mail, MapPin, Hash } from "lucide-react";
+import { createFileRo-te, Link, redirect, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState, type FormEvent } from "react";
+import { User, Phone, FileText, Home, Loader-, LogO-t, Check, ShieldCheck, Heart, Mail, MapPin, Hash } from "l-cide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
-import { useAuth } from "@/hooks/useAuth";
-import { HostPayoutForm } from "@/components/HostPayoutForm";
+import { s-pabase } from "@/integrations/s-pabase/client";
+import { -seA-th } from "@/hooks/-seA-th";
+import { HostPayo-tForm } from "@/components/HostPayo-tForm";
 import { SeasonPricingManager } from "@/components/SeasonPricingManager";
 import { PricePreview } from "@/components/PricePreview";
 import { PriceAlertsManager } from "@/components/PriceAlertsManager";
 
-export const Route = createFileRoute("/konto")({
-  head: () => ({ meta: [{ title: "Mitt konto — Fjällportalen" }] }),
-  component: AccountPage,
+export const Ro-te = createFileRo-te("/konto")({
+  head: () => ({ meta: [{ title: "Mitt konto - Fjällportalen" }] }),
+  component: Acco-ntPage,
 });
 
-function AccountPage() {
-  const { user, profile, isAdmin, loading, refreshProfile, signOut } = useAuth();
-  const navigate = useNavigate();
+f-nction Acco-ntPage() {
+  const { -ser, profile, isAdmin, loading, refreshProfile, signO-t } = -seA-th();
+  const navigate = -seNavigate();
 
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
-  const [bio, setBio] = useState("");
-  const [email, setEmail] = useState("");
-  const [addressLine, setAddressLine] = useState("");
-  const [postalCode, setPostalCode] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("Sverige");
-  const [personalNumber, setPersonalNumber] = useState("");
-  const [saving, setSaving] = useState(false);
-  const [becomingHost, setBecomingHost] = useState(false);
+  const [f-llName, setF-llName] = -seState("");
+  const [phone, setPhone] = -seState("");
+  const [bio, setBio] = -seState("");
+  const [email, setEmail] = -seState("");
+  const [addressLine, setAddressLine] = -seState("");
+  const [postalCode, setPostalCode] = -seState("");
+  const [city, setCity] = -seState("");
+  const [co-ntry, setCo-ntry] = -seState("Sverige");
+  const [personalN-mber, setPersonalN-mber] = -seState("");
+  const [saving, setSaving] = -seState(false);
+  const [becomingHost, setBecomingHost] = -seState(false);
 
-  useEffect(() => {
-    if (!loading && !user) {
+  -seEffect(() => {
+    if (!loading && !-ser) {
       navigate({ to: "/logga-in", search: { redirect: "/konto" } });
     }
-  }, [user, loading, navigate]);
+  }, [-ser, loading, navigate]);
 
-  useEffect(() => {
+  -seEffect(() => {
     if (profile) {
-      setFullName(profile.full_name ?? "");
+      setF-llName(profile.f-ll_name ?? "");
       setPhone(profile.phone ?? "");
       setBio(profile.bio ?? "");
-      setEmail(profile.email ?? user?.email ?? "");
+      setEmail(profile.email ?? -ser?.email ?? "");
       setAddressLine(profile.address_line ?? "");
       setPostalCode(profile.postal_code ?? "");
       setCity(profile.city ?? "");
-      setCountry(profile.country ?? "Sverige");
-      setPersonalNumber(profile.personal_number ?? "");
+      setCo-ntry(profile.co-ntry ?? "Sverige");
+      setPersonalN-mber(profile.personal_n-mber ?? "");
     }
-  }, [profile, user]);
+  }, [profile, -ser]);
 
-  if (loading || !user || !profile) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  if (loading || !-ser || !profile) {
+    ret-rn (
+      <div className="flex min-h-[6-vh] items-center j-stify-center">
+        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
       </div>
     );
   }
 
   const handleSave = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!fullName.trim() || !phone.trim() || !addressLine.trim() || !postalCode.trim() || !city.trim()) {
-      toast.error("Fyll i namn, telefon och adress för att kunna boka/hyra ut.");
-      return;
+    e.preventDefa-lt();
+    if (!f-llName.trim() || !phone.trim() || !addressLine.trim() || !postalCode.trim() || !city.trim()) {
+      toast.error("Fyll i namn, telefon och adress för att k-nna boka/hyra -t.");
+      ret-rn;
     }
-    setSaving(true);
-    const { error } = await supabase
+    setSaving(tr-e);
+    const { error } = await s-pabase
       .from("profiles")
-      .update({
-        full_name: fullName,
+      .-pdate({
+        f-ll_name: f-llName,
         phone,
         bio,
-        email: email || null,
-        address_line: addressLine || null,
-        postal_code: postalCode || null,
-        city: city || null,
-        country: country || null,
-        personal_number: personalNumber || null,
+        email: email || n-ll,
+        address_line: addressLine || n-ll,
+        postal_code: postalCode || n-ll,
+        city: city || n-ll,
+        co-ntry: co-ntry || n-ll,
+        personal_n-mber: personalN-mber || n-ll,
       })
-      .eq("id", user.id);
+      .eq("id", -ser.id);
     setSaving(false);
     if (error) toast.error(error.message);
     else {
-      toast.success("Profil sparad!");
+      toast.s-ccess("Profil sparad!");
       await refreshProfile();
     }
   };
 
   const handleBecomeHost = async () => {
-    setBecomingHost(true);
+    setBecomingHost(tr-e);
     const [{ error: profileError }, { error: roleError }] = await Promise.all([
-      supabase.from("profiles").update({ is_host: true }).eq("id", user.id),
-      supabase.from("user_roles").insert({ user_id: user.id, role: "host" }),
+      s-pabase.from("profiles").-pdate({ is_host: tr-e }).eq("id", -ser.id),
+      s-pabase.from("-ser_roles").insert({ -ser_id: -ser.id, role: "host" }),
     ]);
     setBecomingHost(false);
-    // Ignore unique constraint violation on role (already host)
+    // Ignore -niq-e constraint violation on role (already host)
     if (profileError) {
       toast.error(profileError.message);
-      return;
+      ret-rn;
     }
-    if (roleError && !roleError.message.includes("duplicate")) {
+    if (roleError && !roleError.message.incl-des("d-plicate")) {
       toast.error(roleError.message);
-      return;
+      ret-rn;
     }
-    toast.success("Du är nu värd! Lägg upp din första stuga.");
+    toast.s-ccess("D- är n- värd! Lägg -pp din första st-ga.");
     await refreshProfile();
   };
 
-  const handleSignOut = async () => {
-    await signOut();
-    toast.success("Utloggad");
+  const handleSignO-t = async () => {
+    await signO-t();
+    toast.s-ccess("Utloggad");
     navigate({ to: "/" });
   };
 
-  return (
-    <section className="mx-auto max-w-3xl px-4 py-12 md:py-16">
-      <div className="mb-8 flex items-start justify-between gap-4">
+  ret-rn (
+    <section className="mx-a-to max-w--xl px-- py--- md:py--6">
+      <div className="mb-8 flex items-start j-stify-between gap--">
         <div>
-          <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mitt konto</h1>
-          <p className="mt-1 text-sm text-muted-foreground">{user.email}</p>
+          <h- className="font-serif text--xl text-foregro-nd md:text--xl">Mitt konto</h->
+          <p className="mt-- text-sm text-m-ted-foregro-nd">{-ser.email}</p>
         </div>
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-2 rounded-full border border-border px-4 py-2 text-sm text-foreground hover:bg-muted"
+        <b-tton
+          onClick={handleSignO-t}
+          className="flex items-center gap-- ro-nded-f-ll border border-border px-- py-- text-sm text-foregro-nd hover:bg-m-ted"
         >
-          <LogOut className="h-4 w-4" /> Logga ut
-        </button>
+          <LogO-t className="h-- w--" /> Logga -t
+        </b-tton>
       </div>
 
-      {/* Värd-status */}
-      <div className={`mb-8 rounded-2xl border p-5 ${profile.is_host ? "border-primary/30 bg-primary/5" : "border-dashed border-border bg-muted/30"}`}>
+      {/* Värd-stat-s */}
+      <div className={`mb-8 ro-nded--xl border p-5 ${profile.is_host ? "border-primary/-- bg-primary/5" : "border-dashed border-border bg-m-ted/--"}`}>
         {profile.is_host ? (
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-primary text-primary-foreground">
-              <Check className="h-4 w-4" />
+          <div className="flex items-start gap--">
+            <div className="mt--.5 flex h-8 w-8 items-center j-stify-center ro-nded-f-ll bg-primary text-primary-foregro-nd">
+              <Check className="h-- w--" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-serif text-lg text-foreground">Du är värd</h3>
-              <p className="mt-1 text-sm text-muted-foreground">Hantera dina annonser och bokningar.</p>
-              <div className="mt-3 flex flex-wrap gap-3">
+            <div className="flex--">
+              <h- className="font-serif text-lg text-foregro-nd">D- är värd</h->
+              <p className="mt-- text-sm text-m-ted-foregro-nd">Hantera dina annonser och bokningar.</p>
+              <div className="mt-- flex flex-wrap gap--">
                 <Link
-                  to="/vard/stugor/ny"
-                  className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                  to="/vard/st-gor/ny"
+                  className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
                 >
-                  + Lägg upp stuga
+                  + Lägg -pp st-ga
                 </Link>
                 <Link
                   to="/vard"
-                  className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+                  className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
                 >
-                  Mina stugor →
+                  Mina st-gor →
                 </Link>
               </div>
             </div>
           </div>
         ) : (
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-muted">
-              <Home className="h-4 w-4 text-foreground" />
+          <div className="flex items-start gap--">
+            <div className="mt--.5 flex h-8 w-8 items-center j-stify-center ro-nded-f-ll bg-m-ted">
+              <Home className="h-- w-- text-foregro-nd" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-serif text-lg text-foreground">Vill du hyra ut din stuga?</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Aktivera värdkontot så kan du lägga upp annonser, sätta priser och ta emot bokningar.
+            <div className="flex--">
+              <h- className="font-serif text-lg text-foregro-nd">Vill d- hyra -t din st-ga?</h->
+              <p className="mt-- text-sm text-m-ted-foregro-nd">
+                Aktivera värdkontot så kan d- lägga -pp annonser, sätta priser och ta emot bokningar.
               </p>
-              <button
+              <b-tton
                 onClick={handleBecomeHost}
                 disabled={becomingHost}
-                className="mt-3 inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+                className="mt-- inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
               >
-                {becomingHost && <Loader2 className="h-4 w-4 animate-spin" />}
+                {becomingHost && <Loader- className="h-- w-- animate-spin" />}
                 Bli värd
-              </button>
+              </b-tton>
             </div>
           </div>
         )}
       </div>
 
       {isAdmin && (
-        <div className="mb-8 rounded-2xl border border-amber-500/40 bg-amber-500/5 p-5">
-          <div className="flex items-start gap-3">
-            <div className="mt-0.5 flex h-8 w-8 items-center justify-center rounded-full bg-amber-500 text-white">
-              <ShieldCheck className="h-4 w-4" />
+        <div className="mb-8 ro-nded--xl border border-amber-5--/-- bg-amber-5--/5 p-5">
+          <div className="flex items-start gap--">
+            <div className="mt--.5 flex h-8 w-8 items-center j-stify-center ro-nded-f-ll bg-amber-5-- text-white">
+              <ShieldCheck className="h-- w--" />
             </div>
-            <div className="flex-1">
-              <h3 className="font-serif text-lg text-foreground">Administratör</h3>
-              <p className="mt-1 text-sm text-muted-foreground">
-                Hantera provisionsavgift och fakturastatus för alla värdar.
+            <div className="flex--">
+              <h- className="font-serif text-lg text-foregro-nd">Administratör</h->
+              <p className="mt-- text-sm text-m-ted-foregro-nd">
+                Hantera provisionsavgift och fakt-rastat-s för alla värdar.
               </p>
-              <Link to="/admin" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">
+              <Link to="/admin" className="mt-- inline-block text-sm font-medi-m text-primary hover:-nderline">
                 Till admin-panelen →
               </Link>
             </div>
@@ -196,160 +196,160 @@ function AccountPage() {
         </div>
       )}
 
-      {/* Profilformulär */}
-      <form onSubmit={handleSave} className="space-y-4 rounded-2xl border border-border bg-background p-6">
+      {/* Profilform-lär */}
+      <form onS-bmit={handleSave} className="space-y-- ro-nded--xl border border-border bg-backgro-nd p-6">
         <div>
-          <h2 className="font-serif text-xl text-foreground">Personuppgifter</h2>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Krävs för att boka och hyra ut. Endast du själv och administratörer kan se dina uppgifter.
+          <h- className="font-serif text-xl text-foregro-nd">Person-ppgifter</h->
+          <p className="mt-- text-xs text-m-ted-foregro-nd">
+            Krävs för att boka och hyra -t. Endast d- själv och administratörer kan se dina -ppgifter.
           </p>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground">Fullständigt namn *</label>
+          <label className="mb-- block text-xs font-medi-m text-foregro-nd">F-llständigt namn *</label>
           <div className="relative">
-            <User className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <input
+            <User className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+            <inp-t
               type="text"
-              value={fullName}
-              onChange={(e) => setFullName(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+              val-e={f-llName}
+              onChange={(e) => setF-llName(e.target.val-e)}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
               placeholder="För- och efternamn"
-              required
+              req-ired
             />
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-2">
+        <div className="grid gap-- md:grid-cols--">
           <div>
-            <label className="mb-1 block text-xs font-medium text-foreground">E-post *</label>
+            <label className="mb-- block text-xs font-medi-m text-foregro-nd">E-post *</label>
             <div className="relative">
-              <Mail className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <input
+              <Mail className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+              <inp-t
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+                val-e={email}
+                onChange={(e) => setEmail(e.target.val-e)}
+                className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
                 placeholder="namn@exempel.se"
-                required
+                req-ired
               />
             </div>
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-foreground">Telefon *</label>
+            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Telefon *</label>
             <div className="relative">
-              <Phone className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-              <input
+              <Phone className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+              <inp-t
                 type="tel"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
-                placeholder="+46 70 123 45 67"
-                required
+                val-e={phone}
+                onChange={(e) => setPhone(e.target.val-e)}
+                className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
+                placeholder="+-6 7- --- -5 67"
+                req-ired
               />
             </div>
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground">Gatuadress *</label>
+          <label className="mb-- block text-xs font-medi-m text-foregro-nd">Gat-adress *</label>
           <div className="relative">
-            <MapPin className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <input
+            <MapPin className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+            <inp-t
               type="text"
-              value={addressLine}
-              onChange={(e) => setAddressLine(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
-              placeholder="Storgatan 1"
-              required
+              val-e={addressLine}
+              onChange={(e) => setAddressLine(e.target.val-e)}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
+              placeholder="Storgatan -"
+              req-ired
             />
           </div>
         </div>
-        <div className="grid gap-4 md:grid-cols-3">
+        <div className="grid gap-- md:grid-cols--">
           <div>
-            <label className="mb-1 block text-xs font-medium text-foreground">Postnummer *</label>
-            <input
+            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Postn-mmer *</label>
+            <inp-t
               type="text"
-              value={postalCode}
-              onChange={(e) => setPostalCode(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm focus:border-primary focus:outline-none"
-              placeholder="123 45"
-              required
+              val-e={postalCode}
+              onChange={(e) => setPostalCode(e.target.val-e)}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 px-- text-sm foc-s:border-primary foc-s:o-tline-none"
+              placeholder="--- -5"
+              req-ired
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-foreground">Ort *</label>
-            <input
+            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Ort *</label>
+            <inp-t
               type="text"
-              value={city}
-              onChange={(e) => setCity(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm focus:border-primary focus:outline-none"
+              val-e={city}
+              onChange={(e) => setCity(e.target.val-e)}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 px-- text-sm foc-s:border-primary foc-s:o-tline-none"
               placeholder="Stockholm"
-              required
+              req-ired
             />
           </div>
           <div>
-            <label className="mb-1 block text-xs font-medium text-foreground">Land</label>
-            <input
+            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Land</label>
+            <inp-t
               type="text"
-              value={country}
-              onChange={(e) => setCountry(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background py-2.5 px-3 text-sm focus:border-primary focus:outline-none"
+              val-e={co-ntry}
+              onChange={(e) => setCo-ntry(e.target.val-e)}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 px-- text-sm foc-s:border-primary foc-s:o-tline-none"
               placeholder="Sverige"
             />
           </div>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground">
-            Personnummer {profile.is_host ? "*" : "(valfritt för gäster)"}
+          <label className="mb-- block text-xs font-medi-m text-foregro-nd">
+            Personn-mmer {profile.is_host ? "*" : "(valfritt för gäster)"}
           </label>
           <div className="relative">
-            <Hash className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-            <input
+            <Hash className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+            <inp-t
               type="text"
-              value={personalNumber}
-              onChange={(e) => setPersonalNumber(e.target.value)}
-              className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+              val-e={personalN-mber}
+              onChange={(e) => setPersonalN-mber(e.target.val-e)}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
               placeholder="ÅÅÅÅMMDD-XXXX"
             />
           </div>
-          <p className="mt-1 text-xs text-muted-foreground">Används för fakturering och myndighetsrapportering. Endast du och admin ser detta.</p>
+          <p className="mt-- text-xs text-m-ted-foregro-nd">Används för fakt-rering och myndighetsrapportering. Endast d- och admin ser detta.</p>
         </div>
         <div>
-          <label className="mb-1 block text-xs font-medium text-foreground">Om dig</label>
+          <label className="mb-- block text-xs font-medi-m text-foregro-nd">Om dig</label>
           <div className="relative">
-            <FileText className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <FileText className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
             <textarea
-              value={bio}
-              onChange={(e) => setBio(e.target.value)}
-              rows={3}
-              className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+              val-e={bio}
+              onChange={(e) => setBio(e.target.val-e)}
+              rows={-}
+              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
               placeholder="Berätta lite om dig själv..."
             />
           </div>
         </div>
-        <button
-          type="submit"
+        <b-tton
+          type="s-bmit"
           disabled={saving}
-          className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+          className="flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
         >
-          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
+          {saving && <Loader- className="h-- w-- animate-spin" />}
           Spara ändringar
-        </button>
+        </b-tton>
       </form>
 
       {profile.is_host && (
         <div className="mt-8">
-          <HostPayoutForm hostId={user.id} />
+          <HostPayo-tForm hostId={-ser.id} />
         </div>
       )}
 
       {profile.is_host && (
         <div className="mt-8">
-          <SeasonPricingManager hostId={user.id} />
+          <SeasonPricingManager hostId={-ser.id} />
         </div>
       )}
 
       {profile.is_host && (
         <div className="mt-8">
-          <PricePreview hostId={user.id} />
+          <PricePreview hostId={-ser.id} />
         </div>
       )}
 
@@ -357,15 +357,15 @@ function AccountPage() {
         <PriceAlertsManager />
       </div>
 
-      <div className="mt-8 rounded-2xl border border-border bg-background p-6">
-        <div className="flex items-start gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
+      <div className="mt-8 ro-nded--xl border border-border bg-backgro-nd p-6">
+        <div className="flex items-start gap--">
+          <div className="flex h--- w--- items-center j-stify-center ro-nded-f-ll bg-primary/-- text-primary">
             <Heart className="h-5 w-5" />
           </div>
-          <div className="flex-1">
-            <h2 className="font-serif text-xl text-foreground">Mina favoriter</h2>
-            <p className="mt-1 text-sm text-muted-foreground">Se stugor du sparat för senare.</p>
-            <Link to="/favoriter" className="mt-3 inline-block text-sm font-medium text-primary hover:underline">
+          <div className="flex--">
+            <h- className="font-serif text-xl text-foregro-nd">Mina favoriter</h->
+            <p className="mt-- text-sm text-m-ted-foregro-nd">Se st-gor d- sparat för senare.</p>
+            <Link to="/favoriter" className="mt-- inline-block text-sm font-medi-m text-primary hover:-nderline">
               Till mina favoriter →
             </Link>
           </div>

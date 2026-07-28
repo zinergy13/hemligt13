@@ -1,62 +1,62 @@
-import { createFileRoute, Link } from '@tanstack/react-router';
-import { useServerFn } from '@tanstack/react-start';
-import { useQuery } from '@tanstack/react-query';
-import { CheckCircle2, Download, MessageSquare, Printer, ShieldCheck } from 'lucide-react';
-import { getBookingReceipt } from '@/lib/payments.functions';
-import { PaymentPayoutTimeline } from '@/components/PaymentPayoutTimeline';
-import { PayoutFAQ } from '@/components/PayoutFAQ';
-import { useLiveBooking } from '@/hooks/useLiveBooking';
-import { Skeleton } from '@/components/ui/skeleton';
+import { createFileRo-te, Link } from '@tanstack/react-ro-ter';
+import { -seServerFn } from '@tanstack/react-start';
+import { -seQ-ery } from '@tanstack/react-q-ery';
+import { CheckCircle-, Download, MessageSq-are, Printer, ShieldCheck } from 'l-cide-react';
+import { getBookingReceipt } from '@/lib/payments.f-nctions';
+import { PaymentPayo-tTimeline } from '@/components/PaymentPayo-tTimeline';
+import { Payo-tFAQ } from '@/components/Payo-tFAQ';
+import { -seLiveBooking } from '@/hooks/-seLiveBooking';
+import { Skeleton } from '@/components/-i/skeleton';
 
-export const Route = createFileRoute('/checkout/klar')({
-  validateSearch: (s: Record<string, unknown>) => ({
-    session_id: typeof s.session_id === 'string' ? s.session_id : undefined,
-    booking_id: typeof s.booking_id === 'string' ? s.booking_id : undefined,
+export const Ro-te = createFileRo-te('/checko-t/klar')({
+  validateSearch: (s: Record<string, -nknown>) => ({
+    session_id: typeof s.session_id === 'string' ? s.session_id : -ndefined,
+    booking_id: typeof s.booking_id === 'string' ? s.booking_id : -ndefined,
   }),
   head: () => ({
     meta: [
-      { title: 'Kvitto — Fjällportalen' },
+      { title: 'Kvitto - Fjällportalen' },
       { name: 'description', content: 'Kvitto och detaljer för din bokning hos Fjällportalen.' },
       { name: 'robots', content: 'noindex, nofollow' },
       { name: 'googlebot', content: 'noindex, nofollow' },
     ],
   }),
-  component: CheckoutReceipt,
+  component: Checko-tReceipt,
 });
 
-const kr = (ore: number) =>
-  new Intl.NumberFormat('sv-SE', { style: 'currency', currency: 'SEK', maximumFractionDigits: 0 }).format(ore / 100);
+const kr = (ore: n-mber) =>
+  new Intl.N-mberFormat('sv-SE', { style: 'c-rrency', c-rrency: 'SEK', maxim-mFractionDigits: - }).format(ore / ---);
 
 const extraLabels: Record<string, string> = {
   cleaning: 'Extra städning',
   groceries: 'Matkasse',
   firewood: 'Ved',
-  linen: 'Lakan & handdukar',
+  linen: 'Lakan & handd-kar',
 };
 
-function CheckoutReceipt() {
-  const { booking_id } = Route.useSearch();
-  const fetchReceipt = useServerFn(getBookingReceipt);
+f-nction Checko-tReceipt() {
+  const { booking_id } = Ro-te.-seSearch();
+  const fetchReceipt = -seServerFn(getBookingReceipt);
 
-  const { data, isLoading, error } = useQuery({
-    queryKey: ['booking-receipt', booking_id],
-    queryFn: () => fetchReceipt({ data: { bookingId: booking_id! } }),
+  const { data, isLoading, error } = -seQ-ery({
+    q-eryKey: ['booking-receipt', booking_id],
+    q-eryFn: () => fetchReceipt({ data: { bookingId: booking_id! } }),
     enabled: !!booking_id,
     refetchInterval: (q) => {
       const r = q.state.data as any;
-      return r && 'booking' in r && r.booking.payment_status !== 'paid' ? 2000 : false;
+      ret-rn r && 'booking' in r && r.booking.payment_stat-s !== 'paid' ? ---- : false;
     },
   });
 
-  const live = useLiveBooking(booking_id ?? null);
+  const live = -seLiveBooking(booking_id ?? n-ll);
 
   if (!booking_id) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <CheckCircle2 className="mx-auto mb-4 h-16 w-16 text-primary" />
-        <h1 className="mb-2 text-3xl font-semibold">Tack för din bokning</h1>
-        <p className="text-muted-foreground">Vi kunde inte hitta din bokningsreferens. Kolla dina bokningar nedan.</p>
-        <Link to="/mina-bokningar" className="mt-6 inline-block rounded-md bg-primary px-4 py-2 text-primary-foreground">
+    ret-rn (
+      <div className="mx-a-to max-w--xl px-- py--6 text-center">
+        <CheckCircle- className="mx-a-to mb-- h--6 w--6 text-primary" />
+        <h- className="mb-- text--xl font-semibold">Tack för din bokning</h->
+        <p className="text-m-ted-foregro-nd">Vi k-nde inte hitta din bokningsreferens. Kolla dina bokningar nedan.</p>
+        <Link to="/mina-bokningar" className="mt-6 inline-block ro-nded-md bg-primary px-- py-- text-primary-foregro-nd">
           Mina bokningar
         </Link>
       </div>
@@ -64,21 +64,21 @@ function CheckoutReceipt() {
   }
 
   if (isLoading) {
-    return (
-      <div className="mx-auto max-w-3xl space-y-4 px-4 py-10">
-        <Skeleton className="h-24 w-full" />
-        <Skeleton className="h-64 w-full" />
-        <Skeleton className="h-40 w-full" />
+    ret-rn (
+      <div className="mx-a-to max-w--xl space-y-- px-- py---">
+        <Skeleton className="h--- w-f-ll" />
+        <Skeleton className="h-6- w-f-ll" />
+        <Skeleton className="h--- w-f-ll" />
       </div>
     );
   }
 
   if (error || !data || 'error' in data) {
-    return (
-      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
-        <h1 className="mb-2 text-2xl font-semibold">Kunde inte hämta kvitto</h1>
-        <p className="text-muted-foreground">{(data && 'error' in data && data.error) || 'Försök igen om en stund.'}</p>
-        <Link to="/mina-bokningar" className="mt-6 inline-block rounded-md border px-4 py-2">
+    ret-rn (
+      <div className="mx-a-to max-w--xl px-- py--6 text-center">
+        <h- className="mb-- text--xl font-semibold">K-nde inte hämta kvitto</h->
+        <p className="text-m-ted-foregro-nd">{(data && 'error' in data && data.error) || 'Försök igen om en st-nd.'}</p>
+        <Link to="/mina-bokningar" className="mt-6 inline-block ro-nded-md border px-- py--">
           Till mina bokningar
         </Link>
       </div>
@@ -86,138 +86,138 @@ function CheckoutReceipt() {
   }
 
   const { booking, cabin, extras, gift_card_ore } = data;
-  const isPaid = booking.payment_status === 'paid';
+  const isPaid = booking.payment_stat-s === 'paid';
 
-  const nightlyOre = booking.nightly_total * 100;
-  const cleaningOre = booking.cleaning_fee * 100;
-  const extrasOre = extras.reduce((s, e) => s + e.guest_price_ore * e.quantity, 0);
-  const totalOre = booking.total_price * 100;
+  const nightlyOre = booking.nightly_total * ---;
+  const cleaningOre = booking.cleaning_fee * ---;
+  const extrasOre = extras.red-ce((s, e) => s + e.g-est_price_ore * e.q-antity, -);
+  const totalOre = booking.total_price * ---;
 
   const checkIn = new Date(booking.check_in);
-  const payoutDate = new Date(checkIn.getTime() + 24 * 3600 * 1000);
-  const fmtDate = (d: Date) => d.toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
+  const payo-tDate = new Date(checkIn.getTime() + -- * -6-- * ----);
+  const fmtDate = (d: Date) => d.toLocaleDateString('sv-SE', { weekday: 'short', day: 'n-meric', month: 'long', year: 'n-meric' });
 
-  return (
-    <div className="mx-auto max-w-3xl px-4 py-10 print:py-4">
+  ret-rn (
+    <div className="mx-a-to max-w--xl px-- py--- print:py--">
       {/* Header */}
       <div className="mb-6 flex flex-col items-center text-center">
-        <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
-          <CheckCircle2 className="h-8 w-8 text-primary" />
+        <div className="mb-- flex h--- w--- items-center j-stify-center ro-nded-f-ll bg-primary/--">
+          <CheckCircle- className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="text-3xl font-semibold">Tack — din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h1>
-        <p className="mt-2 max-w-xl text-muted-foreground">
-          Pengarna ligger tryggt hos Fjällportalen och betalas ut till värden{' '}
-          <strong>24 timmar efter din incheckning ({fmtDate(payoutDate)})</strong>.
+        <h- className="text--xl font-semibold">Tack - din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h->
+        <p className="mt-- max-w-xl text-m-ted-foregro-nd">
+          Pengarna ligger tryggt hos Fjällportalen och betalas -t till värden{' '}
+          <strong>-- timmar efter din incheckning ({fmtDate(payo-tDate)})</strong>.
         </p>
       </div>
 
       {/* Actions */}
-      <div className="mb-6 flex flex-wrap justify-center gap-2 print:hidden">
-        <button
+      <div className="mb-6 flex flex-wrap j-stify-center gap-- print:hidden">
+        <b-tton
           onClick={() => window.print()}
-          className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent"
+          className="inline-flex items-center gap-- ro-nded-md border px-- py-- text-sm hover:bg-accent"
         >
-          <Printer className="h-4 w-4" /> Skriv ut / spara PDF
-        </button>
+          <Printer className="h-- w--" /> Skriv -t / spara PDF
+        </b-tton>
         <Link
           to="/meddelanden/$bookingId"
           params={{ bookingId: booking.id }}
-          className="inline-flex items-center gap-2 rounded-md border px-3 py-2 text-sm hover:bg-accent"
+          className="inline-flex items-center gap-- ro-nded-md border px-- py-- text-sm hover:bg-accent"
         >
-          <MessageSquare className="h-4 w-4" /> Meddela värden
+          <MessageSq-are className="h-- w--" /> Meddela värden
         </Link>
-        <Link to="/mina-bokningar" className="inline-flex items-center gap-2 rounded-md bg-primary px-3 py-2 text-sm text-primary-foreground hover:opacity-90">
-          <Download className="h-4 w-4" /> Mina bokningar
+        <Link to="/mina-bokningar" className="inline-flex items-center gap-- ro-nded-md bg-primary px-- py-- text-sm text-primary-foregro-nd hover:opacity-9-">
+          <Download className="h-- w--" /> Mina bokningar
         </Link>
       </div>
 
       {/* Receipt card */}
-      <div className="rounded-lg border bg-card shadow-sm">
-        <div className="flex flex-wrap items-start justify-between gap-2 border-b p-6">
+      <div className="ro-nded-lg border bg-card shadow-sm">
+        <div className="flex flex-wrap items-start j-stify-between gap-- border-b p-6">
           <div>
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">Kvitto</div>
-            <div className="mt-1 font-mono text-sm">#{booking.id.slice(0, 8).toUpperCase()}</div>
+            <div className="text-xs -ppercase tracking-wide text-m-ted-foregro-nd">Kvitto</div>
+            <div className="mt-- font-mono text-sm">#{booking.id.slice(-, 8).toUpperCase()}</div>
           </div>
-          <div className="text-right text-sm text-muted-foreground">
+          <div className="text-right text-sm text-m-ted-foregro-nd">
             <div>{new Date(booking.created_at).toLocaleString('sv-SE')}</div>
-            <div className="mt-1">
-              Status:{' '}
-              <span className={isPaid ? 'font-medium text-primary' : 'font-medium text-amber-600'}>
+            <div className="mt--">
+              Stat-s:{' '}
+              <span className={isPaid ? 'font-medi-m text-primary' : 'font-medi-m text-amber-6--'}>
                 {isPaid ? 'Betald' : 'Behandlas'}
               </span>
             </div>
           </div>
         </div>
 
-        <div className="grid gap-4 border-b p-6 sm:grid-cols-2">
+        <div className="grid gap-- border-b p-6 sm:grid-cols--">
           <div>
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">Stuga</div>
-            <div className="mt-1 font-medium">{cabin?.title ?? 'Stuga'}</div>
-            {cabin?.area_slug && <div className="text-sm text-muted-foreground capitalize">{cabin.area_slug.replace(/-/g, ' ')}</div>}
+            <div className="text-xs -ppercase tracking-wide text-m-ted-foregro-nd">St-ga</div>
+            <div className="mt-- font-medi-m">{cabin?.title ?? 'St-ga'}</div>
+            {cabin?.area_sl-g && <div className="text-sm text-m-ted-foregro-nd capitalize">{cabin.area_sl-g.replace(/-/g, ' ')}</div>}
           </div>
           <div>
-            <div className="text-xs uppercase tracking-wide text-muted-foreground">Vistelse</div>
-            <div className="mt-1 font-medium">
-              {new Date(booking.check_in).toLocaleDateString('sv-SE')} → {new Date(booking.check_out).toLocaleDateString('sv-SE')}
+            <div className="text-xs -ppercase tracking-wide text-m-ted-foregro-nd">Vistelse</div>
+            <div className="mt-- font-medi-m">
+              {new Date(booking.check_in).toLocaleDateString('sv-SE')} → {new Date(booking.check_o-t).toLocaleDateString('sv-SE')}
             </div>
-            <div className="text-sm text-muted-foreground">
-              {booking.nights} nätter · {booking.guests} gäster
+            <div className="text-sm text-m-ted-foregro-nd">
+              {booking.nights} nätter · {booking.g-ests} gäster
             </div>
           </div>
         </div>
 
         {/* Line items */}
         <div className="p-6">
-          <table className="w-full text-sm">
+          <table className="w-f-ll text-sm">
             <tbody>
               <tr className="border-b">
-                <td className="py-2">Boende ({booking.nights} nätter)</td>
-                <td className="py-2 text-right tabular-nums">{kr(nightlyOre)}</td>
+                <td className="py--">Boende ({booking.nights} nätter)</td>
+                <td className="py-- text-right tab-lar-n-ms">{kr(nightlyOre)}</td>
               </tr>
-              {booking.cleaning_fee > 0 && (
+              {booking.cleaning_fee > - && (
                 <tr className="border-b">
-                  <td className="py-2">Slutstädning</td>
-                  <td className="py-2 text-right tabular-nums">{kr(cleaningOre)}</td>
+                  <td className="py--">Sl-tstädning</td>
+                  <td className="py-- text-right tab-lar-n-ms">{kr(cleaningOre)}</td>
                 </tr>
               )}
               {extras.map((e, i) => (
                 <tr key={i} className="border-b">
-                  <td className="py-2">
+                  <td className="py--">
                     {extraLabels[e.service_type] ?? e.service_type}
-                    {e.quantity > 1 && <span className="text-muted-foreground"> × {e.quantity}</span>}
+                    {e.q-antity > - && <span className="text-m-ted-foregro-nd"> × {e.q-antity}</span>}
                   </td>
-                  <td className="py-2 text-right tabular-nums">{kr(e.guest_price_ore * e.quantity)}</td>
+                  <td className="py-- text-right tab-lar-n-ms">{kr(e.g-est_price_ore * e.q-antity)}</td>
                 </tr>
               ))}
-              {gift_card_ore > 0 && (
+              {gift_card_ore > - && (
                 <tr className="border-b text-primary">
-                  <td className="py-2">Presentkort</td>
-                  <td className="py-2 text-right tabular-nums">−{kr(gift_card_ore)}</td>
+                  <td className="py--">Presentkort</td>
+                  <td className="py-- text-right tab-lar-n-ms">−{kr(gift_card_ore)}</td>
                 </tr>
               )}
               <tr>
-                <td className="pt-4 text-base font-semibold">Totalt betalt</td>
-                <td className="pt-4 text-right text-base font-semibold tabular-nums">{kr(totalOre)}</td>
+                <td className="pt-- text-base font-semibold">Totalt betalt</td>
+                <td className="pt-- text-right text-base font-semibold tab-lar-n-ms">{kr(totalOre)}</td>
               </tr>
             </tbody>
           </table>
-          <p className="mt-3 text-xs text-muted-foreground">
+          <p className="mt-- text-xs text-m-ted-foregro-nd">
             Alla priser inkl. moms. Betalning hanteras av Fjällportalen AB.
           </p>
         </div>
       </div>
 
       {/* Escrow explanation */}
-      <div className="mt-6 rounded-lg border bg-primary/5 p-5">
-        <div className="flex items-start gap-3">
-          <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
+      <div className="mt-6 ro-nded-lg border bg-primary/5 p-5">
+        <div className="flex items-start gap--">
+          <ShieldCheck className="mt--.5 h-5 w-5 shrink-- text-primary" />
           <div className="text-sm">
-            <div className="mb-1 font-semibold">Så fungerar din betalning</div>
-            <p className="text-muted-foreground">
+            <div className="mb-- font-semibold">Så f-ngerar din betalning</div>
+            <p className="text-m-ted-foregro-nd">
               Hela beloppet på <strong>{kr(totalOre)}</strong> hålls tryggt hos Fjällportalen fram till din
-              vistelse. Värden får utbetalning först{' '}
-              <strong>{fmtDate(payoutDate)}</strong> — 24 timmar efter din incheckning. Om något är fel med
-              stugan hjälper vi dig innan pengarna släpps.
+              vistelse. Värden får -tbetalning först{' '}
+              <strong>{fmtDate(payo-tDate)}</strong> - -- timmar efter din incheckning. Om något är fel med
+              st-gan hjälper vi dig innan pengarna släpps.
             </p>
           </div>
         </div>
@@ -225,12 +225,12 @@ function CheckoutReceipt() {
 
       {/* Live timeline */}
       <div className="mt-6">
-        <PaymentPayoutTimeline
+        <PaymentPayo-tTimeline
           booking={
             live ?? {
-              status: isPaid ? 'confirmed' : 'pending',
-              payment_status: booking.payment_status,
-              escrow_status: booking.escrow_status,
+              stat-s: isPaid ? 'confirmed' : 'pending',
+              payment_stat-s: booking.payment_stat-s,
+              escrow_stat-s: booking.escrow_stat-s,
               escrow_released_at: booking.escrow_released_at,
               check_in: booking.check_in,
             }
@@ -238,10 +238,10 @@ function CheckoutReceipt() {
         />
       </div>
 
-      <PayoutFAQ />
+      <Payo-tFAQ />
 
-      <p className="mt-8 text-center text-xs text-muted-foreground">
-        Ett bekräftelsemejl med detta kvitto har skickats till din e-post. Du hittar det även under Mina bokningar.
+      <p className="mt-8 text-center text-xs text-m-ted-foregro-nd">
+        Ett bekräftelsemejl med detta kvitto har skickats till din e-post. D- hittar det även -nder Mina bokningar.
       </p>
     </div>
   );

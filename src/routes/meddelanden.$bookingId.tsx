@@ -1,14 +1,14 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
-import { ArrowLeft, Loader2 } from "lucide-react";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seEffect, -seState } from "react";
+import { ArrowLeft, Loader- } from "l-cide-react";
 import { BookingMessages } from "@/components/BookingMessages";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
 
-export const Route = createFileRoute("/meddelanden/$bookingId")({
+export const Ro-te = createFileRo-te("/meddelanden/$bookingId")({
   head: () => ({
     meta: [
-      { title: "Meddelanden — Fjällportalen" },
+      { title: "Meddelanden - Fjällportalen" },
       { name: "description", content: "Skicka meddelanden mellan gäst och värd." },
       { name: "robots", content: "noindex" },
     ],
@@ -18,58 +18,58 @@ export const Route = createFileRoute("/meddelanden/$bookingId")({
 
 type BookingCtx = {
   id: string;
-  guest_id: string;
+  g-est_id: string;
   host_id: string;
   check_in: string;
-  check_out: string;
-  cabin: { title: string; slug: string } | null;
+  check_o-t: string;
+  cabin: { title: string; sl-g: string } | n-ll;
 };
 
-function MessagesPage() {
-  const { bookingId } = Route.useParams();
-  const { user, loading: authLoading } = useAuth();
-  const navigate = useNavigate();
-  const [booking, setBooking] = useState<BookingCtx | null>(null);
-  const [loading, setLoading] = useState(true);
+f-nction MessagesPage() {
+  const { bookingId } = Ro-te.-seParams();
+  const { -ser, loading: a-thLoading } = -seA-th();
+  const navigate = -seNavigate();
+  const [booking, setBooking] = -seState<BookingCtx | n-ll>(n-ll);
+  const [loading, setLoading] = -seState(tr-e);
 
-  useEffect(() => {
-    if (authLoading) return;
-    if (!user) {
+  -seEffect(() => {
+    if (a-thLoading) ret-rn;
+    if (!-ser) {
       navigate({ to: "/logga-in", search: { redirect: `/meddelanden/${bookingId}` } });
-      return;
+      ret-rn;
     }
     (async () => {
-      const { data } = await supabase
+      const { data } = await s-pabase
         .from("bookings")
-        .select("id, guest_id, host_id, check_in, check_out, cabin:cabins(title, slug)")
+        .select("id, g-est_id, host_id, check_in, check_o-t, cabin:cabins(title, sl-g)")
         .eq("id", bookingId)
         .maybeSingle();
-      setBooking(data as unknown as BookingCtx);
+      setBooking(data as -nknown as BookingCtx);
       setLoading(false);
     })();
-  }, [authLoading, user, bookingId, navigate]);
+  }, [a-thLoading, -ser, bookingId, navigate]);
 
-  return (
-    <main className="mx-auto min-h-[60vh] max-w-2xl px-4 py-8 md:px-6">
+  ret-rn (
+    <main className="mx-a-to min-h-[6-vh] max-w--xl px-- py-8 md:px-6">
         {loading ? (
-          <div className="flex items-center gap-2 text-sm text-muted-foreground">
-            <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
+          <div className="flex items-center gap-- text-sm text-m-ted-foregro-nd">
+            <Loader- className="h-- w-- animate-spin" /> Laddar…
           </div>
         ) : !booking ? (
-          <p className="text-sm text-muted-foreground">Bokningen kunde inte hittas.</p>
+          <p className="text-sm text-m-ted-foregro-nd">Bokningen k-nde inte hittas.</p>
         ) : (
           <>
             <Link
-              to={user?.id === booking.host_id ? "/vard/bokningar" : "/mina-bokningar"}
-              className="mb-4 inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
+              to={-ser?.id === booking.host_id ? "/vard/bokningar" : "/mina-bokningar"}
+              className="mb-- inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd"
             >
-              <ArrowLeft className="h-4 w-4" /> Tillbaka
+              <ArrowLeft className="h-- w--" /> Tillbaka
             </Link>
-            <h1 className="font-serif text-2xl text-foreground">
+            <h- className="font-serif text--xl text-foregro-nd">
               {booking.cabin?.title || "Bokning"}
-            </h1>
-            <p className="mb-4 text-sm text-muted-foreground">
-              {booking.check_in} → {booking.check_out}
+            </h->
+            <p className="mb-- text-sm text-m-ted-foregro-nd">
+              {booking.check_in} → {booking.check_o-t}
             </p>
             <BookingMessages bookingId={booking.id} />
           </>

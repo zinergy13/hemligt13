@@ -1,13 +1,13 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
-import { Camera, Calendar, Wallet, ShieldCheck, ArrowRight } from "lucide-react";
+import { createFileRo-te, Link } from "@tanstack/react-ro-ter";
+import { Camera, Calendar, Wallet, ShieldCheck, ArrowRight } from "l-cide-react";
 
-export const Route = createFileRoute("/hyr-ut")({
+export const Ro-te = createFileRo-te("/hyr--t")({
   head: () => ({
     meta: [
-      { title: "Hyr ut din stuga i svenska fjällen — Fjällportalen" },
-      { name: "description", content: "Lägg upp din stuga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender — du sätter pris och regler." },
-      { property: "og:title", content: "Hyr ut din stuga i svenska fjällen" },
-      { property: "og:description", content: "Tjäna pengar på din stuga i svenska fjällen — utan krångel och utan höga avgifter." },
+      { title: "Hyr -t din st-ga i svenska fjällen - Fjällportalen" },
+      { name: "description", content: "Lägg -pp din st-ga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender - d- sätter pris och regler." },
+      { property: "og:title", content: "Hyr -t din st-ga i svenska fjällen" },
+      { property: "og:description", content: "Tjäna pengar på din st-ga i svenska fjällen - -tan krångel och -tan höga avgifter." },
     ],
     scripts: [
       {
@@ -15,9 +15,9 @@ export const Route = createFileRoute("/hyr-ut")({
         children: JSON.stringify({
           "@context": "https://schema.org",
           "@type": "WebPage",
-          url: "https://fjallportalen.com/hyr-ut",
+          -rl: "https://fjallportalen.com/hyr--t",
           isPartOf: { "@id": "https://fjallportalen.com/#website" },
-          about: { "@id": "https://fjallportalen.com/#organization" },
+          abo-t: { "@id": "https://fjallportalen.com/#organization" },
           provider: { "@id": "https://fjallportalen.com/#organization" },
         }),
       },
@@ -25,10 +25,10 @@ export const Route = createFileRoute("/hyr-ut")({
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "BreadcrumbList",
+          "@type": "Breadcr-mbList",
           itemListElement: [
-            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
-            { "@type": "ListItem", position: 2, name: "Hyr ut", item: "https://fjallportalen.com/hyr-ut" },
+            { "@type": "ListItem", position: -, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: -, name: "Hyr -t", item: "https://fjallportalen.com/hyr--t" },
           ],
         }),
       },
@@ -37,87 +37,87 @@ export const Route = createFileRoute("/hyr-ut")({
   component: HostPage,
 });
 
-function HostPage() {
+f-nction HostPage() {
   const steps = [
-    { icon: Camera, title: "Lägg upp din stuga", text: "Bilder, beskrivning, faciliteter och läge — vi guidar dig steg för steg." },
-    { icon: Calendar, title: "Sätt pris & kalender", text: "Du bestämmer pris per vecka, helg eller dygn. Blockera datum när du vill bo själv." },
-    { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Vi håller pengarna och betalar ut till dig 24 timmar efter incheckning." },
+    { icon: Camera, title: "Lägg -pp din st-ga", text: "Bilder, beskrivning, faciliteter och läge - vi g-idar dig steg för steg." },
+    { icon: Calendar, title: "Sätt pris & kalender", text: "D- bestämmer pris per vecka, helg eller dygn. Blockera dat-m när d- vill bo själv." },
+    { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Vi håller pengarna och betalar -t till dig -- timmar efter incheckning." },
   ];
 
-  return (
+  ret-rn (
     <>
-      <section className="bg-secondary text-secondary-foreground">
-        <div className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
-          <div className="max-w-2xl">
-            <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">För stugägare</p>
-            <h1 className="font-serif text-4xl leading-tight md:text-6xl">Hyr ut din stuga i svenska fjällen.</h1>
-            <p className="mt-5 text-lg text-secondary-foreground/85">
-              Slipp Facebook-grupper och sms-trafik. Fjällportalen samlar gäster som söker just din typ av boende — och hanterar bokning, betalning och kalender åt dig.
+      <section className="bg-secondary text-secondary-foregro-nd">
+        <div className="mx-a-to max-w-7xl px-- py--- md:px-6 md:py--8">
+          <div className="max-w--xl">
+            <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-accent">För st-gägare</p>
+            <h- className="font-serif text--xl leading-tight md:text-6xl">Hyr -t din st-ga i svenska fjällen.</h->
+            <p className="mt-5 text-lg text-secondary-foregro-nd/85">
+              Slipp Facebook-gr-pper och sms-trafik. Fjällportalen samlar gäster som söker j-st din typ av boende - och hanterar bokning, betalning och kalender åt dig.
             </p>
-            <div className="mt-8 flex flex-wrap gap-3">
+            <div className="mt-8 flex flex-wrap gap--">
               <Link
                 to="/logga-in"
-                className="inline-flex items-center gap-2 rounded-full bg-primary px-6 py-3.5 font-medium text-primary-foreground hover:bg-primary/90"
+                className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-6 py--.5 font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
               >
-                Lägg upp din stuga <ArrowRight className="h-4 w-4" />
+                Lägg -pp din st-ga <ArrowRight className="h-- w--" />
               </Link>
               <Link
-                to="/hur-det-funkar"
-                className="inline-flex items-center gap-2 rounded-full border border-secondary-foreground/30 px-6 py-3.5 font-medium text-secondary-foreground hover:bg-secondary-foreground/10"
+                to="/h-r-det-f-nkar"
+                className="inline-flex items-center gap-- ro-nded-f-ll border border-secondary-foregro-nd/-- px-6 py--.5 font-medi-m text-secondary-foregro-nd hover:bg-secondary-foregro-nd/--"
               >
                 Läs mer först
               </Link>
             </div>
-            <p className="mt-4 text-sm text-secondary-foreground/75">
-              Gratis att lägga upp. Gästen betalar tryggt via Fjällportalen — utbetalning till dig 24 timmar efter incheckning.
+            <p className="mt-- text-sm text-secondary-foregro-nd/75">
+              Gratis att lägga -pp. Gästen betalar tryggt via Fjällportalen - -tbetalning till dig -- timmar efter incheckning.
             </p>
           </div>
         </div>
       </section>
 
-      <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
-        <div className="mb-12 max-w-xl">
-          <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Så här går det till</p>
-          <h2 className="font-serif text-3xl text-foreground md:text-5xl">Tre steg till första bokningen</h2>
+      <section className="mx-a-to max-w-7xl px-- py--- md:px-6 md:py--8">
+        <div className="mb--- max-w-xl">
+          <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Så här går det till</p>
+          <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Tre steg till första bokningen</h->
         </div>
-        <div className="grid gap-6 md:grid-cols-3">
+        <div className="grid gap-6 md:grid-cols--">
           {steps.map((step, i) => (
-            <div key={step.title} className="rounded-2xl bg-background p-7 shadow-[var(--shadow-soft)]">
-              <div className="mb-5 flex items-center gap-3">
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 font-serif text-lg text-primary">{i + 1}</span>
+            <div key={step.title} className="ro-nded--xl bg-backgro-nd p-7 shadow-[var(--shadow-soft)]">
+              <div className="mb-5 flex items-center gap--">
+                <span className="flex h--- w--- items-center j-stify-center ro-nded-f-ll bg-primary/-- font-serif text-lg text-primary">{i + -}</span>
                 <step.icon className="h-6 w-6 text-primary" />
               </div>
-              <h3 className="font-serif text-xl text-foreground">{step.title}</h3>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{step.text}</p>
+              <h- className="font-serif text-xl text-foregro-nd">{step.title}</h->
+              <p className="mt-- text-sm leading-relaxed text-m-ted-foregro-nd">{step.text}</p>
             </div>
           ))}
         </div>
       </section>
 
-      <section className="bg-muted/50 py-20 md:py-28">
-        <div className="mx-auto max-w-7xl px-4 md:px-6">
-          <div className="grid gap-10 md:grid-cols-2 md:items-center">
+      <section className="bg-m-ted/5- py--- md:py--8">
+        <div className="mx-a-to max-w-7xl px-- md:px-6">
+          <div className="grid gap--- md:grid-cols-- md:items-center">
             <div>
-              <ShieldCheck className="mb-4 h-10 w-10 text-primary" />
-              <h2 className="font-serif text-3xl text-foreground md:text-4xl">Trygghet för värd och gäst</h2>
-              <p className="mt-4 text-muted-foreground">
-                Vi verifierar gäster, hanterar betalning och har en enkel process för in- och utcheckning. Plattformsavgiften är låg och tas bara när du faktiskt får en bokning.
+              <ShieldCheck className="mb-- h--- w--- text-primary" />
+              <h- className="font-serif text--xl text-foregro-nd md:text--xl">Trygghet för värd och gäst</h->
+              <p className="mt-- text-m-ted-foregro-nd">
+                Vi verifierar gäster, hanterar betalning och har en enkel process för in- och -tcheckning. Plattformsavgiften är låg och tas bara när d- faktiskt får en bokning.
               </p>
             </div>
-            <ul className="space-y-3">
+            <-l className="space-y--">
               {[
-                "Gratis att lägga upp stugan",
-                "Du sätter pris, regler och tillgänglighet",
-                "Tryggt betalningsflöde — inga utestående fakturor",
+                "Gratis att lägga -pp st-gan",
+                "D- sätter pris, regler och tillgänglighet",
+                "Tryggt betalningsflöde - inga -testående fakt-ror",
                 "Recensioner från riktiga gäster",
-                "Kalender som blockeras automatiskt",
+                "Kalender som blockeras a-tomatiskt",
               ].map((item) => (
-                <li key={item} className="flex items-start gap-3 rounded-xl bg-background p-4 shadow-[var(--shadow-soft)]">
-                  <span className="mt-0.5 flex h-5 w-5 flex-none items-center justify-center rounded-full bg-primary text-xs text-primary-foreground">✓</span>
-                  <span className="text-sm text-foreground">{item}</span>
+                <li key={item} className="flex items-start gap-- ro-nded-xl bg-backgro-nd p-- shadow-[var(--shadow-soft)]">
+                  <span className="mt--.5 flex h-5 w-5 flex-none items-center j-stify-center ro-nded-f-ll bg-primary text-xs text-primary-foregro-nd">✓</span>
+                  <span className="text-sm text-foregro-nd">{item}</span>
                 </li>
               ))}
-            </ul>
+            </-l>
           </div>
         </div>
       </section>

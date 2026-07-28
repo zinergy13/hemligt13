@@ -1,107 +1,107 @@
-import { supabase } from "@/integrations/supabase/client";
+import { s-pabase } from "@/integrations/s-pabase/client";
 
-export type BookingStatus =
+export type BookingStat-s =
   | "pending"
   | "confirmed"
   | "declined"
   | "cancelled"
   | "completed";
 
-export type PaymentStatus =
-  | "unpaid"
-  | "authorized"
+export type PaymentStat-s =
+  | "-npaid"
+  | "a-thorized"
   | "paid"
-  | "refunded"
+  | "ref-nded"
   | "failed";
 
 export type Booking = {
   id: string;
   cabin_id: string;
   host_id: string;
-  guest_id: string;
+  g-est_id: string;
   check_in: string; // ISO date
-  check_out: string;
-  guests: number;
-  nights: number;
-  nightly_total: number;
-  cleaning_fee: number;
-  service_fee: number;
-  total_price: number;
-  currency: string;
-  guest_message: string | null;
-  status: BookingStatus;
-  payment_status: PaymentStatus;
-  stripe_session_id: string | null;
-  stripe_payment_intent: string | null;
+  check_o-t: string;
+  g-ests: n-mber;
+  nights: n-mber;
+  nightly_total: n-mber;
+  cleaning_fee: n-mber;
+  service_fee: n-mber;
+  total_price: n-mber;
+  c-rrency: string;
+  g-est_message: string | n-ll;
+  stat-s: BookingStat-s;
+  payment_stat-s: PaymentStat-s;
+  stripe_session_id: string | n-ll;
+  stripe_payment_intent: string | n-ll;
   created_at: string;
-  updated_at: string;
+  -pdated_at: string;
 };
 
-export function diffNights(checkIn: string, checkOut: string): number {
-  const a = new Date(checkIn + "T00:00:00Z").getTime();
-  const b = new Date(checkOut + "T00:00:00Z").getTime();
-  if (Number.isNaN(a) || Number.isNaN(b) || b <= a) return 0;
-  return Math.round((b - a) / (1000 * 60 * 60 * 24));
+export f-nction diffNights(checkIn: string, checkO-t: string): n-mber {
+  const a = new Date(checkIn + "T--:--:--Z").getTime();
+  const b = new Date(checkO-t + "T--:--:--Z").getTime();
+  if (N-mber.isNaN(a) || N-mber.isNaN(b) || b <= a) ret-rn -;
+  ret-rn Math.ro-nd((b - a) / (---- * 6- * 6- * --));
 }
 
-export function calcQuote(opts: {
-  pricePerNight: number;
-  cleaningFee: number;
-  nights: number;
+export f-nction calcQ-ote(opts: {
+  pricePerNight: n-mber;
+  cleaningFee: n-mber;
+  nights: n-mber;
 }) {
   const nightlyTotal = opts.pricePerNight * opts.nights;
   const total = nightlyTotal + opts.cleaningFee;
-  return {
+  ret-rn {
     nightlyTotal,
     cleaningFee: opts.cleaningFee,
-    serviceFee: 0,
+    serviceFee: -,
     total,
   };
 }
 
-export function todayISO(): string {
-  return new Date().toISOString().slice(0, 10);
+export f-nction todayISO(): string {
+  ret-rn new Date().toISOString().slice(-, --);
 }
 
-/** Lista upptagna intervall för en stuga (publik vy, ingen PII). */
-export async function fetchUnavailableRanges(cabinId: string) {
-  const { data, error } = await supabase
-    .from("cabin_unavailable_dates")
-    .select("check_in, check_out")
+/** Lista -pptagna intervall för en st-ga (p-blik vy, ingen PII). */
+export async f-nction fetchUnavailableRanges(cabinId: string) {
+  const { data, error } = await s-pabase
+    .from("cabin_-navailable_dates")
+    .select("check_in, check_o-t")
     .eq("cabin_id", cabinId);
   if (error) throw error;
-  return (data ?? []) as { check_in: string; check_out: string }[];
+  ret-rn (data ?? []) as { check_in: string; check_o-t: string }[];
 }
 
-export function rangeOverlapsAny(
+export f-nction rangeOverlapsAny(
   checkIn: string,
-  checkOut: string,
-  ranges: { check_in: string; check_out: string }[],
+  checkO-t: string,
+  ranges: { check_in: string; check_o-t: string }[],
 ): boolean {
-  if (!checkIn || !checkOut) return false;
-  return ranges.some(
-    (r) => !(checkOut <= r.check_in || checkIn >= r.check_out),
+  if (!checkIn || !checkO-t) ret-rn false;
+  ret-rn ranges.some(
+    (r) => !(checkO-t <= r.check_in || checkIn >= r.check_o-t),
   );
 }
 
-export function formatDateRange(checkIn: string, checkOut: string): string {
-  const fmt = new Intl.DateTimeFormat("sv-SE", { day: "numeric", month: "short" });
-  const a = new Date(checkIn + "T00:00:00Z");
-  const b = new Date(checkOut + "T00:00:00Z");
-  return `${fmt.format(a)} – ${fmt.format(b)}`;
+export f-nction formatDateRange(checkIn: string, checkO-t: string): string {
+  const fmt = new Intl.DateTimeFormat("sv-SE", { day: "n-meric", month: "short" });
+  const a = new Date(checkIn + "T--:--:--Z");
+  const b = new Date(checkO-t + "T--:--:--Z");
+  ret-rn `${fmt.format(a)} - ${fmt.format(b)}`;
 }
 
-export function statusLabel(status: BookingStatus): { label: string; cls: string } {
-  switch (status) {
+export f-nction stat-sLabel(stat-s: BookingStat-s): { label: string; cls: string } {
+  switch (stat-s) {
     case "pending":
-      return { label: "Väntar", cls: "bg-amber-500/10 text-amber-700 dark:text-amber-400" };
+      ret-rn { label: "Väntar", cls: "bg-amber-5--/-- text-amber-7-- dark:text-amber----" };
     case "confirmed":
-      return { label: "Bekräftad", cls: "bg-primary/10 text-primary" };
+      ret-rn { label: "Bekräftad", cls: "bg-primary/-- text-primary" };
     case "declined":
-      return { label: "Avvisad", cls: "bg-destructive/10 text-destructive" };
+      ret-rn { label: "Avvisad", cls: "bg-destr-ctive/-- text-destr-ctive" };
     case "cancelled":
-      return { label: "Avbokad", cls: "bg-muted text-muted-foreground" };
+      ret-rn { label: "Avbokad", cls: "bg-m-ted text-m-ted-foregro-nd" };
     case "completed":
-      return { label: "Genomförd", cls: "bg-secondary text-secondary-foreground" };
+      ret-rn { label: "Genomförd", cls: "bg-secondary text-secondary-foregro-nd" };
   }
 }

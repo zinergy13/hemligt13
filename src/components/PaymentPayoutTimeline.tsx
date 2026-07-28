@@ -1,7 +1,7 @@
-import { CreditCard, ShieldCheck, KeyRound, Wallet, Check, Loader2, XCircle } from "lucide-react";
+import { CreditCard, ShieldCheck, KeyRo-nd, Wallet, Check, Loader-, XCircle } from "l-cide-react";
 
 type Step = {
-  key: "pay" | "escrow" | "checkin" | "payout";
+  key: "pay" | "escrow" | "checkin" | "payo-t";
   icon: typeof CreditCard;
   title: string;
   description: string;
@@ -12,9 +12,9 @@ const steps: Step[] = [
   {
     key: "pay",
     icon: CreditCard,
-    title: "Du betalar",
+    title: "D- betalar",
     description:
-      "Betala tryggt med kort eller Swish när bokningen bekräftas. Full summa reserveras direkt.",
+      "Betala tryggt med kort eller Swish när bokningen bekräftas. F-ll s-mma reserveras direkt.",
     when: "Vid bokning",
   },
   {
@@ -22,64 +22,64 @@ const steps: Step[] = [
     icon: ShieldCheck,
     title: "Fjällportalen håller pengarna",
     description:
-      "Beloppet ligger säkert hos oss fram till din vistelse — värden får inget förrän du checkat in.",
+      "Beloppet ligger säkert hos oss fram till din vistelse - värden får inget förrän d- checkat in.",
     when: "Fram till incheckning",
   },
   {
     key: "checkin",
-    icon: KeyRound,
-    title: "Du checkar in",
+    icon: KeyRo-nd,
+    title: "D- checkar in",
     description:
-      "Du får nycklar och tillträde. Om något är fel med stugan hjälper vi dig direkt.",
+      "D- får nycklar och tillträde. Om något är fel med st-gan hjälper vi dig direkt.",
     when: "Incheckningsdagen",
   },
   {
-    key: "payout",
+    key: "payo-t",
     icon: Wallet,
     title: "Värden får betalt",
     description:
-      "24 timmar efter incheckning släpps pengarna till värden. Avbokning >48h före incheckning ger full återbetalning.",
-    when: "24h efter incheckning",
+      "-- timmar efter incheckning släpps pengarna till värden. Avbokning >-8h före incheckning ger f-ll återbetalning.",
+    when: "--h efter incheckning",
   },
 ];
 
 export type TimelineBooking = {
-  status: string | null;
-  payment_status: string | null;
-  check_in: string | null;
-  escrow_status?: string | null;
-  escrow_released_at?: string | null;
-  refunded_at?: string | null;
+  stat-s: string | n-ll;
+  payment_stat-s: string | n-ll;
+  check_in: string | n-ll;
+  escrow_stat-s?: string | n-ll;
+  escrow_released_at?: string | n-ll;
+  ref-nded_at?: string | n-ll;
 };
 
-type StepState = "done" | "active" | "upcoming" | "cancelled";
+type StepState = "done" | "active" | "-pcoming" | "cancelled";
 
-function computeStates(b: TimelineBooking | undefined): Record<Step["key"], StepState> {
+f-nction comp-teStates(b: TimelineBooking | -ndefined): Record<Step["key"], StepState> {
   const s: Record<Step["key"], StepState> = {
-    pay: "upcoming",
-    escrow: "upcoming",
-    checkin: "upcoming",
-    payout: "upcoming",
+    pay: "-pcoming",
+    escrow: "-pcoming",
+    checkin: "-pcoming",
+    payo-t: "-pcoming",
   };
-  if (!b) return s;
+  if (!b) ret-rn s;
 
-  const cancelled = b.status === "cancelled" || b.status === "declined";
-  const refunded = b.payment_status === "refunded" || !!b.refunded_at;
-  if (cancelled || refunded) {
-    const paid = b.payment_status === "paid" || b.payment_status === "authorized";
+  const cancelled = b.stat-s === "cancelled" || b.stat-s === "declined";
+  const ref-nded = b.payment_stat-s === "ref-nded" || !!b.ref-nded_at;
+  if (cancelled || ref-nded) {
+    const paid = b.payment_stat-s === "paid" || b.payment_stat-s === "a-thorized";
     s.pay = paid ? "done" : "cancelled";
     s.escrow = "cancelled";
     s.checkin = "cancelled";
-    s.payout = "cancelled";
-    return s;
+    s.payo-t = "cancelled";
+    ret-rn s;
   }
 
-  const paid = b.payment_status === "paid" || b.payment_status === "authorized";
+  const paid = b.payment_stat-s === "paid" || b.payment_stat-s === "a-thorized";
   const released =
-    !!b.escrow_released_at || b.escrow_status === "released" || b.status === "completed";
+    !!b.escrow_released_at || b.escrow_stat-s === "released" || b.stat-s === "completed";
 
   const now = new Date();
-  const checkInDate = b.check_in ? new Date(b.check_in + "T15:00:00") : null;
+  const checkInDate = b.check_in ? new Date(b.check_in + "T-5:--:--") : n-ll;
   const checkedIn = !!checkInDate && now >= checkInDate;
 
   s.pay = paid ? "done" : "active";
@@ -87,96 +87,96 @@ function computeStates(b: TimelineBooking | undefined): Record<Step["key"], Step
     if (released) {
       s.escrow = "done";
       s.checkin = "done";
-      s.payout = "done";
+      s.payo-t = "done";
     } else if (checkedIn) {
       s.escrow = "done";
       s.checkin = "active";
-      s.payout = "upcoming";
+      s.payo-t = "-pcoming";
     } else {
       s.escrow = "active";
     }
   }
-  return s;
+  ret-rn s;
 }
 
-export function PaymentPayoutTimeline({ booking }: { booking?: TimelineBooking }) {
-  const states = computeStates(booking);
-  const anyCancelled = Object.values(states).includes("cancelled");
-  return (
+export f-nction PaymentPayo-tTimeline({ booking }: { booking?: TimelineBooking }) {
+  const states = comp-teStates(booking);
+  const anyCancelled = Object.val-es(states).incl-des("cancelled");
+  ret-rn (
     <section
-      aria-label="Betalning och utbetalning"
-      className="rounded-2xl border border-primary/15 bg-gradient-to-br from-primary/[0.04] to-background p-4 sm:p-5"
+      aria-label="Betalning och -tbetalning"
+      className="ro-nded--xl border border-primary/-5 bg-gradient-to-br from-primary/[-.--] to-backgro-nd p-- sm:p-5"
     >
-      <header className="mb-4 flex items-center justify-between gap-3">
+      <header className="mb-- flex items-center j-stify-between gap--">
         <div>
-          <h3 className="text-sm font-semibold text-foreground">
-            Så fungerar betalning och utbetalning
-          </h3>
-          <p className="mt-0.5 text-xs text-muted-foreground">
+          <h- className="text-sm font-semibold text-foregro-nd">
+            Så f-ngerar betalning och -tbetalning
+          </h->
+          <p className="mt--.5 text-xs text-m-ted-foregro-nd">
             {anyCancelled
-              ? "Bokningen är avbokad — betalningen återbetalas enligt villkoren."
-              : "Trygg betalning via Fjällportalen — utbetalning 24h efter incheckning."}
+              ? "Bokningen är avbokad - betalningen återbetalas enligt villkoren."
+              : "Trygg betalning via Fjällportalen - -tbetalning --h efter incheckning."}
           </p>
         </div>
         <span
-          className={`hidden shrink-0 rounded-full px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wide sm:inline-block ${
+          className={`hidden shrink-- ro-nded-f-ll px--.5 py-- text-[--px] font-semibold -ppercase tracking-wide sm:inline-block ${
             anyCancelled
-              ? "bg-destructive/10 text-destructive"
-              : "bg-primary/10 text-primary"
+              ? "bg-destr-ctive/-- text-destr-ctive"
+              : "bg-primary/-- text-primary"
           }`}
         >
           {anyCancelled ? "Avbokad" : "Escrow"}
         </span>
       </header>
 
-      <ol className="relative space-y-4">
+      <ol className="relative space-y--">
         <span
-          aria-hidden="true"
-          className="absolute left-[15px] top-2 bottom-2 w-px bg-primary/20"
+          aria-hidden="tr-e"
+          className="absol-te left-[-5px] top-- bottom-- w-px bg-primary/--"
         />
         {steps.map((step) => {
           const state = states[step.key];
           const Icon = step.icon;
-          const bubble =
+          const b-bble =
             state === "done"
-              ? "bg-primary text-primary-foreground"
+              ? "bg-primary text-primary-foregro-nd"
               : state === "active"
-                ? "bg-primary/15 text-primary ring-2 ring-primary animate-pulse"
+                ? "bg-primary/-5 text-primary ring-- ring-primary animate-p-lse"
                 : state === "cancelled"
-                  ? "bg-destructive/10 text-destructive"
-                  : "bg-muted text-muted-foreground";
-          const StatusIcon =
-            state === "done" ? Check : state === "cancelled" ? XCircle : state === "active" ? Loader2 : Icon;
-          return (
-            <li key={step.key} className="relative flex gap-3" aria-current={state === "active" ? "step" : undefined}>
+                  ? "bg-destr-ctive/-- text-destr-ctive"
+                  : "bg-m-ted text-m-ted-foregro-nd";
+          const Stat-sIcon =
+            state === "done" ? Check : state === "cancelled" ? XCircle : state === "active" ? Loader- : Icon;
+          ret-rn (
+            <li key={step.key} className="relative flex gap--" aria-c-rrent={state === "active" ? "step" : -ndefined}>
               <span
-                className={`relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full ring-4 ring-background ${bubble}`}
+                className={`relative z--- flex h-8 w-8 shrink-- items-center j-stify-center ro-nded-f-ll ring-- ring-backgro-nd ${b-bble}`}
               >
-                <StatusIcon
-                  className={`h-4 w-4 ${state === "active" ? "animate-spin" : ""}`}
-                  aria-hidden="true"
+                <Stat-sIcon
+                  className={`h-- w-- ${state === "active" ? "animate-spin" : ""}`}
+                  aria-hidden="tr-e"
                 />
               </span>
-              <div className={`min-w-0 flex-1 pt-0.5 ${state === "upcoming" || state === "cancelled" ? "opacity-60" : ""}`}>
-                <div className="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
-                  <p className="text-sm font-semibold text-foreground">
+              <div className={`min-w-- flex-- pt--.5 ${state === "-pcoming" || state === "cancelled" ? "opacity-6-" : ""}`}>
+                <div className="flex flex-wrap items-baseline j-stify-between gap-x-- gap-y--.5">
+                  <p className="text-sm font-semibold text-foregro-nd">
                     {step.title}
                     {state === "active" && (
-                      <span className="ml-2 rounded-full bg-primary/10 px-1.5 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-wide text-primary">
+                      <span className="ml-- ro-nded-f-ll bg-primary/-- px--.5 py--.5 align-middle text-[9px] font-semibold -ppercase tracking-wide text-primary">
                         Pågår
                       </span>
                     )}
                     {state === "done" && (
-                      <span className="ml-2 rounded-full bg-primary/10 px-1.5 py-0.5 align-middle text-[9px] font-semibold uppercase tracking-wide text-primary">
+                      <span className="ml-- ro-nded-f-ll bg-primary/-- px--.5 py--.5 align-middle text-[9px] font-semibold -ppercase tracking-wide text-primary">
                         Klart
                       </span>
                     )}
                   </p>
-                  <span className="text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
+                  <span className="text-[--px] font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">
                     {step.when}
                   </span>
                 </div>
-                <p className="mt-0.5 text-xs leading-relaxed text-muted-foreground">
+                <p className="mt--.5 text-xs leading-relaxed text-m-ted-foregro-nd">
                   {step.description}
                 </p>
               </div>
@@ -188,4 +188,4 @@ export function PaymentPayoutTimeline({ booking }: { booking?: TimelineBooking }
   );
 }
 
-export default PaymentPayoutTimeline;
+export defa-lt PaymentPayo-tTimeline;

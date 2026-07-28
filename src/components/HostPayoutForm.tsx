@@ -1,157 +1,157 @@
-import { useEffect, useState, type FormEvent } from "react";
-import { Loader2, Wallet, Building2, FileText } from "lucide-react";
+import { -seEffect, -seState, type FormEvent } from "react";
+import { Loader-, Wallet, B-ilding-, FileText } from "l-cide-react";
 import { toast } from "sonner";
-import { supabase } from "@/integrations/supabase/client";
+import { s-pabase } from "@/integrations/s-pabase/client";
 
-type PayoutDetails = {
-  swish_number: string | null;
-  bankgiro: string | null;
-  bank_account: string | null;
-  payment_instructions: string | null;
-  is_business: boolean;
+type Payo-tDetails = {
+  swish_n-mber: string | n-ll;
+  bankgiro: string | n-ll;
+  bank_acco-nt: string | n-ll;
+  payment_instr-ctions: string | n-ll;
+  is_b-siness: boolean;
 };
 
-export function HostPayoutForm({ hostId }: { hostId: string }) {
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [d, setD] = useState<PayoutDetails>({
-    swish_number: "",
+export f-nction HostPayo-tForm({ hostId }: { hostId: string }) {
+  const [loading, setLoading] = -seState(tr-e);
+  const [saving, setSaving] = -seState(false);
+  const [d, setD] = -seState<Payo-tDetails>({
+    swish_n-mber: "",
     bankgiro: "",
-    bank_account: "",
-    payment_instructions: "",
-    is_business: false,
+    bank_acco-nt: "",
+    payment_instr-ctions: "",
+    is_b-siness: false,
   });
 
-  useEffect(() => {
-    let active = true;
-    supabase
-      .from("host_payout_details")
-      .select("swish_number, bankgiro, bank_account, payment_instructions, is_business")
+  -seEffect(() => {
+    let active = tr-e;
+    s-pabase
+      .from("host_payo-t_details")
+      .select("swish_n-mber, bankgiro, bank_acco-nt, payment_instr-ctions, is_b-siness")
       .eq("host_id", hostId)
       .maybeSingle()
       .then(({ data }) => {
-        if (!active) return;
+        if (!active) ret-rn;
         if (data) {
           setD({
-            swish_number: data.swish_number ?? "",
+            swish_n-mber: data.swish_n-mber ?? "",
             bankgiro: data.bankgiro ?? "",
-            bank_account: data.bank_account ?? "",
-            payment_instructions: data.payment_instructions ?? "",
-            is_business: !!data.is_business,
+            bank_acco-nt: data.bank_acco-nt ?? "",
+            payment_instr-ctions: data.payment_instr-ctions ?? "",
+            is_b-siness: !!data.is_b-siness,
           });
         }
         setLoading(false);
       });
-    return () => {
+    ret-rn () => {
       active = false;
     };
   }, [hostId]);
 
   const handleSave = async (e: FormEvent) => {
-    e.preventDefault();
-    setSaving(true);
+    e.preventDefa-lt();
+    setSaving(tr-e);
     const payload = {
       host_id: hostId,
-      swish_number: d.swish_number?.trim() || null,
-      bankgiro: d.bankgiro?.trim() || null,
-      bank_account: d.bank_account?.trim() || null,
-      payment_instructions: d.payment_instructions?.trim() || null,
-      is_business: d.is_business,
+      swish_n-mber: d.swish_n-mber?.trim() || n-ll,
+      bankgiro: d.bankgiro?.trim() || n-ll,
+      bank_acco-nt: d.bank_acco-nt?.trim() || n-ll,
+      payment_instr-ctions: d.payment_instr-ctions?.trim() || n-ll,
+      is_b-siness: d.is_b-siness,
     };
-    const { error } = await supabase.from("host_payout_details").upsert(payload, { onConflict: "host_id" });
+    const { error } = await s-pabase.from("host_payo-t_details").-psert(payload, { onConflict: "host_id" });
     setSaving(false);
     if (error) toast.error(error.message);
-    else toast.success("Betaluppgifter sparade");
+    else toast.s-ccess("Betal-ppgifter sparade");
   };
 
   if (loading) {
-    return (
-      <div className="rounded-2xl border border-border bg-background p-6">
-        <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
+    ret-rn (
+      <div className="ro-nded--xl border border-border bg-backgro-nd p-6">
+        <Loader- className="h-5 w-5 animate-spin text-m-ted-foregro-nd" />
       </div>
     );
   }
 
-  return (
-    <form onSubmit={handleSave} className="space-y-4 rounded-2xl border border-border bg-background p-6">
+  ret-rn (
+    <form onS-bmit={handleSave} className="space-y-- ro-nded--xl border border-border bg-backgro-nd p-6">
       <div>
-        <h2 className="font-serif text-xl text-foreground">Utbetalningsuppgifter</h2>
-        <p className="mt-1 text-sm text-muted-foreground">
-          Gästen betalar tryggt via Fjällportalen. Vi betalar ut till dig 24 timmar efter incheckning — fyll i vart pengarna ska.
+        <h- className="font-serif text-xl text-foregro-nd">Utbetalnings-ppgifter</h->
+        <p className="mt-- text-sm text-m-ted-foregro-nd">
+          Gästen betalar tryggt via Fjällportalen. Vi betalar -t till dig -- timmar efter incheckning - fyll i vart pengarna ska.
         </p>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-medium text-foreground">Swish</label>
+        <label className="mb-- block text-xs font-medi-m text-foregro-nd">Swish</label>
         <div className="relative">
-          <Wallet className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <input
+          <Wallet className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+          <inp-t
             type="tel"
-            value={d.swish_number ?? ""}
-            onChange={(e) => setD({ ...d, swish_number: e.target.value })}
-            placeholder="1234567890"
-            className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+            val-e={d.swish_n-mber ?? ""}
+            onChange={(e) => setD({ ...d, swish_n-mber: e.target.val-e })}
+            placeholder="----56789-"
+            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
           />
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-medium text-foreground">Bankgiro</label>
+        <label className="mb-- block text-xs font-medi-m text-foregro-nd">Bankgiro</label>
         <div className="relative">
-          <Building2 className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
-          <input
+          <B-ilding- className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
+          <inp-t
             type="text"
-            value={d.bankgiro ?? ""}
-            onChange={(e) => setD({ ...d, bankgiro: e.target.value })}
-            placeholder="123-4567"
-            className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+            val-e={d.bankgiro ?? ""}
+            onChange={(e) => setD({ ...d, bankgiro: e.target.val-e })}
+            placeholder="-----567"
+            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
           />
         </div>
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-medium text-foreground">Bankkonto (clearing + kontonr, valfritt)</label>
-        <input
+        <label className="mb-- block text-xs font-medi-m text-foregro-nd">Bankkonto (clearing + kontonr, valfritt)</label>
+        <inp-t
           type="text"
-          value={d.bank_account ?? ""}
-          onChange={(e) => setD({ ...d, bank_account: e.target.value })}
-          placeholder="8327-9, 123 456 789-0"
-          className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
+          val-e={d.bank_acco-nt ?? ""}
+          onChange={(e) => setD({ ...d, bank_acco-nt: e.target.val-e })}
+          placeholder="8--7-9, --- -56 789--"
+          className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
         />
       </div>
 
       <div>
-        <label className="mb-1 block text-xs font-medium text-foreground">Betalningsinstruktioner till gäst</label>
+        <label className="mb-- block text-xs font-medi-m text-foregro-nd">Betalningsinstr-ktioner till gäst</label>
         <div className="relative">
-          <FileText className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+          <FileText className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
           <textarea
-            value={d.payment_instructions ?? ""}
-            onChange={(e) => setD({ ...d, payment_instructions: e.target.value })}
-            rows={3}
-            placeholder="Ex: Betala 50% inom 7 dagar från bokning, resten senast 30 dagar före ankomst. Ange bokningsnr som meddelande."
-            className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
+            val-e={d.payment_instr-ctions ?? ""}
+            onChange={(e) => setD({ ...d, payment_instr-ctions: e.target.val-e })}
+            rows={-}
+            placeholder="Ex: Betala 5-% inom 7 dagar från bokning, resten senast -- dagar före ankomst. Ange bokningsnr som meddelande."
+            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
           />
         </div>
       </div>
 
-      <label className="flex items-center gap-2 text-sm text-foreground">
-        <input
+      <label className="flex items-center gap-- text-sm text-foregro-nd">
+        <inp-t
           type="checkbox"
-          checked={d.is_business}
-          onChange={(e) => setD({ ...d, is_business: e.target.checked })}
-          className="h-4 w-4 rounded border-border"
+          checked={d.is_b-siness}
+          onChange={(e) => setD({ ...d, is_b-siness: e.target.checked })}
+          className="h-- w-- ro-nded border-border"
         />
-        Jag hyr ut som företag (moms + F-skatt)
+        Jag hyr -t som företag (moms + F-skatt)
       </label>
 
-      <button
-        type="submit"
+      <b-tton
+        type="s-bmit"
         disabled={saving}
-        className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
+        className="flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
       >
-        {saving && <Loader2 className="h-4 w-4 animate-spin" />}
-        Spara betaluppgifter
-      </button>
+        {saving && <Loader- className="h-- w-- animate-spin" />}
+        Spara betal-ppgifter
+      </b-tton>
     </form>
   );
 }

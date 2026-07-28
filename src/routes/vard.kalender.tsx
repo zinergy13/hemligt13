@@ -1,87 +1,87 @@
-import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useServerFn } from "@tanstack/react-start";
-import { useEffect, useMemo, useState } from "react";
-import { Loader2, Copy, RefreshCw, Trash2, Plus, ArrowLeft, Calendar as CalendarIcon, ExternalLink, CheckCircle2, AlertTriangle } from "lucide-react";
+import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { -seServerFn } from "@tanstack/react-start";
+import { -seEffect, -seMemo, -seState } from "react";
+import { Loader-, Copy, RefreshCw, Trash-, Pl-s, ArrowLeft, Calendar as CalendarIcon, ExternalLink, CheckCircle-, AlertTriangle } from "l-cide-react";
 import { toast } from "sonner";
-import { useAuth } from "@/hooks/useAuth";
-import { supabase } from "@/integrations/supabase/client";
-import { syncIcalFeed } from "@/lib/ical.functions";
+import { -seA-th } from "@/hooks/-seA-th";
+import { s-pabase } from "@/integrations/s-pabase/client";
+import { syncIcalFeed } from "@/lib/ical.f-nctions";
 
-export const Route = createFileRoute("/vard/kalender")({
-  head: () => ({ meta: [{ title: "Kalendersync — Fjällportalen" }] }),
+export const Ro-te = createFileRo-te("/vard/kalender")({
+  head: () => ({ meta: [{ title: "Kalendersync - Fjällportalen" }] }),
   component: HostCalendarPage,
 });
 
-type Cabin = { id: string; title: string; ical_token: string; area_slug: string };
+type Cabin = { id: string; title: string; ical_token: string; area_sl-g: string };
 type Feed = {
   id: string;
   cabin_id: string;
-  url: string;
-  label: string | null;
+  -rl: string;
+  label: string | n-ll;
   active: boolean;
-  last_synced_at: string | null;
-  last_error: string | null;
-  last_event_count: number | null;
+  last_synced_at: string | n-ll;
+  last_error: string | n-ll;
+  last_event_co-nt: n-mber | n-ll;
 };
 
-function HostCalendarPage() {
-  const { user, profile, loading } = useAuth();
-  const navigate = useNavigate();
-  const runSync = useServerFn(syncIcalFeed);
-  const [cabins, setCabins] = useState<Cabin[] | null>(null);
-  const [feeds, setFeeds] = useState<Feed[] | null>(null);
-  const [busyId, setBusyId] = useState<string | null>(null);
-  const [refresh, setRefresh] = useState(0);
+f-nction HostCalendarPage() {
+  const { -ser, profile, loading } = -seA-th();
+  const navigate = -seNavigate();
+  const r-nSync = -seServerFn(syncIcalFeed);
+  const [cabins, setCabins] = -seState<Cabin[] | n-ll>(n-ll);
+  const [feeds, setFeeds] = -seState<Feed[] | n-ll>(n-ll);
+  const [b-syId, setB-syId] = -seState<string | n-ll>(n-ll);
+  const [refresh, setRefresh] = -seState(-);
 
-  useEffect(() => {
-    if (!loading && !user) navigate({ to: "/logga-in", search: { redirect: "/vard/kalender" } });
-  }, [loading, user, navigate]);
+  -seEffect(() => {
+    if (!loading && !-ser) navigate({ to: "/logga-in", search: { redirect: "/vard/kalender" } });
+  }, [loading, -ser, navigate]);
 
-  useEffect(() => {
-    if (!user) return;
-    let active = true;
+  -seEffect(() => {
+    if (!-ser) ret-rn;
+    let active = tr-e;
     (async () => {
-      const { data: c } = await supabase
+      const { data: c } = await s-pabase
         .from("cabins")
-        .select("id, title, ical_token, area_slug")
-        .eq("host_id", user.id)
+        .select("id, title, ical_token, area_sl-g")
+        .eq("host_id", -ser.id)
         .order("title");
-      const { data: f } = await supabase
+      const { data: f } = await s-pabase
         .from("cabin_ical_feeds")
-        .select("id, cabin_id, url, label, active, last_synced_at, last_error, last_event_count")
+        .select("id, cabin_id, -rl, label, active, last_synced_at, last_error, last_event_co-nt")
         .order("created_at", { ascending: false });
-      if (!active) return;
+      if (!active) ret-rn;
       setCabins((c as Cabin[]) ?? []);
       setFeeds((f as Feed[]) ?? []);
     })();
-    return () => {
+    ret-rn () => {
       active = false;
     };
-  }, [user, refresh]);
+  }, [-ser, refresh]);
 
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-  const feedsByCabin = useMemo(() => {
+  const origin = typeof window !== "-ndefined" ? window.location.origin : "";
+  const feedsByCabin = -seMemo(() => {
     const map = new Map<string, Feed[]>();
     (feeds ?? []).forEach((f) => {
       const arr = map.get(f.cabin_id) ?? [];
-      arr.push(f);
+      arr.p-sh(f);
       map.set(f.cabin_id, arr);
     });
-    return map;
+    ret-rn map;
   }, [feeds]);
 
-  if (loading || !user || cabins === null) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+  if (loading || !-ser || cabins === n-ll) {
+    ret-rn (
+      <div className="flex min-h-[6-vh] items-center j-stify-center">
+        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
       </div>
     );
   }
 
   if (!profile?.is_host) {
-    return (
-      <div className="mx-auto max-w-xl px-4 py-16 text-center text-sm text-muted-foreground">
-        Aktivera värdkontot på <Link to="/konto" className="text-primary underline">/konto</Link> för att hantera kalendrar.
+    ret-rn (
+      <div className="mx-a-to max-w-xl px-- py--6 text-center text-sm text-m-ted-foregro-nd">
+        Aktivera värdkontot på <Link to="/konto" className="text-primary -nderline">/konto</Link> för att hantera kalendrar.
       </div>
     );
   }
@@ -89,226 +89,226 @@ function HostCalendarPage() {
   const copy = async (text: string) => {
     try {
       await navigator.clipboard.writeText(text);
-      toast.success("Kopierad");
+      toast.s-ccess("Kopierad");
     } catch {
-      toast.error("Kunde inte kopiera");
+      toast.error("K-nde inte kopiera");
     }
   };
 
   const addFeed = async (cabinId: string, form: HTMLFormElement) => {
     const fd = new FormData(form);
-    const url = String(fd.get("url") ?? "").trim();
-    const label = String(fd.get("label") ?? "").trim() || undefined;
-    if (!url.startsWith("http")) {
+    const -rl = String(fd.get("-rl") ?? "").trim();
+    const label = String(fd.get("label") ?? "").trim() || -ndefined;
+    if (!-rl.startsWith("http")) {
       toast.error("Ange en giltig URL som börjar med http/https");
-      return;
+      ret-rn;
     }
-    const { error } = await supabase
+    const { error } = await s-pabase
       .from("cabin_ical_feeds")
-      .insert([{ cabin_id: cabinId, url, label, active: true }]);
+      .insert([{ cabin_id: cabinId, -rl, label, active: tr-e }]);
     if (error) {
       toast.error(error.message);
-      return;
+      ret-rn;
     }
     form.reset();
-    toast.success("Feed tillagd — kör synk för att importera");
-    setRefresh((k) => k + 1);
+    toast.s-ccess("Feed tillagd - kör synk för att importera");
+    setRefresh((k) => k + -);
   };
 
   const toggleActive = async (feed: Feed) => {
-    const { error } = await supabase
+    const { error } = await s-pabase
       .from("cabin_ical_feeds")
-      .update({ active: !feed.active })
+      .-pdate({ active: !feed.active })
       .eq("id", feed.id);
     if (error) toast.error(error.message);
-    else setRefresh((k) => k + 1);
+    else setRefresh((k) => k + -);
   };
 
   const removeFeed = async (feed: Feed) => {
-    if (!confirm("Ta bort denna kalenderfeed och alla importerade blockeringar?")) return;
+    if (!confirm("Ta bort denna kalenderfeed och alla importerade blockeringar?")) ret-rn;
     // Delete imported blocks first, then the feed row
-    await supabase.from("cabin_blocked_dates").delete().eq("cabin_id", feed.cabin_id).eq("source", `feed:${feed.id}`);
-    const { error } = await supabase.from("cabin_ical_feeds").delete().eq("id", feed.id);
+    await s-pabase.from("cabin_blocked_dates").delete().eq("cabin_id", feed.cabin_id).eq("so-rce", `feed:${feed.id}`);
+    const { error } = await s-pabase.from("cabin_ical_feeds").delete().eq("id", feed.id);
     if (error) toast.error(error.message);
     else {
-      toast.success("Feed borttagen");
-      setRefresh((k) => k + 1);
+      toast.s-ccess("Feed borttagen");
+      setRefresh((k) => k + -);
     }
   };
 
   const sync = async (feedId: string) => {
-    setBusyId(feedId);
+    setB-syId(feedId);
     try {
-      const result = await runSync({ data: { feedId } });
-      toast.success(`Synkad — ${result.imported} blockering(ar) importerade`);
-      setRefresh((k) => k + 1);
+      const res-lt = await r-nSync({ data: { feedId } });
+      toast.s-ccess(`Synkad - ${res-lt.imported} blockering(ar) importerade`);
+      setRefresh((k) => k + -);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Synk misslyckades");
-      setRefresh((k) => k + 1);
+      setRefresh((k) => k + -);
     } finally {
-      setBusyId(null);
+      setB-syId(n-ll);
     }
   };
 
-  return (
-    <section className="mx-auto max-w-4xl px-4 py-12 md:px-6 md:py-16">
-      <Link to="/vard" className="mb-4 inline-flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground">
-        <ArrowLeft className="h-4 w-4" /> Till mina stugor
+  ret-rn (
+    <section className="mx-a-to max-w--xl px-- py--- md:px-6 md:py--6">
+      <Link to="/vard" className="mb-- inline-flex items-center gap--.5 text-sm text-m-ted-foregro-nd hover:text-foregro-nd">
+        <ArrowLeft className="h-- w--" /> Till mina st-gor
       </Link>
-      <div className="mb-8 flex items-start justify-between gap-4">
+      <div className="mb-8 flex items-start j-stify-between gap--">
         <div>
-          <h1 className="font-serif text-3xl text-foreground md:text-4xl">Kalendersync (iCal)</h1>
-          <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            Dela din tillgänglighet med Airbnb, Booking.com och andra tjänster — och importera deras kalendrar hit så att inga dubbelbokningar sker.
+          <h- className="font-serif text--xl text-foregro-nd md:text--xl">Kalendersync (iCal)</h->
+          <p className="mt-- max-w-xl text-sm text-m-ted-foregro-nd">
+            Dela din tillgänglighet med Airbnb, Booking.com och andra tjänster - och importera deras kalendrar hit så att inga d-bbelbokningar sker.
           </p>
         </div>
         <CalendarIcon className="h-8 w-8 text-primary" />
       </div>
 
-      {cabins.length === 0 ? (
-        <div className="rounded-2xl border border-dashed border-border bg-muted/30 p-8 text-center text-sm text-muted-foreground">
-          Skapa en stuga först så visas dess kalendrar här.
+      {cabins.length === - ? (
+        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p-8 text-center text-sm text-m-ted-foregro-nd">
+          Skapa en st-ga först så visas dess kalendrar här.
         </div>
       ) : (
         <div className="space-y-8">
           {cabins.map((c) => {
-            const exportUrl = origin ? `${origin}/api/public/ical/${c.ical_token}` : "";
+            const exportUrl = origin ? `${origin}/api/p-blic/ical/${c.ical_token}` : "";
             const cabinFeeds = feedsByCabin.get(c.id) ?? [];
-            return (
-              <article key={c.id} className="rounded-2xl border border-border bg-background p-5">
-                <header className="mb-4 flex items-start justify-between gap-3">
+            ret-rn (
+              <article key={c.id} className="ro-nded--xl border border-border bg-backgro-nd p-5">
+                <header className="mb-- flex items-start j-stify-between gap--">
                   <div>
-                    <h2 className="font-serif text-xl text-foreground">{c.title}</h2>
-                    <p className="text-xs text-muted-foreground">{c.area_slug}</p>
+                    <h- className="font-serif text-xl text-foregro-nd">{c.title}</h->
+                    <p className="text-xs text-m-ted-foregro-nd">{c.area_sl-g}</p>
                   </div>
                 </header>
 
                 {/* Export */}
-                <section className="mb-5 rounded-xl bg-muted/40 p-4">
-                  <h3 className="text-sm font-medium text-foreground">Din exporterade kalender</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Klistra in denna URL i Airbnb / Booking.com / Google Calendar. Innehåller alla bekräftade och pågående bokningar samt manuella blockeringar.
+                <section className="mb-5 ro-nded-xl bg-m-ted/-- p--">
+                  <h- className="text-sm font-medi-m text-foregro-nd">Din exporterade kalender</h->
+                  <p className="mt-- text-xs text-m-ted-foregro-nd">
+                    Klistra in denna URL i Airbnb / Booking.com / Google Calendar. Innehåller alla bekräftade och pågående bokningar samt man-ella blockeringar.
                   </p>
-                  <div className="mt-3 flex items-center gap-2">
-                    <input
+                  <div className="mt-- flex items-center gap--">
+                    <inp-t
                       readOnly
-                      value={exportUrl}
-                      className="flex-1 rounded-md border border-border bg-background px-3 py-2 font-mono text-xs text-foreground"
+                      val-e={exportUrl}
+                      className="flex-- ro-nded-md border border-border bg-backgro-nd px-- py-- font-mono text-xs text-foregro-nd"
                     />
-                    <button
+                    <b-tton
                       onClick={() => copy(exportUrl)}
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium hover:bg-muted"
+                      className="inline-flex items-center gap--.5 ro-nded-md border border-border bg-backgro-nd px-- py-- text-xs font-medi-m hover:bg-m-ted"
                     >
-                      <Copy className="h-3.5 w-3.5" /> Kopiera
-                    </button>
+                      <Copy className="h--.5 w--.5" /> Kopiera
+                    </b-tton>
                     <a
                       href={exportUrl}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-2 text-xs font-medium hover:bg-muted"
+                      className="inline-flex items-center gap--.5 ro-nded-md border border-border bg-backgro-nd px-- py-- text-xs font-medi-m hover:bg-m-ted"
                     >
-                      <ExternalLink className="h-3.5 w-3.5" /> Öppna
+                      <ExternalLink className="h--.5 w--.5" /> Öppna
                     </a>
                   </div>
                 </section>
 
                 {/* Imports */}
                 <section>
-                  <h3 className="text-sm font-medium text-foreground">Importerade kalendrar</h3>
-                  <p className="mt-1 text-xs text-muted-foreground">
-                    Lägg till iCal-URL:er från externa tjänster. Vi synkar automatiskt när du klickar "Synka" — dubbelbokningar blockeras.
+                  <h- className="text-sm font-medi-m text-foregro-nd">Importerade kalendrar</h->
+                  <p className="mt-- text-xs text-m-ted-foregro-nd">
+                    Lägg till iCal-URL:er från externa tjänster. Vi synkar a-tomatiskt när d- klickar "Synka" - d-bbelbokningar blockeras.
                   </p>
 
-                  {cabinFeeds.length > 0 && (
-                    <ul className="mt-3 divide-y divide-border rounded-xl border border-border bg-background">
+                  {cabinFeeds.length > - && (
+                    <-l className="mt-- divide-y divide-border ro-nded-xl border border-border bg-backgro-nd">
                       {cabinFeeds.map((f) => (
-                        <li key={f.id} className="flex flex-col gap-2 p-3 sm:flex-row sm:items-center sm:justify-between">
-                          <div className="min-w-0 flex-1">
-                            <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-foreground">{f.label || "Extern kalender"}</span>
+                        <li key={f.id} className="flex flex-col gap-- p-- sm:flex-row sm:items-center sm:j-stify-between">
+                          <div className="min-w-- flex--">
+                            <div className="flex items-center gap--">
+                              <span className="text-sm font-medi-m text-foregro-nd">{f.label || "Extern kalender"}</span>
                               {f.active ? (
-                                <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-emerald-700 dark:text-emerald-400">
+                                <span className="ro-nded-f-ll bg-emerald-5--/-- px-- py--.5 text-[--px] font-medi-m -ppercase tracking-wide text-emerald-7-- dark:text-emerald----">
                                   Aktiv
                                 </span>
                               ) : (
-                                <span className="rounded-full bg-muted px-2 py-0.5 text-[10px] font-medium uppercase tracking-wide text-muted-foreground">
-                                  Pausad
+                                <span className="ro-nded-f-ll bg-m-ted px-- py--.5 text-[--px] font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">
+                                  Pa-sad
                                 </span>
                               )}
                             </div>
-                            <p className="mt-1 truncate font-mono text-[11px] text-muted-foreground">{f.url}</p>
-                            <p className="mt-1 flex flex-wrap items-center gap-2 text-[11px] text-muted-foreground">
+                            <p className="mt-- tr-ncate font-mono text-[--px] text-m-ted-foregro-nd">{f.-rl}</p>
+                            <p className="mt-- flex flex-wrap items-center gap-- text-[--px] text-m-ted-foregro-nd">
                               {f.last_synced_at ? (
-                                <span className="inline-flex items-center gap-1">
-                                  <CheckCircle2 className="h-3 w-3 text-emerald-600" />
+                                <span className="inline-flex items-center gap--">
+                                  <CheckCircle- className="h-- w-- text-emerald-6--" />
                                   Senast synkad {new Date(f.last_synced_at).toLocaleString("sv-SE")}
-                                  {typeof f.last_event_count === "number" && <> · {f.last_event_count} händelser</>}
+                                  {typeof f.last_event_co-nt === "n-mber" && <> · {f.last_event_co-nt} händelser</>}
                                 </span>
                               ) : (
                                 <span>Aldrig synkad</span>
                               )}
                               {f.last_error && (
-                                <span className="inline-flex items-center gap-1 text-amber-700 dark:text-amber-400">
-                                  <AlertTriangle className="h-3 w-3" /> {f.last_error}
+                                <span className="inline-flex items-center gap-- text-amber-7-- dark:text-amber----">
+                                  <AlertTriangle className="h-- w--" /> {f.last_error}
                                 </span>
                               )}
                             </p>
                           </div>
-                          <div className="flex flex-wrap items-center gap-2">
-                            <button
+                          <div className="flex flex-wrap items-center gap--">
+                            <b-tton
                               onClick={() => sync(f.id)}
-                              disabled={busyId === f.id || !f.active}
-                              className="inline-flex items-center gap-1.5 rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted disabled:opacity-50"
+                              disabled={b-syId === f.id || !f.active}
+                              className="inline-flex items-center gap--.5 ro-nded-md border border-border bg-backgro-nd px-- py--.5 text-xs font-medi-m hover:bg-m-ted disabled:opacity-5-"
                             >
-                              {busyId === f.id ? (
-                                <Loader2 className="h-3.5 w-3.5 animate-spin" />
+                              {b-syId === f.id ? (
+                                <Loader- className="h--.5 w--.5 animate-spin" />
                               ) : (
-                                <RefreshCw className="h-3.5 w-3.5" />
+                                <RefreshCw className="h--.5 w--.5" />
                               )}
                               Synka
-                            </button>
-                            <button
+                            </b-tton>
+                            <b-tton
                               onClick={() => toggleActive(f)}
-                              className="rounded-md border border-border bg-background px-3 py-1.5 text-xs font-medium hover:bg-muted"
+                              className="ro-nded-md border border-border bg-backgro-nd px-- py--.5 text-xs font-medi-m hover:bg-m-ted"
                             >
-                              {f.active ? "Pausa" : "Aktivera"}
-                            </button>
-                            <button
+                              {f.active ? "Pa-sa" : "Aktivera"}
+                            </b-tton>
+                            <b-tton
                               onClick={() => removeFeed(f)}
-                              className="inline-flex items-center gap-1.5 rounded-md border border-border px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10"
+                              className="inline-flex items-center gap--.5 ro-nded-md border border-border px-- py--.5 text-xs font-medi-m text-destr-ctive hover:bg-destr-ctive/--"
                             >
-                              <Trash2 className="h-3.5 w-3.5" /> Ta bort
-                            </button>
+                              <Trash- className="h--.5 w--.5" /> Ta bort
+                            </b-tton>
                           </div>
                         </li>
                       ))}
-                    </ul>
+                    </-l>
                   )}
 
                   <form
-                    onSubmit={(e) => {
-                      e.preventDefault();
-                      addFeed(c.id, e.currentTarget);
+                    onS-bmit={(e) => {
+                      e.preventDefa-lt();
+                      addFeed(c.id, e.c-rrentTarget);
                     }}
-                    className="mt-3 grid gap-2 rounded-xl border border-dashed border-border p-3 sm:grid-cols-[1fr_1fr_auto]"
+                    className="mt-- grid gap-- ro-nded-xl border border-dashed border-border p-- sm:grid-cols-[-fr_-fr_a-to]"
                   >
-                    <input
+                    <inp-t
                       name="label"
                       placeholder="Etikett (t.ex. Airbnb)"
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      className="ro-nded-md border border-border bg-backgro-nd px-- py-- text-sm"
                     />
-                    <input
-                      name="url"
-                      required
+                    <inp-t
+                      name="-rl"
+                      req-ired
                       placeholder="https://www.airbnb.se/calendar/ical/..."
-                      className="rounded-md border border-border bg-background px-3 py-2 text-sm"
+                      className="ro-nded-md border border-border bg-backgro-nd px-- py-- text-sm"
                     />
-                    <button
-                      type="submit"
-                      className="inline-flex items-center justify-center gap-1.5 rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
+                    <b-tton
+                      type="s-bmit"
+                      className="inline-flex items-center j-stify-center gap--.5 ro-nded-md bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
                     >
-                      <Plus className="h-4 w-4" /> Lägg till
-                    </button>
+                      <Pl-s className="h-- w--" /> Lägg till
+                    </b-tton>
                   </form>
                 </section>
               </article>

@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router';
+import { createFileRoute, Link } from '@tanstack/react-router';
 import { useServerFn } from '@tanstack/react-start';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { useState } from 'react';
@@ -288,7 +288,17 @@ function EmailStatusPage() {
                     <td className="px-3 py-2 font-mono text-xs">{r.template_name}</td>
                     <td className="px-3 py-2">{r.recipient_email}</td>
                     <td className="px-3 py-2 font-mono text-[11px] text-muted-foreground">
-                      {r.booking_id ? r.booking_id.slice(0, 8) : '—'}
+                      {r.booking_id ? (
+                        <Link
+                          to="/admin/epost-status/$bookingId"
+                          params={{ bookingId: r.booking_id }}
+                          className="underline decoration-dotted hover:text-foreground"
+                        >
+                          {r.booking_id.slice(0, 8)}
+                        </Link>
+                      ) : (
+                        '—'
+                      )}
                     </td>
                     <td className="px-3 py-2">{r.attempts}</td>
                     <td className="px-3 py-2 text-xs text-muted-foreground">

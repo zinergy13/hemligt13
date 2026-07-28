@@ -5,6 +5,7 @@ import { template as bookingConfirmationTemplate } from './booking-confirmation'
 import { template as checkinReminderTemplate } from './checkin-reminder'
 import { template as payoutReleasedTemplate } from './payout-released'
 import { template as escrowActivatedTemplate } from './escrow-activated'
+import { template as adminEmailAlertTemplate } from './admin-email-alert'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -32,4 +33,5 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'escrow-activated': escrowActivatedTemplate,
   'checkin-reminder': checkinReminderTemplate,
   'payout-released': payoutReleasedTemplate,
+  'admin-email-alert': adminEmailAlertTemplate,
 }

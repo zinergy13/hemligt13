@@ -27,11 +27,15 @@ async function guestEmailAndName(guestId: string): Promise<{ email: string | nul
 }
 
 async function sendCheckinNotifications(origin: string) {
-  const today = new Date().toISOString().slice(0, 10);
+  // Skicka påminnelsen inom ett 24h-fönster före incheckning: dagens datum
+  // och morgondagen (fångar även bokningar som råkat missas tidigare).
+  const tomorrow = new Date();
+  tomorrow.setUTCDate(tomorrow.getUTCDate() + 1);
+  const windowEnd = tomorrow.toISOString().slice(0, 10);
   const { data: rows, error } = await admin()
     .from('bookings')
     .select('id, guest_id, cabin_id, check_in, check_out, host_id')
-    .lte('check_in', today)
+    .lte('check_in', windowEnd)
     .eq('payment_status', 'paid')
     .in('escrow_status', ['holding', 'released'])
     .is('checkin_notified_at', null)
@@ -113,17 +117,88 @@ async function sendPayoutNotifications(origin: string) {
   return results;
 }
 
+/**
+ * Fallback: fångar bokningar där Stripe-webhooken av någon anledning inte
+ * hann skicka bekräftelsen (payment_status = 'paid' men payment_notified_at
+ * är null). Kör varje timme via samma cron som övriga notiser.
+ */
+async function sendMissedBookingConfirmations(origin: string) {
+  const { data: rows, error } = await admin()
+    .from('bookings')
+    .select('id, guest_id, cabin_id, check_in, check_out, host_id, nights, guests, total_price')
+    .eq('payment_status', 'paid')
+    .is('payment_notified_at', null)
+    .limit(25);
+  if (error) throw error;
+  const results: Array<{ id: string; sent: boolean }> = [];
+  for (const b of rows ?? []) {
+    const [{ email, firstName }, { data: cabin }] = await Promise.all([
+      guestEmailAndName(b.guest_id),
+      admin().from('cabins').select('title, area_slug').eq('id', b.cabin_id).maybeSingle(),
+    ]);
+    if (!email) {
+      await admin().from('bookings').update({ payment_notified_at: new Date().toISOString() }).eq('id', b.id);
+      results.push({ id: b.id, sent: false });
+      continue;
+    }
+    const fields = buildBookingEmailFields({
+      id: b.id,
+      check_in: b.check_in,
+      check_out: b.check_out,
+    });
+    const shared = {
+      guestName: firstName,
+      cabinName: cabin?.title ?? 'din stuga',
+      areaName: cabin?.area_slug ?? '',
+      ...fields,
+      nights: b.nights,
+      guests: b.guests,
+      totalKr: b.total_price,
+    };
+    const confirmRes = await sendInternalTemplatedEmail({
+      templateName: 'booking-confirmation',
+      recipientEmail: email,
+      idempotencyKey: `booking-confirm-${b.id}`,
+      bookingId: b.id,
+      origin,
+      templateData: shared,
+    });
+    const escrowRes = await sendInternalTemplatedEmail({
+      templateName: 'escrow-activated',
+      recipientEmail: email,
+      idempotencyKey: `escrow-activated-${b.id}`,
+      bookingId: b.id,
+      origin,
+      templateData: {
+        guestName: firstName,
+        cabinName: shared.cabinName,
+        totalKr: shared.totalKr,
+        checkIn: shared.checkIn,
+        checkInLabel: shared.checkInLabel,
+        bookingRef: shared.bookingRef,
+        payoutAtLabel: shared.payoutAtLabel,
+      },
+    });
+    if (confirmRes.ok && escrowRes.ok) {
+      await admin().from('bookings').update({ payment_notified_at: new Date().toISOString() }).eq('id', b.id);
+    }
+    results.push({ id: b.id, sent: confirmRes.ok && escrowRes.ok });
+  }
+  return results;
+}
+
 export const Route = createFileRoute('/api/public/hooks/booking-notifications')({
   server: {
     handlers: {
       POST: async ({ request }) => {
         const origin = new URL(request.url).origin;
         try {
-          const [checkin, payout] = await Promise.all([
+          const [confirmation, checkin, payout] = await Promise.all([
+            sendMissedBookingConfirmations(origin),
             sendCheckinNotifications(origin),
             sendPayoutNotifications(origin),
           ]);
-          return Response.json({ ok: true, checkin, payout });
+          return Response.json({ ok: true, confirmation, checkin, payout });
         } catch (e) {
           console.error('booking-notifications hook error', e);
           return Response.json({ ok: false, error: String(e) }, { status: 500 });

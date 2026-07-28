@@ -8,6 +8,17 @@ export const Route = createFileRoute("/om-oss")({
       { property: "og:title", content: "Om oss — Fjällportalen" },
       { property: "og:description", content: "Vi samlar Sveriges fjällstuguthyrning på ett ställe — lokalt, tryggt och enkelt." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "AboutPage",
+          url: "https://fjallportalen.com/om-oss",
+          mainEntity: { "@id": "https://fjallportalen.com/#organization" },
+        }),
+      },
+    ],
   }),
   component: AboutPage,
 });

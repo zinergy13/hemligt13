@@ -9,6 +9,39 @@ export const Route = createFileRoute("/kontakt")({
       { property: "og:title", content: "Kontakt — Fjällportalen" },
       { property: "og:description", content: "Hör av dig till Fjällportalen — vi svarar inom 24 timmar." },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "LocalBusiness",
+          "@id": "https://fjallportalen.com/#localbusiness",
+          name: "Fjällportalen",
+          url: "https://fjallportalen.com",
+          image: "https://fjallportalen.com/favicon.ico",
+          email: "hej@fjallportalen.com",
+          priceRange: "$$",
+          description:
+            "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.",
+          address: {
+            "@type": "PostalAddress",
+            streetAddress: "Storgatan 12",
+            addressLocality: "Åre",
+            addressCountry: "SE",
+          },
+          areaServed: [
+            "Sälen","Idre","Vemdalen","Funäsdalen","Åre","Storlien","Ramundberget",
+          ],
+          openingHoursSpecification: {
+            "@type": "OpeningHoursSpecification",
+            dayOfWeek: ["Monday","Tuesday","Wednesday","Thursday","Friday"],
+            opens: "09:00",
+            closes: "17:00",
+          },
+          parentOrganization: { "@id": "https://fjallportalen.com/#organization" },
+        }),
+      },
+    ],
   }),
   component: ContactPage,
 });

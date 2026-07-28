@@ -86,6 +86,45 @@ export const Route = createRootRoute({
         href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;600&display=swap",
       },
     ],
+    scripts: [
+      {
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@graph": [
+            {
+              "@type": "Organization",
+              "@id": "https://fjallportalen.com/#organization",
+              name: "Fjällportalen",
+              url: "https://fjallportalen.com",
+              logo: "https://fjallportalen.com/favicon.ico",
+              description:
+                "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.",
+              areaServed: "SE",
+              contactPoint: {
+                "@type": "ContactPoint",
+                contactType: "customer support",
+                email: "hej@fjallportalen.com",
+                availableLanguage: ["Swedish", "English"],
+              },
+            },
+            {
+              "@type": "WebSite",
+              "@id": "https://fjallportalen.com/#website",
+              url: "https://fjallportalen.com",
+              name: "Fjällportalen",
+              publisher: { "@id": "https://fjallportalen.com/#organization" },
+              inLanguage: "sv-SE",
+              potentialAction: {
+                "@type": "SearchAction",
+                target: "https://fjallportalen.com/sok?q={search_term_string}",
+                "query-input": "required name=search_term_string",
+              },
+            },
+          ],
+        }),
+      },
+    ],
   }),
   shellComponent: RootShell,
   component: RootComponent,

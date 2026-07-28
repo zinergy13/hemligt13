@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
+import { buildBookingEmailFields } from '@/lib/email/booking-fields';
 
 let _admin: ReturnType<typeof createClient<Database>> | null = null;
 function admin() {
@@ -58,8 +59,7 @@ async function sendCheckinNotifications(origin: string) {
         guestName: firstName,
         cabinName: cabin?.title ?? 'din stuga',
         areaName: cabin?.area_slug ?? '',
-        checkIn: b.check_in,
-        checkOut: b.check_out,
+        ...buildBookingEmailFields({ id: b.id, check_in: b.check_in, check_out: b.check_out }),
         hostName: hostProfile?.full_name?.split(' ')[0] ?? 'värden',
       },
     });
@@ -101,7 +101,7 @@ async function sendPayoutNotifications(origin: string) {
         guestName: firstName,
         cabinName: cabin?.title ?? 'din stuga',
         hostName: hostProfile?.full_name?.split(' ')[0] ?? 'värden',
-        checkIn: b.check_in,
+        ...buildBookingEmailFields({ id: b.id, check_in: b.check_in }),
         totalKr: b.total_price,
       },
     });

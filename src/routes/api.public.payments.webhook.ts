@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 import { type StripeEnv, verifyWebhook } from '@/lib/stripe.server';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
+import { buildBookingEmailFields } from '@/lib/email/booking-fields';
 
 let _admin: ReturnType<typeof createClient<Database>> | null = null;
 function admin() {
@@ -70,12 +71,16 @@ async function notifyGuestPaymentAndEscrow(bookingId: string) {
     .maybeSingle();
 
   const guestName = profile?.full_name?.split(' ')[0] ?? undefined;
+  const fields = buildBookingEmailFields({
+    id: booking.id,
+    check_in: booking.check_in,
+    check_out: booking.check_out,
+  });
   const shared = {
     guestName,
     cabinName: cabin?.title ?? 'din stuga',
     areaName: cabin?.area_slug ?? '',
-    checkIn: booking.check_in,
-    checkOut: booking.check_out,
+    ...fields,
     nights: booking.nights,
     guests: booking.guests,
     totalKr: booking.total_price,
@@ -98,6 +103,9 @@ async function notifyGuestPaymentAndEscrow(bookingId: string) {
       cabinName: shared.cabinName,
       totalKr: shared.totalKr,
       checkIn: shared.checkIn,
+      checkInLabel: shared.checkInLabel,
+      bookingRef: shared.bookingRef,
+      payoutAtLabel: shared.payoutAtLabel,
     },
   });
 

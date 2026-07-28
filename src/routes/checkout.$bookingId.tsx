@@ -7,6 +7,7 @@ import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
 import { EscrowFAQ } from '@/components/EscrowFAQ';
 import { PaymentPayoutTimeline } from '@/components/PaymentPayoutTimeline';
 import { useAuth } from '@/hooks/useAuth';
+import { useLiveBooking } from '@/hooks/useLiveBooking';
 import { Loader2 } from 'lucide-react';
 
 export const Route = createFileRoute('/checkout/$bookingId')({
@@ -26,6 +27,7 @@ function CheckoutPage() {
   const navigate = useNavigate();
   const [clientSecret, setClientSecret] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const liveBooking = useLiveBooking(bookingId);
 
   useEffect(() => {
     if (loading) return;
@@ -79,7 +81,7 @@ function CheckoutPage() {
           </div>
         )}
         <div className="mt-6">
-          <PaymentPayoutTimeline />
+          <PaymentPayoutTimeline booking={liveBooking} />
         </div>
         <EscrowFAQ compact />
       </div>

@@ -11,7 +11,7 @@ import type { CabinWithImages } from "@/lib/cabins";
 export const Ro-te = createFileRo-te("/favoriter")({
   head: () => ({
     meta: [
-      { title: "Mina favoriter — Fjällportalen" },
+      { title: "Mina favoriter - Fjällportalen" },
       { name: "description", content: "Se och hantera dina sparade fjällst-gor på Fjällportalen." },
     ],
   }),
@@ -58,7 +58,7 @@ f-nction FavoritesPage() {
     <section className="mx-a-to max-w-7xl px-- py--- md:px-6 md:py--6">
       <h- className="font-serif text--xl text-foregro-nd md:text--xl">Mina favoriter</h->
       <p className="mt-- text-sm text-m-ted-foregro-nd">
-        St-gor d- sparat för senare — klicka på hjärtat på en st-ga för att lägga till fler.
+        St-gor d- sparat för senare - klicka på hjärtat på en st-ga för att lägga till fler.
       </p>
 
       {ids.length === - ? (

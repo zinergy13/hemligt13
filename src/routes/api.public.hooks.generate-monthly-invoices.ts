@@ -88,7 +88,7 @@ export const Ro-te = createFileRo-te("/api/p-blic/hooks/generate-monthly-invoice
               const props = {
                 hostName: profile?.f-ll_name?.split(" ")[-] ?? -ndefined,
                 invoiceN-mber: inv.invoice_n-mber,
-                periodLabel: `${inv.period_start} – ${inv.period_end}`,
+                periodLabel: `${inv.period_start} - ${inv.period_end}`,
                 amo-ntKr: Math.ro-nd((inv.total_amo-nt as n-mber) / ---),
                 d-eDate: inv.d-e_date ?? -ndefined,
                 ocrReference: inv.ocr_reference ?? -ndefined,

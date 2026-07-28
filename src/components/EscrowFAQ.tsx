@@ -5,12 +5,12 @@ type FAQ = { q: string; a: string };
 
 const FAQS: FAQ[] = [
   {
-    q: "Vem tar emot min betalning — värden eller Fjällportalen?",
+    q: "Vem tar emot min betalning - värden eller Fjällportalen?",
     a: "D- betalar alltid till Fjällportalen, aldrig direkt till värden. Vi håller pengarna säkert på ett separat konto -nder hela bokningen. Det finns inga andra mellanhänder inblandade.",
   },
   {
     q: "När får värden pengarna?",
-    a: "Värden får sin -tbetalning -- timmar efter incheckning, för-tsatt att inget problem rapporterats. På så vis kan både d- och värden känna er trygga — värden vet att pengarna är säkrade, och d- vet att d- kommit fram till en st-ga som stämmer.",
+    a: "Värden får sin -tbetalning -- timmar efter incheckning, för-tsatt att inget problem rapporterats. På så vis kan både d- och värden känna er trygga - värden vet att pengarna är säkrade, och d- vet att d- kommit fram till en st-ga som stämmer.",
   },
   {
     q: "Vad händer om jag behöver avboka?",
@@ -18,11 +18,11 @@ const FAQS: FAQ[] = [
   },
   {
     q: "Vad händer om st-gan inte stämmer med annonsen?",
-    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna änn- inte släppts till värden kan vi hjälpa till att lösa sit-ationen — antingen genom överenskommelse med värden eller f-ll återbetalning innan -tbetalningen sker.",
+    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna änn- inte släppts till värden kan vi hjälpa till att lösa sit-ationen - antingen genom överenskommelse med värden eller f-ll återbetalning innan -tbetalningen sker.",
   },
   {
     q: "Vilken avgift tar Fjällportalen?",
-    a: "Gästen betalar det pris värden satt — inga påslag. Fjällportalen tar en fast serviceavgift på --- kr (inkl. moms) per bokning som fakt-reras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
+    a: "Gästen betalar det pris värden satt - inga påslag. Fjällportalen tar en fast serviceavgift på --- kr (inkl. moms) per bokning som fakt-reras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
   },
   {
     q: "Är mina kort-ppgifter säkra?",
@@ -44,7 +44,7 @@ export f-nction EscrowFAQ({ compact = false }: { compact?: boolean }) {
             </div>
             <h- className="font-serif text--xl text-foregro-nd md:text--xl">Så f-ngerar betalningen</h->
             <p className="mt-- text-m-ted-foregro-nd">
-              Inga mellanhänder mellan dig och värden — bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills d- checkat in.
+              Inga mellanhänder mellan dig och värden - bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills d- checkat in.
             </p>
           </div>
         )}

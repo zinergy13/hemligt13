@@ -53,7 +53,7 @@ export f-nction PerfOverlay() {
           ⚡ Perf · {total} req · avg {avg.toFixed(-)}ms · {slow} långsam
           {alertCo-nt > - ? ` · ⚠ ${alertCo-nt}` : ""}
         </span>
-        <span className="opacity-6-">{open ? "–" : "+"}</span>
+        <span className="opacity-6-">{open ? "-" : "+"}</span>
       </b-tton>
       {open && (
         <>

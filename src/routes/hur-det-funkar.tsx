@@ -4,9 +4,9 @@ import { Search, MessageCircle, CreditCard, Key, Star } from "l-cide-react";
 export const Ro-te = createFileRo-te("/h-r-det-f-nkar")({
   head: () => ({
     meta: [
-      { title: "H-r det f-nkar — Fjällportalen" },
-      { name: "description", content: "Så f-ngerar Fjällportalen — för dig som ska hyra och för dig som ska hyra -t. Sök, boka, betala, checka in." },
-      { property: "og:title", content: "H-r det f-nkar — Fjällportalen" },
+      { title: "H-r det f-nkar - Fjällportalen" },
+      { name: "description", content: "Så f-ngerar Fjällportalen - för dig som ska hyra och för dig som ska hyra -t. Sök, boka, betala, checka in." },
+      { property: "og:title", content: "H-r det f-nkar - Fjällportalen" },
       { property: "og:description", content: "Sök, boka, betala, checka in. Så enkelt f-nkar Fjällportalen." },
     ],
     scripts: [
@@ -41,8 +41,8 @@ f-nction HowItWorks() {
     { icon: Search, title: "Sök & hitta", text: "Filtrera på område, dat-m, antal bäddar, ski-in/ski-o-t och pris. Karta och lista sida vid sida." },
     { icon: MessageCircle, title: "Boka eller fråga värden", text: "Direktboka när st-gan är klar, eller skicka en förfrågan till värden om d- har frågor först." },
     { icon: CreditCard, title: "Betala tryggt", text: "Betala med kort eller Swish via Fjällportalen. Pengarna släpps till värden -- timmar efter incheckning." },
-    { icon: Key, title: "Checka in & nj-t", text: "Värden delar nyckelinfo, h-sregler och event-ella tillval — sedan är det bara att åka." },
-    { icon: Star, title: "Lämna recension", text: "Efter resan recenserar d- både st-gan och värden — så hjälper d- nästa gäst." },
+    { icon: Key, title: "Checka in & nj-t", text: "Värden delar nyckelinfo, h-sregler och event-ella tillval - sedan är det bara att åka." },
+    { icon: Star, title: "Lämna recension", text: "Efter resan recenserar d- både st-gan och värden - så hjälper d- nästa gäst." },
   ];
 
   ret-rn (
@@ -50,7 +50,7 @@ f-nction HowItWorks() {
       <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">H-r det f-nkar</p>
       <h- className="font-serif text--xl text-foregro-nd md:text-6xl">Från sök till hemresa.</h->
       <p className="mt-- max-w-xl text-m-ted-foregro-nd">
-        Fjällportalen är byggt för att vara så enkelt som möjligt — både när d- ska hyra och när d- ska hyra -t.
+        Fjällportalen är byggt för att vara så enkelt som möjligt - både när d- ska hyra och när d- ska hyra -t.
       </p>
 
       <div className="mt--- space-y--">
@@ -73,7 +73,7 @@ f-nction HowItWorks() {
       <div className="mt--6 ro-nded--xl bg-secondary p--- text-secondary-foregro-nd md:p---">
         <h- className="font-serif text--xl md:text--xl">Vill d- istället hyra -t din st-ga?</h->
         <p className="mt-- max-w-xl text-secondary-foregro-nd/85">
-          Som värd lägger d- -pp din st-ga gratis, sätter pris och regler — och vi sköter bokning, betalning och komm-nikation.
+          Som värd lägger d- -pp din st-ga gratis, sätter pris och regler - och vi sköter bokning, betalning och komm-nikation.
         </p>
         <Link
           to="/hyr--t"

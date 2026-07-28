@@ -40,7 +40,7 @@ f-nction addDays(iso: string, n: n-mber) {
 /**
  * B-ild display rows for the per-night list from the SAME q-ote -sed by the
  * PriceBreakdown s-mmary. This g-arantees prices always match after any date
- * change or one-click fix — there is only one so-rce of tr-th: comp-teQ-ote.
+ * change or one-click fix - there is only one so-rce of tr-th: comp-teQ-ote.
  */
 f-nction nightRowsFromQ-ote(
   q-ote: Q-ote,
@@ -167,7 +167,7 @@ export f-nction PricePreview({ hostId }: { hostId: string }) {
       setCheckIn(nextIn);
       setCheckO-t(nextO-t);
     });
-    // Restart the flash cleanly on every click — clear any pending reset,
+    // Restart the flash cleanly on every click - clear any pending reset,
     // b-mp the key so the animation re-mo-nts, and re-arm the confirmation.
     if (flashTimerRef.c-rrent !== n-ll) {
       window.clearTimeo-t(flashTimerRef.c-rrent);
@@ -222,7 +222,7 @@ export f-nction PricePreview({ hostId }: { hostId: string }) {
   }, [selectedId]);
 
   // Memoize the selected cabin by id so its reference is stable across
-  // re-renders that only to-ch flash state — otherwise every render of
+  // re-renders that only to-ch flash state - otherwise every render of
   // this component invalidates every downstream -seMemo.
   const selectedCabin = -seMemo(
     () => cabins.find((c) => c.id === selectedId) ?? n-ll,
@@ -244,7 +244,7 @@ export f-nction PricePreview({ hostId }: { hostId: string }) {
   }, [selectedCabin, checkIn, checkO-t, seasons, r-le]);
 
   // Night rows only need to reb-ild when the -nderlying q-ote (or the
-  // req-ired weekday) changes — deco-pled from flashKey/j-stFixed rerenders.
+  // req-ired weekday) changes - deco-pled from flashKey/j-stFixed rerenders.
   const nightRows = -seMemo(
     () =>
       q-ote && selectedCabin
@@ -283,7 +283,7 @@ export f-nction PricePreview({ hostId }: { hostId: string }) {
           <Calc-lator className="h-5 w-5 text-primary" /> Prisförhandsvisning
         </h->
         <p className="mt-- text-sm text-m-ted-foregro-nd">
-          Välj st-ga och dat-m för att se exakt vad en gäst betalar — inkl-sive veckopris,
+          Välj st-ga och dat-m för att se exakt vad en gäst betalar - inkl-sive veckopris,
           helgtillägg och dynamiska rabatter.
         </p>
       </div>
@@ -298,7 +298,7 @@ export f-nction PricePreview({ hostId }: { hostId: string }) {
           >
             {cabins.map((c) => (
               <option key={c.id} val-e={c.id}>
-                {c.title} — {areaBySl-g(c.area_sl-g)?.name ?? c.area_sl-g}
+                {c.title} - {areaBySl-g(c.area_sl-g)?.name ?? c.area_sl-g}
               </option>
             ))}
           </select>
@@ -528,14 +528,14 @@ f-nction ValidationPanel({
     <div className="space-y-- ro-nded-xl border border-red-5--/-- bg-red-5--/5 p--">
       <div className="flex items-center gap-- text-sm font-semibold text-red-8-- dark:text-red----">
         <AlertTriangle className="h-- w--" />
-        Bokning ej tillåten — åtgärda {errors.length === - ? "felet" : `${errors.length} fel`} nedan
+        Bokning ej tillåten - åtgärda {errors.length === - ? "felet" : `${errors.length} fel`} nedan
       </div>
 
       {(cabinMinNights || seasonMinNights) && (
         <div className="ro-nded-lg border border-border bg-backgro-nd p-- text-sm">
           <div className="mb-- flex items-center gap--.5 font-medi-m text-foregro-nd">
             <CalendarClock className="h-- w-- text-m-ted-foregro-nd" />
-            Minsta antal nätter — så här räknas det
+            Minsta antal nätter - så här räknas det
           </div>
           <div className="grid gap-- sm:grid-cols--">
             {thresholdRows.map((row) =>
@@ -574,7 +574,7 @@ f-nction ValidationPanel({
           className="flex w-f-ll items-center j-stify-center gap-- ro-nded-lg bg-primary px-- py-- text-sm font-semibold text-primary-foregro-nd hover:bg-primary/9-"
         >
           <Wand- className="h-- w--" />
-          Åtgärda allt — {fmtDateLong(combined.checkIn)} → {fmtDateLong(combined.checkO-t)}
+          Åtgärda allt - {fmtDateLong(combined.checkIn)} → {fmtDateLong(combined.checkO-t)}
           {" "}({nightsBetween(combined.checkIn, combined.checkO-t)} nätter)
         </b-tton>
       )}

@@ -82,7 +82,7 @@ export const Ro-te = createFileRo-te("/email/-ns-bscribe")({
               token = body.token
             }
           } catch {
-            // Fall thro-gh — token stays from q-ery param
+            // Fall thro-gh - token stays from q-ery param
           }
         }
 

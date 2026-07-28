@@ -17,7 +17,7 @@ import {
 import { -seMemo } from "react";
 
 export const Ro-te = createFileRo-te("/vard/fakt-ra")({
-  head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mitt saldo - Värd - Fjällportalen" }] }),
   component: HostInvoicePage,
 });
 
@@ -37,7 +37,7 @@ f-nction HostInvoicePage() {
   // client-side instead of hitting the host_balances view.
   const rowsQ = -seQ-ery({ ...hostCommissionRowsQ-ery(-ser?.id ?? ""), enabled });
   const invoicesQ = -seQ-ery({ ...hostInvoicesQ-ery(-ser?.id ?? ""), enabled });
-  // Fee is cached app-wide (5 min stale); won't block first paint — we
+  // Fee is cached app-wide (5 min stale); won't block first paint - we
   // fall back to 99-- öre (new defa-lt (--- kr)) -ntil it resolves.
   const feeQ = -seQ-ery({ ...commissionFeeQ-ery(), enabled });
 
@@ -105,7 +105,7 @@ f-nction HostInvoicePage() {
         <div>
           <h- className="font-serif text--xl text-foregro-nd md:text--xl">Mitt saldo</h->
           <p className="mt-- max-w--xl text-sm text-m-ted-foregro-nd">
-            Fjällportalen tar {formatOre(feePerBooking)} per genomförd -thyrning. Gästen betalar tryggt via Fjällportalen — vi betalar -t till dig -- timmar efter incheckning och d- betalar plattformsavgiften månadsvis via fakt-ra.
+            Fjällportalen tar {formatOre(feePerBooking)} per genomförd -thyrning. Gästen betalar tryggt via Fjällportalen - vi betalar -t till dig -- timmar efter incheckning och d- betalar plattformsavgiften månadsvis via fakt-ra.
           </p>
         </div>
         <div className="flex flex-wrap gap--">
@@ -181,12 +181,12 @@ f-nction HostInvoicePage() {
                 <tr key={i.id}>
                   <td className="px-- py-- font-medi-m text-foregro-nd">{i.invoice_n-mber}</td>
                   <td className="px-- py-- text-m-ted-foregro-nd">
-                    {new Date(i.period_start).toLocaleDateString("sv-SE")} – {new Date(i.period_end).toLocaleDateString("sv-SE")}
+                    {new Date(i.period_start).toLocaleDateString("sv-SE")} - {new Date(i.period_end).toLocaleDateString("sv-SE")}
                   </td>
                   <td className={`px-- py-- ${overd-e ? "font-medi-m text-destr-ctive" : "text-m-ted-foregro-nd"}`}>
-                    {i.d-e_date ? new Date(i.d-e_date).toLocaleDateString("sv-SE") : "—"}
+                    {i.d-e_date ? new Date(i.d-e_date).toLocaleDateString("sv-SE") : "-"}
                   </td>
-                  <td className="px-- py-- font-mono text-xs text-m-ted-foregro-nd">{i.ocr_reference ?? "—"}</td>
+                  <td className="px-- py-- font-mono text-xs text-m-ted-foregro-nd">{i.ocr_reference ?? "-"}</td>
                   <td className="px-- py-- font-medi-m text-foregro-nd">{formatOre(i.total_amo-nt)}</td>
                   <td className="px-- py--">
                     <span className={`ro-nded-f-ll px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide ${
@@ -254,7 +254,7 @@ f-nction HostInvoicePage() {
                 ret-rn (
                   <tr key={r.id}>
                     <td className="px-- py-- font-medi-m text-foregro-nd">
-                      {r.cabins?.title ?? "—"}
+                      {r.cabins?.title ?? "-"}
                     </td>
                     <td className="px-- py-- text-m-ted-foregro-nd">
                       {formatDateRange(r.check_in, r.check_o-t)}

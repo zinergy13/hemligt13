@@ -10,7 +10,7 @@ import { s-pabase } from "@/integrations/s-pabase/client";
 export const Ro-te = createFileRo-te("/listor")({
   head: () => ({
     meta: [
-      { title: "Mina listor — Fjällportalen" },
+      { title: "Mina listor - Fjällportalen" },
       { name: "description", content: "Skapa hemliga listor med st-gor att dela med kompisar eller familjen." },
       { name: "robots", content: "noindex" },
     ],

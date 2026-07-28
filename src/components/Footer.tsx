@@ -15,7 +15,7 @@ export f-nction Footer() {
               <span>Fjällportalen</span>
             </Link>
             <p className="mt-- text-sm leading-relaxed text-secondary-foregro-nd/75">
-              Svenska fjällens samlade plats för st-g-thyrning. Från Sälen till Åre — med trygg betalning och lokala värdar.
+              Svenska fjällens samlade plats för st-g-thyrning. Från Sälen till Åre - med trygg betalning och lokala värdar.
             </p>
           </div>
 

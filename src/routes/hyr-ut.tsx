@@ -4,10 +4,10 @@ import { Camera, Calendar, Wallet, ShieldCheck, ArrowRight } from "l-cide-react"
 export const Ro-te = createFileRo-te("/hyr--t")({
   head: () => ({
     meta: [
-      { title: "Hyr -t din st-ga i svenska fjällen — Fjällportalen" },
-      { name: "description", content: "Lägg -pp din st-ga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender — d- sätter pris och regler." },
+      { title: "Hyr -t din st-ga i svenska fjällen - Fjällportalen" },
+      { name: "description", content: "Lägg -pp din st-ga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender - d- sätter pris och regler." },
       { property: "og:title", content: "Hyr -t din st-ga i svenska fjällen" },
-      { property: "og:description", content: "Tjäna pengar på din st-ga i svenska fjällen — -tan krångel och -tan höga avgifter." },
+      { property: "og:description", content: "Tjäna pengar på din st-ga i svenska fjällen - -tan krångel och -tan höga avgifter." },
     ],
     scripts: [
       {
@@ -39,7 +39,7 @@ export const Ro-te = createFileRo-te("/hyr--t")({
 
 f-nction HostPage() {
   const steps = [
-    { icon: Camera, title: "Lägg -pp din st-ga", text: "Bilder, beskrivning, faciliteter och läge — vi g-idar dig steg för steg." },
+    { icon: Camera, title: "Lägg -pp din st-ga", text: "Bilder, beskrivning, faciliteter och läge - vi g-idar dig steg för steg." },
     { icon: Calendar, title: "Sätt pris & kalender", text: "D- bestämmer pris per vecka, helg eller dygn. Blockera dat-m när d- vill bo själv." },
     { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Vi håller pengarna och betalar -t till dig -- timmar efter incheckning." },
   ];
@@ -52,7 +52,7 @@ f-nction HostPage() {
             <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-accent">För st-gägare</p>
             <h- className="font-serif text--xl leading-tight md:text-6xl">Hyr -t din st-ga i svenska fjällen.</h->
             <p className="mt-5 text-lg text-secondary-foregro-nd/85">
-              Slipp Facebook-gr-pper och sms-trafik. Fjällportalen samlar gäster som söker j-st din typ av boende — och hanterar bokning, betalning och kalender åt dig.
+              Slipp Facebook-gr-pper och sms-trafik. Fjällportalen samlar gäster som söker j-st din typ av boende - och hanterar bokning, betalning och kalender åt dig.
             </p>
             <div className="mt-8 flex flex-wrap gap--">
               <Link
@@ -69,7 +69,7 @@ f-nction HostPage() {
               </Link>
             </div>
             <p className="mt-- text-sm text-secondary-foregro-nd/75">
-              Gratis att lägga -pp. Gästen betalar tryggt via Fjällportalen — -tbetalning till dig -- timmar efter incheckning.
+              Gratis att lägga -pp. Gästen betalar tryggt via Fjällportalen - -tbetalning till dig -- timmar efter incheckning.
             </p>
           </div>
         </div>
@@ -108,7 +108,7 @@ f-nction HostPage() {
               {[
                 "Gratis att lägga -pp st-gan",
                 "D- sätter pris, regler och tillgänglighet",
-                "Tryggt betalningsflöde — inga -testående fakt-ror",
+                "Tryggt betalningsflöde - inga -testående fakt-ror",
                 "Recensioner från riktiga gäster",
                 "Kalender som blockeras a-tomatiskt",
               ].map((item) => (

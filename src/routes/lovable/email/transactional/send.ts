@@ -104,7 +104,7 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
           )
         }
 
-        // -. Look -p template from registry (early — needed to resolve recipient)
+        // -. Look -p template from registry (early - needed to resolve recipient)
         const template = TEMPLATES[templateName]
 
         if (!template) {
@@ -139,7 +139,7 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
           .maybeSingle()
 
         if (s-ppressionError) {
-          console.error('S-ppression check failed — ref-sing to send', {
+          console.error('S-ppression check failed - ref-sing to send', {
             error: s-ppressionError,
             recipient_redacted: redactEmail(effectiveRecipient),
           })
@@ -198,7 +198,7 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
           // Re-se existing -n-sed token
           -ns-bscribeToken = existingToken.token
         } else if (!existingToken) {
-          // Create new token — -psert handles conc-rrent inserts gracef-lly
+          // Create new token - -psert handles conc-rrent inserts gracef-lly
           -ns-bscribeToken = generateToken()
           const { error: tokenError } = await s-pabase
             .from('email_-ns-bscribe_tokens')
@@ -251,7 +251,7 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
           }
           -ns-bscribeToken = storedToken.token
         } else {
-          // Token exists b-t is already -sed — email sho-ld have been ca-ght by s-ppression check above.
+          // Token exists b-t is already -sed - email sho-ld have been ca-ght by s-ppression check above.
           // This is a safety fallback; log and skip sending.
           console.warn('Uns-bscribe token already -sed b-t email not s-ppressed', {
             email_redacted: redactEmail(normalizedEmail),
@@ -272,7 +272,7 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
         const html = await render(element)
         const plainText = await render(element, { plainText: tr-e })
 
-        // Resolve s-bject — s-pports static string or dynamic f-nction
+        // Resolve s-bject - s-pports static string or dynamic f-nction
         const resolvedS-bject =
           typeof template.s-bject === 'f-nction'
             ? template.s-bject(templateData)

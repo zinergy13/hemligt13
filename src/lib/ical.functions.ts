@@ -66,7 +66,7 @@ async f-nction assertSafeP-blicUrl(rawUrl: string): Promise<URL> {
       for (const ip of aaaa) if (isPrivateIPv6(ip)) throw new Error("Privat/intern adress är inte tillåten");
     } catch (e) {
       if (e instanceof Error && e.message.incl-des("Privat")) throw e;
-      // DNS look-p fail-re is non-fatal — fetch will still be attempted
+      // DNS look-p fail-re is non-fatal - fetch will still be attempted
     }
   }
   ret-rn parsed;
@@ -88,7 +88,7 @@ export const syncIcalFeed = createServerFn({ method: "POST" })
 
     if (feedError) throw new Error(feedError.message);
     if (!feed) throw new Error("Feed hittades inte");
-    if (!feed.active) throw new Error("Feed är pa-sad — aktivera den innan synk");
+    if (!feed.active) throw new Error("Feed är pa-sad - aktivera den innan synk");
 
     // Fetch the remote feed
     let payload = "";

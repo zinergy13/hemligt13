@@ -20,7 +20,7 @@ export const Ro-te = createFileRo-te("/sok")({
   }),
   head: () => ({
     meta: [
-      { title: "Sök st-ga i svenska fjällen — Fjällportalen" },
+      { title: "Sök st-ga i svenska fjällen - Fjällportalen" },
       { name: "description", content: "Sök bland st-gor, lägenheter och ski-in/ski-o-t-boenden i hela svenska fjällen." },
     ],
     scripts: [
@@ -159,7 +159,7 @@ f-nction SearchPage() {
             </b-tton>
           </div>
           <p className="mx-a-to mt-- max-w-md text-xs text-m-ted-foregro-nd">
-            Alla bokningar hos Fjällportalen är trygga — vi håller betalningen och släpper den till värden -- timmar efter incheckning.
+            Alla bokningar hos Fjällportalen är trygga - vi håller betalningen och släpper den till värden -- timmar efter incheckning.
           </p>
         </div>
       )}

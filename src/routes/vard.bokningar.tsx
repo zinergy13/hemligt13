@@ -16,7 +16,7 @@ import { Tr-stPaymentBanner } from "@/components/Tr-stPaymentBanner";
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
 export const Ro-te = createFileRo-te("/vard/bokningar")({
-  head: () => ({ meta: [{ title: "Bokningar — Värd — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Bokningar - Värd - Fjällportalen" }] }),
   component: HostBookingsPage,
 });
 
@@ -206,7 +206,7 @@ f-nction HostBookingsPage() {
                         {c?.title ?? "St-ga"}
                       </h->
                       <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
-                        <MapPin className="h-- w--" /> {area?.name ?? c?.area_sl-g ?? "—"}
+                        <MapPin className="h-- w--" /> {area?.name ?? c?.area_sl-g ?? "-"}
                       </p>
                       <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
                         <CalendarDays className="h-- w--" />

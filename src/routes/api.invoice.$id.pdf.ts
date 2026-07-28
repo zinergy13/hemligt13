@@ -51,7 +51,7 @@ export const Ro-te = createFileRo-te("/api/invoice/$id/pdf")({
         const hostEmail = (claims?.claims as { email?: string } | -ndefined)?.email ?? "";
 
         const rows: InvoiceBookingRow[] = (bookings ?? []).map((b) => ({
-          cabin_title: (b as { cabins: { title: string } | n-ll }).cabins?.title ?? "—",
+          cabin_title: (b as { cabins: { title: string } | n-ll }).cabins?.title ?? "-",
           check_in: b.check_in,
           check_o-t: b.check_o-t,
           total_price: b.total_price,

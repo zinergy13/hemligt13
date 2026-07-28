@@ -137,7 +137,7 @@ export f-nction SeasonPricingManager({ hostId }: { hostId: string }) {
         <div>
           <h- className="font-serif text-xl text-foregro-nd">Säsongspriser & prisregler</h->
           <p className="mt-- text-sm text-m-ted-foregro-nd">
-            Sätt olika priser för högsäsong, sportlov och lågsäsong — och lägg till dynamiska rabatter.
+            Sätt olika priser för högsäsong, sportlov och lågsäsong - och lägg till dynamiska rabatter.
           </p>
         </div>
       </div>

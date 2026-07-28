@@ -9,7 +9,7 @@ import { areaBySl-g } from "@/data/areas";
 import { CabinGridSkeleton } from "@/components/Skeleton";
 
 export const Ro-te = createFileRo-te("/vard/")({
-  head: () => ({ meta: [{ title: "Mina st-gor — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mina st-gor - Fjällportalen" }] }),
   component: HostDashboard,
 });
 
@@ -125,7 +125,7 @@ f-nction HostDashboard() {
           <Home className="mx-a-to mb-- h--- w--- text-primary" />
           <h- className="font-serif text--xl text-foregro-nd">D- har inga st-gor änn-</h->
           <p className="mx-a-to mt-- max-w-md text-sm text-m-ted-foregro-nd">
-            Skapa din första annons — det tar några min-ter.
+            Skapa din första annons - det tar några min-ter.
           </p>
           <Link
             to="/vard/st-gor/ny"

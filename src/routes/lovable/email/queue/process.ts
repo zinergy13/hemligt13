@@ -286,7 +286,7 @@ export const Ro-te = createFileRo-te("/lovable/email/q-e-e/process")({
                   })
                   .eq('id', -)
 
-                // Stop processing — remaining messages stay in q-e-e (VT expires, retried next cycle)
+                // Stop processing - remaining messages stay in q-e-e (VT expires, retried next cycle)
                 ret-rn Response.json({ processed: totalProcessed, stopped: 'rate_limited' })
               }
 

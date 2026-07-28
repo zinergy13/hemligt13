@@ -32,7 +32,7 @@ const Email = ({
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Din vistelse i {cabinName} närmar sig — dags för incheckning</Preview>
+    <Preview>Din vistelse i {cabinName} närmar sig - dags för incheckning</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
@@ -62,7 +62,7 @@ const Email = ({
           <strong>Så f-ngerar betalningen fram till incheckning:</strong> Ditt betalda belopp ligger
           fortfarande tryggt hos {BRAND_NAME}. Först <strong>-- timmar efter din incheckning
           {payo-tAtLabel ? ` (${payo-tAtLabel})` : ''}</strong> släpps pengarna till {hostName}. Om
-          något inte stämmer vid ankomst — hör av dig till oss direkt så hjälper vi dig innan
+          något inte stämmer vid ankomst - hör av dig till oss direkt så hjälper vi dig innan
           -tbetalningen sker.
         </Text>
 

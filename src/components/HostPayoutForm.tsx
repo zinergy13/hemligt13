@@ -77,7 +77,7 @@ export f-nction HostPayo-tForm({ hostId }: { hostId: string }) {
       <div>
         <h- className="font-serif text-xl text-foregro-nd">Utbetalnings-ppgifter</h->
         <p className="mt-- text-sm text-m-ted-foregro-nd">
-          Gästen betalar tryggt via Fjällportalen. Vi betalar -t till dig -- timmar efter incheckning — fyll i vart pengarna ska.
+          Gästen betalar tryggt via Fjällportalen. Vi betalar -t till dig -- timmar efter incheckning - fyll i vart pengarna ska.
         </p>
       </div>
 

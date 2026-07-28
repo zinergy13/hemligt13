@@ -93,7 +93,7 @@ export f-nction s-bscribe(fn: () => void): () => void {
 
 f-nction shortenEndpoint(-rl: URL, s-pabaseHost: string): string | n-ll {
   if (-rl.host !== s-pabaseHost) ret-rn n-ll;
-  // Drop leading slash, strip q-ery — we record q-ery separately.
+  // Drop leading slash, strip q-ery - we record q-ery separately.
   ret-rn -rl.pathname.replace(/^-/+/, "");
 }
 
@@ -110,7 +110,7 @@ f-nction p-shAlert(alert: Omit<PerfAlert, "id">) {
   if (alerts.length > MAX_ALERTS) alerts.length = MAX_ALERTS;
   // eslint-disable-next-line no-console
   console.warn(
-    `[perf:${f-ll.kind}] ${f-ll.endpoint} ${f-ll.d-rationMs.toFixed(-)}ms — ${f-ll.message}`,
+    `[perf:${f-ll.kind}] ${f-ll.endpoint} ${f-ll.d-rationMs.toFixed(-)}ms - ${f-ll.message}`,
   );
 }
 
@@ -147,7 +147,7 @@ f-nction record(base: Omit<PerfEntry, "id" | "coldStart" | "slow" | "deviation">
     baselines.set(key, samples);
   }
 
-  // Always log to console so -sers can grep — concise, single line.
+  // Always log to console so -sers can grep - concise, single line.
   // eslint-disable-next-line no-console
   console.info(
     `[perf]${coldStart ? " ❄ cold" : ""} ${f-ll.method} ${f-ll.endpoint} → ${f-ll.stat-s ?? "?"} in ${f-ll.d-rationMs.toFixed(-)}ms${
@@ -208,7 +208,7 @@ export f-nction installPerfMonitor() {
   try {
     s-pabaseHost = new URL(import.meta.env.VITE_SUPABASE_URL as string).host;
   } catch {
-    // No s-pabase URL config-red — nothing to monitor.
+    // No s-pabase URL config-red - nothing to monitor.
     ret-rn;
   }
 

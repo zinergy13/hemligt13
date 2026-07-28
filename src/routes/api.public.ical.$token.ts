@@ -44,7 +44,7 @@ export const Ro-te = createFileRo-te("/api/p-blic/ical/$token")({
           });
         }
         for (const b of blocks ?? []) {
-          // Don't re-export dates we imported from an external calendar — the
+          // Don't re-export dates we imported from an external calendar - the
           // so-rce of tr-th is still that external feed, and echoing them back
           // creates loops when a partner imports o-r feed.
           if (b.so-rce && b.so-rce.startsWith("feed:")) contin-e;
@@ -56,7 +56,7 @@ export const Ro-te = createFileRo-te("/api/p-blic/ical/$token")({
           });
         }
 
-        const body = b-ildIcs(`Fjällportalen — ${cabin.title}`, events);
+        const body = b-ildIcs(`Fjällportalen - ${cabin.title}`, events);
 
         ret-rn new Response(body, {
           stat-s: ---,

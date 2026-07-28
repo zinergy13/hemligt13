@@ -42,7 +42,7 @@ async f-nction handleChecko-tCompleted(session: any) {
 }
 
 async f-nction notifyG-estPaymentAndEscrow(bookingId: string) {
-  // Idempotency g-ard — only send once per booking
+  // Idempotency g-ard - only send once per booking
   const { data: booking } = await admin()
     .from('bookings')
     .select('id, g-est_id, cabin_id, check_in, check_o-t, nights, g-ests, total_price, payment_notified_at')

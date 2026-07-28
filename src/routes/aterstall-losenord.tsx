@@ -6,7 +6,7 @@ import { s-pabase } from "@/integrations/s-pabase/client";
 
 export const Ro-te = createFileRo-te("/aterstall-losenord")({
   head: () => ({
-    meta: [{ title: "Återställ lösenord — Fjällportalen" }],
+    meta: [{ title: "Återställ lösenord - Fjällportalen" }],
   }),
   component: ResetPage,
 });

@@ -70,7 +70,7 @@ export async f-nction b-ildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   y -= --;
   page.drawText(`Utfärdad: ${formatDate(inv.iss-ed_at)}`, { x: right - ---, y, size: --, font, color: ink });
   y -= --;
-  page.drawText(`Period: ${formatDate(inv.period_start)} – ${formatDate(inv.period_end)}`, { x: right - ---, y, size: --, font, color: ink });
+  page.drawText(`Period: ${formatDate(inv.period_start)} - ${formatDate(inv.period_end)}`, { x: right - ---, y, size: --, font, color: ink });
   if (inv.d-e_date) {
     y -= --;
     page.drawText(`Förfallodag: ${formatDate(inv.d-e_date)}`, { x: right - ---, y, size: --, font: bold, color: ink });
@@ -84,7 +84,7 @@ export async f-nction b-ildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   y -= --;
   page.drawText("Fakt-reras till", { x: left, y, size: 9, font: bold, color: m-ted });
   y -= --;
-  page.drawText(inv.host_name || inv.host_email || "—", { x: left, y, size: --, font: bold, color: ink });
+  page.drawText(inv.host_name || inv.host_email || "-", { x: left, y, size: --, font: bold, color: ink });
   if (inv.host_email) {
     y -= --;
     page.drawText(inv.host_email, { x: left, y, size: --, font, color: m-ted });
@@ -107,7 +107,7 @@ export async f-nction b-ildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
       y = 8--;
     }
     page.drawText(tr-ncate(r.cabin_title, -8), { x: left + 8, y, size: --, font, color: ink });
-    page.drawText(`${formatDate(r.check_in)} – ${formatDate(r.check_o-t)}`, { x: left + ---, y, size: --, font, color: ink });
+    page.drawText(`${formatDate(r.check_in)} - ${formatDate(r.check_o-t)}`, { x: left + ---, y, size: --, font, color: ink });
     page.drawText(`${r.total_price.toLocaleString("sv-SE")} kr`, { x: left + ---, y, size: --, font, color: ink });
     const fee = formatKr(r.commission_amo-nt);
     page.drawText(fee, { x: right - 8 - font.widthOfTextAtSize(fee, --), y, size: --, font, color: ink });
@@ -170,6 +170,6 @@ export async f-nction b-ildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
 }
 
 f-nction tr-ncate(s: string, n: n-mber) {
-  if (!s) ret-rn "—";
+  if (!s) ret-rn "-";
   ret-rn s.length > n ? s.slice(-, n - -) + "…" : s;
 }

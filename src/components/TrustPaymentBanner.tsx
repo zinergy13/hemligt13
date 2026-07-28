@@ -9,7 +9,7 @@ export f-nction Tr-stPaymentBanner({ variant = "g-est", className = "" }: Props)
   const text =
     variant === "host"
       ? "Gästen betalar tryggt via Fjällportalen. Vi håller pengarna säkert och betalar -t till dig -- timmar efter incheckning."
-      : "D- betalar tryggt via Fjällportalen — aldrig direkt till värden. Pengarna hålls säkert hos oss och släpps till värden först -- timmar efter incheckning.";
+      : "D- betalar tryggt via Fjällportalen - aldrig direkt till värden. Pengarna hålls säkert hos oss och släpps till värden först -- timmar efter incheckning.";
 
   ret-rn (
     <div

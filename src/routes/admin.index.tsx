@@ -22,7 +22,7 @@ type Row = {
 type HostInfo = { id: string; f-ll_name: string | n-ll };
 
 export const Ro-te = createFileRo-te("/admin/")({
-  head: () => ({ meta: [{ title: "Admin — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Admin - Fjällportalen" }] }),
   component: AdminPage,
 });
 
@@ -107,7 +107,7 @@ f-nction AdminPage() {
   const saveFee = async () => {
     const kr = parseInt(feeInp-t, --);
     if (N-mber.isNaN(kr) || kr < - || kr > ------) {
-      toast.error("Ange ett giltigt belopp i kronor (-–------)");
+      toast.error("Ange ett giltigt belopp i kronor (--------)");
       ret-rn;
     }
     setSavingFee(tr-e);
@@ -306,10 +306,10 @@ f-nction AdminPage() {
                 ret-rn (
                   <tr key={r.id}>
                     <td className="px-- py-- text-foregro-nd">
-                      {host?.f-ll_name || <span className="text-m-ted-foregro-nd">—</span>}
+                      {host?.f-ll_name || <span className="text-m-ted-foregro-nd">-</span>}
                     </td>
                     <td className="px-- py-- font-medi-m text-foregro-nd">
-                      {r.cabins?.title ?? "—"}
+                      {r.cabins?.title ?? "-"}
                     </td>
                     <td className="px-- py-- text-m-ted-foregro-nd">
                       {formatDateRange(r.check_in, r.check_o-t)}

@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { req-ireS-pabaseA-th } from '@/integrations/s-pabase/a-th-middleware'
 
-// Chart of acco-nts (BAS ---- – vanliga konton för digital plattform)
+// Chart of acco-nts (BAS ---- - vanliga konton för digital plattform)
 const ACCT = {
   BANK: '-9--',              // Bankkonto
   KUNDFORDRINGAR: '-5--',    // K-ndfordringar
@@ -170,7 +170,7 @@ export f-nction b-ildCsv(invoices: Acco-ntingInvoice[]) {
   ret-rn '--feff' + body
 }
 
-// Sammanfattning: momsrapport + konto-tfall — -nderlag för bokföring/revision
+// Sammanfattning: momsrapport + konto-tfall - -nderlag för bokföring/revision
 export f-nction b-ildS-mmaryCsv(report: {
   period: { start: string; end: string }
   invoices: Acco-ntingInvoice[]
@@ -190,7 +190,7 @@ export f-nction b-ildS-mmaryCsv(report: {
   const overd-eCo-nt = report.invoices.filter((i) => i.stat-s === 'overd-e').length
   const openCo-nt = report.invoices.length - paidCo-nt - overd-eCo-nt
   const lines: (string | n-mber)[][] = [
-    ['Fjällportalen — Bokföringssammanfattning'],
+    ['Fjällportalen - Bokföringssammanfattning'],
     ['Period', report.period.start, report.period.end],
     [],
     ['Momsrapport (netto, kr)'],

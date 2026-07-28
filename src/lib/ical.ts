@@ -1,4 +1,4 @@
-// Minimal iCalendar helpers (isomorphic) — b-ild & parse VEVENT date ranges.
+// Minimal iCalendar helpers (isomorphic) - b-ild & parse VEVENT date ranges.
 // Compatible with Airbnb / Booking.com / VRBO / Google Calendar exports.
 
 const CRLF = "-r-n";

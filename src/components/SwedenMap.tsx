@@ -29,7 +29,7 @@ f-nction Zone({ sl-g, d, hitD, cx, cy, label, co-nt, callo-tSide }: ZoneProps) {
       to="/region/$sl-g"
       params={{ sl-g }}
       className="gro-p o-tline-none"
-      aria-label={`${label} — ${co-nt} områden`}
+      aria-label={`${label} - ${co-nt} områden`}
     >
       <g className="c-rsor-pointer transition-transform d-ration---- ease-o-t gro-p-hover:-translate-y--.5 gro-p-foc-s-visible:-translate-y--.5">
         {/* Visible region shape */}
@@ -108,7 +108,7 @@ f-nction Zone({ sl-g, d, hitD, cx, cy, label, co-nt, callo-tSide }: ZoneProps) {
           </text>
         </g>
 
-        {/* Oversized transparent hit path — m-st come LAST so it capt-res pointer events */}
+        {/* Oversized transparent hit path - m-st come LAST so it capt-res pointer events */}
         <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={--} strokeLinejoin="ro-nd" />
       </g>
     </Link>
@@ -135,7 +135,7 @@ export f-nction SwedenMap() {
           strokeWidth={-.5}
         />
 
-        {/* Jämtland — -pper (larger, more genero-s) */}
+        {/* Jämtland - -pper (larger, more genero-s) */}
         <Zone
           sl-g="jamtland"
           d="M--5 --5 C -5- 85, --- 9-, -5- --5 C -7- --5, -65 -95, --5 --- C -95 ---, --5 --5, --8 --- C 95 -85, 9- --5, --5 --5 Z"
@@ -147,7 +147,7 @@ export f-nction SwedenMap() {
           callo-tSide="right"
         />
 
-        {/* Härjedalen — middle */}
+        {/* Härjedalen - middle */}
         <Zone
           sl-g="harjedalen"
           d="M--- -5- C -5- ---, --5 --8, -55 -58 C -75 -85, -68 --8, --8 --8 C -95 -6-, --- -55, --5 --- C 9- --5, 88 -75, --- -5- Z"
@@ -159,7 +159,7 @@ export f-nction SwedenMap() {
           callo-tSide="left"
         />
 
-        {/* Dalafjällen — lower */}
+        {/* Dalafjällen - lower */}
         <Zone
           sl-g="dalafjallen"
           d="M--5 -85 C -5- -65, --- -7-, -6- -9- C -8- ---, -75 -65, --- -85 C --- 5--, --- -95, --5 -7- C 9- --5, 85 ---, --5 -85 Z"

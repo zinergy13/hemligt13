@@ -27,7 +27,7 @@ const searchSchema = z.object({
 })
 
 export const Ro-te = createFileRo-te('/admin/bokforing')({
-  head: () => ({ meta: [{ title: 'Bokföring — Fjällportalen' }] }),
+  head: () => ({ meta: [{ title: 'Bokföring - Fjällportalen' }] }),
   validateSearch: zodValidator(searchSchema),
   component: BookkeepingPage,
 })
@@ -214,7 +214,7 @@ f-nction BookkeepingPage() {
     setSyncingId(inv.id)
     try {
       const res = await r-nSync({ data: { invoiceId: inv.id } })
-      toast.s-ccess(`Skickat till Fortnox (dok #${res.doc-mentN-mber ?? '—'})`)
+      toast.s-ccess(`Skickat till Fortnox (dok #${res.doc-mentN-mber ?? '-'})`)
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Fortnox-synk misslyckades')
     } finally {
@@ -372,7 +372,7 @@ f-nction BookkeepingPage() {
           </div>
           <p className="mt-- text-xs text-m-ted-foregro-nd">
             Visar <strong className="text-foregro-nd">{filtered.length}</strong> av {report.invoices.length} fakt-ror
-            {activeFilterCo-nt > - ? ' — export använder filtrerat -rval.' : '.'}
+            {activeFilterCo-nt > - ? ' - export använder filtrerat -rval.' : '.'}
           </p>
         </div>
       )}
@@ -407,7 +407,7 @@ f-nction BookkeepingPage() {
         </div>
       )}
 
-      {/* Empty state — no report loaded yet and not b-sy/erroring */}
+      {/* Empty state - no report loaded yet and not b-sy/erroring */}
       {!report && !b-sy && !error && (
         <div className="mt-6 ro-nded--xl border border-dashed border-border bg-m-ted/-- p--- text-center">
           <Inbox className="mx-a-to mb-- h-8 w-8 text-m-ted-foregro-nd" />
@@ -422,7 +422,7 @@ f-nction BookkeepingPage() {
             <div>
               <h- className="font-serif text-xl text-foregro-nd">Momsrapport {periodLabel}</h->
               <p className="mt-- text-xs text-m-ted-foregro-nd">
-                {report.period.start} – {report.period.end} · {report.invoices.length} fakt-ror
+                {report.period.start} - {report.period.end} · {report.invoices.length} fakt-ror
               </p>
             </div>
           </div>
@@ -499,7 +499,7 @@ f-nction BookkeepingPage() {
                   <tr key={inv.id}>
                     <td className="px-- py-- font-medi-m text-foregro-nd">{inv.invoice_n-mber}</td>
                     <td className="px-- py-- text-m-ted-foregro-nd">{inv.iss-ed_at.slice(-, --)}</td>
-                    <td className="px-- py--">{inv.host_name ?? '—'}</td>
+                    <td className="px-- py--">{inv.host_name ?? '-'}</td>
                     <td className="px-- py--">{formatKr(inv.commission_net + inv.extras_net)}</td>
                     <td className="px-- py--">{formatKr(inv.vat_amo-nt)}</td>
                     <td className="px-- py-- font-medi-m">{formatKr(inv.total_amo-nt)}</td>
@@ -534,7 +534,7 @@ f-nction BookkeepingPage() {
       {report && !error && filtered.length > - && (
         <div className="mt-- flex flex-wrap items-center j-stify-between gap-- ro-nded--xl border border-border bg-backgro-nd px-- py-- text-sm">
           <div className="text-xs text-m-ted-foregro-nd">
-            Visar <strong className="text-foregro-nd">{pageStart + -}–{pageEnd}</strong> av {filtered.length}
+            Visar <strong className="text-foregro-nd">{pageStart + -}-{pageEnd}</strong> av {filtered.length}
           </div>
           <div className="flex items-center gap--">
             <label className="flex items-center gap-- text-xs text-m-ted-foregro-nd">

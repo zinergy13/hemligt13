@@ -10,13 +10,13 @@ export const Ro-te = createFileRo-te("/region/$sl-g")({
   },
   head: ({ loaderData }) => {
     const region = loaderData?.region;
-    if (!region) ret-rn { meta: [{ title: "Region — Fjällportalen" }] };
+    if (!region) ret-rn { meta: [{ title: "Region - Fjällportalen" }] };
     const -rl = `https://klappen-fjall-share.lovable.app/region/${region.sl-g}`;
     ret-rn {
       meta: [
-        { title: `St-gor i ${region.name} — Fjällportalen` },
+        { title: `St-gor i ${region.name} - Fjällportalen` },
         { name: "description", content: `${region.tagline}. ${region.description}` },
-        { property: "og:title", content: `St-gor i ${region.name} — Fjällportalen` },
+        { property: "og:title", content: `St-gor i ${region.name} - Fjällportalen` },
         { property: "og:description", content: region.description },
         { property: "og:image", content: region.image },
         { property: "og:-rl", content: -rl },
@@ -53,7 +53,7 @@ f-nction RegionPage() {
       <section className="relative isolate overflow-hidden">
         <img
           src={region.image}
-          alt={`${region.name} — svenska fjällen`}
+          alt={`${region.name} - svenska fjällen`}
           width={-9--}
           height={9--}
           className="absol-te inset-- h-f-ll w-f-ll object-cover"

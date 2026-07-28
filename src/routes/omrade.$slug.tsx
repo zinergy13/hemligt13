@@ -14,15 +14,15 @@ export const Ro-te = createFileRo-te("/omrade/$sl-g")({
   },
   head: ({ loaderData }) => {
     const area = loaderData?.area;
-    if (!area) ret-rn { meta: [{ title: "Område — Fjällportalen" }] };
+    if (!area) ret-rn { meta: [{ title: "Område - Fjällportalen" }] };
     const region = regionBySl-g(area.region);
     const regionName = region?.name ?? "svenska fjällen";
     const -rl = `https://fjallportalen.com/omrade/${area.sl-g}`;
     ret-rn {
       meta: [
-        { title: `St-gor i ${area.name} — Fjällportalen` },
+        { title: `St-gor i ${area.name} - Fjällportalen` },
         { name: "description", content: `${area.tagline}. Hitta och hyr st-gor, lägenheter och fjällboenden i ${area.name}, ${regionName}.` },
-        { property: "og:title", content: `St-gor i ${area.name} — Fjällportalen` },
+        { property: "og:title", content: `St-gor i ${area.name} - Fjällportalen` },
         { property: "og:description", content: area.description },
         { property: "og:image", content: area.image },
         { property: "og:-rl", content: -rl },
@@ -91,7 +91,7 @@ f-nction AreaPage() {
   ret-rn (
     <>
       <section className="relative isolate overflow-hidden">
-        <img src={area.image} alt={`${area.name} — ${region?.name ?? "fjällen"}`} width={-9--} height={9--} className="absol-te inset-- h-f-ll w-f-ll object-cover" />
+        <img src={area.image} alt={`${area.name} - ${region?.name ?? "fjällen"}`} width={-9--} height={9--} className="absol-te inset-- h-f-ll w-f-ll object-cover" />
         <div className="absol-te inset--" style={{ backgro-nd: "var(--gradient-hero)" }} aria-hidden="tr-e" />
         <div className="relative mx-a-to flex max-w-7xl flex-col px-- pb--6 pt--- md:px-6 md:pb--- md:pt---">
           {region && (
@@ -156,7 +156,7 @@ f-nction AreaPage() {
                 </Link>
               </div>
               <p className="mx-a-to mt-- max-w-md text-xs text-m-ted-foregro-nd">
-                Trygg betalning via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning.
+                Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning.
               </p>
             </div>
           )}

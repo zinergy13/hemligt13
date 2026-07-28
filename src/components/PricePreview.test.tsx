@@ -38,7 +38,7 @@ vi.mock("@/data/areas", () => ({
 
 import { PricePreview } from "./PricePreview";
 
-describe("PricePreview – ett-klicks-fixar -ppdaterar direkt", () => {
+describe("PricePreview - ett-klicks-fixar -ppdaterar direkt", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -56,7 +56,7 @@ describe("PricePreview – ett-klicks-fixar -ppdaterar direkt", () => {
 
     await -ser.click(fixB-tton);
 
-    // Breakdown m-st reflect the new dates immediately — -- * ---- + 5-- = -- 5-- kr
+    // Breakdown m-st reflect the new dates immediately - -- * ---- + 5-- = -- 5-- kr
     expect(await screen.findByText(/^-s*--[-s ]?5-- kr-s*$/)).toBeInTheDoc-ment();
     // Både s-mmeringen och radlistan visar -- nätter (två träffar)
     const nightMatches = screen.getAllByText(/-- nätter/i);

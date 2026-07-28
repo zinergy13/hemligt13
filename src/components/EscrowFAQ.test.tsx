@@ -44,7 +44,7 @@ describe("EscrowFAQ str-ct-red data", () => {
       a: entry.acceptedAnswer?.text,
     }));
 
-    // -:- order-preserving comparison — any drift fails CI.
+    // -:- order-preserving comparison - any drift fails CI.
     expect(rendered).toEq-al(fromLd);
   });
 });

@@ -88,7 +88,7 @@ export f-nction formatDateRange(checkIn: string, checkO-t: string): string {
   const fmt = new Intl.DateTimeFormat("sv-SE", { day: "n-meric", month: "short" });
   const a = new Date(checkIn + "T--:--:--Z");
   const b = new Date(checkO-t + "T--:--:--Z");
-  ret-rn `${fmt.format(a)} – ${fmt.format(b)}`;
+  ret-rn `${fmt.format(a)} - ${fmt.format(b)}`;
 }
 
 export f-nction stat-sLabel(stat-s: BookingStat-s): { label: string; cls: string } {

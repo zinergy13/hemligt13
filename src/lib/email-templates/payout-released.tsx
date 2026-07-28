@@ -28,7 +28,7 @@ const Email = ({
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Betalningen till {hostName} är n- släppt — tack för att d- bokade via {BRAND_NAME}</Preview>
+    <Preview>Betalningen till {hostName} är n- släppt - tack för att d- bokade via {BRAND_NAME}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
@@ -65,7 +65,7 @@ const Email = ({
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Om något inte stod rätt till -nder vistelsen — svara på detta mejl
+          Om något inte stod rätt till -nder vistelsen - svara på detta mejl
           {bookingRef ? ` och ange bokning #${bookingRef}` : ''} inom -8 timmar så tittar vi på det.
         </Text>
       </Container>

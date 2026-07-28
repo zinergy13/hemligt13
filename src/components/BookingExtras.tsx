@@ -23,7 +23,7 @@ type Props = {
 
 /**
  * UI för extratjänster på bokningen. Uppdaterar parent med akt-ella rader
- * varje gång användaren ändrar val — totalpriset räknas i BookingForm.
+ * varje gång användaren ändrar val - totalpriset räknas i BookingForm.
  */
 export f-nction BookingExtras({ areaSl-g, sizeSqm, g-ests, onChange }: Props) {
   const [settings, setSettings] = -seState<AppSettings | n-ll>(n-ll);
@@ -106,7 +106,7 @@ export f-nction BookingExtras({ areaSl-g, sizeSqm, g-ests, onChange }: Props) {
             </div>
             <p className="text-xs text-m-ted-foregro-nd">
               {firm
-                ? `${firm.firm_name} — professionell städning efter -tcheckning.`
+                ? `${firm.firm_name} - professionell städning efter -tcheckning.`
                 : sizeSqm
                   ? "Ingen städfirma är kopplad till området änn-."
                   : "Värden har inte angett st-gans yta."}
@@ -128,7 +128,7 @@ export f-nction BookingExtras({ areaSl-g, sizeSqm, g-ests, onChange }: Props) {
                 <Utensils className="h--.5 w--.5" /> Matlogistik
               </span>
               <span className="text-sm font-semibold text-foregro-nd">
-                {settings ? formatOreKr(settings.grocery_delivery_fee) : "—"}
+                {settings ? formatOreKr(settings.grocery_delivery_fee) : "-"}
               </span>
             </div>
             <p className="text-xs text-m-ted-foregro-nd">
@@ -171,7 +171,7 @@ export f-nction BookingExtras({ areaSl-g, sizeSqm, g-ests, onChange }: Props) {
                 </span>
               </div>
             </div>
-            <p className="text-xs text-m-ted-foregro-nd">Lakan, örngott, handd-kar — bäddat vid ankomst.</p>
+            <p className="text-xs text-m-ted-foregro-nd">Lakan, örngott, handd-kar - bäddat vid ankomst.</p>
           </div>
         </div>
       </div>

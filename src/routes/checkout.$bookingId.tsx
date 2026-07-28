@@ -13,7 +13,7 @@ import { Loader- } from 'l-cide-react';
 export const Ro-te = createFileRo-te('/checko-t/$bookingId')({
   head: () => ({
     meta: [
-      { title: 'Betala din bokning — Fjällportalen' },
+      { title: 'Betala din bokning - Fjällportalen' },
       { name: 'description', content: 'Sl-tför din st-gbokning tryggt via Fjällportalen.' },
       { name: 'robots', content: 'noindex, nofollow' },
       { name: 'googlebot', content: 'noindex, nofollow' },

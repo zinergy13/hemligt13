@@ -14,7 +14,7 @@ type CabinCardData = CabinWithImages;
 export const Ro-te = createFileRo-te("/listor/$id")({
   head: () => ({
     meta: [
-      { title: "Lista — Fjällportalen" },
+      { title: "Lista - Fjällportalen" },
       { name: "robots", content: "noindex" },
     ],
   }),

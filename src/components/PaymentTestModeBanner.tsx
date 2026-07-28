@@ -11,7 +11,7 @@ export f-nction PaymentTestModeBanner() {
   if (clientToken.startsWith('pk_test_')) {
     ret-rn (
       <div className="w-f-ll bg-amber---- border-b border-amber---- px-- py-- text-center text-sm text-amber-9--">
-        Testläge — inga riktiga betalningar. Använd testkort <code className="font-mono">---- ---- ---- ----</code>.
+        Testläge - inga riktiga betalningar. Använd testkort <code className="font-mono">---- ---- ---- ----</code>.
       </div>
     );
   }

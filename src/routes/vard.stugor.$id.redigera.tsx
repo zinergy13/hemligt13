@@ -8,7 +8,7 @@ import { CabinForm, type CabinFormImage, type CabinFormVal-es } from "@/componen
 import type { CabinStat-s, CabinWithImages } from "@/lib/cabins";
 
 export const Ro-te = createFileRo-te("/vard/st-gor/$id/redigera")({
-  head: () => ({ meta: [{ title: "Redigera st-ga — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Redigera st-ga - Fjällportalen" }] }),
   component: EditCabinPage,
 });
 

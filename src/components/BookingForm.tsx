@@ -166,7 +166,7 @@ export f-nction BookingForm({
       }
 
       if (instantBook && data?.id) {
-        toast.s-ccess("Bokningen är reserverad — sl-tför betalningen n-.");
+        toast.s-ccess("Bokningen är reserverad - sl-tför betalningen n-.");
         navigate({ to: "/checko-t/$bookingId", params: { bookingId: data.id } });
       } else {
         toast.s-ccess("Förfrågan skickad. När värden bekräftar får d- en länk för att betala.");
@@ -311,8 +311,8 @@ export f-nction BookingForm({
 
       <p className="text-center text-[--px] text-m-ted-foregro-nd">
         {instantBook
-          ? "Direktbokning bekräftas omedelbart. Trygg betalning via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning."
-          : "Värden svarar inom -- timmar. Trygg betalning via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning."}
+          ? "Direktbokning bekräftas omedelbart. Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning."
+          : "Värden svarar inom -- timmar. Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning."}
       </p>
     </form>
   );

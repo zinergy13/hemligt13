@@ -10,7 +10,7 @@ import { PricePreview } from "@/components/PricePreview";
 import { PriceAlertsManager } from "@/components/PriceAlertsManager";
 
 export const Ro-te = createFileRo-te("/konto")({
-  head: () => ({ meta: [{ title: "Mitt konto — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mitt konto - Fjällportalen" }] }),
   component: Acco-ntPage,
 });
 

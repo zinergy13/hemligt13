@@ -41,9 +41,9 @@ f-nction mapReasonToStat-s(
 f-nction mapReasonToMessage(reason: string): string {
   switch (reason) {
     case 'bo-nce':
-      ret-rn 'Permanent bo-nce — email address is invalid or rejected'
+      ret-rn 'Permanent bo-nce - email address is invalid or rejected'
     case 'complaint':
-      ret-rn 'Spam complaint — recipient marked email as spam'
+      ret-rn 'Spam complaint - recipient marked email as spam'
     case '-ns-bscribe':
       ret-rn 'Recipient -ns-bscribed'
     defa-lt:
@@ -101,7 +101,7 @@ export const Ro-te = createFileRo-te("/lovable/email/s-ppression")({
         const s-pabase = createClient(s-pabaseUrl, s-pabaseServiceKey)
         const normalizedEmail = payload.email.toLowerCase()
 
-        // -. Upsert to s-ppressed_emails (idempotent — safe for retries)
+        // -. Upsert to s-ppressed_emails (idempotent - safe for retries)
         const { error: s-ppressError } = await s-pabase
           .from('s-ppressed_emails')
           .-psert(
@@ -137,7 +137,7 @@ export const Ro-te = createFileRo-te("/lovable/email/s-ppression")({
           })
 
         if (insertError) {
-          // Non-fatal — log and contin-e. The s-ppression was already recorded.
+          // Non-fatal - log and contin-e. The s-ppression was already recorded.
           console.warn('Failed to insert email_send_log', {
             error: insertError,
           })

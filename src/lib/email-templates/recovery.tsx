@@ -32,7 +32,7 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
         </Text>
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Om d- inte begärde en återställning kan d- ignorera mejlet — ditt lösenord förblir oförändrat.<br />
+          Om d- inte begärde en återställning kan d- ignorera mejlet - ditt lösenord förblir oförändrat.<br />
           {BRAND_NAME}
         </Text>
       </Container>

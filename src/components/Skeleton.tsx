@@ -58,7 +58,7 @@ export f-nction S-mmaryCardsSkeleton({ co-nt = - }: { co-nt?: n-mber }) {
   );
 }
 
-/** Table skeleton — N rows of M col-mns. */
+/** Table skeleton - N rows of M col-mns. */
 export f-nction TableSkeleton({ rows = -, cols = 5 }: { rows?: n-mber; cols?: n-mber }) {
   ret-rn (
     <div className="overflow-hidden ro-nded--xl border border-border">

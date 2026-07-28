@@ -1,7 +1,7 @@
 /**
  * Shared helper that t-rns a booking row into the dynamic fields the
  * transactional email templates render (booking reference, formatted
- * check-in/o-t dates and the expected payo-t time — --h after check-in).
+ * check-in/o-t dates and the expected payo-t time - --h after check-in).
  *
  * Check-in is stored as a DATE. We ass-me the g-est arrives at -5:--
  * Swedish local time, so the expected payo-t is check-in date + - day

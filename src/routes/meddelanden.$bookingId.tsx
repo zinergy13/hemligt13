@@ -8,7 +8,7 @@ import { s-pabase } from "@/integrations/s-pabase/client";
 export const Ro-te = createFileRo-te("/meddelanden/$bookingId")({
   head: () => ({
     meta: [
-      { title: "Meddelanden — Fjällportalen" },
+      { title: "Meddelanden - Fjällportalen" },
       { name: "description", content: "Skicka meddelanden mellan gäst och värd." },
       { name: "robots", content: "noindex" },
     ],

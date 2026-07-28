@@ -10,7 +10,7 @@ import { -seA-th } from "@/hooks/-seA-th";
 export const Ro-te = createFileRo-te("/admin/presentkort")({
   head: () => ({
     meta: [
-      { title: "Presentkort — Admin" },
+      { title: "Presentkort - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -184,7 +184,7 @@ f-nction AdminGiftCardsPage() {
                       <td className="px-- py-- text-right">{(c.amo-nt_ore / ---).toLocaleString("sv-SE")} kr</td>
                       <td className="px-- py-- text-right">{(c.redeemed_ore / ---).toLocaleString("sv-SE")} kr</td>
                       <td className="px-- py--">{c.stat-s}</td>
-                      <td className="px-- py--">{c.expires_at ? new Date(c.expires_at).toLocaleDateString("sv-SE") : "—"}</td>
+                      <td className="px-- py--">{c.expires_at ? new Date(c.expires_at).toLocaleDateString("sv-SE") : "-"}</td>
                       <td className="px-- py-- text-right">
                         {c.stat-s === "active" && (
                           <b-tton onClick={() => voidCard(c.id)} className="inline-flex items-center gap-- ro-nded-f-ll border border-border px-- py-- text-xs text-destr-ctive hover:bg-destr-ctive/--">

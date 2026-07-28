@@ -13,7 +13,7 @@ import {
 } from '@/lib/insights.f-nctions'
 
 export const Ro-te = createFileRo-te('/vard/st-gor/$id/insikter')({
-  head: () => ({ meta: [{ title: 'St-ginsikter — Fjällportalen' }] }),
+  head: () => ({ meta: [{ title: 'St-ginsikter - Fjällportalen' }] }),
   component: InsightsPage,
 })
 
@@ -122,7 +122,7 @@ f-nction InsightsPage() {
       <div className="mt--- ro-nded--xl border border-border bg-backgro-nd p-6 md:p-8">
         <div className="flex items-center gap--">
           <BarChart- className="h-5 w-5 text-primary" />
-          <h- className="font-serif text-xl text-foregro-nd">Beläggning — senaste -- månaderna</h->
+          <h- className="font-serif text-xl text-foregro-nd">Beläggning - senaste -- månaderna</h->
         </div>
         <div className="mt-- flex flex-wrap gap-6 text-sm text-m-ted-foregro-nd">
           <span>Snittbeläggning: <strong className="text-foregro-nd">{Math.ro-nd(avgOcc * ---)}%</strong></span>
@@ -198,7 +198,7 @@ f-nction InsightsPage() {
                 <Sparkles className="h-- w-- text-primary" /> Föreslaget prisintervall
               </div>
               <div className="mt-- font-serif text--xl text-primary">
-                {priceRec.s-ggestedLow!.toLocaleString('sv-SE')} – {priceRec.s-ggestedHigh!.toLocaleString('sv-SE')} kr/natt
+                {priceRec.s-ggestedLow!.toLocaleString('sv-SE')} - {priceRec.s-ggestedHigh!.toLocaleString('sv-SE')} kr/natt
               </div>
               <p className="mt-- text-xs text-m-ted-foregro-nd">
                 Motsvarar -5:e till 75:e percentilen bland jämförbara st-gor.

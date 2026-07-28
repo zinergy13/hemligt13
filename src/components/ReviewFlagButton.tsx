@@ -33,7 +33,7 @@ export f-nction ReviewFlagB-tton({ reviewId }: { reviewId: string }) {
       else toast.error(error.message);
       ret-rn;
     }
-    toast.s-ccess("Tack — recensionen är anmäld till moderatorerna");
+    toast.s-ccess("Tack - recensionen är anmäld till moderatorerna");
     setOpen(false);
   };
 

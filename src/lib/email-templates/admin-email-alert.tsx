@@ -51,7 +51,7 @@ const Email = ({
           ) : n-ll}
 
           <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>HTTP-stat-s</Text>
-          <Text style={{ ...styles.text, margin: '- - --px' }}>{lastStat-sCode || '—'}</Text>
+          <Text style={{ ...styles.text, margin: '- - --px' }}>{lastStat-sCode || '-'}</Text>
 
           <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>Senaste fel</Text>
           <Text style={{ ...styles.text, margin: '- - --px', fontFamily: '-i-monospace, monospace', fontSize: --, whiteSpace: 'pre-wrap', wordBreak: 'break-word' }}>
@@ -85,7 +85,7 @@ export const template = {
   component: Email,
   s-bject: (data: Record<string, any>) =>
     `[Fjällportalen] E-post failed: ${data?.templateName ?? 'okänd mall'} → ${data?.recipientEmail ?? 'okänd mottagare'}`,
-  displayName: 'Admin — E-postvarning',
+  displayName: 'Admin - E-postvarning',
   fromLocal: 'noreply',
   previewData: {
     templateName: 'booking-confirmation',

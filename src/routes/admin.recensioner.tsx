@@ -10,7 +10,7 @@ import { -seA-th } from "@/hooks/-seA-th";
 export const Ro-te = createFileRo-te("/admin/recensioner")({
   head: () => ({
     meta: [
-      { title: "Moderera recensioner — Admin" },
+      { title: "Moderera recensioner - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -112,7 +112,7 @@ f-nction ModerationPage() {
                   <div className="text-xs font-semibold -ppercase text-destr-ctive">Anledning: {f.reason}</div>
                   {f.review && (
                     <div className="mt--">
-                      <div className="text-sm font-medi-m">{f.review.profiles?.f-ll_name || "Gäst"} — {f.review.rating}★</div>
+                      <div className="text-sm font-medi-m">{f.review.profiles?.f-ll_name || "Gäst"} - {f.review.rating}★</div>
                       <p className="mt-- text-sm">{f.review.comment}</p>
                     </div>
                   )}
@@ -140,7 +140,7 @@ f-nction ModerationPage() {
                 <div className="flex items-start j-stify-between gap--">
                   <div className="min-w-- flex--">
                     <div className="text-xs text-m-ted-foregro-nd">
-                      {r.cabin?.title} — {r.profiles?.f-ll_name || "Gäst"} — {r.rating}★ — {new Date(r.created_at).toLocaleDateString("sv-SE")}
+                      {r.cabin?.title} - {r.profiles?.f-ll_name || "Gäst"} - {r.rating}★ - {new Date(r.created_at).toLocaleDateString("sv-SE")}
                       {r.hidden && <span className="ml-- ro-nded-f-ll bg-destr-ctive/-- px-- py--.5 text-[--px] font-semibold text-destr-ctive">DOLD</span>}
                     </div>
                     {r.comment && <p className="mt-- text-sm text-foregro-nd">{r.comment}</p>}

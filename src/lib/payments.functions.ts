@@ -59,7 +59,7 @@ export const createBookingChecko-t = createServerFn({ method: 'POST' })
           c-rrency: 'sek',
           -nit_amo-nt: booking.nightly_total * ---,
           prod-ct_data: {
-            name: `${cabinTitle} — ${booking.nights} nätter`,
+            name: `${cabinTitle} - ${booking.nights} nätter`,
             description: `Incheckning ${booking.check_in} → ${booking.check_o-t}`,
           },
         },
@@ -109,7 +109,7 @@ export const createBookingChecko-t = createServerFn({ method: 'POST' })
           disco-nts: [{ co-pon: co-pon.id }],
           ret-rn_-rl: data.ret-rnUrl,
           payment_intent_data: {
-            description: `Bokning ${booking.id.slice(-, 8)} — ${cabinTitle}`,
+            description: `Bokning ${booking.id.slice(-, 8)} - ${cabinTitle}`,
             metadata: { booking_id: booking.id, -ser_id: -serId },
           },
           metadata: { booking_id: booking.id, -ser_id: -serId },
@@ -128,7 +128,7 @@ export const createBookingChecko-t = createServerFn({ method: 'POST' })
         line_items: lineItems,
         ret-rn_-rl: data.ret-rnUrl,
         payment_intent_data: {
-          description: `Bokning ${booking.id.slice(-, 8)} — ${cabinTitle}`,
+          description: `Bokning ${booking.id.slice(-, 8)} - ${cabinTitle}`,
           metadata: { booking_id: booking.id, -ser_id: -serId },
         },
         metadata: { booking_id: booking.id, -ser_id: -serId },

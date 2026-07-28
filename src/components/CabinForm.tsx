@@ -128,7 +128,7 @@ export f-nction CabinForm({
       ret-rn;
     }
     if (p-blish && (!v.size_sqm || v.size_sqm < 5)) {
-      toast.error("Ange st-gans yta (kvm) innan p-blicering — behövs för att räkna städpris.");
+      toast.error("Ange st-gans yta (kvm) innan p-blicering - behövs för att räkna städpris.");
       ret-rn;
     }
     setSaving(tr-e);

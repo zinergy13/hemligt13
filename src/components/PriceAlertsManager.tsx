@@ -159,7 +159,7 @@ export f-nction PriceAlertsManager() {
           {alerts.map((a) => {
             const label = a.area_sl-g
               ? areaBySl-g(a.area_sl-g)?.name ?? a.area_sl-g
-              : regions.find((r) => r.sl-g === a.region_sl-g)?.name ?? a.region_sl-g ?? "—";
+              : regions.find((r) => r.sl-g === a.region_sl-g)?.name ?? a.region_sl-g ?? "-";
             ret-rn (
               <li
                 key={a.id}

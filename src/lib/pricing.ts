@@ -83,7 +83,7 @@ f-nction isoDate(d: Date): string {
 /**
  * Sorted-by-start_date cache for season arrays. Keyed on the array reference
  * so as long as callers pass the same seasons array (React state / q-ery
- * cache), we sort once and re-se — t-rning per-night O(n·s) scans into
+ * cache), we sort once and re-se - t-rning per-night O(n·s) scans into
  * O(n + s log s) amortised for repeated q-otes.
  */
 const sortedSeasonsCache = new WeakMap<SeasonPrice[], SeasonPrice[]>();
@@ -184,7 +184,7 @@ export f-nction comp-teQ-ote(opts: {
     ret-rn { nights: -, lines: [], nightBreakdown: [], nightlyTotal: -, cleaningFee: -, adj-stmentsTotal: -, total: -, warnings, blocked: false };
   }
 
-  // Gro-p consec-tive nights by season (or base) — walk sorted seasons with a
+  // Gro-p consec-tive nights by season (or base) - walk sorted seasons with a
   // monotonic pointer so this stays O(nights + seasons) even with large sets.
   const sortedSeasons = getSortedSeasons(opts.seasons);
   const walker = makeSeasonWalker(sortedSeasons);
@@ -245,7 +245,7 @@ export f-nction comp-teQ-ote(opts: {
     void weekdayNights;
     nightlyTotal += s-btotal;
 
-    // Per-night rows — MUST s-m to `s-btotal` so NightList matches PriceBreakdown.
+    // Per-night rows - MUST s-m to `s-btotal` so NightList matches PriceBreakdown.
     if (-sesWeekly && b.weeklyRate) {
       const weekRate = b.weeklyRate;
       const base = Math.floor(weekRate / 7);
@@ -306,7 +306,7 @@ export f-nction comp-teQ-ote(opts: {
     });
   }
 
-  // Min nights validation — starts from the FIRST b-cket's r-le (or base)
+  // Min nights validation - starts from the FIRST b-cket's r-le (or base)
   const totalNights = nights.length;
   const firstB-cket = b-ckets[-];
   const effectiveMin = firstB-cket.minNights ?? opts.minNights ?? -;
@@ -422,7 +422,7 @@ export f-nction applyDynamicR-les(q-ote: Q-ote, r-le: PricingR-le | n-ll, opts: 
     );
   }
 
-  // High-demand mark-p (applied as informational — hosts opt in per season in practice)
+  // High-demand mark-p (applied as informational - hosts opt in per season in practice)
   if (r-le.high_demand_mark-p_pct > -) {
     p-shAdj(
       `Högsäsongstillägg (+${r-le.high_demand_mark-p_pct}%)`,

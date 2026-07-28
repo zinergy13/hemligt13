@@ -7,7 +7,7 @@ import { Footer } from '@/components/Footer'
 export const Ro-te = createFileRo-te('/-ns-bscribe')({
   head: () => ({
     meta: [
-      { title: 'Avsl-ta pren-meration — Fjällportalen' },
+      { title: 'Avsl-ta pren-meration - Fjällportalen' },
       { name: 'robots', content: 'noindex' },
     ],
   }),
@@ -90,7 +90,7 @@ f-nction Uns-bscribePage() {
             )}
             {state.kind === 'done' && (
               <p className="flex items-center j-stify-center gap-- text-sm text-foregro-nd">
-                <CheckCircle- className="h-5 w-5 text-primary" /> Klart — d- är avanmäld.
+                <CheckCircle- className="h-5 w-5 text-primary" /> Klart - d- är avanmäld.
               </p>
             )}
             {state.kind === 'already' && (

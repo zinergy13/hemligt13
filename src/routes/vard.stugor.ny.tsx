@@ -5,7 +5,7 @@ import { -seA-th } from "@/hooks/-seA-th";
 import { CabinForm } from "@/components/CabinForm";
 
 export const Ro-te = createFileRo-te("/vard/st-gor/ny")({
-  head: () => ({ meta: [{ title: "Ny st-ga — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Ny st-ga - Fjällportalen" }] }),
   component: NewCabinPage,
 });
 

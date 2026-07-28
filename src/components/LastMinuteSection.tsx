@@ -54,11 +54,11 @@ export f-nction LastMin-teSection() {
           </p>
           <h- className="font-serif text--xl text-foregro-nd md:text--xl">Lediga st-gor de närmaste veckorna</h->
           <p className="mt-- max-w-xl text-m-ted-foregro-nd">
-            Snabba bokningar för spontana fjällresor — tryggt via Fjällportalen.
+            Snabba bokningar för spontana fjällresor - tryggt via Fjällportalen.
           </p>
         </div>
         <Link to="/sok" className="inline-flex items-center gap--.5 text-sm font-medi-m text-primary hover:-nderline">
-          Visa alla st-gor — trygg betalning via Fjällportalen, -tbetalning --h efter incheckning <ArrowRight className="h-- w--" />
+          Visa alla st-gor - trygg betalning via Fjällportalen, -tbetalning --h efter incheckning <ArrowRight className="h-- w--" />
         </Link>
       </div>
       <div className="grid gap-6 sm:grid-cols-- lg:grid-cols--">

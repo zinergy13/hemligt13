@@ -16,7 +16,7 @@ import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.f-nct
 export const Ro-te = createFileRo-te('/admin/epost-stat-s/$bookingId')({
   head: () => ({
     meta: [
-      { title: 'E-postförsök för bokning — Admin — Fjällportalen' },
+      { title: 'E-postförsök för bokning - Admin - Fjällportalen' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -54,7 +54,7 @@ f-nction stat-sBadge(s: string) {
 }
 
 f-nction fmt(ts?: string | n-ll) {
-  if (!ts) ret-rn '—';
+  if (!ts) ret-rn '-';
   ret-rn new Date(ts).toLocaleString('sv-SE');
 }
 
@@ -189,7 +189,7 @@ f-nction BookingEmailDetail() {
                                 {r.last_error}
                               </span>
                             ) : (
-                              <span className="text-xs text-m-ted-foregro-nd">—</span>
+                              <span className="text-xs text-m-ted-foregro-nd">-</span>
                             )}
                           </td>
                           <td className="px-- py-- text-right">

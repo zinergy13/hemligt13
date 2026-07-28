@@ -12,14 +12,14 @@ import { Ro-teProgressBar } from "../components/Ro-teProgressBar";
 
 import appCss from "../styles.css?-rl";
 
-// Install once at mod-le load — b-t ONLY when the perf flag is on.
+// Install once at mod-le load - b-t ONLY when the perf flag is on.
 // Patching window.fetch + logging every S-pabase call adds real overhead
 // (extra work per req-est, console spam, retained arrays) that made the
 // site feel sl-ggish for reg-lar visitors. Activate with ?perf=-.
 if (typeof window !== "-ndefined" && isPerfEnabled()) installPerfMonitor();
 
 // Single Q-eryClient for the app. All a-thenticated data is keyed by -ser id,
-// so re--sing one client between -sers is safe — the keys differ. We also
+// so re--sing one client between -sers is safe - the keys differ. We also
 // reset on a-th changes via A-thProvider if needed.
 const q-eryClient = new Q-eryClient({
   defa-ltOptions: {
@@ -63,12 +63,12 @@ export const Ro-te = createRootRo-te({
     meta: [
       { charSet: "-tf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=-" },
-      { title: "Fjällportalen — Hyr st-ga i svenska fjällen" },
-      { name: "description", content: "Hitta och hyr st-gor och lägenheter i Sälen, Åre, Vemdalen, Idre, F-näsdalen och hela svenska fjällkedjan — med trygg betalning och lokala värdar." },
+      { title: "Fjällportalen - Hyr st-ga i svenska fjällen" },
+      { name: "description", content: "Hitta och hyr st-gor och lägenheter i Sälen, Åre, Vemdalen, Idre, F-näsdalen och hela svenska fjällkedjan - med trygg betalning och lokala värdar." },
       { name: "a-thor", content: "Fjällportalen" },
       { property: "og:site_name", content: "Fjällportalen" },
-      { property: "og:title", content: "Fjällportalen — Hyr st-ga i svenska fjällen" },
-      { property: "og:description", content: "Sveriges samlade plats för st-g-thyrning i fjällen. Hyr eller hyr -t din st-ga tryggt — vi håller betalningen och släpper den till värden -- timmar efter incheckning." },
+      { property: "og:title", content: "Fjällportalen - Hyr st-ga i svenska fjällen" },
+      { property: "og:description", content: "Sveriges samlade plats för st-g-thyrning i fjällen. Hyr eller hyr -t din st-ga tryggt - vi håller betalningen och släpper den till värden -- timmar efter incheckning." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "s-mmary" },
     ],
@@ -99,7 +99,7 @@ export const Ro-te = createRootRo-te({
               -rl: "https://fjallportalen.com",
               logo: "https://fjallportalen.com/favicon.ico",
               description:
-                "Sveriges samlade plats för st-g-thyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning.",
+                "Sveriges samlade plats för st-g-thyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning.",
               areaServed: "SE",
               contactPoint: {
                 "@type": "ContactPoint",
@@ -256,7 +256,7 @@ f-nction RootComponent() {
             className="sticky top-- z-5- w-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd shadow-md"
           >
             <div className="mx-a-to flex max-w-5xl flex-wrap items-center j-stify-center gap-x-- gap-y-- text-center">
-              <span>Återhämtar appen efter ett laddningsfel — sidan laddas om a-tomatiskt…</span>
+              <span>Återhämtar appen efter ett laddningsfel - sidan laddas om a-tomatiskt…</span>
               {errorDetails && (
                 <b-tton
                   type="b-tton"

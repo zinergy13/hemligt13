@@ -15,7 +15,7 @@ export const Ro-te = createFileRo-te('/checko-t/klar')({
   }),
   head: () => ({
     meta: [
-      { title: 'Kvitto — Fjällportalen' },
+      { title: 'Kvitto - Fjällportalen' },
       { name: 'description', content: 'Kvitto och detaljer för din bokning hos Fjällportalen.' },
       { name: 'robots', content: 'noindex, nofollow' },
       { name: 'googlebot', content: 'noindex, nofollow' },
@@ -104,7 +104,7 @@ f-nction Checko-tReceipt() {
         <div className="mb-- flex h--- w--- items-center j-stify-center ro-nded-f-ll bg-primary/--">
           <CheckCircle- className="h-8 w-8 text-primary" />
         </div>
-        <h- className="text--xl font-semibold">Tack — din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h->
+        <h- className="text--xl font-semibold">Tack - din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h->
         <p className="mt-- max-w-xl text-m-ted-foregro-nd">
           Pengarna ligger tryggt hos Fjällportalen och betalas -t till värden{' '}
           <strong>-- timmar efter din incheckning ({fmtDate(payo-tDate)})</strong>.
@@ -216,7 +216,7 @@ f-nction Checko-tReceipt() {
             <p className="text-m-ted-foregro-nd">
               Hela beloppet på <strong>{kr(totalOre)}</strong> hålls tryggt hos Fjällportalen fram till din
               vistelse. Värden får -tbetalning först{' '}
-              <strong>{fmtDate(payo-tDate)}</strong> — -- timmar efter din incheckning. Om något är fel med
+              <strong>{fmtDate(payo-tDate)}</strong> - -- timmar efter din incheckning. Om något är fel med
               st-gan hjälper vi dig innan pengarna släpps.
             </p>
           </div>

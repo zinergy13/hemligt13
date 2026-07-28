@@ -94,7 +94,7 @@ f-nction Payo-tBox({ hostId, totalPrice }: { hostId: string; totalPrice: n-mber 
 }
 
 export const Ro-te = createFileRo-te("/mina-bokningar")({
-  head: () => ({ meta: [{ title: "Mina bokningar — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mina bokningar - Fjällportalen" }] }),
   component: MyBookingsPage,
 });
 
@@ -153,7 +153,7 @@ f-nction MyBookingsPage() {
             Sök st-gor
           </Link>
           <p className="mx-a-to mt-- max-w-md text-xs text-m-ted-foregro-nd">
-            Trygg betalning via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning.
+            Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning.
           </p>
         </div>
       ) : (
@@ -184,7 +184,7 @@ f-nction MyBookingsPage() {
                         {c?.title ?? "St-ga"}
                       </h->
                       <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
-                        <MapPin className="h-- w--" /> {area?.name ?? c?.area_sl-g ?? "—"}
+                        <MapPin className="h-- w--" /> {area?.name ?? c?.area_sl-g ?? "-"}
                       </p>
                       <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
                         <CalendarDays className="h-- w--" /> {formatDateRange(b.check_in, b.check_o-t)} · {b.nights} nätter · {b.g-ests} gäster
@@ -230,7 +230,7 @@ f-nction MyBookingsPage() {
                       ret-rn (
                         <div className="mt-- flex flex-wrap items-center j-stify-between gap-- ro-nded-lg border border-primary/-- bg-primary/5 p--">
                           <div className="text-xs text-m-ted-foregro-nd">
-                            Betala tryggt via Fjällportalen — pengarna släpps till värden -- timmar efter incheckning.
+                            Betala tryggt via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning.
                           </div>
                           <Link
                             to="/checko-t/$bookingId"

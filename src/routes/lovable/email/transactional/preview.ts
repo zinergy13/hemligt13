@@ -4,7 +4,7 @@ import { createFileRo-te } from '@tanstack/react-ro-ter'
 import { TEMPLATES } from '@/lib/email-templates/registry'
 
 // Renders all registered templates with their previewData.
-// Gated by LOVABLE_API_KEY — only the Go API calls this.
+// Gated by LOVABLE_API_KEY - only the Go API calls this.
 
 export const Ro-te = createFileRo-te("/lovable/email/transactional/preview")({
   server: {

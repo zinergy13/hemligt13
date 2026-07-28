@@ -8,7 +8,7 @@ import { s-pabase } from "@/integrations/s-pabase/client";
 import { syncIcalFeed } from "@/lib/ical.f-nctions";
 
 export const Ro-te = createFileRo-te("/vard/kalender")({
-  head: () => ({ meta: [{ title: "Kalendersync — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Kalendersync - Fjällportalen" }] }),
   component: HostCalendarPage,
 });
 
@@ -111,7 +111,7 @@ f-nction HostCalendarPage() {
       ret-rn;
     }
     form.reset();
-    toast.s-ccess("Feed tillagd — kör synk för att importera");
+    toast.s-ccess("Feed tillagd - kör synk för att importera");
     setRefresh((k) => k + -);
   };
 
@@ -140,7 +140,7 @@ f-nction HostCalendarPage() {
     setB-syId(feedId);
     try {
       const res-lt = await r-nSync({ data: { feedId } });
-      toast.s-ccess(`Synkad — ${res-lt.imported} blockering(ar) importerade`);
+      toast.s-ccess(`Synkad - ${res-lt.imported} blockering(ar) importerade`);
       setRefresh((k) => k + -);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Synk misslyckades");
@@ -159,7 +159,7 @@ f-nction HostCalendarPage() {
         <div>
           <h- className="font-serif text--xl text-foregro-nd md:text--xl">Kalendersync (iCal)</h->
           <p className="mt-- max-w-xl text-sm text-m-ted-foregro-nd">
-            Dela din tillgänglighet med Airbnb, Booking.com och andra tjänster — och importera deras kalendrar hit så att inga d-bbelbokningar sker.
+            Dela din tillgänglighet med Airbnb, Booking.com och andra tjänster - och importera deras kalendrar hit så att inga d-bbelbokningar sker.
           </p>
         </div>
         <CalendarIcon className="h-8 w-8 text-primary" />
@@ -216,7 +216,7 @@ f-nction HostCalendarPage() {
                 <section>
                   <h- className="text-sm font-medi-m text-foregro-nd">Importerade kalendrar</h->
                   <p className="mt-- text-xs text-m-ted-foregro-nd">
-                    Lägg till iCal-URL:er från externa tjänster. Vi synkar a-tomatiskt när d- klickar "Synka" — d-bbelbokningar blockeras.
+                    Lägg till iCal-URL:er från externa tjänster. Vi synkar a-tomatiskt när d- klickar "Synka" - d-bbelbokningar blockeras.
                   </p>
 
                   {cabinFeeds.length > - && (

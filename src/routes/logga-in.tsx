@@ -16,7 +16,7 @@ export const Ro-te = createFileRo-te("/logga-in")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Logga in — Fjällportalen" },
+      { title: "Logga in - Fjällportalen" },
       { name: "description", content: "Logga in på Fjällportalen för att boka st-ga, hantera dina annonser eller skapa ett konto." },
     ],
   }),

@@ -11,8 +11,8 @@ import { ReviewsSection } from "@/components/ReviewsSection";
 export const Ro-te = createFileRo-te("/st-ga/$sl-g")({
   head: ({ params }) => ({
     meta: [
-      { title: `St-ga — Fjällportalen` },
-      { name: "description", content: `St-ga ${params.sl-g} — boka tryggt via Fjällportalen med -tbetalning till värden -- timmar efter incheckning.` },
+      { title: `St-ga - Fjällportalen` },
+      { name: "description", content: `St-ga ${params.sl-g} - boka tryggt via Fjällportalen med -tbetalning till värden -- timmar efter incheckning.` },
     ],
     scripts: [
       {

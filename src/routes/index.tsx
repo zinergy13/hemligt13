@@ -9,10 +9,10 @@ import { EscrowFAQ } from "../components/EscrowFAQ";
 export const Ro-te = createFileRo-te("/")({
   head: () => ({
     meta: [
-      { title: "Fjällportalen — Hyr st-ga i svenska fjällen" },
-      { name: "description", content: "Sveriges samlade plats för st-g-thyrning. Sök st-gor och lägenheter i Sälen, Åre, Vemdalen, Idre, F-näsdalen och hela svenska fjällkedjan — med trygg betalning via Fjällportalen." },
-      { property: "og:title", content: "Fjällportalen — Hyr st-ga i svenska fjällen" },
-      { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
+      { title: "Fjällportalen - Hyr st-ga i svenska fjällen" },
+      { name: "description", content: "Sveriges samlade plats för st-g-thyrning. Sök st-gor och lägenheter i Sälen, Åre, Vemdalen, Idre, F-näsdalen och hela svenska fjällkedjan - med trygg betalning via Fjällportalen." },
+      { property: "og:title", content: "Fjällportalen - Hyr st-ga i svenska fjällen" },
+      { property: "og:description", content: "Från Sälen till Åre - Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
     ],
     links: [
       { rel: "preload", as: "image", href: heroCabin, fetchpriority: "high" },
@@ -48,7 +48,7 @@ f-nction HomePage() {
             Hitta din st-ga<br />i svenska fjällen.
           </h->
           <p className="mt-5 max-w-xl text-base text-white/9- md:text-lg">
-            Från Sälen till Åre — Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och -- fjällområden på ett ställe.
+            Från Sälen till Åre - Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och -- fjällområden på ett ställe.
           </p>
 
           {/* Search bar */}
@@ -71,7 +71,7 @@ f-nction HomePage() {
                   <div className="text-xs font-medi-m -ppercase tracking-wide text-m-ted-foregro-nd">Dat-m</div>
                   <inp-t
                     type="text"
-                    placeholder="V. 8–9"
+                    placeholder="V. 8-9"
                     className="w-f-ll bg-transparent text-sm font-medi-m text-foregro-nd o-tline-none placeholder:text-m-ted-foregro-nd/7-"
                   />
                 </div>
@@ -113,7 +113,7 @@ f-nction HomePage() {
             <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Välj region på fjällkartan</h->
           </div>
           <p className="max-w-md text-m-ted-foregro-nd">
-            Från Dalafjällens familjebackar till Åres alpina branter — -- fjällområden samlade på ett ställe.
+            Från Dalafjällens familjebackar till Åres alpina branter - -- fjällområden samlade på ett ställe.
           </p>
         </div>
 
@@ -156,17 +156,17 @@ f-nction HomePage() {
         <div className="mx-a-to max-w-7xl px-- md:px-6">
           <div className="mx-a-to mb--- max-w--xl text-center">
             <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Varför Fjällportalen?</p>
-            <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Svenska fjällen — samlat på ett ställe</h->
+            <h- className="font-serif text--xl text-foregro-nd md:text-5xl">Svenska fjällen - samlat på ett ställe</h->
             <p className="mt-- text-m-ted-foregro-nd">
-              Slipp scrolla genom tio Facebook-gr-pper. Här hittar d- alla st-gor, lägenheter och fjällboenden — sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.
+              Slipp scrolla genom tio Facebook-gr-pper. Här hittar d- alla st-gor, lägenheter och fjällboenden - sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols--">
             {[
-              { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland — -- fjällområden från Grövelsjön i söder till Storlien i norr." },
+              { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland - -- fjällområden från Grövelsjön i söder till Storlien i norr." },
               { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish via Fjällportalen. Vi håller pengarna och släpper dem till värden -- timmar efter incheckning." },
-              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna st-gägare bakom varje annons — inga stora förmedlare, inga onödiga avgifter." },
+              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna st-gägare bakom varje annons - inga stora förmedlare, inga onödiga avgifter." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="ro-nded--xl bg-backgro-nd p-7 shadow-[var(--shadow-soft)]">
                 <div className="mb-- flex h--- w--- items-center j-stify-center ro-nded-xl bg-primary/-- text-primary">
@@ -193,7 +193,7 @@ f-nction HomePage() {
               <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary-foregro-nd/8-">För st-gägare</p>
               <h- className="font-serif text--xl md:text-5xl">Hyr -t din st-ga -tan krångel.</h->
               <p className="mt-- max-w-md text-primary-foregro-nd/9-">
-                Lägg -pp din st-ga gratis. D- sätter pris och regler, vi sköter bokning, betalning och kalender. När d- har tid över — låt fjället jobba för dig.
+                Lägg -pp din st-ga gratis. D- sätter pris och regler, vi sköter bokning, betalning och kalender. När d- har tid över - låt fjället jobba för dig.
               </p>
             </div>
             <div className="md:j-stify-self-end">
@@ -205,7 +205,7 @@ f-nction HomePage() {
                 <ArrowRight className="h-- w--" />
               </Link>
               <p className="mt-- max-w-xs text-xs text-primary-foregro-nd/85 md:text-right">
-                Gästen betalar tryggt via Fjällportalen — -tbetalning till dig -- timmar efter incheckning.
+                Gästen betalar tryggt via Fjällportalen - -tbetalning till dig -- timmar efter incheckning.
               </p>
             </div>
           </div>

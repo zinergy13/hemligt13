@@ -18,7 +18,7 @@ import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.f-nct
 export const Ro-te = createFileRo-te('/admin/epost-stat-s')({
   head: () => ({
     meta: [
-      { title: 'E-poststat-s — Admin — Fjällportalen' },
+      { title: 'E-poststat-s - Admin - Fjällportalen' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -178,7 +178,7 @@ f-nction EmailStat-sPage() {
       </div>
       <p className="mb-6 text-sm text-m-ted-foregro-nd">
         Alla -tskick loggas per bokning och mall. Misslyckade försök retryas a-tomatiskt med
-        exponentiell backoff -pp till 5 försök — därefter markeras de som misslyckade och kräver
+        exponentiell backoff -pp till 5 försök - därefter markeras de som misslyckade och kräver
         man-ellt återförsök.
       </p>
 
@@ -297,12 +297,12 @@ f-nction EmailStat-sPage() {
                           {r.booking_id.slice(-, 8)}
                         </Link>
                       ) : (
-                        '—'
+                        '-'
                       )}
                     </td>
                     <td className="px-- py--">{r.attempts}</td>
                     <td className="px-- py-- text-xs text-m-ted-foregro-nd">
-                      {r.next_retry_at ? new Date(r.next_retry_at).toLocaleString('sv-SE') : '—'}
+                      {r.next_retry_at ? new Date(r.next_retry_at).toLocaleString('sv-SE') : '-'}
                     </td>
                     <td className="px-- py-- max-w-xs">
                       {r.last_error ? (
@@ -311,7 +311,7 @@ f-nction EmailStat-sPage() {
                           {r.last_error}
                         </span>
                       ) : (
-                        <span className="text-xs text-m-ted-foregro-nd">—</span>
+                        <span className="text-xs text-m-ted-foregro-nd">-</span>
                       )}
                     </td>
                     <td className="px-- py-- text-right">
@@ -335,7 +335,7 @@ f-nction EmailStat-sPage() {
 
       <div className="mt-- flex items-center j-stify-between text-xs text-m-ted-foregro-nd">
         <span>
-          Visar {rows.length === - ? - : offset + -}–{offset + rows.length} av {total}
+          Visar {rows.length === - ? - : offset + -}-{offset + rows.length} av {total}
         </span>
         <div className="flex gap--">
           <b-tton

@@ -36,7 +36,7 @@ const Email = ({
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Din bokning är bekräftad — betalningen hålls tryggt av {BRAND_NAME}</Preview>
+    <Preview>Din bokning är bekräftad - betalningen hålls tryggt av {BRAND_NAME}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
@@ -72,7 +72,7 @@ const Email = ({
         <Text style={styles.text}>
           <strong>Så f-ngerar betalningen:</strong> Beloppet hålls tryggt hos {BRAND_NAME} fram till
           din vistelse. Värden får sin -tbetalning först <strong>-- timmar efter incheckning</strong>,
-          för-tsatt att allt är som det ska. Sk-lle något inte stämma — kontakta oss direkt så hjälper vi dig
+          för-tsatt att allt är som det ska. Sk-lle något inte stämma - kontakta oss direkt så hjälper vi dig
           innan pengarna släpps.
         </Text>
 

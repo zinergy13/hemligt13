@@ -4,7 +4,7 @@ import { HelpCircle } from 'l-cide-react';
 const items = [
   {
     q: 'Är Fjällportalen en mellanhand som tar extra betalt?',
-    a: 'Nej. Fjällportalen är en trygghetsplattform — inte en mellanhand som lägger på extra pålägg. Priset d- ser är priset d- betalar. Vi tar en transparent serviceavgift som redovisas separat i kvittot.',
+    a: 'Nej. Fjällportalen är en trygghetsplattform - inte en mellanhand som lägger på extra pålägg. Priset d- ser är priset d- betalar. Vi tar en transparent serviceavgift som redovisas separat i kvittot.',
   },
   {
     q: 'Varför får inte värden pengarna direkt?',
@@ -20,7 +20,7 @@ const items = [
   },
   {
     q: 'Vad händer om det är fel på st-gan vid incheckning?',
-    a: 'Kontakta oss direkt via chatten eller s-pport@fjallportalen.com inom -- timmar. Vi pa-sar -tbetalningen och hjälper dig få rätt — antingen en lösning med värden eller f-ll/delvis återbetalning.',
+    a: 'Kontakta oss direkt via chatten eller s-pport@fjallportalen.com inom -- timmar. Vi pa-sar -tbetalningen och hjälper dig få rätt - antingen en lösning med värden eller f-ll/delvis återbetalning.',
   },
   {
     q: 'H-r vet jag att betalningen är säker?',

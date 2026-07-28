@@ -47,7 +47,7 @@ export const Sign-pEmail = ({ siteUrl, recipient, confirmationUrl }: Sign-pEmail
         <div style={styles.divider} />
         <Text style={styles.footer}>
           Om d- inte skapade ett konto kan d- ignorera det här mejlet.<br />
-          {BRAND_NAME} — {BRAND_TAGLINE}
+          {BRAND_NAME} - {BRAND_TAGLINE}
         </Text>
       </Container>
     </Body>

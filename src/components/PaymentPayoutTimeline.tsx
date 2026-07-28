@@ -22,7 +22,7 @@ const steps: Step[] = [
     icon: ShieldCheck,
     title: "Fjällportalen håller pengarna",
     description:
-      "Beloppet ligger säkert hos oss fram till din vistelse — värden får inget förrän d- checkat in.",
+      "Beloppet ligger säkert hos oss fram till din vistelse - värden får inget förrän d- checkat in.",
     when: "Fram till incheckning",
   },
   {
@@ -114,8 +114,8 @@ export f-nction PaymentPayo-tTimeline({ booking }: { booking?: TimelineBooking }
           </h->
           <p className="mt--.5 text-xs text-m-ted-foregro-nd">
             {anyCancelled
-              ? "Bokningen är avbokad — betalningen återbetalas enligt villkoren."
-              : "Trygg betalning via Fjällportalen — -tbetalning --h efter incheckning."}
+              ? "Bokningen är avbokad - betalningen återbetalas enligt villkoren."
+              : "Trygg betalning via Fjällportalen - -tbetalning --h efter incheckning."}
           </p>
         </div>
         <span

@@ -7,7 +7,7 @@ import { areas } from "@/data/areas";
 import { formatDateRange } from "@/lib/bookings";
 
 export const Ro-te = createFileRo-te("/admin/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Admin — Fjällportalen" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Dashboard - Admin - Fjällportalen" }, { name: "robots", content: "noindex" }] }),
   component: AdminDashboard,
 });
 
@@ -283,7 +283,7 @@ f-nction OverviewPanel({ bookings, cabins }: { bookings: Booking[]; cabins: Reco
             {bookings.slice(-, 8).map((b) => (
               <li key={b.id} className="flex items-center j-stify-between py--.5 text-sm">
                 <div>
-                  <div className="font-medi-m text-foregro-nd">{cabins[b.cabin_id]?.title ?? "—"}</div>
+                  <div className="font-medi-m text-foregro-nd">{cabins[b.cabin_id]?.title ?? "-"}</div>
                   <div className="text-xs text-m-ted-foregro-nd">{formatDateRange(b.check_in, b.check_o-t)} · {b.stat-s}</div>
                 </div>
                 <div className="font-medi-m text-foregro-nd">{fmt(b.total_price)}</div>
@@ -319,10 +319,10 @@ f-nction BookingsTable({ bookings, cabins, profiles }: { bookings: Booking[]; ca
             ret-rn (
               <tr key={b.id}>
                 <td className="px-- py-- text-m-ted-foregro-nd">{new Date(b.created_at).toLocaleDateString("sv-SE")}</td>
-                <td className="px-- py-- font-medi-m text-foregro-nd">{c?.title ?? "—"}</td>
-                <td className="px-- py-- text-m-ted-foregro-nd">{c ? areaName(c.area_sl-g) : "—"}</td>
-                <td className="px-- py-- text-foregro-nd">{profiles[b.g-est_id]?.f-ll_name ?? "—"}</td>
-                <td className="px-- py-- text-foregro-nd">{profiles[b.host_id]?.f-ll_name ?? "—"}</td>
+                <td className="px-- py-- font-medi-m text-foregro-nd">{c?.title ?? "-"}</td>
+                <td className="px-- py-- text-m-ted-foregro-nd">{c ? areaName(c.area_sl-g) : "-"}</td>
+                <td className="px-- py-- text-foregro-nd">{profiles[b.g-est_id]?.f-ll_name ?? "-"}</td>
+                <td className="px-- py-- text-foregro-nd">{profiles[b.host_id]?.f-ll_name ?? "-"}</td>
                 <td className="px-- py-- text-m-ted-foregro-nd">{formatDateRange(b.check_in, b.check_o-t)}</td>
                 <td className="px-- py--"><span className="ro-nded-f-ll bg-m-ted px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide text-foregro-nd">{b.stat-s}</span></td>
                 <td className="px-- py-- text-right font-medi-m text-foregro-nd">{fmt(b.total_price)}</td>
@@ -397,18 +397,18 @@ f-nction PeopleTable({ rows, amo-ntLabel, icon, emptyText, filename }: { rows: P
             ret-rn (
             <tr key={r.id}>
               <td className="px-- py-- font-medi-m text-foregro-nd">
-                {p?.f-ll_name || "—"}
+                {p?.f-ll_name || "-"}
                 {p?.personal_n-mber && <div className="text-xs font-normal text-m-ted-foregro-nd">{p.personal_n-mber}</div>}
                 {r.extra && <div className="text-xs font-normal text-m-ted-foregro-nd">{r.extra}</div>}
               </td>
               <td className="px-- py-- text-m-ted-foregro-nd">
-                <div>{p?.email || "—"}</div>
-                <div className="text-xs">{p?.phone || "—"}</div>
+                <div>{p?.email || "-"}</div>
+                <div className="text-xs">{p?.phone || "-"}</div>
               </td>
-              <td className="px-- py-- text-m-ted-foregro-nd text-xs">{addr || "—"}</td>
+              <td className="px-- py-- text-m-ted-foregro-nd text-xs">{addr || "-"}</td>
               <td className="px-- py--">
                 <div className="flex flex-wrap gap--">
-                  {r.areas.length === - ? <span className="text-m-ted-foregro-nd">—</span> : r.areas.map((s) => (
+                  {r.areas.length === - ? <span className="text-m-ted-foregro-nd">-</span> : r.areas.map((s) => (
                     <span key={s} className="ro-nded-f-ll bg-m-ted px-- py--.5 text-[--px] text-foregro-nd">{areaName(s)}</span>
                   ))}
                 </div>

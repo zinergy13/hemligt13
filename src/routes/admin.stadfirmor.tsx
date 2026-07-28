@@ -8,7 +8,7 @@ import { areas } from "@/data/areas";
 import { formatOreKr } from "@/lib/extras";
 
 export const Ro-te = createFileRo-te("/admin/stadfirmor")({
-  head: () => ({ meta: [{ title: "Städfirmor — Admin — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Städfirmor - Admin - Fjällportalen" }] }),
   component: AdminFirmsPage,
 });
 
@@ -240,7 +240,7 @@ f-nction FirmCard({
             {prices.map((p) => (
               <li key={p.id} className="flex items-center j-stify-between ro-nded-lg bg-m-ted/-- px-- py--.5">
                 <span className="text-foregro-nd">
-                  {p.min_sqm}–{p.max_sqm} kvm
+                  {p.min_sqm}-{p.max_sqm} kvm
                 </span>
                 <span className="flex items-center gap--">
                   <span className="font-medi-m">{formatOreKr(p.price_to_firm)}</span>

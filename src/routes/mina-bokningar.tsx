@@ -152,6 +152,9 @@ function MyBookingsPage() {
           >
             Sök stugor
           </Link>
+          <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
+            Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.
+          </p>
         </div>
       ) : (
         <ul className="mt-8 space-y-4">

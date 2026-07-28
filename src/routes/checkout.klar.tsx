@@ -17,7 +17,8 @@ export const Route = createFileRoute('/checkout/klar')({
     meta: [
       { title: 'Kvitto — Fjällportalen' },
       { name: 'description', content: 'Kvitto och detaljer för din bokning hos Fjällportalen.' },
-      { name: 'robots', content: 'noindex' },
+      { name: 'robots', content: 'noindex, nofollow' },
+      { name: 'googlebot', content: 'noindex, nofollow' },
     ],
   }),
   component: CheckoutReceipt,

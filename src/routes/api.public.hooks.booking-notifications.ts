@@ -52,6 +52,7 @@ async function sendCheckinNotifications(origin: string) {
       templateName: 'checkin-reminder',
       recipientEmail: email,
       idempotencyKey: `checkin-${b.id}`,
+      bookingId: b.id,
       origin,
       templateData: {
         guestName: firstName,
@@ -94,6 +95,7 @@ async function sendPayoutNotifications(origin: string) {
       templateName: 'payout-released',
       recipientEmail: email,
       idempotencyKey: `payout-${b.id}`,
+      bookingId: b.id,
       origin,
       templateData: {
         guestName: firstName,

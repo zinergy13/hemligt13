@@ -162,12 +162,13 @@ export function BookingForm({
         }
       }
 
-      toast.success(
-        instantBook
-          ? "Bokningen är bekräftad! Värden hör av sig om betalningen."
-          : "Förfrågan skickad. Värden svarar inom 24 timmar.",
-      );
-      navigate({ to: "/mina-bokningar" });
+      if (instantBook && data?.id) {
+        toast.success("Bokningen är reserverad — slutför betalningen nu.");
+        navigate({ to: "/checkout/$bookingId", params: { bookingId: data.id } });
+      } else {
+        toast.success("Förfrågan skickad. När värden bekräftar får du en länk för att betala.");
+        navigate({ to: "/mina-bokningar" });
+      }
       void data;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Något gick fel");

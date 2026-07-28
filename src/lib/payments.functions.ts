@@ -104,7 +104,7 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
       try {
         const session = await stripe.checkout.sessions.create({
           mode: 'payment',
-          ui_mode: 'embedded',
+          ui_mode: 'embedded_page',
           line_items: lineItems,
           discounts: [{ coupon: coupon.id }],
           return_url: data.returnUrl,
@@ -124,7 +124,7 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
     try {
       const session = await stripe.checkout.sessions.create({
         mode: 'payment',
-        ui_mode: 'embedded',
+        ui_mode: 'embedded_page',
         line_items: lineItems,
         return_url: data.returnUrl,
         payment_intent_data: {

@@ -20,7 +20,7 @@ export const Route = createFileRoute("/sok")({
   }),
   head: () => ({
     meta: [
-      { title: "Sök stuga i svenska fjällen — Fjällportalen" },
+      { title: "Sök stuga i svenska fjällen - Fjällportalen" },
       { name: "description", content: "Sök bland stugor, lägenheter och ski-in/ski-out-boenden i hela svenska fjällen." },
     ],
     scripts: [
@@ -159,7 +159,7 @@ function SearchPage() {
             </button>
           </div>
           <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-            Alla bokningar hos Fjällportalen är trygga — vi håller betalningen och släpper den till värden 24 timmar efter incheckning.
+            Alla bokningar hos Fjällportalen är trygga - vi håller betalningen och släpper den till värden 24 timmar efter incheckning.
           </p>
         </div>
       )}

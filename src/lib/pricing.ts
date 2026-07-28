@@ -83,7 +83,7 @@ function isoDate(d: Date): string {
 /**
  * Sorted-by-start_date cache for season arrays. Keyed on the array reference
  * so as long as callers pass the same seasons array (React state / query
- * cache), we sort once and reuse — turning per-night O(n·s) scans into
+ * cache), we sort once and reuse - turning per-night O(n·s) scans into
  * O(n + s log s) amortised for repeated quotes.
  */
 const sortedSeasonsCache = new WeakMap<SeasonPrice[], SeasonPrice[]>();
@@ -184,7 +184,7 @@ export function computeQuote(opts: {
     return { nights: 0, lines: [], nightBreakdown: [], nightlyTotal: 0, cleaningFee: 0, adjustmentsTotal: 0, total: 0, warnings, blocked: false };
   }
 
-  // Group consecutive nights by season (or base) — walk sorted seasons with a
+  // Group consecutive nights by season (or base) - walk sorted seasons with a
   // monotonic pointer so this stays O(nights + seasons) even with large sets.
   const sortedSeasons = getSortedSeasons(opts.seasons);
   const walker = makeSeasonWalker(sortedSeasons);
@@ -245,7 +245,7 @@ export function computeQuote(opts: {
     void weekdayNights;
     nightlyTotal += subtotal;
 
-    // Per-night rows — MUST sum to `subtotal` so NightList matches PriceBreakdown.
+    // Per-night rows - MUST sum to `subtotal` so NightList matches PriceBreakdown.
     if (usesWeekly && b.weeklyRate) {
       const weekRate = b.weeklyRate;
       const base = Math.floor(weekRate / 7);
@@ -306,7 +306,7 @@ export function computeQuote(opts: {
     });
   }
 
-  // Min nights validation — starts from the FIRST bucket's rule (or base)
+  // Min nights validation - starts from the FIRST bucket's rule (or base)
   const totalNights = nights.length;
   const firstBucket = buckets[0];
   const effectiveMin = firstBucket.minNights ?? opts.minNights ?? 0;
@@ -422,7 +422,7 @@ export function applyDynamicRules(quote: Quote, rule: PricingRule | null, opts: 
     );
   }
 
-  // High-demand markup (applied as informational — hosts opt in per season in practice)
+  // High-demand markup (applied as informational - hosts opt in per season in practice)
   if (rule.high_demand_markup_pct > 0) {
     pushAdj(
       `Högsäsongstillägg (+${rule.high_demand_markup_pct}%)`,

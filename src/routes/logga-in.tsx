@@ -16,7 +16,7 @@ export const Route = createFileRoute("/logga-in")({
   validateSearch: searchSchema,
   head: () => ({
     meta: [
-      { title: "Logga in — Fjällportalen" },
+      { title: "Logga in - Fjällportalen" },
       { name: "description", content: "Logga in på Fjällportalen för att boka stuga, hantera dina annonser eller skapa ett konto." },
     ],
   }),

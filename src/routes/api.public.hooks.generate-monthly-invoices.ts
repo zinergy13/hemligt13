@@ -88,7 +88,7 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
               const props = {
                 hostName: profile?.full_name?.split(" ")[0] ?? undefined,
                 invoiceNumber: inv.invoice_number,
-                periodLabel: `${inv.period_start} – ${inv.period_end}`,
+                periodLabel: `${inv.period_start} - ${inv.period_end}`,
                 amountKr: Math.round((inv.total_amount as number) / 100),
                 dueDate: inv.due_date ?? undefined,
                 ocrReference: inv.ocr_reference ?? undefined,

@@ -5,12 +5,12 @@ type FAQ = { q: string; a: string };
 
 const FAQS: FAQ[] = [
   {
-    q: "Vem tar emot min betalning — värden eller Fjällportalen?",
+    q: "Vem tar emot min betalning - värden eller Fjällportalen?",
     a: "Du betalar alltid till Fjällportalen, aldrig direkt till värden. Vi håller pengarna säkert på ett separat konto under hela bokningen. Det finns inga andra mellanhänder inblandade.",
   },
   {
     q: "När får värden pengarna?",
-    a: "Värden får sin utbetalning 24 timmar efter incheckning, förutsatt att inget problem rapporterats. På så vis kan både du och värden känna er trygga — värden vet att pengarna är säkrade, och du vet att du kommit fram till en stuga som stämmer.",
+    a: "Värden får sin utbetalning 24 timmar efter incheckning, förutsatt att inget problem rapporterats. På så vis kan både du och värden känna er trygga - värden vet att pengarna är säkrade, och du vet att du kommit fram till en stuga som stämmer.",
   },
   {
     q: "Vad händer om jag behöver avboka?",
@@ -18,11 +18,11 @@ const FAQS: FAQ[] = [
   },
   {
     q: "Vad händer om stugan inte stämmer med annonsen?",
-    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna ännu inte släppts till värden kan vi hjälpa till att lösa situationen — antingen genom överenskommelse med värden eller full återbetalning innan utbetalningen sker.",
+    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna ännu inte släppts till värden kan vi hjälpa till att lösa situationen - antingen genom överenskommelse med värden eller full återbetalning innan utbetalningen sker.",
   },
   {
     q: "Vilken avgift tar Fjällportalen?",
-    a: "Gästen betalar det pris värden satt — inga påslag. Fjällportalen tar en fast serviceavgift på 400 kr (inkl. moms) per bokning som faktureras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
+    a: "Gästen betalar det pris värden satt - inga påslag. Fjällportalen tar en fast serviceavgift på 400 kr (inkl. moms) per bokning som faktureras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
   },
   {
     q: "Är mina kortuppgifter säkra?",
@@ -44,7 +44,7 @@ export function EscrowFAQ({ compact = false }: { compact?: boolean }) {
             </div>
             <h2 className="font-serif text-3xl text-foreground md:text-4xl">Så fungerar betalningen</h2>
             <p className="mt-3 text-muted-foreground">
-              Inga mellanhänder mellan dig och värden — bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills du checkat in.
+              Inga mellanhänder mellan dig och värden - bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills du checkat in.
             </p>
           </div>
         )}

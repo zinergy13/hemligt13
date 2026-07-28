@@ -40,7 +40,7 @@ export const sendTestTemplateEmail = createServerFn({ method: 'POST' })
     const origin = process.env.SITE_URL || 'https://fjallportalen.com';
 
     // Build per-template data. Booking-derived templates need a real booking
-    // so the copy shows the actual cabin/dates/host — required for the
+    // so the copy shows the actual cabin/dates/host - required for the
     // 24h-check that the wording renders correctly for the guest.
     let templateData: Record<string, unknown> = {};
 

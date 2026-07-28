@@ -42,7 +42,7 @@ async function handleCheckoutCompleted(session: any) {
 }
 
 async function notifyGuestPaymentAndEscrow(bookingId: string) {
-  // Idempotency guard — only send once per booking
+  // Idempotency guard - only send once per booking
   const { data: booking } = await admin()
     .from('bookings')
     .select('id, guest_id, cabin_id, check_in, check_out, nights, guests, total_price, payment_notified_at')

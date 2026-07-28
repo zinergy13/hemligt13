@@ -15,7 +15,7 @@ export const Route = createFileRoute('/checkout/klar')({
   }),
   head: () => ({
     meta: [
-      { title: 'Kvitto — Fjällportalen' },
+      { title: 'Kvitto - Fjällportalen' },
       { name: 'description', content: 'Kvitto och detaljer för din bokning hos Fjällportalen.' },
       { name: 'robots', content: 'noindex, nofollow' },
       { name: 'googlebot', content: 'noindex, nofollow' },
@@ -104,7 +104,7 @@ function CheckoutReceipt() {
         <div className="mb-3 flex h-14 w-14 items-center justify-center rounded-full bg-primary/10">
           <CheckCircle2 className="h-8 w-8 text-primary" />
         </div>
-        <h1 className="text-3xl font-semibold">Tack — din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h1>
+        <h1 className="text-3xl font-semibold">Tack - din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h1>
         <p className="mt-2 max-w-xl text-muted-foreground">
           Pengarna ligger tryggt hos Fjällportalen och betalas ut till värden{' '}
           <strong>24 timmar efter din incheckning ({fmtDate(payoutDate)})</strong>.
@@ -216,7 +216,7 @@ function CheckoutReceipt() {
             <p className="text-muted-foreground">
               Hela beloppet på <strong>{kr(totalOre)}</strong> hålls tryggt hos Fjällportalen fram till din
               vistelse. Värden får utbetalning först{' '}
-              <strong>{fmtDate(payoutDate)}</strong> — 24 timmar efter din incheckning. Om något är fel med
+              <strong>{fmtDate(payoutDate)}</strong> - 24 timmar efter din incheckning. Om något är fel med
               stugan hjälper vi dig innan pengarna släpps.
             </p>
           </div>

@@ -4,9 +4,9 @@ import { Search, MessageCircle, CreditCard, Key, Star } from "lucide-react";
 export const Route = createFileRoute("/hur-det-funkar")({
   head: () => ({
     meta: [
-      { title: "Hur det funkar — Fjällportalen" },
-      { name: "description", content: "Så fungerar Fjällportalen — för dig som ska hyra och för dig som ska hyra ut. Sök, boka, betala, checka in." },
-      { property: "og:title", content: "Hur det funkar — Fjällportalen" },
+      { title: "Hur det funkar - Fjällportalen" },
+      { name: "description", content: "Så fungerar Fjällportalen - för dig som ska hyra och för dig som ska hyra ut. Sök, boka, betala, checka in." },
+      { property: "og:title", content: "Hur det funkar - Fjällportalen" },
       { property: "og:description", content: "Sök, boka, betala, checka in. Så enkelt funkar Fjällportalen." },
     ],
     scripts: [
@@ -41,8 +41,8 @@ function HowItWorks() {
     { icon: Search, title: "Sök & hitta", text: "Filtrera på område, datum, antal bäddar, ski-in/ski-out och pris. Karta och lista sida vid sida." },
     { icon: MessageCircle, title: "Boka eller fråga värden", text: "Direktboka när stugan är klar, eller skicka en förfrågan till värden om du har frågor först." },
     { icon: CreditCard, title: "Betala tryggt", text: "Betala med kort eller Swish via Fjällportalen. Pengarna släpps till värden 24 timmar efter incheckning." },
-    { icon: Key, title: "Checka in & njut", text: "Värden delar nyckelinfo, husregler och eventuella tillval — sedan är det bara att åka." },
-    { icon: Star, title: "Lämna recension", text: "Efter resan recenserar du både stugan och värden — så hjälper du nästa gäst." },
+    { icon: Key, title: "Checka in & njut", text: "Värden delar nyckelinfo, husregler och eventuella tillval - sedan är det bara att åka." },
+    { icon: Star, title: "Lämna recension", text: "Efter resan recenserar du både stugan och värden - så hjälper du nästa gäst." },
   ];
 
   return (
@@ -50,7 +50,7 @@ function HowItWorks() {
       <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Hur det funkar</p>
       <h1 className="font-serif text-4xl text-foreground md:text-6xl">Från sök till hemresa.</h1>
       <p className="mt-4 max-w-xl text-muted-foreground">
-        Fjällportalen är byggt för att vara så enkelt som möjligt — både när du ska hyra och när du ska hyra ut.
+        Fjällportalen är byggt för att vara så enkelt som möjligt - både när du ska hyra och när du ska hyra ut.
       </p>
 
       <div className="mt-14 space-y-4">
@@ -73,7 +73,7 @@ function HowItWorks() {
       <div className="mt-16 rounded-3xl bg-secondary p-10 text-secondary-foreground md:p-14">
         <h2 className="font-serif text-2xl md:text-3xl">Vill du istället hyra ut din stuga?</h2>
         <p className="mt-3 max-w-xl text-secondary-foreground/85">
-          Som värd lägger du upp din stuga gratis, sätter pris och regler — och vi sköter bokning, betalning och kommunikation.
+          Som värd lägger du upp din stuga gratis, sätter pris och regler - och vi sköter bokning, betalning och kommunikation.
         </p>
         <Link
           to="/hyr-ut"

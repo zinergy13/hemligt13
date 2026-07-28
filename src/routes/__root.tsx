@@ -12,14 +12,14 @@ import { RouteProgressBar } from "../components/RouteProgressBar";
 
 import appCss from "../styles.css?url";
 
-// Install once at module load — but ONLY when the perf flag is on.
+// Install once at module load - but ONLY when the perf flag is on.
 // Patching window.fetch + logging every Supabase call adds real overhead
 // (extra work per request, console spam, retained arrays) that made the
 // site feel sluggish for regular visitors. Activate with ?perf=1.
 if (typeof window !== "undefined" && isPerfEnabled()) installPerfMonitor();
 
 // Single QueryClient for the app. All authenticated data is keyed by user id,
-// so re-using one client between users is safe — the keys differ. We also
+// so re-using one client between users is safe - the keys differ. We also
 // reset on auth changes via AuthProvider if needed.
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -63,12 +63,12 @@ export const Route = createRootRoute({
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { name: "description", content: "Hitta och hyr stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — med trygg betalning och lokala värdar." },
+      { title: "Fjällportalen - Hyr stuga i svenska fjällen" },
+      { name: "description", content: "Hitta och hyr stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan - med trygg betalning och lokala värdar." },
       { name: "author", content: "Fjällportalen" },
       { property: "og:site_name", content: "Fjällportalen" },
-      { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt — vi håller betalningen och släpper den till värden 24 timmar efter incheckning." },
+      { property: "og:title", content: "Fjällportalen - Hyr stuga i svenska fjällen" },
+      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt - vi håller betalningen och släpper den till värden 24 timmar efter incheckning." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -99,7 +99,7 @@ export const Route = createRootRoute({
               url: "https://fjallportalen.com",
               logo: "https://fjallportalen.com/favicon.ico",
               description:
-                "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.",
+                "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.",
               areaServed: "SE",
               contactPoint: {
                 "@type": "ContactPoint",
@@ -256,7 +256,7 @@ function RootComponent() {
             className="sticky top-0 z-50 w-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-md"
           >
             <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
-              <span>Återhämtar appen efter ett laddningsfel — sidan laddas om automatiskt…</span>
+              <span>Återhämtar appen efter ett laddningsfel - sidan laddas om automatiskt…</span>
               {errorDetails && (
                 <button
                   type="button"

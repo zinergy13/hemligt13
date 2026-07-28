@@ -8,7 +8,7 @@ import { areas } from "@/data/areas";
 import { formatOreKr } from "@/lib/extras";
 
 export const Route = createFileRoute("/admin/stadfirmor")({
-  head: () => ({ meta: [{ title: "Städfirmor — Admin — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Städfirmor - Admin - Fjällportalen" }] }),
   component: AdminFirmsPage,
 });
 
@@ -240,7 +240,7 @@ function FirmCard({
             {prices.map((p) => (
               <li key={p.id} className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-1.5">
                 <span className="text-foreground">
-                  {p.min_sqm}–{p.max_sqm} kvm
+                  {p.min_sqm}-{p.max_sqm} kvm
                 </span>
                 <span className="flex items-center gap-3">
                   <span className="font-medium">{formatOreKr(p.price_to_firm)}</span>

@@ -10,7 +10,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/listor")({
   head: () => ({
     meta: [
-      { title: "Mina listor — Fjällportalen" },
+      { title: "Mina listor - Fjällportalen" },
       { name: "description", content: "Skapa hemliga listor med stugor att dela med kompisar eller familjen." },
       { name: "robots", content: "noindex" },
     ],

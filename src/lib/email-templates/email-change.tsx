@@ -39,7 +39,7 @@ export const EmailChangeEmail = ({ oldEmail, newEmail, confirmationUrl }: EmailC
         </Text>
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Om du inte begärde ändringen — säkra ditt konto direkt genom att återställa lösenordet.<br />
+          Om du inte begärde ändringen - säkra ditt konto direkt genom att återställa lösenordet.<br />
           {BRAND_NAME}
         </Text>
       </Container>

@@ -104,7 +104,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
           )
         }
 
-        // 1. Look up template from registry (early — needed to resolve recipient)
+        // 1. Look up template from registry (early - needed to resolve recipient)
         const template = TEMPLATES[templateName]
 
         if (!template) {
@@ -139,7 +139,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
           .maybeSingle()
 
         if (suppressionError) {
-          console.error('Suppression check failed — refusing to send', {
+          console.error('Suppression check failed - refusing to send', {
             error: suppressionError,
             recipient_redacted: redactEmail(effectiveRecipient),
           })
@@ -198,7 +198,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
           // Reuse existing unused token
           unsubscribeToken = existingToken.token
         } else if (!existingToken) {
-          // Create new token — upsert handles concurrent inserts gracefully
+          // Create new token - upsert handles concurrent inserts gracefully
           unsubscribeToken = generateToken()
           const { error: tokenError } = await supabase
             .from('email_unsubscribe_tokens')
@@ -251,7 +251,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
           }
           unsubscribeToken = storedToken.token
         } else {
-          // Token exists but is already used — email should have been caught by suppression check above.
+          // Token exists but is already used - email should have been caught by suppression check above.
           // This is a safety fallback; log and skip sending.
           console.warn('Unsubscribe token already used but email not suppressed', {
             email_redacted: redactEmail(normalizedEmail),
@@ -272,7 +272,7 @@ export const Route = createFileRoute("/lovable/email/transactional/send")({
         const html = await render(element)
         const plainText = await render(element, { plainText: true })
 
-        // Resolve subject — supports static string or dynamic function
+        // Resolve subject - supports static string or dynamic function
         const resolvedSubject =
           typeof template.subject === 'function'
             ? template.subject(templateData)

@@ -1,7 +1,7 @@
 /**
  * Shared helper that turns a booking row into the dynamic fields the
  * transactional email templates render (booking reference, formatted
- * check-in/out dates and the expected payout time — 24h after check-in).
+ * check-in/out dates and the expected payout time - 24h after check-in).
  *
  * Check-in is stored as a DATE. We assume the guest arrives at 15:00
  * Swedish local time, so the expected payout is check-in date + 1 day

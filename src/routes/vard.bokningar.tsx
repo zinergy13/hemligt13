@@ -16,7 +16,7 @@ import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
 export const Route = createFileRoute("/vard/bokningar")({
-  head: () => ({ meta: [{ title: "Bokningar — Värd — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Bokningar - Värd - Fjällportalen" }] }),
   component: HostBookingsPage,
 });
 
@@ -206,7 +206,7 @@ function HostBookingsPage() {
                         {c?.title ?? "Stuga"}
                       </h3>
                       <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                        <MapPin className="h-3 w-3" /> {area?.name ?? c?.area_slug ?? "—"}
+                        <MapPin className="h-3 w-3" /> {area?.name ?? c?.area_slug ?? "-"}
                       </p>
                       <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                         <CalendarDays className="h-3 w-3" />

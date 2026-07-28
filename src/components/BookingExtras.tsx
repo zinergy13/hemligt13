@@ -23,7 +23,7 @@ type Props = {
 
 /**
  * UI för extratjänster på bokningen. Uppdaterar parent med aktuella rader
- * varje gång användaren ändrar val — totalpriset räknas i BookingForm.
+ * varje gång användaren ändrar val - totalpriset räknas i BookingForm.
  */
 export function BookingExtras({ areaSlug, sizeSqm, guests, onChange }: Props) {
   const [settings, setSettings] = useState<AppSettings | null>(null);
@@ -106,7 +106,7 @@ export function BookingExtras({ areaSlug, sizeSqm, guests, onChange }: Props) {
             </div>
             <p className="text-xs text-muted-foreground">
               {firm
-                ? `${firm.firm_name} — professionell städning efter utcheckning.`
+                ? `${firm.firm_name} - professionell städning efter utcheckning.`
                 : sizeSqm
                   ? "Ingen städfirma är kopplad till området ännu."
                   : "Värden har inte angett stugans yta."}
@@ -128,7 +128,7 @@ export function BookingExtras({ areaSlug, sizeSqm, guests, onChange }: Props) {
                 <Utensils className="h-3.5 w-3.5" /> Matlogistik
               </span>
               <span className="text-sm font-semibold text-foreground">
-                {settings ? formatOreKr(settings.grocery_delivery_fee) : "—"}
+                {settings ? formatOreKr(settings.grocery_delivery_fee) : "-"}
               </span>
             </div>
             <p className="text-xs text-muted-foreground">
@@ -171,7 +171,7 @@ export function BookingExtras({ areaSlug, sizeSqm, guests, onChange }: Props) {
                 </span>
               </div>
             </div>
-            <p className="text-xs text-muted-foreground">Lakan, örngott, handdukar — bäddat vid ankomst.</p>
+            <p className="text-xs text-muted-foreground">Lakan, örngott, handdukar - bäddat vid ankomst.</p>
           </div>
         </div>
       </div>

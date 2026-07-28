@@ -51,7 +51,7 @@ export const Route = createFileRoute("/api/invoice/$id/pdf")({
         const hostEmail = (claims?.claims as { email?: string } | undefined)?.email ?? "";
 
         const rows: InvoiceBookingRow[] = (bookings ?? []).map((b) => ({
-          cabin_title: (b as { cabins: { title: string } | null }).cabins?.title ?? "—",
+          cabin_title: (b as { cabins: { title: string } | null }).cabins?.title ?? "-",
           check_in: b.check_in,
           check_out: b.check_out,
           total_price: b.total_price,

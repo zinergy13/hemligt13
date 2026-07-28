@@ -11,8 +11,8 @@ import { ReviewsSection } from "@/components/ReviewsSection";
 export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `Stuga — Fjällportalen` },
-      { name: "description", content: `Stuga ${params.slug} — boka tryggt via Fjällportalen med utbetalning till värden 24 timmar efter incheckning.` },
+      { title: `Stuga - Fjällportalen` },
+      { name: "description", content: `Stuga ${params.slug} - boka tryggt via Fjällportalen med utbetalning till värden 24 timmar efter incheckning.` },
     ],
     scripts: [
       {

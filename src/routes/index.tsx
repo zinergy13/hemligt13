@@ -9,10 +9,10 @@ import { EscrowFAQ } from "../components/EscrowFAQ";
 export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
-      { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — med trygg betalning via Fjällportalen." },
-      { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
-      { property: "og:description", content: "Från Sälen till Åre — Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
+      { title: "Fjällportalen - Hyr stuga i svenska fjällen" },
+      { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan - med trygg betalning via Fjällportalen." },
+      { property: "og:title", content: "Fjällportalen - Hyr stuga i svenska fjällen" },
+      { property: "og:description", content: "Från Sälen till Åre - Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
     ],
     links: [
       { rel: "preload", as: "image", href: heroCabin, fetchpriority: "high" },
@@ -48,7 +48,7 @@ function HomePage() {
             Hitta din stuga<br />i svenska fjällen.
           </h1>
           <p className="mt-5 max-w-xl text-base text-white/90 md:text-lg">
-            Från Sälen till Åre — Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och 21 fjällområden på ett ställe.
+            Från Sälen till Åre - Sveriges samlade plats där värd möter gäst. Trygg betalning, lokala värdar och 21 fjällområden på ett ställe.
           </p>
 
           {/* Search bar */}
@@ -71,7 +71,7 @@ function HomePage() {
                   <div className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Datum</div>
                   <input
                     type="text"
-                    placeholder="V. 8–9"
+                    placeholder="V. 8-9"
                     className="w-full bg-transparent text-sm font-medium text-foreground outline-none placeholder:text-muted-foreground/70"
                   />
                 </div>
@@ -113,7 +113,7 @@ function HomePage() {
             <h2 className="font-serif text-3xl text-foreground md:text-5xl">Välj region på fjällkartan</h2>
           </div>
           <p className="max-w-md text-muted-foreground">
-            Från Dalafjällens familjebackar till Åres alpina branter — 21 fjällområden samlade på ett ställe.
+            Från Dalafjällens familjebackar till Åres alpina branter - 21 fjällområden samlade på ett ställe.
           </p>
         </div>
 
@@ -156,17 +156,17 @@ function HomePage() {
         <div className="mx-auto max-w-7xl px-4 md:px-6">
           <div className="mx-auto mb-14 max-w-2xl text-center">
             <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Varför Fjällportalen?</p>
-            <h2 className="font-serif text-3xl text-foreground md:text-5xl">Svenska fjällen — samlat på ett ställe</h2>
+            <h2 className="font-serif text-3xl text-foreground md:text-5xl">Svenska fjällen - samlat på ett ställe</h2>
             <p className="mt-4 text-muted-foreground">
-              Slipp scrolla genom tio Facebook-grupper. Här hittar du alla stugor, lägenheter och fjällboenden — sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.
+              Slipp scrolla genom tio Facebook-grupper. Här hittar du alla stugor, lägenheter och fjällboenden - sökbara, kalenderkopplade och betalningsklara. Sälen, Åre, Idre, Vemdalen och allt däremellan.
             </p>
           </div>
 
           <div className="grid gap-6 md:grid-cols-3">
             {[
-              { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland — 21 fjällområden från Grövelsjön i söder till Storlien i norr." },
+              { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland - 21 fjällområden från Grövelsjön i söder till Storlien i norr." },
               { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish via Fjällportalen. Vi håller pengarna och släpper dem till värden 24 timmar efter incheckning." },
-              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna stugägare bakom varje annons — inga stora förmedlare, inga onödiga avgifter." },
+              { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna stugägare bakom varje annons - inga stora förmedlare, inga onödiga avgifter." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-2xl bg-background p-7 shadow-[var(--shadow-soft)]">
                 <div className="mb-4 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
@@ -193,7 +193,7 @@ function HomePage() {
               <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary-foreground/80">För stugägare</p>
               <h2 className="font-serif text-3xl md:text-5xl">Hyr ut din stuga utan krångel.</h2>
               <p className="mt-4 max-w-md text-primary-foreground/90">
-                Lägg upp din stuga gratis. Du sätter pris och regler, vi sköter bokning, betalning och kalender. När du har tid över — låt fjället jobba för dig.
+                Lägg upp din stuga gratis. Du sätter pris och regler, vi sköter bokning, betalning och kalender. När du har tid över - låt fjället jobba för dig.
               </p>
             </div>
             <div className="md:justify-self-end">
@@ -205,7 +205,7 @@ function HomePage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <p className="mt-3 max-w-xs text-xs text-primary-foreground/85 md:text-right">
-                Gästen betalar tryggt via Fjällportalen — utbetalning till dig 24 timmar efter incheckning.
+                Gästen betalar tryggt via Fjällportalen - utbetalning till dig 24 timmar efter incheckning.
               </p>
             </div>
           </div>

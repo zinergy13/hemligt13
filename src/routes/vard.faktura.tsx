@@ -17,7 +17,7 @@ import {
 import { useMemo } from "react";
 
 export const Route = createFileRoute("/vard/faktura")({
-  head: () => ({ meta: [{ title: "Mitt saldo — Värd — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mitt saldo - Värd - Fjällportalen" }] }),
   component: HostInvoicePage,
 });
 
@@ -37,7 +37,7 @@ function HostInvoicePage() {
   // client-side instead of hitting the host_balances view.
   const rowsQ = useQuery({ ...hostCommissionRowsQuery(user?.id ?? ""), enabled });
   const invoicesQ = useQuery({ ...hostInvoicesQuery(user?.id ?? ""), enabled });
-  // Fee is cached app-wide (5 min stale); won't block first paint — we
+  // Fee is cached app-wide (5 min stale); won't block first paint - we
   // fall back to 9900 öre (new default (400 kr)) until it resolves.
   const feeQ = useQuery({ ...commissionFeeQuery(), enabled });
 
@@ -105,7 +105,7 @@ function HostInvoicePage() {
         <div>
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mitt saldo</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Fjällportalen tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen betalar tryggt via Fjällportalen — vi betalar ut till dig 24 timmar efter incheckning och du betalar plattformsavgiften månadsvis via faktura.
+            Fjällportalen tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen betalar tryggt via Fjällportalen - vi betalar ut till dig 24 timmar efter incheckning och du betalar plattformsavgiften månadsvis via faktura.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">
@@ -181,12 +181,12 @@ function HostInvoicePage() {
                 <tr key={i.id}>
                   <td className="px-4 py-3 font-medium text-foreground">{i.invoice_number}</td>
                   <td className="px-4 py-3 text-muted-foreground">
-                    {new Date(i.period_start).toLocaleDateString("sv-SE")} – {new Date(i.period_end).toLocaleDateString("sv-SE")}
+                    {new Date(i.period_start).toLocaleDateString("sv-SE")} - {new Date(i.period_end).toLocaleDateString("sv-SE")}
                   </td>
                   <td className={`px-4 py-3 ${overdue ? "font-medium text-destructive" : "text-muted-foreground"}`}>
-                    {i.due_date ? new Date(i.due_date).toLocaleDateString("sv-SE") : "—"}
+                    {i.due_date ? new Date(i.due_date).toLocaleDateString("sv-SE") : "-"}
                   </td>
-                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{i.ocr_reference ?? "—"}</td>
+                  <td className="px-4 py-3 font-mono text-xs text-muted-foreground">{i.ocr_reference ?? "-"}</td>
                   <td className="px-4 py-3 font-medium text-foreground">{formatOre(i.total_amount)}</td>
                   <td className="px-4 py-3">
                     <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${
@@ -254,7 +254,7 @@ function HostInvoicePage() {
                 return (
                   <tr key={r.id}>
                     <td className="px-4 py-3 font-medium text-foreground">
-                      {r.cabins?.title ?? "—"}
+                      {r.cabins?.title ?? "-"}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {formatDateRange(r.check_in, r.check_out)}

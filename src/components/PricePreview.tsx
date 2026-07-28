@@ -40,7 +40,7 @@ function addDays(iso: string, n: number) {
 /**
  * Build display rows for the per-night list from the SAME quote used by the
  * PriceBreakdown summary. This guarantees prices always match after any date
- * change or one-click fix — there is only one source of truth: computeQuote.
+ * change or one-click fix - there is only one source of truth: computeQuote.
  */
 function nightRowsFromQuote(
   quote: Quote,
@@ -167,7 +167,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
       setCheckIn(nextIn);
       setCheckOut(nextOut);
     });
-    // Restart the flash cleanly on every click — clear any pending reset,
+    // Restart the flash cleanly on every click - clear any pending reset,
     // bump the key so the animation re-mounts, and re-arm the confirmation.
     if (flashTimerRef.current !== null) {
       window.clearTimeout(flashTimerRef.current);
@@ -222,7 +222,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
   }, [selectedId]);
 
   // Memoize the selected cabin by id so its reference is stable across
-  // re-renders that only touch flash state — otherwise every render of
+  // re-renders that only touch flash state - otherwise every render of
   // this component invalidates every downstream useMemo.
   const selectedCabin = useMemo(
     () => cabins.find((c) => c.id === selectedId) ?? null,
@@ -244,7 +244,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
   }, [selectedCabin, checkIn, checkOut, seasons, rule]);
 
   // Night rows only need to rebuild when the underlying quote (or the
-  // required weekday) changes — decoupled from flashKey/justFixed rerenders.
+  // required weekday) changes - decoupled from flashKey/justFixed rerenders.
   const nightRows = useMemo(
     () =>
       quote && selectedCabin
@@ -283,7 +283,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
           <Calculator className="h-5 w-5 text-primary" /> Prisförhandsvisning
         </h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Välj stuga och datum för att se exakt vad en gäst betalar — inklusive veckopris,
+          Välj stuga och datum för att se exakt vad en gäst betalar - inklusive veckopris,
           helgtillägg och dynamiska rabatter.
         </p>
       </div>
@@ -298,7 +298,7 @@ export function PricePreview({ hostId }: { hostId: string }) {
           >
             {cabins.map((c) => (
               <option key={c.id} value={c.id}>
-                {c.title} — {areaBySlug(c.area_slug)?.name ?? c.area_slug}
+                {c.title} - {areaBySlug(c.area_slug)?.name ?? c.area_slug}
               </option>
             ))}
           </select>
@@ -528,14 +528,14 @@ function ValidationPanel({
     <div className="space-y-3 rounded-xl border border-red-500/40 bg-red-500/5 p-4">
       <div className="flex items-center gap-2 text-sm font-semibold text-red-800 dark:text-red-300">
         <AlertTriangle className="h-4 w-4" />
-        Bokning ej tillåten — åtgärda {errors.length === 1 ? "felet" : `${errors.length} fel`} nedan
+        Bokning ej tillåten - åtgärda {errors.length === 1 ? "felet" : `${errors.length} fel`} nedan
       </div>
 
       {(cabinMinNights || seasonMinNights) && (
         <div className="rounded-lg border border-border bg-background p-3 text-sm">
           <div className="mb-2 flex items-center gap-1.5 font-medium text-foreground">
             <CalendarClock className="h-4 w-4 text-muted-foreground" />
-            Minsta antal nätter — så här räknas det
+            Minsta antal nätter - så här räknas det
           </div>
           <div className="grid gap-2 sm:grid-cols-2">
             {thresholdRows.map((row) =>
@@ -574,7 +574,7 @@ function ValidationPanel({
           className="flex w-full items-center justify-center gap-2 rounded-lg bg-primary px-3 py-2 text-sm font-semibold text-primary-foreground hover:bg-primary/90"
         >
           <Wand2 className="h-4 w-4" />
-          Åtgärda allt — {fmtDateLong(combined.checkIn)} → {fmtDateLong(combined.checkOut)}
+          Åtgärda allt - {fmtDateLong(combined.checkIn)} → {fmtDateLong(combined.checkOut)}
           {" "}({nightsBetween(combined.checkIn, combined.checkOut)} nätter)
         </button>
       )}

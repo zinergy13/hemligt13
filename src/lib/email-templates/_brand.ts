@@ -1,5 +1,5 @@
 export const BRAND_NAME = 'Fjällportalen'
-export const BRAND_TAGLINE = 'Svenska fjällen — samlat på ett ställe'
+export const BRAND_TAGLINE = 'Svenska fjällen - samlat på ett ställe'
 
 export const brand = {
   bg: '#ffffff',

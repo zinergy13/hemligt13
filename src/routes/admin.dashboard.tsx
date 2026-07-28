@@ -7,7 +7,7 @@ import { areas } from "@/data/areas";
 import { formatDateRange } from "@/lib/bookings";
 
 export const Route = createFileRoute("/admin/dashboard")({
-  head: () => ({ meta: [{ title: "Dashboard — Admin — Fjällportalen" }, { name: "robots", content: "noindex" }] }),
+  head: () => ({ meta: [{ title: "Dashboard - Admin - Fjällportalen" }, { name: "robots", content: "noindex" }] }),
   component: AdminDashboard,
 });
 
@@ -283,7 +283,7 @@ function OverviewPanel({ bookings, cabins }: { bookings: Booking[]; cabins: Reco
             {bookings.slice(0, 8).map((b) => (
               <li key={b.id} className="flex items-center justify-between py-2.5 text-sm">
                 <div>
-                  <div className="font-medium text-foreground">{cabins[b.cabin_id]?.title ?? "—"}</div>
+                  <div className="font-medium text-foreground">{cabins[b.cabin_id]?.title ?? "-"}</div>
                   <div className="text-xs text-muted-foreground">{formatDateRange(b.check_in, b.check_out)} · {b.status}</div>
                 </div>
                 <div className="font-medium text-foreground">{fmt(b.total_price)}</div>
@@ -319,10 +319,10 @@ function BookingsTable({ bookings, cabins, profiles }: { bookings: Booking[]; ca
             return (
               <tr key={b.id}>
                 <td className="px-4 py-3 text-muted-foreground">{new Date(b.created_at).toLocaleDateString("sv-SE")}</td>
-                <td className="px-4 py-3 font-medium text-foreground">{c?.title ?? "—"}</td>
-                <td className="px-4 py-3 text-muted-foreground">{c ? areaName(c.area_slug) : "—"}</td>
-                <td className="px-4 py-3 text-foreground">{profiles[b.guest_id]?.full_name ?? "—"}</td>
-                <td className="px-4 py-3 text-foreground">{profiles[b.host_id]?.full_name ?? "—"}</td>
+                <td className="px-4 py-3 font-medium text-foreground">{c?.title ?? "-"}</td>
+                <td className="px-4 py-3 text-muted-foreground">{c ? areaName(c.area_slug) : "-"}</td>
+                <td className="px-4 py-3 text-foreground">{profiles[b.guest_id]?.full_name ?? "-"}</td>
+                <td className="px-4 py-3 text-foreground">{profiles[b.host_id]?.full_name ?? "-"}</td>
                 <td className="px-4 py-3 text-muted-foreground">{formatDateRange(b.check_in, b.check_out)}</td>
                 <td className="px-4 py-3"><span className="rounded-full bg-muted px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide text-foreground">{b.status}</span></td>
                 <td className="px-4 py-3 text-right font-medium text-foreground">{fmt(b.total_price)}</td>
@@ -397,18 +397,18 @@ function PeopleTable({ rows, amountLabel, icon, emptyText, filename }: { rows: P
             return (
             <tr key={r.id}>
               <td className="px-4 py-3 font-medium text-foreground">
-                {p?.full_name || "—"}
+                {p?.full_name || "-"}
                 {p?.personal_number && <div className="text-xs font-normal text-muted-foreground">{p.personal_number}</div>}
                 {r.extra && <div className="text-xs font-normal text-muted-foreground">{r.extra}</div>}
               </td>
               <td className="px-4 py-3 text-muted-foreground">
-                <div>{p?.email || "—"}</div>
-                <div className="text-xs">{p?.phone || "—"}</div>
+                <div>{p?.email || "-"}</div>
+                <div className="text-xs">{p?.phone || "-"}</div>
               </td>
-              <td className="px-4 py-3 text-muted-foreground text-xs">{addr || "—"}</td>
+              <td className="px-4 py-3 text-muted-foreground text-xs">{addr || "-"}</td>
               <td className="px-4 py-3">
                 <div className="flex flex-wrap gap-1">
-                  {r.areas.length === 0 ? <span className="text-muted-foreground">—</span> : r.areas.map((s) => (
+                  {r.areas.length === 0 ? <span className="text-muted-foreground">-</span> : r.areas.map((s) => (
                     <span key={s} className="rounded-full bg-muted px-2 py-0.5 text-[11px] text-foreground">{areaName(s)}</span>
                   ))}
                 </div>

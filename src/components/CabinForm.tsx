@@ -128,7 +128,7 @@ export function CabinForm({
       return;
     }
     if (publish && (!v.size_sqm || v.size_sqm < 5)) {
-      toast.error("Ange stugans yta (kvm) innan publicering — behövs för att räkna städpris.");
+      toast.error("Ange stugans yta (kvm) innan publicering - behövs för att räkna städpris.");
       return;
     }
     setSaving(true);

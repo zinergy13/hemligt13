@@ -159,7 +159,7 @@ export function PriceAlertsManager() {
           {alerts.map((a) => {
             const label = a.area_slug
               ? areaBySlug(a.area_slug)?.name ?? a.area_slug
-              : regions.find((r) => r.slug === a.region_slug)?.name ?? a.region_slug ?? "—";
+              : regions.find((r) => r.slug === a.region_slug)?.name ?? a.region_slug ?? "-";
             return (
               <li
                 key={a.id}

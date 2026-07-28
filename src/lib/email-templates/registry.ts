@@ -12,14 +12,14 @@ export interface TemplateEntry {
   subject: string | ((data: Record<string, any>) => string)
   displayName?: string
   previewData?: Record<string, any>
-  /** Fixed recipient — overrides caller-provided recipientEmail when set. */
+  /** Fixed recipient - overrides caller-provided recipientEmail when set. */
   to?: string
   /** Optional local-part override for the From address (e.g. "fakturor" -> fakturor@fjallportalen.com). Defaults to "noreply". */
   fromLocal?: string
 }
 
 /**
- * Template registry — maps template names to their React Email components.
+ * Template registry - maps template names to their React Email components.
  * Import and register new templates here after creating them in this directory.
  *
  * Example:

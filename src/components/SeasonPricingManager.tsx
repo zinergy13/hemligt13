@@ -137,7 +137,7 @@ export function SeasonPricingManager({ hostId }: { hostId: string }) {
         <div>
           <h2 className="font-serif text-xl text-foreground">Säsongspriser & prisregler</h2>
           <p className="mt-1 text-sm text-muted-foreground">
-            Sätt olika priser för högsäsong, sportlov och lågsäsong — och lägg till dynamiska rabatter.
+            Sätt olika priser för högsäsong, sportlov och lågsäsong - och lägg till dynamiska rabatter.
           </p>
         </div>
       </div>

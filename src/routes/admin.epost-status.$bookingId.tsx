@@ -16,7 +16,7 @@ import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.funct
 export const Route = createFileRoute('/admin/epost-status/$bookingId')({
   head: () => ({
     meta: [
-      { title: 'E-postförsök för bokning — Admin — Fjällportalen' },
+      { title: 'E-postförsök för bokning - Admin - Fjällportalen' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -54,7 +54,7 @@ function statusBadge(s: string) {
 }
 
 function fmt(ts?: string | null) {
-  if (!ts) return '—';
+  if (!ts) return '-';
   return new Date(ts).toLocaleString('sv-SE');
 }
 
@@ -189,7 +189,7 @@ function BookingEmailDetail() {
                                 {r.last_error}
                               </span>
                             ) : (
-                              <span className="text-xs text-muted-foreground">—</span>
+                              <span className="text-xs text-muted-foreground">-</span>
                             )}
                           </td>
                           <td className="px-3 py-2 text-right">

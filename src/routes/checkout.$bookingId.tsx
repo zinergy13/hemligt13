@@ -13,7 +13,7 @@ import { Loader2 } from 'lucide-react';
 export const Route = createFileRoute('/checkout/$bookingId')({
   head: () => ({
     meta: [
-      { title: 'Betala din bokning — Fjällportalen' },
+      { title: 'Betala din bokning - Fjällportalen' },
       { name: 'description', content: 'Slutför din stugbokning tryggt via Fjällportalen.' },
       { name: 'robots', content: 'noindex, nofollow' },
       { name: 'googlebot', content: 'noindex, nofollow' },

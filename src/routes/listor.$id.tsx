@@ -14,7 +14,7 @@ type CabinCardData = CabinWithImages;
 export const Route = createFileRoute("/listor/$id")({
   head: () => ({
     meta: [
-      { title: "Lista — Fjällportalen" },
+      { title: "Lista - Fjällportalen" },
       { name: "robots", content: "noindex" },
     ],
   }),

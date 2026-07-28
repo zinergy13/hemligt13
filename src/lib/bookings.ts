@@ -88,7 +88,7 @@ export function formatDateRange(checkIn: string, checkOut: string): string {
   const fmt = new Intl.DateTimeFormat("sv-SE", { day: "numeric", month: "short" });
   const a = new Date(checkIn + "T00:00:00Z");
   const b = new Date(checkOut + "T00:00:00Z");
-  return `${fmt.format(a)} – ${fmt.format(b)}`;
+  return `${fmt.format(a)} - ${fmt.format(b)}`;
 }
 
 export function statusLabel(status: BookingStatus): { label: string; cls: string } {

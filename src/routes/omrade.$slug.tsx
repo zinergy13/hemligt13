@@ -14,15 +14,15 @@ export const Route = createFileRoute("/omrade/$slug")({
   },
   head: ({ loaderData }) => {
     const area = loaderData?.area;
-    if (!area) return { meta: [{ title: "Område — Fjällportalen" }] };
+    if (!area) return { meta: [{ title: "Område - Fjällportalen" }] };
     const region = regionBySlug(area.region);
     const regionName = region?.name ?? "svenska fjällen";
     const url = `https://fjallportalen.com/omrade/${area.slug}`;
     return {
       meta: [
-        { title: `Stugor i ${area.name} — Fjällportalen` },
+        { title: `Stugor i ${area.name} - Fjällportalen` },
         { name: "description", content: `${area.tagline}. Hitta och hyr stugor, lägenheter och fjällboenden i ${area.name}, ${regionName}.` },
-        { property: "og:title", content: `Stugor i ${area.name} — Fjällportalen` },
+        { property: "og:title", content: `Stugor i ${area.name} - Fjällportalen` },
         { property: "og:description", content: area.description },
         { property: "og:image", content: area.image },
         { property: "og:url", content: url },
@@ -91,7 +91,7 @@ function AreaPage() {
   return (
     <>
       <section className="relative isolate overflow-hidden">
-        <img src={area.image} alt={`${area.name} — ${region?.name ?? "fjällen"}`} width={1920} height={900} className="absolute inset-0 h-full w-full object-cover" />
+        <img src={area.image} alt={`${area.name} - ${region?.name ?? "fjällen"}`} width={1920} height={900} className="absolute inset-0 h-full w-full object-cover" />
         <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} aria-hidden="true" />
         <div className="relative mx-auto flex max-w-7xl flex-col px-4 pb-16 pt-24 md:px-6 md:pb-24 md:pt-40">
           {region && (
@@ -156,7 +156,7 @@ function AreaPage() {
                 </Link>
               </div>
               <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-                Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.
+                Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.
               </p>
             </div>
           )}

@@ -8,7 +8,7 @@ import { CabinForm, type CabinFormImage, type CabinFormValues } from "@/componen
 import type { CabinStatus, CabinWithImages } from "@/lib/cabins";
 
 export const Route = createFileRoute("/vard/stugor/$id/redigera")({
-  head: () => ({ meta: [{ title: "Redigera stuga — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Redigera stuga - Fjällportalen" }] }),
   component: EditCabinPage,
 });
 

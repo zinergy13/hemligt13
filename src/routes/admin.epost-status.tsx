@@ -18,7 +18,7 @@ import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.funct
 export const Route = createFileRoute('/admin/epost-status')({
   head: () => ({
     meta: [
-      { title: 'E-poststatus — Admin — Fjällportalen' },
+      { title: 'E-poststatus - Admin - Fjällportalen' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
@@ -178,7 +178,7 @@ function EmailStatusPage() {
       </div>
       <p className="mb-6 text-sm text-muted-foreground">
         Alla utskick loggas per bokning och mall. Misslyckade försök retryas automatiskt med
-        exponentiell backoff upp till 5 försök — därefter markeras de som misslyckade och kräver
+        exponentiell backoff upp till 5 försök - därefter markeras de som misslyckade och kräver
         manuellt återförsök.
       </p>
 
@@ -297,12 +297,12 @@ function EmailStatusPage() {
                           {r.booking_id.slice(0, 8)}
                         </Link>
                       ) : (
-                        '—'
+                        '-'
                       )}
                     </td>
                     <td className="px-3 py-2">{r.attempts}</td>
                     <td className="px-3 py-2 text-xs text-muted-foreground">
-                      {r.next_retry_at ? new Date(r.next_retry_at).toLocaleString('sv-SE') : '—'}
+                      {r.next_retry_at ? new Date(r.next_retry_at).toLocaleString('sv-SE') : '-'}
                     </td>
                     <td className="px-3 py-2 max-w-xs">
                       {r.last_error ? (
@@ -311,7 +311,7 @@ function EmailStatusPage() {
                           {r.last_error}
                         </span>
                       ) : (
-                        <span className="text-xs text-muted-foreground">—</span>
+                        <span className="text-xs text-muted-foreground">-</span>
                       )}
                     </td>
                     <td className="px-3 py-2 text-right">
@@ -335,7 +335,7 @@ function EmailStatusPage() {
 
       <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
         <span>
-          Visar {rows.length === 0 ? 0 : offset + 1}–{offset + rows.length} av {total}
+          Visar {rows.length === 0 ? 0 : offset + 1}-{offset + rows.length} av {total}
         </span>
         <div className="flex gap-2">
           <button

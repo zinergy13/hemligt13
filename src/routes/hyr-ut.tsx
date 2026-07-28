@@ -4,10 +4,10 @@ import { Camera, Calendar, Wallet, ShieldCheck, ArrowRight } from "lucide-react"
 export const Route = createFileRoute("/hyr-ut")({
   head: () => ({
     meta: [
-      { title: "Hyr ut din stuga i svenska fjällen — Fjällportalen" },
-      { name: "description", content: "Lägg upp din stuga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender — du sätter pris och regler." },
+      { title: "Hyr ut din stuga i svenska fjällen - Fjällportalen" },
+      { name: "description", content: "Lägg upp din stuga, lägenhet eller fjällboende gratis. Vi sköter bokning, betalning och kalender - du sätter pris och regler." },
       { property: "og:title", content: "Hyr ut din stuga i svenska fjällen" },
-      { property: "og:description", content: "Tjäna pengar på din stuga i svenska fjällen — utan krångel och utan höga avgifter." },
+      { property: "og:description", content: "Tjäna pengar på din stuga i svenska fjällen - utan krångel och utan höga avgifter." },
     ],
     scripts: [
       {
@@ -39,7 +39,7 @@ export const Route = createFileRoute("/hyr-ut")({
 
 function HostPage() {
   const steps = [
-    { icon: Camera, title: "Lägg upp din stuga", text: "Bilder, beskrivning, faciliteter och läge — vi guidar dig steg för steg." },
+    { icon: Camera, title: "Lägg upp din stuga", text: "Bilder, beskrivning, faciliteter och läge - vi guidar dig steg för steg." },
     { icon: Calendar, title: "Sätt pris & kalender", text: "Du bestämmer pris per vecka, helg eller dygn. Blockera datum när du vill bo själv." },
     { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Vi håller pengarna och betalar ut till dig 24 timmar efter incheckning." },
   ];
@@ -52,7 +52,7 @@ function HostPage() {
             <p className="mb-3 text-sm font-medium uppercase tracking-wider text-accent">För stugägare</p>
             <h1 className="font-serif text-4xl leading-tight md:text-6xl">Hyr ut din stuga i svenska fjällen.</h1>
             <p className="mt-5 text-lg text-secondary-foreground/85">
-              Slipp Facebook-grupper och sms-trafik. Fjällportalen samlar gäster som söker just din typ av boende — och hanterar bokning, betalning och kalender åt dig.
+              Slipp Facebook-grupper och sms-trafik. Fjällportalen samlar gäster som söker just din typ av boende - och hanterar bokning, betalning och kalender åt dig.
             </p>
             <div className="mt-8 flex flex-wrap gap-3">
               <Link
@@ -69,7 +69,7 @@ function HostPage() {
               </Link>
             </div>
             <p className="mt-4 text-sm text-secondary-foreground/75">
-              Gratis att lägga upp. Gästen betalar tryggt via Fjällportalen — utbetalning till dig 24 timmar efter incheckning.
+              Gratis att lägga upp. Gästen betalar tryggt via Fjällportalen - utbetalning till dig 24 timmar efter incheckning.
             </p>
           </div>
         </div>
@@ -108,7 +108,7 @@ function HostPage() {
               {[
                 "Gratis att lägga upp stugan",
                 "Du sätter pris, regler och tillgänglighet",
-                "Tryggt betalningsflöde — inga utestående fakturor",
+                "Tryggt betalningsflöde - inga utestående fakturor",
                 "Recensioner från riktiga gäster",
                 "Kalender som blockeras automatiskt",
               ].map((item) => (

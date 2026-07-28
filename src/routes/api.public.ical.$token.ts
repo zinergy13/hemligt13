@@ -44,7 +44,7 @@ export const Route = createFileRoute("/api/public/ical/$token")({
           });
         }
         for (const b of blocks ?? []) {
-          // Don't re-export dates we imported from an external calendar — the
+          // Don't re-export dates we imported from an external calendar - the
           // source of truth is still that external feed, and echoing them back
           // creates loops when a partner imports our feed.
           if (b.source && b.source.startsWith("feed:")) continue;
@@ -56,7 +56,7 @@ export const Route = createFileRoute("/api/public/ical/$token")({
           });
         }
 
-        const body = buildIcs(`Fjällportalen — ${cabin.title}`, events);
+        const body = buildIcs(`Fjällportalen - ${cabin.title}`, events);
 
         return new Response(body, {
           status: 200,

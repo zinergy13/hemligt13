@@ -15,7 +15,7 @@ export function Footer() {
               <span>Fjällportalen</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-secondary-foreground/75">
-              Svenska fjällens samlade plats för stuguthyrning. Från Sälen till Åre — med trygg betalning och lokala värdar.
+              Svenska fjällens samlade plats för stuguthyrning. Från Sälen till Åre - med trygg betalning och lokala värdar.
             </p>
           </div>
 

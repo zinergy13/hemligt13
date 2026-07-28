@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { syncIcalFeed } from "@/lib/ical.functions";
 
 export const Route = createFileRoute("/vard/kalender")({
-  head: () => ({ meta: [{ title: "Kalendersync — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Kalendersync - Fjällportalen" }] }),
   component: HostCalendarPage,
 });
 
@@ -111,7 +111,7 @@ function HostCalendarPage() {
       return;
     }
     form.reset();
-    toast.success("Feed tillagd — kör synk för att importera");
+    toast.success("Feed tillagd - kör synk för att importera");
     setRefresh((k) => k + 1);
   };
 
@@ -140,7 +140,7 @@ function HostCalendarPage() {
     setBusyId(feedId);
     try {
       const result = await runSync({ data: { feedId } });
-      toast.success(`Synkad — ${result.imported} blockering(ar) importerade`);
+      toast.success(`Synkad - ${result.imported} blockering(ar) importerade`);
       setRefresh((k) => k + 1);
     } catch (e) {
       toast.error(e instanceof Error ? e.message : "Synk misslyckades");
@@ -159,7 +159,7 @@ function HostCalendarPage() {
         <div>
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Kalendersync (iCal)</h1>
           <p className="mt-2 max-w-xl text-sm text-muted-foreground">
-            Dela din tillgänglighet med Airbnb, Booking.com och andra tjänster — och importera deras kalendrar hit så att inga dubbelbokningar sker.
+            Dela din tillgänglighet med Airbnb, Booking.com och andra tjänster - och importera deras kalendrar hit så att inga dubbelbokningar sker.
           </p>
         </div>
         <CalendarIcon className="h-8 w-8 text-primary" />
@@ -216,7 +216,7 @@ function HostCalendarPage() {
                 <section>
                   <h3 className="text-sm font-medium text-foreground">Importerade kalendrar</h3>
                   <p className="mt-1 text-xs text-muted-foreground">
-                    Lägg till iCal-URL:er från externa tjänster. Vi synkar automatiskt när du klickar "Synka" — dubbelbokningar blockeras.
+                    Lägg till iCal-URL:er från externa tjänster. Vi synkar automatiskt när du klickar "Synka" - dubbelbokningar blockeras.
                   </p>
 
                   {cabinFeeds.length > 0 && (

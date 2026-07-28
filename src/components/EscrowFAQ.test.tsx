@@ -44,7 +44,7 @@ describe("EscrowFAQ structured data", () => {
       a: entry.acceptedAnswer?.text,
     }));
 
-    // 1:1 order-preserving comparison — any drift fails CI.
+    // 1:1 order-preserving comparison - any drift fails CI.
     expect(rendered).toEqual(fromLd);
   });
 });

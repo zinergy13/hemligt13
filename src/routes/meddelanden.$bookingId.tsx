@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 export const Route = createFileRoute("/meddelanden/$bookingId")({
   head: () => ({
     meta: [
-      { title: "Meddelanden — Fjällportalen" },
+      { title: "Meddelanden - Fjällportalen" },
       { name: "description", content: "Skicka meddelanden mellan gäst och värd." },
       { name: "robots", content: "noindex" },
     ],

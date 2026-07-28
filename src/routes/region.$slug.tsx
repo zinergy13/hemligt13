@@ -10,13 +10,13 @@ export const Route = createFileRoute("/region/$slug")({
   },
   head: ({ loaderData }) => {
     const region = loaderData?.region;
-    if (!region) return { meta: [{ title: "Region — Fjällportalen" }] };
+    if (!region) return { meta: [{ title: "Region - Fjällportalen" }] };
     const url = `https://klappen-fjall-share.lovable.app/region/${region.slug}`;
     return {
       meta: [
-        { title: `Stugor i ${region.name} — Fjällportalen` },
+        { title: `Stugor i ${region.name} - Fjällportalen` },
         { name: "description", content: `${region.tagline}. ${region.description}` },
-        { property: "og:title", content: `Stugor i ${region.name} — Fjällportalen` },
+        { property: "og:title", content: `Stugor i ${region.name} - Fjällportalen` },
         { property: "og:description", content: region.description },
         { property: "og:image", content: region.image },
         { property: "og:url", content: url },
@@ -53,7 +53,7 @@ function RegionPage() {
       <section className="relative isolate overflow-hidden">
         <img
           src={region.image}
-          alt={`${region.name} — svenska fjällen`}
+          alt={`${region.name} - svenska fjällen`}
           width={1920}
           height={900}
           className="absolute inset-0 h-full w-full object-cover"

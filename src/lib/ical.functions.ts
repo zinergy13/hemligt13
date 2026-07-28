@@ -66,7 +66,7 @@ async function assertSafePublicUrl(rawUrl: string): Promise<URL> {
       for (const ip of aaaa) if (isPrivateIPv6(ip)) throw new Error("Privat/intern adress är inte tillåten");
     } catch (e) {
       if (e instanceof Error && e.message.includes("Privat")) throw e;
-      // DNS lookup failure is non-fatal — fetch will still be attempted
+      // DNS lookup failure is non-fatal - fetch will still be attempted
     }
   }
   return parsed;
@@ -88,7 +88,7 @@ export const syncIcalFeed = createServerFn({ method: "POST" })
 
     if (feedError) throw new Error(feedError.message);
     if (!feed) throw new Error("Feed hittades inte");
-    if (!feed.active) throw new Error("Feed är pausad — aktivera den innan synk");
+    if (!feed.active) throw new Error("Feed är pausad - aktivera den innan synk");
 
     // Fetch the remote feed
     let payload = "";

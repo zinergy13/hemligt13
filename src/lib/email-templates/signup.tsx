@@ -47,7 +47,7 @@ export const SignupEmail = ({ siteUrl, recipient, confirmationUrl }: SignupEmail
         <div style={styles.divider} />
         <Text style={styles.footer}>
           Om du inte skapade ett konto kan du ignorera det här mejlet.<br />
-          {BRAND_NAME} — {BRAND_TAGLINE}
+          {BRAND_NAME} - {BRAND_TAGLINE}
         </Text>
       </Container>
     </Body>

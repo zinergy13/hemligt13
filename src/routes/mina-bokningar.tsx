@@ -94,7 +94,7 @@ function PayoutBox({ hostId, totalPrice }: { hostId: string; totalPrice: number 
 }
 
 export const Route = createFileRoute("/mina-bokningar")({
-  head: () => ({ meta: [{ title: "Mina bokningar — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mina bokningar - Fjällportalen" }] }),
   component: MyBookingsPage,
 });
 
@@ -153,7 +153,7 @@ function MyBookingsPage() {
             Sök stugor
           </Link>
           <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-            Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.
+            Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.
           </p>
         </div>
       ) : (
@@ -184,7 +184,7 @@ function MyBookingsPage() {
                         {c?.title ?? "Stuga"}
                       </h3>
                       <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
-                        <MapPin className="h-3 w-3" /> {area?.name ?? c?.area_slug ?? "—"}
+                        <MapPin className="h-3 w-3" /> {area?.name ?? c?.area_slug ?? "-"}
                       </p>
                       <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
                         <CalendarDays className="h-3 w-3" /> {formatDateRange(b.check_in, b.check_out)} · {b.nights} nätter · {b.guests} gäster
@@ -230,7 +230,7 @@ function MyBookingsPage() {
                       return (
                         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
                           <div className="text-xs text-muted-foreground">
-                            Betala tryggt via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.
+                            Betala tryggt via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.
                           </div>
                           <Link
                             to="/checkout/$bookingId"

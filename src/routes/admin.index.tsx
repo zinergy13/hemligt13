@@ -22,7 +22,7 @@ type Row = {
 type HostInfo = { id: string; full_name: string | null };
 
 export const Route = createFileRoute("/admin/")({
-  head: () => ({ meta: [{ title: "Admin — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Admin - Fjällportalen" }] }),
   component: AdminPage,
 });
 
@@ -107,7 +107,7 @@ function AdminPage() {
   const saveFee = async () => {
     const kr = parseInt(feeInput, 10);
     if (Number.isNaN(kr) || kr < 0 || kr > 100000) {
-      toast.error("Ange ett giltigt belopp i kronor (0–100000)");
+      toast.error("Ange ett giltigt belopp i kronor (0-100000)");
       return;
     }
     setSavingFee(true);
@@ -306,10 +306,10 @@ function AdminPage() {
                 return (
                   <tr key={r.id}>
                     <td className="px-4 py-3 text-foreground">
-                      {host?.full_name || <span className="text-muted-foreground">—</span>}
+                      {host?.full_name || <span className="text-muted-foreground">-</span>}
                     </td>
                     <td className="px-4 py-3 font-medium text-foreground">
-                      {r.cabins?.title ?? "—"}
+                      {r.cabins?.title ?? "-"}
                     </td>
                     <td className="px-4 py-3 text-muted-foreground">
                       {formatDateRange(r.check_in, r.check_out)}

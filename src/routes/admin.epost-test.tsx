@@ -18,7 +18,7 @@ const TEMPLATES = [
 export const Route = createFileRoute('/admin/epost-test')({
   head: () => ({
     meta: [
-      { title: 'Testa e-postmallar — Admin — Fjällportalen' },
+      { title: 'Testa e-postmallar - Admin - Fjällportalen' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),

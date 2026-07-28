@@ -59,7 +59,7 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
           currency: 'sek',
           unit_amount: booking.nightly_total * 100,
           product_data: {
-            name: `${cabinTitle} — ${booking.nights} nätter`,
+            name: `${cabinTitle} - ${booking.nights} nätter`,
             description: `Incheckning ${booking.check_in} → ${booking.check_out}`,
           },
         },
@@ -109,7 +109,7 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
           discounts: [{ coupon: coupon.id }],
           return_url: data.returnUrl,
           payment_intent_data: {
-            description: `Bokning ${booking.id.slice(0, 8)} — ${cabinTitle}`,
+            description: `Bokning ${booking.id.slice(0, 8)} - ${cabinTitle}`,
             metadata: { booking_id: booking.id, user_id: userId },
           },
           metadata: { booking_id: booking.id, user_id: userId },
@@ -128,7 +128,7 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
         line_items: lineItems,
         return_url: data.returnUrl,
         payment_intent_data: {
-          description: `Bokning ${booking.id.slice(0, 8)} — ${cabinTitle}`,
+          description: `Bokning ${booking.id.slice(0, 8)} - ${cabinTitle}`,
           metadata: { booking_id: booking.id, user_id: userId },
         },
         metadata: { booking_id: booking.id, user_id: userId },

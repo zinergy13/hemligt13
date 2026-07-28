@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 export const Route = createFileRoute("/admin/recensioner")({
   head: () => ({
     meta: [
-      { title: "Moderera recensioner — Admin" },
+      { title: "Moderera recensioner - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -112,7 +112,7 @@ function ModerationPage() {
                   <div className="text-xs font-semibold uppercase text-destructive">Anledning: {f.reason}</div>
                   {f.review && (
                     <div className="mt-2">
-                      <div className="text-sm font-medium">{f.review.profiles?.full_name || "Gäst"} — {f.review.rating}★</div>
+                      <div className="text-sm font-medium">{f.review.profiles?.full_name || "Gäst"} - {f.review.rating}★</div>
                       <p className="mt-1 text-sm">{f.review.comment}</p>
                     </div>
                   )}
@@ -140,7 +140,7 @@ function ModerationPage() {
                 <div className="flex items-start justify-between gap-3">
                   <div className="min-w-0 flex-1">
                     <div className="text-xs text-muted-foreground">
-                      {r.cabin?.title} — {r.profiles?.full_name || "Gäst"} — {r.rating}★ — {new Date(r.created_at).toLocaleDateString("sv-SE")}
+                      {r.cabin?.title} - {r.profiles?.full_name || "Gäst"} - {r.rating}★ - {new Date(r.created_at).toLocaleDateString("sv-SE")}
                       {r.hidden && <span className="ml-2 rounded-full bg-destructive/20 px-2 py-0.5 text-[10px] font-semibold text-destructive">DOLD</span>}
                     </div>
                     {r.comment && <p className="mt-1 text-sm text-foreground">{r.comment}</p>}

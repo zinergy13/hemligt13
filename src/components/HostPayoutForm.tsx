@@ -77,7 +77,7 @@ export function HostPayoutForm({ hostId }: { hostId: string }) {
       <div>
         <h2 className="font-serif text-xl text-foreground">Utbetalningsuppgifter</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Gästen betalar tryggt via Fjällportalen. Vi betalar ut till dig 24 timmar efter incheckning — fyll i vart pengarna ska.
+          Gästen betalar tryggt via Fjällportalen. Vi betalar ut till dig 24 timmar efter incheckning - fyll i vart pengarna ska.
         </p>
       </div>
 

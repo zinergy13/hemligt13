@@ -33,7 +33,7 @@ export function ReviewFlagButton({ reviewId }: { reviewId: string }) {
       else toast.error(error.message);
       return;
     }
-    toast.success("Tack — recensionen är anmäld till moderatorerna");
+    toast.success("Tack - recensionen är anmäld till moderatorerna");
     setOpen(false);
   };
 

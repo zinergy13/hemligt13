@@ -12,12 +12,12 @@ import { EmailChangeEmail } from '@/lib/email-templates/email-change'
 import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  signup: 'Bekräfta din e-post – Fjällportalen',
+  signup: 'Bekräfta din e-post - Fjällportalen',
   invite: 'Du är inbjuden till Fjällportalen',
   magiclink: 'Din inloggningslänk till Fjällportalen',
-  recovery: 'Återställ ditt lösenord – Fjällportalen',
-  email_change: 'Bekräfta din nya e-postadress – Fjällportalen',
-  reauthentication: 'Din verifieringskod – Fjällportalen',
+  recovery: 'Återställ ditt lösenord - Fjällportalen',
+  email_change: 'Bekräfta din nya e-postadress - Fjällportalen',
+  reauthentication: 'Din verifieringskod - Fjällportalen',
 }
 
 // Template mapping

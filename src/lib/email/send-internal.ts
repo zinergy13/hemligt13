@@ -111,7 +111,7 @@ export async function sendInternalTemplatedEmail(
 
   const secret = process.env.EMAIL_RELAY_INTERNAL_SECRET;
   if (!secret) {
-    console.error('EMAIL_RELAY_INTERNAL_SECRET is not set — skipping send', { templateName });
+    console.error('EMAIL_RELAY_INTERNAL_SECRET is not set - skipping send', { templateName });
     if (attempt) await markAttempt(attempt.id, attempt.attempts, false, 0, 'missing_secret');
     return { ok: false, status: 0, body: { error: 'missing_secret' }, attemptId: attempt?.id };
   }

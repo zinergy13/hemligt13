@@ -166,7 +166,7 @@ export function BookingForm({
       }
 
       if (instantBook && data?.id) {
-        toast.success("Bokningen är reserverad — slutför betalningen nu.");
+        toast.success("Bokningen är reserverad - slutför betalningen nu.");
         navigate({ to: "/checkout/$bookingId", params: { bookingId: data.id } });
       } else {
         toast.success("Förfrågan skickad. När värden bekräftar får du en länk för att betala.");
@@ -311,8 +311,8 @@ export function BookingForm({
 
       <p className="text-center text-[11px] text-muted-foreground">
         {instantBook
-          ? "Direktbokning bekräftas omedelbart. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning."
-          : "Värden svarar inom 24 timmar. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning."}
+          ? "Direktbokning bekräftas omedelbart. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning."
+          : "Värden svarar inom 24 timmar. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning."}
       </p>
     </form>
   );

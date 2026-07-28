@@ -93,7 +93,7 @@ export function subscribe(fn: () => void): () => void {
 
 function shortenEndpoint(url: URL, supabaseHost: string): string | null {
   if (url.host !== supabaseHost) return null;
-  // Drop leading slash, strip query — we record query separately.
+  // Drop leading slash, strip query - we record query separately.
   return url.pathname.replace(/^\/+/, "");
 }
 
@@ -110,7 +110,7 @@ function pushAlert(alert: Omit<PerfAlert, "id">) {
   if (alerts.length > MAX_ALERTS) alerts.length = MAX_ALERTS;
   // eslint-disable-next-line no-console
   console.warn(
-    `[perf:${full.kind}] ${full.endpoint} ${full.durationMs.toFixed(0)}ms — ${full.message}`,
+    `[perf:${full.kind}] ${full.endpoint} ${full.durationMs.toFixed(0)}ms - ${full.message}`,
   );
 }
 
@@ -147,7 +147,7 @@ function record(base: Omit<PerfEntry, "id" | "coldStart" | "slow" | "deviation">
     baselines.set(key, samples);
   }
 
-  // Always log to console so users can grep — concise, single line.
+  // Always log to console so users can grep - concise, single line.
   // eslint-disable-next-line no-console
   console.info(
     `[perf]${coldStart ? " ❄ cold" : ""} ${full.method} ${full.endpoint} → ${full.status ?? "?"} in ${full.durationMs.toFixed(0)}ms${
@@ -208,7 +208,7 @@ export function installPerfMonitor() {
   try {
     supabaseHost = new URL(import.meta.env.VITE_SUPABASE_URL as string).host;
   } catch {
-    // No supabase URL configured — nothing to monitor.
+    // No supabase URL configured - nothing to monitor.
     return;
   }
 

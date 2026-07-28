@@ -50,7 +50,7 @@ export type HostInvoice = {
 
 /**
  * Aggregate the host balance from already-fetched commission rows. This
- * removes a separate round-trip to the `host_balances` view — the view is
+ * removes a separate round-trip to the `host_balances` view - the view is
  * just a SUM/COUNT over the same booking rows we already load on this page.
  */
 export function computeHostBalance(rows: HostCommissionRow[]): HostBalance {

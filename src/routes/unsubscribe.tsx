@@ -7,7 +7,7 @@ import { Footer } from '@/components/Footer'
 export const Route = createFileRoute('/unsubscribe')({
   head: () => ({
     meta: [
-      { title: 'Avsluta prenumeration — Fjällportalen' },
+      { title: 'Avsluta prenumeration - Fjällportalen' },
       { name: 'robots', content: 'noindex' },
     ],
   }),
@@ -90,7 +90,7 @@ function UnsubscribePage() {
             )}
             {state.kind === 'done' && (
               <p className="flex items-center justify-center gap-2 text-sm text-foreground">
-                <CheckCircle2 className="h-5 w-5 text-primary" /> Klart — du är avanmäld.
+                <CheckCircle2 className="h-5 w-5 text-primary" /> Klart - du är avanmäld.
               </p>
             )}
             {state.kind === 'already' && (

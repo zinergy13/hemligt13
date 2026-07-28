@@ -38,7 +38,7 @@ vi.mock("@/data/areas", () => ({
 
 import { PricePreview } from "./PricePreview";
 
-describe("PricePreview – ett-klicks-fixar uppdaterar direkt", () => {
+describe("PricePreview - ett-klicks-fixar uppdaterar direkt", () => {
   beforeEach(() => {
     vi.clearAllMocks();
   });
@@ -56,7 +56,7 @@ describe("PricePreview – ett-klicks-fixar uppdaterar direkt", () => {
 
     await user.click(fixButton);
 
-    // Breakdown must reflect the new dates immediately — 14 * 1000 + 500 = 14 500 kr
+    // Breakdown must reflect the new dates immediately - 14 * 1000 + 500 = 14 500 kr
     expect(await screen.findByText(/^\s*14[\s ]?500 kr\s*$/)).toBeInTheDocument();
     // Både summeringen och radlistan visar 14 nätter (två träffar)
     const nightMatches = screen.getAllByText(/14 nätter/i);

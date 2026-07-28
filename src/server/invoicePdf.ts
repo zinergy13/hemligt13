@@ -70,7 +70,7 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   y -= 14;
   page.drawText(`Utfärdad: ${formatDate(inv.issued_at)}`, { x: right - 200, y, size: 10, font, color: ink });
   y -= 14;
-  page.drawText(`Period: ${formatDate(inv.period_start)} – ${formatDate(inv.period_end)}`, { x: right - 200, y, size: 10, font, color: ink });
+  page.drawText(`Period: ${formatDate(inv.period_start)} - ${formatDate(inv.period_end)}`, { x: right - 200, y, size: 10, font, color: ink });
   if (inv.due_date) {
     y -= 14;
     page.drawText(`Förfallodag: ${formatDate(inv.due_date)}`, { x: right - 200, y, size: 10, font: bold, color: ink });
@@ -84,7 +84,7 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
   y -= 40;
   page.drawText("Faktureras till", { x: left, y, size: 9, font: bold, color: muted });
   y -= 14;
-  page.drawText(inv.host_name || inv.host_email || "—", { x: left, y, size: 12, font: bold, color: ink });
+  page.drawText(inv.host_name || inv.host_email || "-", { x: left, y, size: 12, font: bold, color: ink });
   if (inv.host_email) {
     y -= 14;
     page.drawText(inv.host_email, { x: left, y, size: 10, font, color: muted });
@@ -107,7 +107,7 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
       y = 800;
     }
     page.drawText(truncate(r.cabin_title, 28), { x: left + 8, y, size: 10, font, color: ink });
-    page.drawText(`${formatDate(r.check_in)} – ${formatDate(r.check_out)}`, { x: left + 200, y, size: 10, font, color: ink });
+    page.drawText(`${formatDate(r.check_in)} - ${formatDate(r.check_out)}`, { x: left + 200, y, size: 10, font, color: ink });
     page.drawText(`${r.total_price.toLocaleString("sv-SE")} kr`, { x: left + 330, y, size: 10, font, color: ink });
     const fee = formatKr(r.commission_amount);
     page.drawText(fee, { x: right - 8 - font.widthOfTextAtSize(fee, 10), y, size: 10, font, color: ink });
@@ -170,6 +170,6 @@ export async function buildInvoicePdf(inv: InvoiceData): Promise<Uint8Array> {
 }
 
 function truncate(s: string, n: number) {
-  if (!s) return "—";
+  if (!s) return "-";
   return s.length > n ? s.slice(0, n - 1) + "…" : s;
 }

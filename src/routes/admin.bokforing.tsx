@@ -27,7 +27,7 @@ const searchSchema = z.object({
 })
 
 export const Route = createFileRoute('/admin/bokforing')({
-  head: () => ({ meta: [{ title: 'Bokföring — Fjällportalen' }] }),
+  head: () => ({ meta: [{ title: 'Bokföring - Fjällportalen' }] }),
   validateSearch: zodValidator(searchSchema),
   component: BookkeepingPage,
 })
@@ -214,7 +214,7 @@ function BookkeepingPage() {
     setSyncingId(inv.id)
     try {
       const res = await runSync({ data: { invoiceId: inv.id } })
-      toast.success(`Skickat till Fortnox (dok #${res.documentNumber ?? '—'})`)
+      toast.success(`Skickat till Fortnox (dok #${res.documentNumber ?? '-'})`)
     } catch (e) {
       toast.error(e instanceof Error ? e.message : 'Fortnox-synk misslyckades')
     } finally {
@@ -372,7 +372,7 @@ function BookkeepingPage() {
           </div>
           <p className="mt-3 text-xs text-muted-foreground">
             Visar <strong className="text-foreground">{filtered.length}</strong> av {report.invoices.length} fakturor
-            {activeFilterCount > 0 ? ' — export använder filtrerat urval.' : '.'}
+            {activeFilterCount > 0 ? ' - export använder filtrerat urval.' : '.'}
           </p>
         </div>
       )}
@@ -407,7 +407,7 @@ function BookkeepingPage() {
         </div>
       )}
 
-      {/* Empty state — no report loaded yet and not busy/erroring */}
+      {/* Empty state - no report loaded yet and not busy/erroring */}
       {!report && !busy && !error && (
         <div className="mt-6 rounded-3xl border border-dashed border-border bg-muted/10 p-10 text-center">
           <Inbox className="mx-auto mb-3 h-8 w-8 text-muted-foreground" />
@@ -422,7 +422,7 @@ function BookkeepingPage() {
             <div>
               <h2 className="font-serif text-xl text-foreground">Momsrapport {periodLabel}</h2>
               <p className="mt-1 text-xs text-muted-foreground">
-                {report.period.start} – {report.period.end} · {report.invoices.length} fakturor
+                {report.period.start} - {report.period.end} · {report.invoices.length} fakturor
               </p>
             </div>
           </div>
@@ -499,7 +499,7 @@ function BookkeepingPage() {
                   <tr key={inv.id}>
                     <td className="px-4 py-3 font-medium text-foreground">{inv.invoice_number}</td>
                     <td className="px-4 py-3 text-muted-foreground">{inv.issued_at.slice(0, 10)}</td>
-                    <td className="px-4 py-3">{inv.host_name ?? '—'}</td>
+                    <td className="px-4 py-3">{inv.host_name ?? '-'}</td>
                     <td className="px-4 py-3">{formatKr(inv.commission_net + inv.extras_net)}</td>
                     <td className="px-4 py-3">{formatKr(inv.vat_amount)}</td>
                     <td className="px-4 py-3 font-medium">{formatKr(inv.total_amount)}</td>
@@ -534,7 +534,7 @@ function BookkeepingPage() {
       {report && !error && filtered.length > 0 && (
         <div className="mt-4 flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-border bg-background px-4 py-3 text-sm">
           <div className="text-xs text-muted-foreground">
-            Visar <strong className="text-foreground">{pageStart + 1}–{pageEnd}</strong> av {filtered.length}
+            Visar <strong className="text-foreground">{pageStart + 1}-{pageEnd}</strong> av {filtered.length}
           </div>
           <div className="flex items-center gap-3">
             <label className="flex items-center gap-2 text-xs text-muted-foreground">

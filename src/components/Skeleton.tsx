@@ -58,7 +58,7 @@ export function SummaryCardsSkeleton({ count = 3 }: { count?: number }) {
   );
 }
 
-/** Table skeleton — N rows of M columns. */
+/** Table skeleton - N rows of M columns. */
 export function TableSkeleton({ rows = 4, cols = 5 }: { rows?: number; cols?: number }) {
   return (
     <div className="overflow-hidden rounded-2xl border border-border">

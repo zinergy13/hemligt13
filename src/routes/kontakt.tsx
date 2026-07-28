@@ -4,10 +4,10 @@ import { Mail, MessageCircle, MapPin } from "lucide-react";
 export const Route = createFileRoute("/kontakt")({
   head: () => ({
     meta: [
-      { title: "Kontakt — Fjällportalen" },
-      { name: "description", content: "Kontakta Fjällportalen. Vi finns här för både gäster och värdar — hör av dig så svarar vi snabbt." },
-      { property: "og:title", content: "Kontakt — Fjällportalen" },
-      { property: "og:description", content: "Hör av dig till Fjällportalen — vi svarar inom 24 timmar." },
+      { title: "Kontakt - Fjällportalen" },
+      { name: "description", content: "Kontakta Fjällportalen. Vi finns här för både gäster och värdar - hör av dig så svarar vi snabbt." },
+      { property: "og:title", content: "Kontakt - Fjällportalen" },
+      { property: "og:description", content: "Hör av dig till Fjällportalen - vi svarar inom 24 timmar." },
     ],
     scripts: [
       {
@@ -22,7 +22,7 @@ export const Route = createFileRoute("/kontakt")({
           email: "hej@fjallportalen.com",
           priceRange: "$$",
           description:
-            "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.",
+            "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Storgatan 12",
@@ -69,7 +69,7 @@ function ContactPage() {
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         {[
           { icon: Mail, title: "E-post", value: "hej@stugaisalen.se" },
-          { icon: MessageCircle, title: "Chatt", value: "Vardagar 9–17" },
+          { icon: MessageCircle, title: "Chatt", value: "Vardagar 9-17" },
           { icon: MapPin, title: "På plats", value: "Storgatan 12, Åre" },
         ].map((item) => (
           <div key={item.title} className="rounded-2xl bg-background p-6 shadow-[var(--shadow-soft)]">

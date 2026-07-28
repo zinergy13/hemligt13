@@ -11,7 +11,7 @@ import type { CabinWithImages } from "@/lib/cabins";
 export const Route = createFileRoute("/favoriter")({
   head: () => ({
     meta: [
-      { title: "Mina favoriter — Fjällportalen" },
+      { title: "Mina favoriter - Fjällportalen" },
       { name: "description", content: "Se och hantera dina sparade fjällstugor på Fjällportalen." },
     ],
   }),
@@ -58,7 +58,7 @@ function FavoritesPage() {
     <section className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
       <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mina favoriter</h1>
       <p className="mt-1 text-sm text-muted-foreground">
-        Stugor du sparat för senare — klicka på hjärtat på en stuga för att lägga till fler.
+        Stugor du sparat för senare - klicka på hjärtat på en stuga för att lägga till fler.
       </p>
 
       {ids.length === 0 ? (

@@ -32,7 +32,7 @@ const Email = ({
         <Text style={styles.text}>
           Hej{guestName ? ` ${guestName}` : ''},<br />
           Din betalning för {cabinName} är mottagen och ligger nu tryggt hos {BRAND_NAME}
-          — värden får ingen del av pengarna förrän 24 timmar efter din incheckning.
+          - värden får ingen del av pengarna förrän 24 timmar efter din incheckning.
         </Text>
 
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>

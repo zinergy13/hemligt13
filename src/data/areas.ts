@@ -39,7 +39,7 @@ export const regions: Region[] = [
     name: "Dalafjällen",
     tagline: "Sälen, Idre och Grövelsjön",
     description:
-      "Sveriges familjefjäll — från Sälens pulserande skidbyar till Idre Fjälls barnvänliga backar och Grövelsjöns vidsträckta kalfjäll. Här samlas svenska vinterferier sedan generationer tillbaka.",
+      "Sveriges familjefjäll - från Sälens pulserande skidbyar till Idre Fjälls barnvänliga backar och Grövelsjöns vidsträckta kalfjäll. Här samlas svenska vinterferier sedan generationer tillbaka.",
     image: regionDalafjallen,
   },
   {
@@ -47,7 +47,7 @@ export const regions: Region[] = [
     name: "Härjedalen",
     tagline: "Vidsträckta fjäll och genuin ro",
     description:
-      "Vemdalen, Funäsdalen, Ramundberget, Bruksvallarna och Lofsdalen — Sveriges lugnaste fjällområde. Långa vintrar, öppna vidder och den där tystnaden som bara fjället kan ge.",
+      "Vemdalen, Funäsdalen, Ramundberget, Bruksvallarna och Lofsdalen - Sveriges lugnaste fjällområde. Långa vintrar, öppna vidder och den där tystnaden som bara fjället kan ge.",
     image: regionHarjedalen,
   },
   {
@@ -55,7 +55,7 @@ export const regions: Region[] = [
     name: "Jämtland",
     tagline: "Åre och de stora fjällen",
     description:
-      "Åre, Duved, Storlien, Bydalen och Trillevallen. Skandinaviens mest alpina backar, oändligt off-piste och fjällvyer utöver det vanliga — bara ett tågstopp från Stockholm.",
+      "Åre, Duved, Storlien, Bydalen och Trillevallen. Skandinaviens mest alpina backar, oändligt off-piste och fjällvyer utöver det vanliga - bara ett tågstopp från Stockholm.",
     image: regionJamtland,
   },
 ];
@@ -115,7 +115,7 @@ export const areas: Area[] = [
     name: "Transtrand",
     tagline: "Genuin fjällby med lokal själ",
     description:
-      "Transtrand är den klassiska fjällbyn söder om Sälen — med kyrkan, lokala krogar och korta avstånd till både Kläppen och Sälens centrum. Lugn miljö med genuin känsla.",
+      "Transtrand är den klassiska fjällbyn söder om Sälen - med kyrkan, lokala krogar och korta avstånd till både Kläppen och Sälens centrum. Lugn miljö med genuin känsla.",
     highlights: ["Genuin bykänsla", "Nära Kläppen", "Lokala krogar", "Lugnt och naturskönt"],
     image: transtrand,
     estimatedListings: 48,
@@ -137,7 +137,7 @@ export const areas: Area[] = [
     name: "Lindvallen",
     tagline: "Sälens livligaste skidområde",
     description:
-      "Lindvallen är hjärtat av Sälen — pulserande skidbacke, Experium, Lindvallens Restaurang & Bar och ett brett utbud av ski-in/ski-out-boenden. Perfekt för familjer och kompisgäng som vill ha allt nära.",
+      "Lindvallen är hjärtat av Sälen - pulserande skidbacke, Experium, Lindvallens Restaurang & Bar och ett brett utbud av ski-in/ski-out-boenden. Perfekt för familjer och kompisgäng som vill ha allt nära.",
     highlights: ["Många ski-in/ski-out", "Experium & Spa", "Stort utbud av krogar", "Goda bussförbindelser"],
     image: lindvallen,
     estimatedListings: 142,
@@ -181,7 +181,7 @@ export const areas: Area[] = [
     name: "Stöten",
     tagline: "Storslagen alpin känsla",
     description:
-      "Stöten i Sälen lockar de skidåkare som vill ha branta backar, riklig snö och vidsträckta vyer. Boenden i fjällkaraktär — många med bastu och eldstad.",
+      "Stöten i Sälen lockar de skidåkare som vill ha branta backar, riklig snö och vidsträckta vyer. Boenden i fjällkaraktär - många med bastu och eldstad.",
     highlights: ["Branta backar", "Storslagen utsikt", "Lugn och ro", "Off-piste-möjligheter"],
     image: stoten,
     estimatedListings: 65,
@@ -192,7 +192,7 @@ export const areas: Area[] = [
     name: "Rörbäcksnäs",
     tagline: "Rofylld by vid Norgegränsen",
     description:
-      "Rörbäcksnäs ligger sydväst om Sälen, nära norska gränsen. En lugn by omgiven av skog och öppna landskap — perfekt för dig som vill ha tystnad, plats och naturen runt knuten.",
+      "Rörbäcksnäs ligger sydväst om Sälen, nära norska gränsen. En lugn by omgiven av skog och öppna landskap - perfekt för dig som vill ha tystnad, plats och naturen runt knuten.",
     highlights: ["Lugn miljö", "Nära Norgegränsen", "Vidsträckt natur", "Bra för storgrupper"],
     image: rorbacksnas,
     estimatedListings: 22,
@@ -214,7 +214,7 @@ export const areas: Area[] = [
     name: "Grövelsjön",
     tagline: "Vidsträckt kalfjäll och stilla natur",
     description:
-      "Grövelsjön ligger på gränsen till norska Femundsmarka — vidsträckt kalfjäll, klara sjöar och ett av Sveriges finaste vandrings- och skidturs-områden. Här är det tystnaden som tar plats.",
+      "Grövelsjön ligger på gränsen till norska Femundsmarka - vidsträckt kalfjäll, klara sjöar och ett av Sveriges finaste vandrings- och skidturs-områden. Här är det tystnaden som tar plats.",
     highlights: ["Vandringsleder", "Skidturer & fjällstuga", "Fiske", "Norska gränsen"],
     image: grovelsjon,
     estimatedListings: 14,
@@ -225,7 +225,7 @@ export const areas: Area[] = [
     name: "Vemdalen",
     tagline: "Fyra fjäll, en samlad känsla",
     description:
-      "Vemdalen samlar Vemdalsskalet, Björnrike, Storhogna och Klövsjö — perfekt för dig som vill kombinera skidor, lugnare byar och långa vintrar. Snösäkert och familjärt.",
+      "Vemdalen samlar Vemdalsskalet, Björnrike, Storhogna och Klövsjö - perfekt för dig som vill kombinera skidor, lugnare byar och långa vintrar. Snösäkert och familjärt.",
     highlights: ["Fyra skidområden", "Snösäkert", "Familjevänligt", "Klövsjö-runt"],
     image: vemdalen,
     estimatedListings: 78,
@@ -236,7 +236,7 @@ export const areas: Area[] = [
     name: "Funäsdalen",
     tagline: "Fjällby med restauranger och atmosfär",
     description:
-      "Funäsdalen ligger vid foten av Funäsdalsberget med utsikt över sjön. En levande fjällby med krogar, gallerier och lift-anslutning — grinden till Funäsfjällens hela liftsystem.",
+      "Funäsdalen ligger vid foten av Funäsdalsberget med utsikt över sjön. En levande fjällby med krogar, gallerier och lift-anslutning - grinden till Funäsfjällens hela liftsystem.",
     highlights: ["Levande by", "Krogar & butiker", "SkiPass Funäsfjällen", "Utsikt över sjön"],
     image: funasdalen,
     estimatedListings: 62,
@@ -247,7 +247,7 @@ export const areas: Area[] = [
     name: "Ramundberget",
     tagline: "Barnfamiljens stilla favorit",
     description:
-      "Ramundberget är känt för sin lugna atmosfär, ovanligt breda barn- och nybörjarbackar och närhet till Sonfjället. Här är det inte after-ski som drar — det är själva fjället.",
+      "Ramundberget är känt för sin lugna atmosfär, ovanligt breda barn- och nybörjarbackar och närhet till Sonfjället. Här är det inte after-ski som drar - det är själva fjället.",
     highlights: ["Barnvänliga backar", "Lugnt tempo", "Nära naturreservat", "Ski-in/ski-out"],
     image: ramundberget,
     estimatedListings: 41,
@@ -258,7 +258,7 @@ export const areas: Area[] = [
     name: "Bruksvallarna",
     tagline: "Längdskidåkningens Mecka",
     description:
-      "Bruksvallarna är Sveriges längdskidcentrum — här startar säsongen ofta redan i oktober. Ett paradis för klassikertränare, motionärer och de som älskar tystnaden efter spåret.",
+      "Bruksvallarna är Sveriges längdskidcentrum - här startar säsongen ofta redan i oktober. Ett paradis för klassikertränare, motionärer och de som älskar tystnaden efter spåret.",
     highlights: ["Längdspår året runt", "Tidig snö", "Fjällvandring", "Stilla by"],
     image: bruksvallarna,
     estimatedListings: 28,
@@ -280,7 +280,7 @@ export const areas: Area[] = [
     name: "Åre",
     tagline: "Sveriges mest alpina skidort",
     description:
-      "Åre är Skandinaviens största och mest välkända skidort. Åreskutans branter, off-piste, världscupbackar och ett pulserande centrum med restauranger, spa och shopping — allt vid stranden av Åresjön.",
+      "Åre är Skandinaviens största och mest välkända skidort. Åreskutans branter, off-piste, världscupbackar och ett pulserande centrum med restauranger, spa och shopping - allt vid stranden av Åresjön.",
     highlights: ["Sveriges brantaste backar", "Levande centrum", "Åresjön", "Tåg direkt från Stockholm"],
     image: are,
     estimatedListings: 165,
@@ -291,7 +291,7 @@ export const areas: Area[] = [
     name: "Duved",
     tagline: "Charmiga byn granne med Åre",
     description:
-      "Duved ligger några kilometer väster om Åre — samma skidåkning, betydligt lugnare tempo. Röda trähus, familjebackar och genvägen till Tegefjäll och Åre via Duved-liften.",
+      "Duved ligger några kilometer väster om Åre - samma skidåkning, betydligt lugnare tempo. Röda trähus, familjebackar och genvägen till Tegefjäll och Åre via Duved-liften.",
     highlights: ["Lugnare än Åre", "Familjebackar", "Nära Åre centrum", "Tegefjäll-anslutning"],
     image: duved,
     estimatedListings: 58,
@@ -302,7 +302,7 @@ export const areas: Area[] = [
     name: "Storlien",
     tagline: "Vidsträckt fjäll vid norska gränsen",
     description:
-      "Storlien är Sveriges bäst bevarade fjällhemlighet — öppna vidder, tur- och längdskidåkning i världsklass och nära till norska Meråker. Här är det äventyret som väntar.",
+      "Storlien är Sveriges bäst bevarade fjällhemlighet - öppna vidder, tur- och längdskidåkning i världsklass och nära till norska Meråker. Här är det äventyret som väntar.",
     highlights: ["Skidturer & topptur", "Nära Norge", "Långdistansspår", "Riklig snö"],
     image: storlien,
     estimatedListings: 24,
@@ -313,7 +313,7 @@ export const areas: Area[] = [
     name: "Bydalen",
     tagline: "Fjällen utan trängseln",
     description:
-      "Bydalen ligger sydöst om Åre — här hittar du fjället utan folkträngsel. Stora vidder, klassisk fjällpension och några av Jämtlands finaste skidturs-toppar.",
+      "Bydalen ligger sydöst om Åre - här hittar du fjället utan folkträngsel. Stora vidder, klassisk fjällpension och några av Jämtlands finaste skidturs-toppar.",
     highlights: ["Skidturer", "Fjällpensionsstämning", "Lugnare än Åre", "Fri utsikt"],
     image: bydalen,
     estimatedListings: 19,
@@ -324,7 +324,7 @@ export const areas: Area[] = [
     name: "Trillevallen",
     tagline: "Litet fjällhotell med stort hjärta",
     description:
-      "Trillevallen är den mysigaste av Jämtlands fjällbyar — omgiven av granskog och långsluttande backar. Perfekt för familjer och för dig som gillar mysfaktorn högre än liftkapaciteten.",
+      "Trillevallen är den mysigaste av Jämtlands fjällbyar - omgiven av granskog och långsluttande backar. Perfekt för familjer och för dig som gillar mysfaktorn högre än liftkapaciteten.",
     highlights: ["Mysig fjällby", "Skogsbackar", "Familjer & vänner", "Nära Undersåkersfjällen"],
     image: trillevallen,
     estimatedListings: 17,

@@ -29,7 +29,7 @@ function Zone({ slug, d, hitD, cx, cy, label, count, calloutSide }: ZoneProps) {
       to="/region/$slug"
       params={{ slug }}
       className="group outline-none"
-      aria-label={`${label} — ${count} områden`}
+      aria-label={`${label} - ${count} områden`}
     >
       <g className="cursor-pointer transition-transform duration-300 ease-out group-hover:-translate-y-1.5 group-focus-visible:-translate-y-1.5">
         {/* Visible region shape */}
@@ -108,7 +108,7 @@ function Zone({ slug, d, hitD, cx, cy, label, count, calloutSide }: ZoneProps) {
           </text>
         </g>
 
-        {/* Oversized transparent hit path — must come LAST so it captures pointer events */}
+        {/* Oversized transparent hit path - must come LAST so it captures pointer events */}
         <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={40} strokeLinejoin="round" />
       </g>
     </Link>
@@ -135,7 +135,7 @@ export function SwedenMap() {
           strokeWidth={1.5}
         />
 
-        {/* Jämtland — upper (larger, more generous) */}
+        {/* Jämtland - upper (larger, more generous) */}
         <Zone
           slug="jamtland"
           d="M115 105 C 150 85, 210 90, 250 115 C 270 145, 265 195, 235 220 C 195 240, 145 235, 118 210 C 95 185, 92 135, 115 105 Z"
@@ -147,7 +147,7 @@ export function SwedenMap() {
           calloutSide="right"
         />
 
-        {/* Härjedalen — middle */}
+        {/* Härjedalen - middle */}
         <Zone
           slug="harjedalen"
           d="M110 250 C 150 232, 215 238, 255 258 C 275 285, 268 328, 238 348 C 195 362, 140 355, 115 330 C 92 305, 88 275, 110 250 Z"
@@ -159,7 +159,7 @@ export function SwedenMap() {
           calloutSide="left"
         />
 
-        {/* Dalafjällen — lower */}
+        {/* Dalafjällen - lower */}
         <Zone
           slug="dalafjallen"
           d="M105 385 C 150 365, 220 370, 260 390 C 282 420, 275 465, 242 485 C 200 500, 140 495, 115 470 C 90 445, 85 410, 105 385 Z"

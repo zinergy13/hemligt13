@@ -2,7 +2,7 @@ import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware'
 
-// Chart of accounts (BAS 2024 – vanliga konton för digital plattform)
+// Chart of accounts (BAS 2024 - vanliga konton för digital plattform)
 const ACCT = {
   BANK: '1930',              // Bankkonto
   KUNDFORDRINGAR: '1510',    // Kundfordringar
@@ -170,7 +170,7 @@ export function buildCsv(invoices: AccountingInvoice[]) {
   return '\ufeff' + body
 }
 
-// Sammanfattning: momsrapport + kontoutfall — underlag för bokföring/revision
+// Sammanfattning: momsrapport + kontoutfall - underlag för bokföring/revision
 export function buildSummaryCsv(report: {
   period: { start: string; end: string }
   invoices: AccountingInvoice[]
@@ -190,7 +190,7 @@ export function buildSummaryCsv(report: {
   const overdueCount = report.invoices.filter((i) => i.status === 'overdue').length
   const openCount = report.invoices.length - paidCount - overdueCount
   const lines: (string | number)[][] = [
-    ['Fjällportalen — Bokföringssammanfattning'],
+    ['Fjällportalen - Bokföringssammanfattning'],
     ['Period', report.period.start, report.period.end],
     [],
     ['Momsrapport (netto, kr)'],

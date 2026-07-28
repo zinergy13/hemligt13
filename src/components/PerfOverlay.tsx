@@ -53,7 +53,7 @@ export function PerfOverlay() {
           ⚡ Perf · {total} req · avg {avg.toFixed(0)}ms · {slow} långsam
           {alertCount > 0 ? ` · ⚠ ${alertCount}` : ""}
         </span>
-        <span className="opacity-60">{open ? "–" : "+"}</span>
+        <span className="opacity-60">{open ? "-" : "+"}</span>
       </button>
       {open && (
         <>

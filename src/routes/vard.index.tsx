@@ -9,7 +9,7 @@ import { areaBySlug } from "@/data/areas";
 import { CabinGridSkeleton } from "@/components/Skeleton";
 
 export const Route = createFileRoute("/vard/")({
-  head: () => ({ meta: [{ title: "Mina stugor — Fjällportalen" }] }),
+  head: () => ({ meta: [{ title: "Mina stugor - Fjällportalen" }] }),
   component: HostDashboard,
 });
 
@@ -125,7 +125,7 @@ function HostDashboard() {
           <Home className="mx-auto mb-4 h-10 w-10 text-primary" />
           <h2 className="font-serif text-2xl text-foreground">Du har inga stugor ännu</h2>
           <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
-            Skapa din första annons — det tar några minuter.
+            Skapa din första annons - det tar några minuter.
           </p>
           <Link
             to="/vard/stugor/ny"

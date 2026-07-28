@@ -10,7 +10,7 @@ import { useAuth } from "@/hooks/useAuth";
 export const Route = createFileRoute("/admin/presentkort")({
   head: () => ({
     meta: [
-      { title: "Presentkort — Admin" },
+      { title: "Presentkort - Admin" },
       { name: "robots", content: "noindex" },
     ],
   }),
@@ -184,7 +184,7 @@ function AdminGiftCardsPage() {
                       <td className="px-3 py-2 text-right">{(c.amount_ore / 100).toLocaleString("sv-SE")} kr</td>
                       <td className="px-3 py-2 text-right">{(c.redeemed_ore / 100).toLocaleString("sv-SE")} kr</td>
                       <td className="px-3 py-2">{c.status}</td>
-                      <td className="px-3 py-2">{c.expires_at ? new Date(c.expires_at).toLocaleDateString("sv-SE") : "—"}</td>
+                      <td className="px-3 py-2">{c.expires_at ? new Date(c.expires_at).toLocaleDateString("sv-SE") : "-"}</td>
                       <td className="px-3 py-2 text-right">
                         {c.status === "active" && (
                           <button onClick={() => voidCard(c.id)} className="inline-flex items-center gap-1 rounded-full border border-border px-2 py-1 text-xs text-destructive hover:bg-destructive/10">

@@ -13,7 +13,7 @@ import {
 } from '@/lib/insights.functions'
 
 export const Route = createFileRoute('/vard/stugor/$id/insikter')({
-  head: () => ({ meta: [{ title: 'Stuginsikter — Fjällportalen' }] }),
+  head: () => ({ meta: [{ title: 'Stuginsikter - Fjällportalen' }] }),
   component: InsightsPage,
 })
 
@@ -122,7 +122,7 @@ function InsightsPage() {
       <div className="mt-10 rounded-3xl border border-border bg-background p-6 md:p-8">
         <div className="flex items-center gap-2">
           <BarChart3 className="h-5 w-5 text-primary" />
-          <h2 className="font-serif text-xl text-foreground">Beläggning — senaste 12 månaderna</h2>
+          <h2 className="font-serif text-xl text-foreground">Beläggning - senaste 12 månaderna</h2>
         </div>
         <div className="mt-2 flex flex-wrap gap-6 text-sm text-muted-foreground">
           <span>Snittbeläggning: <strong className="text-foreground">{Math.round(avgOcc * 100)}%</strong></span>
@@ -198,7 +198,7 @@ function InsightsPage() {
                 <Sparkles className="h-4 w-4 text-primary" /> Föreslaget prisintervall
               </div>
               <div className="mt-2 font-serif text-2xl text-primary">
-                {priceRec.suggestedLow!.toLocaleString('sv-SE')} – {priceRec.suggestedHigh!.toLocaleString('sv-SE')} kr/natt
+                {priceRec.suggestedLow!.toLocaleString('sv-SE')} - {priceRec.suggestedHigh!.toLocaleString('sv-SE')} kr/natt
               </div>
               <p className="mt-1 text-xs text-muted-foreground">
                 Motsvarar 25:e till 75:e percentilen bland jämförbara stugor.

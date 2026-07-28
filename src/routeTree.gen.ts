@@ -46,6 +46,7 @@ import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
+import { Route as ApiPublicHooksBookingNotificationsRouteImport } from './routes/api.public.hooks.booking-notifications'
 import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
 import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api.public.payments.webhook'
@@ -242,6 +243,12 @@ const ApiInvoiceIdPdfRoute = ApiInvoiceIdPdfRouteImport.update({
   path: '/api/invoice/$id/pdf',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicHooksBookingNotificationsRoute =
+  ApiPublicHooksBookingNotificationsRouteImport.update({
+    id: '/api/public/hooks/booking-notifications',
+    path: '/api/public/hooks/booking-notifications',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const ApiPublicHooksGenerateMonthlyInvoicesRoute =
   ApiPublicHooksGenerateMonthlyInvoicesRouteImport.update({
     id: '/api/public/hooks/generate-monthly-invoices',
@@ -336,6 +343,7 @@ export interface FileRoutesByFullPath {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
+  '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -383,6 +391,7 @@ export interface FileRoutesByTo {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
+  '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -433,6 +442,7 @@ export interface FileRoutesById {
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
+  '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
@@ -484,6 +494,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
+    | '/api/public/hooks/booking-notifications'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
     | '/api/public/payments/webhook'
@@ -531,6 +542,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
+    | '/api/public/hooks/booking-notifications'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
     | '/api/public/payments/webhook'
@@ -580,6 +592,7 @@ export interface FileRouteTypes {
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
+    | '/api/public/hooks/booking-notifications'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
     | '/api/public/payments/webhook'
@@ -618,6 +631,7 @@ export interface RootRouteChildren {
   StugaSlugRoute: typeof StugaSlugRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
+  ApiPublicHooksBookingNotificationsRoute: typeof ApiPublicHooksBookingNotificationsRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   ApiPublicIcalTokenRoute: typeof ApiPublicIcalTokenRoute
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
@@ -889,6 +903,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof ApiInvoiceIdPdfRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/public/hooks/booking-notifications': {
+      id: '/api/public/hooks/booking-notifications'
+      path: '/api/public/hooks/booking-notifications'
+      fullPath: '/api/public/hooks/booking-notifications'
+      preLoaderRoute: typeof ApiPublicHooksBookingNotificationsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/api/public/hooks/generate-monthly-invoices': {
       id: '/api/public/hooks/generate-monthly-invoices'
       path: '/api/public/hooks/generate-monthly-invoices'
@@ -1041,6 +1062,8 @@ const rootRouteChildren: RootRouteChildren = {
   StugaSlugRoute: StugaSlugRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
+  ApiPublicHooksBookingNotificationsRoute:
+    ApiPublicHooksBookingNotificationsRoute,
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
     ApiPublicHooksGenerateMonthlyInvoicesRoute,
   ApiPublicIcalTokenRoute: ApiPublicIcalTokenRoute,
@@ -1054,3 +1077,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}

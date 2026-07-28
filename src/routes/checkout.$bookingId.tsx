@@ -5,6 +5,7 @@ import { getStripe, getStripeEnvironment, isPaymentsConfigured } from '@/lib/str
 import { createBookingCheckout } from '@/lib/payments.functions';
 import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
 import { EscrowFAQ } from '@/components/EscrowFAQ';
+import { PaymentPayoutTimeline } from '@/components/PaymentPayoutTimeline';
 import { useAuth } from '@/hooks/useAuth';
 import { Loader2 } from 'lucide-react';
 
@@ -77,6 +78,9 @@ function CheckoutPage() {
             </EmbeddedCheckoutProvider>
           </div>
         )}
+        <div className="mt-6">
+          <PaymentPayoutTimeline />
+        </div>
         <EscrowFAQ compact />
       </div>
     </div>

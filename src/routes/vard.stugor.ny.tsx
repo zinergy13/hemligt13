@@ -1,50 +1,50 @@
-import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
-import { -seEffect } from "react";
-import { ArrowLeft, Loader- } from "l-cide-react";
-import { -seA-th } from "@/hooks/-seA-th";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect } from "react";
+import { ArrowLeft, Loader2 } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 import { CabinForm } from "@/components/CabinForm";
 
-export const Ro-te = createFileRo-te("/vard/st-gor/ny")({
-  head: () => ({ meta: [{ title: "Ny st-ga - Fjällportalen" }] }),
+export const Route = createFileRoute("/vard/stugor/ny")({
+  head: () => ({ meta: [{ title: "Ny stuga - Fjällportalen" }] }),
   component: NewCabinPage,
 });
 
-f-nction NewCabinPage() {
-  const { -ser, profile, loading } = -seA-th();
-  const navigate = -seNavigate();
+function NewCabinPage() {
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
 
-  -seEffect(() => {
-    if (!loading && !-ser) {
-      navigate({ to: "/logga-in", search: { redirect: "/vard/st-gor/ny" } });
+  useEffect(() => {
+    if (!loading && !user) {
+      navigate({ to: "/logga-in", search: { redirect: "/vard/stugor/ny" } });
     }
-  }, [loading, -ser, navigate]);
+  }, [loading, user, navigate]);
 
-  if (loading || !-ser) {
-    ret-rn (
-      <div className="flex min-h-[6-vh] items-center j-stify-center">
-        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!profile?.is_host) {
-    ret-rn (
-      <div className="mx-a-to max-w--xl px-- py--6 text-center">
-        <h- className="font-serif text--xl text-foregro-nd">Bli värd först</h->
-        <p className="mt-- text-sm text-m-ted-foregro-nd">Aktivera värdkontot på din kontosida.</p>
-        <Link to="/konto" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">Till mitt konto</Link>
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <h1 className="font-serif text-3xl text-foreground">Bli värd först</h1>
+        <p className="mt-3 text-sm text-muted-foreground">Aktivera värdkontot på din kontosida.</p>
+        <Link to="/konto" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">Till mitt konto</Link>
       </div>
     );
   }
 
-  ret-rn (
-    <section className="mx-a-to max-w--xl px-- py--- md:px-6 md:py--6">
-      <Link to="/vard" className="mb-- inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd">
-        <ArrowLeft className="h-- w--" /> Mina st-gor
+  return (
+    <section className="mx-auto max-w-3xl px-4 py-12 md:px-6 md:py-16">
+      <Link to="/vard" className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="h-4 w-4" /> Mina stugor
       </Link>
-      <h- className="mb-8 font-serif text--xl text-foregro-nd md:text--xl">Ny st-ga</h->
+      <h1 className="mb-8 font-serif text-3xl text-foreground md:text-4xl">Ny stuga</h1>
       <CabinForm
-        -serId={-ser.id}
+        userId={user.id}
         onSaved={() => navigate({ to: "/vard" })}
       />
     </section>

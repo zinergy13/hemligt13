@@ -1,19 +1,19 @@
-import { createFileRo-te, Link } from '@tanstack/react-ro-ter';
-import { -seServerFn } from '@tanstack/react-start';
-import { -seQ-ery, -seM-tation, -seQ-eryClient } from '@tanstack/react-q-ery';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useServerFn } from '@tanstack/react-start';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import {
-  Loader-,
+  Loader2,
   RefreshCw,
-  CheckCircle-,
+  CheckCircle2,
   XCircle,
   Clock,
   ArrowLeft,
   Mail,
-} from 'l-cide-react';
+} from 'lucide-react';
 import { toast } from 'sonner';
-import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.f-nctions';
+import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.functions';
 
-export const Ro-te = createFileRo-te('/admin/epost-stat-s/$bookingId')({
+export const Route = createFileRoute('/admin/epost-status/$bookingId')({
   head: () => ({
     meta: [
       { title: 'E-postförsök för bokning - Admin - Fjällportalen' },
@@ -22,185 +22,185 @@ export const Ro-te = createFileRo-te('/admin/epost-stat-s/$bookingId')({
   }),
   component: BookingEmailDetail,
   errorComponent: ({ error }) => (
-    <div className="mx-a-to max-w--xl p-6 text-sm text-red-7--">
+    <div className="mx-auto max-w-3xl p-6 text-sm text-red-700">
       Fel: {(error as Error).message}
     </div>
   ),
-  notFo-ndComponent: () => (
-    <div className="mx-a-to max-w--xl p-6 text-sm text-m-ted-foregro-nd">
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-3xl p-6 text-sm text-muted-foreground">
       Inga e-postförsök hittades för denna bokning.
     </div>
   ),
 });
 
-f-nction stat-sBadge(s: string) {
+function statusBadge(s: string) {
   if (s === 'sent')
-    ret-rn (
-      <span className="inline-flex items-center gap-- ro-nded-f-ll bg-emerald---- px-- py--.5 text-xs font-medi-m text-emerald-8--">
-        <CheckCircle- className="h-- w--" /> Skickat
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+        <CheckCircle2 className="h-3 w-3" /> Skickat
       </span>
     );
   if (s === 'failed')
-    ret-rn (
-      <span className="inline-flex items-center gap-- ro-nded-f-ll bg-red---- px-- py--.5 text-xs font-medi-m text-red-8--">
-        <XCircle className="h-- w--" /> Misslyckat
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+        <XCircle className="h-3 w-3" /> Misslyckat
       </span>
     );
-  ret-rn (
-    <span className="inline-flex items-center gap-- ro-nded-f-ll bg-amber---- px-- py--.5 text-xs font-medi-m text-amber-8--">
-      <Clock className="h-- w--" /> Väntar
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+      <Clock className="h-3 w-3" /> Väntar
     </span>
   );
 }
 
-f-nction fmt(ts?: string | n-ll) {
-  if (!ts) ret-rn '-';
-  ret-rn new Date(ts).toLocaleString('sv-SE');
+function fmt(ts?: string | null) {
+  if (!ts) return '-';
+  return new Date(ts).toLocaleString('sv-SE');
 }
 
-f-nction BookingEmailDetail() {
-  const { bookingId } = Ro-te.-seParams();
-  const list = -seServerFn(listEmailAttempts);
-  const retry = -seServerFn(retryEmailAttempt);
-  const qc = -seQ-eryClient();
+function BookingEmailDetail() {
+  const { bookingId } = Route.useParams();
+  const list = useServerFn(listEmailAttempts);
+  const retry = useServerFn(retryEmailAttempt);
+  const qc = useQueryClient();
 
-  const q-ery = -seQ-ery({
-    q-eryKey: ['email-attempts', 'booking', bookingId],
-    q-eryFn: () => list({ data: { stat-s: 'all', bookingId, limit: ---, offset: - } }),
+  const query = useQuery({
+    queryKey: ['email-attempts', 'booking', bookingId],
+    queryFn: () => list({ data: { status: 'all', bookingId, limit: 200, offset: 0 } }),
   });
 
-  const retryM-t = -seM-tation({
-    m-tationFn: (id: string) => retry({ data: { id } }),
-    onS-ccess: (res) => {
-      if (res.ok) toast.s-ccess('Skickat på nytt');
-      else toast.error(`K-nde inte skicka (stat-s ${res.stat-s})`);
-      qc.invalidateQ-eries({ q-eryKey: ['email-attempts'] });
+  const retryMut = useMutation({
+    mutationFn: (id: string) => retry({ data: { id } }),
+    onSuccess: (res) => {
+      if (res.ok) toast.success('Skickat på nytt');
+      else toast.error(`Kunde inte skicka (status ${res.status})`);
+      qc.invalidateQueries({ queryKey: ['email-attempts'] });
     },
     onError: (err: any) => toast.error(err?.message ?? 'Fel vid återförsök'),
   });
 
-  const rows = q-ery.data?.rows ?? [];
+  const rows = query.data?.rows ?? [];
 
-  // Gr-ppera per templateName
-  const gro-ped = rows.red-ce<Record<string, any[]>>((acc, r: any) => {
-    (acc[r.template_name] ||= []).p-sh(r);
-    ret-rn acc;
+  // Gruppera per templateName
+  const grouped = rows.reduce<Record<string, any[]>>((acc, r: any) => {
+    (acc[r.template_name] ||= []).push(r);
+    return acc;
   }, {});
-  const templateNames = Object.keys(gro-ped).sort();
+  const templateNames = Object.keys(grouped).sort();
 
-  ret-rn (
-    <div className="mx-a-to max-w-5xl px-- py--- md:px-6">
-      <div className="mb--">
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-10 md:px-6">
+      <div className="mb-4">
         <Link
-          to="/admin/epost-stat-s"
-          className="inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd"
+          to="/admin/epost-status"
+          className="inline-flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h--.5 w--.5" /> Tillbaka till e-poststat-s
+          <ArrowLeft className="h-3.5 w-3.5" /> Tillbaka till e-poststatus
         </Link>
       </div>
 
-      <div className="mb-6 flex items-center gap--">
+      <div className="mb-6 flex items-center gap-3">
         <Mail className="h-5 w-5 text-primary" />
         <div>
-          <h- className="font-serif text--xl text-foregro-nd md:text--xl">
+          <h1 className="font-serif text-2xl text-foreground md:text-3xl">
             E-postförsök för bokning
-          </h->
-          <p className="font-mono text-xs text-m-ted-foregro-nd">{bookingId}</p>
+          </h1>
+          <p className="font-mono text-xs text-muted-foreground">{bookingId}</p>
         </div>
       </div>
 
-      {q-ery.isLoading ? (
-        <div className="flex items-center gap-- ro-nded-xl border bg-card p-8 text-sm text-m-ted-foregro-nd">
-          <Loader- className="h-- w-- animate-spin" /> Laddar…
+      {query.isLoading ? (
+        <div className="flex items-center gap-2 rounded-xl border bg-card p-8 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
         </div>
-      ) : q-ery.error ? (
-        <div className="ro-nded-xl border bg-card p-6 text-sm text-red-7--">
-          Fel: {(q-ery.error as Error).message}
+      ) : query.error ? (
+        <div className="rounded-xl border bg-card p-6 text-sm text-red-700">
+          Fel: {(query.error as Error).message}
         </div>
-      ) : templateNames.length === - ? (
-        <div className="ro-nded-xl border bg-card p-8 text-center text-sm text-m-ted-foregro-nd">
+      ) : templateNames.length === 0 ? (
+        <div className="rounded-xl border bg-card p-8 text-center text-sm text-muted-foreground">
           Inga e-postförsök loggade för denna bokning.
         </div>
       ) : (
         <div className="space-y-6">
           {templateNames.map((name) => {
-            const attempts = gro-ped[name].sort(
+            const attempts = grouped[name].sort(
               (a: any, b: any) =>
                 new Date(b.created_at).getTime() - new Date(a.created_at).getTime(),
             );
-            const latest = attempts[-];
-            ret-rn (
-              <section key={name} className="overflow-hidden ro-nded-xl border bg-card">
-                <header className="flex flex-wrap items-center j-stify-between gap-- border-b bg-m-ted/-- px-- py--">
-                  <div className="flex items-center gap--">
-                    <span className="font-mono text-sm font-medi-m">{name}</span>
-                    {stat-sBadge(latest.stat-s)}
-                    <span className="text-xs text-m-ted-foregro-nd">
-                      {attempts.length} {attempts.length === - ? 'post' : 'poster'}
+            const latest = attempts[0];
+            return (
+              <section key={name} className="overflow-hidden rounded-xl border bg-card">
+                <header className="flex flex-wrap items-center justify-between gap-3 border-b bg-muted/40 px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-sm font-medium">{name}</span>
+                    {statusBadge(latest.status)}
+                    <span className="text-xs text-muted-foreground">
+                      {attempts.length} {attempts.length === 1 ? 'post' : 'poster'}
                     </span>
                   </div>
-                  {latest.stat-s !== 'sent' && (
-                    <b-tton
-                      onClick={() => retryM-t.m-tate(latest.id)}
-                      disabled={retryM-t.isPending}
-                      className="inline-flex items-center gap-- ro-nded-md border bg-backgro-nd px-- py--.5 text-xs hover:bg-m-ted disabled:opacity-5-"
+                  {latest.status !== 'sent' && (
+                    <button
+                      onClick={() => retryMut.mutate(latest.id)}
+                      disabled={retryMut.isPending}
+                      className="inline-flex items-center gap-1 rounded-md border bg-background px-3 py-1.5 text-xs hover:bg-muted disabled:opacity-50"
                     >
-                      <RefreshCw className="h-- w--" /> Försök igen
-                    </b-tton>
+                      <RefreshCw className="h-3 w-3" /> Försök igen
+                    </button>
                   )}
                 </header>
 
-                <div className="overflow-x-a-to">
-                  <table className="min-w-f-ll text-sm">
-                    <thead className="bg-m-ted/-- text-left text-xs -ppercase text-m-ted-foregro-nd">
+                <div className="overflow-x-auto">
+                  <table className="min-w-full text-sm">
+                    <thead className="bg-muted/20 text-left text-xs uppercase text-muted-foreground">
                       <tr>
-                        <th className="px-- py--">Stat-s</th>
-                        <th className="px-- py--">Mottagare</th>
-                        <th className="px-- py--">Försök</th>
-                        <th className="px-- py--">Senaste försök</th>
-                        <th className="px-- py--">Nästa retry</th>
-                        <th className="px-- py--">Skickat</th>
-                        <th className="px-- py--">Senaste fel</th>
-                        <th className="px-- py--"></th>
+                        <th className="px-3 py-2">Status</th>
+                        <th className="px-3 py-2">Mottagare</th>
+                        <th className="px-3 py-2">Försök</th>
+                        <th className="px-3 py-2">Senaste försök</th>
+                        <th className="px-3 py-2">Nästa retry</th>
+                        <th className="px-3 py-2">Skickat</th>
+                        <th className="px-3 py-2">Senaste fel</th>
+                        <th className="px-3 py-2"></th>
                       </tr>
                     </thead>
                     <tbody>
                       {attempts.map((r: any) => (
                         <tr key={r.id} className="border-t align-top">
-                          <td className="px-- py--">{stat-sBadge(r.stat-s)}</td>
-                          <td className="px-- py--">{r.recipient_email}</td>
-                          <td className="px-- py--">{r.attempts}</td>
-                          <td className="px-- py-- text-xs text-m-ted-foregro-nd">
+                          <td className="px-3 py-2">{statusBadge(r.status)}</td>
+                          <td className="px-3 py-2">{r.recipient_email}</td>
+                          <td className="px-3 py-2">{r.attempts}</td>
+                          <td className="px-3 py-2 text-xs text-muted-foreground">
                             {fmt(r.last_attempt_at)}
                           </td>
-                          <td className="px-- py-- text-xs text-m-ted-foregro-nd">
+                          <td className="px-3 py-2 text-xs text-muted-foreground">
                             {fmt(r.next_retry_at)}
                           </td>
-                          <td className="px-- py-- text-xs text-m-ted-foregro-nd">
+                          <td className="px-3 py-2 text-xs text-muted-foreground">
                             {fmt(r.sent_at)}
                           </td>
-                          <td className="px-- py-- max-w-xs">
+                          <td className="px-3 py-2 max-w-xs">
                             {r.last_error ? (
                               <span
-                                className="block max-w-xs tr-ncate text-xs text-red-7--"
+                                className="block max-w-xs truncate text-xs text-red-700"
                                 title={r.last_error}
                               >
-                                {r.last_stat-s_code ? `[${r.last_stat-s_code}] ` : ''}
+                                {r.last_status_code ? `[${r.last_status_code}] ` : ''}
                                 {r.last_error}
                               </span>
                             ) : (
-                              <span className="text-xs text-m-ted-foregro-nd">-</span>
+                              <span className="text-xs text-muted-foreground">-</span>
                             )}
                           </td>
-                          <td className="px-- py-- text-right">
-                            {r.stat-s !== 'sent' && (
-                              <b-tton
-                                onClick={() => retryM-t.m-tate(r.id)}
-                                disabled={retryM-t.isPending}
-                                className="inline-flex items-center gap-- ro-nded-md border px-- py-- text-xs hover:bg-m-ted disabled:opacity-5-"
+                          <td className="px-3 py-2 text-right">
+                            {r.status !== 'sent' && (
+                              <button
+                                onClick={() => retryMut.mutate(r.id)}
+                                disabled={retryMut.isPending}
+                                className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
                               >
-                                <RefreshCw className="h-- w--" /> Försök igen
-                              </b-tton>
+                                <RefreshCw className="h-3 w-3" /> Försök igen
+                              </button>
                             )}
                           </td>
                         </tr>

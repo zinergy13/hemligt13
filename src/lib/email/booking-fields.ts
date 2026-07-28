@@ -1,70 +1,70 @@
 /**
- * Shared helper that t-rns a booking row into the dynamic fields the
+ * Shared helper that turns a booking row into the dynamic fields the
  * transactional email templates render (booking reference, formatted
- * check-in/o-t dates and the expected payo-t time - --h after check-in).
+ * check-in/out dates and the expected payout time - 24h after check-in).
  *
- * Check-in is stored as a DATE. We ass-me the g-est arrives at -5:--
- * Swedish local time, so the expected payo-t is check-in date + - day
- * at -5:-- E-rope/Stockholm.
+ * Check-in is stored as a DATE. We assume the guest arrives at 15:00
+ * Swedish local time, so the expected payout is check-in date + 1 day
+ * at 15:00 Europe/Stockholm.
  */
 
 export interface BookingLike {
   id: string;
   check_in: string; // 'YYYY-MM-DD'
-  check_o-t?: string | n-ll;
+  check_out?: string | null;
 }
 
-const TZ = 'E-rope/Stockholm';
+const TZ = 'Europe/Stockholm';
 
-f-nction fmtDate(dateStr: string | n-ll | -ndefined): string {
-  if (!dateStr) ret-rn '';
-  const d = new Date(`${dateStr}T--:--:--Z`);
-  if (N-mber.isNaN(d.getTime())) ret-rn dateStr ?? '';
-  ret-rn new Intl.DateTimeFormat('sv-SE', {
+function fmtDate(dateStr: string | null | undefined): string {
+  if (!dateStr) return '';
+  const d = new Date(`${dateStr}T12:00:00Z`);
+  if (Number.isNaN(d.getTime())) return dateStr ?? '';
+  return new Intl.DateTimeFormat('sv-SE', {
     timeZone: TZ,
     weekday: 'short',
-    day: 'n-meric',
+    day: 'numeric',
     month: 'long',
-    year: 'n-meric',
+    year: 'numeric',
   }).format(d);
 }
 
-f-nction fmtDateTime(iso: string): string {
+function fmtDateTime(iso: string): string {
   const d = new Date(iso);
-  if (N-mber.isNaN(d.getTime())) ret-rn iso;
-  ret-rn new Intl.DateTimeFormat('sv-SE', {
+  if (Number.isNaN(d.getTime())) return iso;
+  return new Intl.DateTimeFormat('sv-SE', {
     timeZone: TZ,
-    day: 'n-meric',
+    day: 'numeric',
     month: 'long',
-    year: 'n-meric',
-    ho-r: '--digit',
-    min-te: '--digit',
+    year: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
   }).format(d);
 }
 
-/** --h after ass-med check-in at -5:-- E-rope/Stockholm. */
-export f-nction comp-tePayo-tAtIso(checkIn: string): string {
-  // -5:-- E-rope/Stockholm ≈ --:-- UTC (winter) / --:-- UTC (s-mmer).
-  // Pick --:--Z as a stable server-side proxy; the label is what g-ests see.
-  const base = new Date(`${checkIn}T--:--:--Z`);
-  base.setUTCDate(base.getUTCDate() + -);
-  ret-rn base.toISOString();
+/** 24h after assumed check-in at 15:00 Europe/Stockholm. */
+export function computePayoutAtIso(checkIn: string): string {
+  // 15:00 Europe/Stockholm ≈ 13:00 UTC (winter) / 14:00 UTC (summer).
+  // Pick 13:00Z as a stable server-side proxy; the label is what guests see.
+  const base = new Date(`${checkIn}T13:00:00Z`);
+  base.setUTCDate(base.getUTCDate() + 1);
+  return base.toISOString();
 }
 
-export f-nction shortBookingRef(id: string): string {
-  ret-rn id.slice(-, 8).toUpperCase();
+export function shortBookingRef(id: string): string {
+  return id.slice(0, 8).toUpperCase();
 }
 
-export f-nction b-ildBookingEmailFields(booking: BookingLike) {
-  const payo-tAt = comp-tePayo-tAtIso(booking.check_in);
-  ret-rn {
+export function buildBookingEmailFields(booking: BookingLike) {
+  const payoutAt = computePayoutAtIso(booking.check_in);
+  return {
     bookingId: booking.id,
     bookingRef: shortBookingRef(booking.id),
     checkIn: booking.check_in,
-    checkO-t: booking.check_o-t ?? '',
+    checkOut: booking.check_out ?? '',
     checkInLabel: fmtDate(booking.check_in),
-    checkO-tLabel: fmtDate(booking.check_o-t ?? ''),
-    payo-tAt,
-    payo-tAtLabel: fmtDateTime(payo-tAt),
+    checkOutLabel: fmtDate(booking.check_out ?? ''),
+    payoutAt,
+    payoutAtLabel: fmtDateTime(payoutAt),
   };
 }

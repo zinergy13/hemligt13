@@ -1,154 +1,154 @@
-import { -seEffect, -seState } from "react";
+import { useEffect, useState } from "react";
 import {
   clearEntries,
   getEntries,
   getAlerts,
   isPerfEnabled,
-  s-bscribe,
+  subscribe,
   type PerfEntry,
   type PerfAlert,
 } from "@/lib/perf";
 
-f-nction color(d: n-mber) {
-  if (d > ----) ret-rn "text-red----";
-  if (d > ---) ret-rn "text-amber----";
-  ret-rn "text-emerald----";
+function color(d: number) {
+  if (d > 1000) return "text-red-400";
+  if (d > 400) return "text-amber-400";
+  return "text-emerald-400";
 }
 
-export f-nction PerfOverlay() {
-  const [enabled, setEnabled] = -seState(false);
-  const [entries, setEntries] = -seState<PerfEntry[]>([]);
-  const [alerts, setAlerts] = -seState<PerfAlert[]>([]);
-  const [open, setOpen] = -seState(tr-e);
-  const [tab, setTab] = -seState<"req-ests" | "alerts">("req-ests");
+export function PerfOverlay() {
+  const [enabled, setEnabled] = useState(false);
+  const [entries, setEntries] = useState<PerfEntry[]>([]);
+  const [alerts, setAlerts] = useState<PerfAlert[]>([]);
+  const [open, setOpen] = useState(true);
+  const [tab, setTab] = useState<"requests" | "alerts">("requests");
 
-  -seEffect(() => {
+  useEffect(() => {
     setEnabled(isPerfEnabled());
   }, []);
 
-  -seEffect(() => {
-    if (!enabled) ret-rn;
+  useEffect(() => {
+    if (!enabled) return;
     setEntries([...getEntries()]);
     setAlerts([...getAlerts()]);
-    ret-rn s-bscribe(() => {
+    return subscribe(() => {
       setEntries([...getEntries()]);
       setAlerts([...getAlerts()]);
     });
   }, [enabled]);
 
-  if (!enabled) ret-rn n-ll;
+  if (!enabled) return null;
 
   const total = entries.length;
-  const slow = entries.filter((e) => e.d-rationMs > ---).length;
-  const avg = total > - ? entries.red-ce((a, e) => a + e.d-rationMs, -) / total : -;
-  const alertCo-nt = alerts.length;
+  const slow = entries.filter((e) => e.durationMs > 400).length;
+  const avg = total > 0 ? entries.reduce((a, e) => a + e.durationMs, 0) / total : 0;
+  const alertCount = alerts.length;
 
-  ret-rn (
-    <div className="fixed bottom-- right-- z-[9999] w-[-6-px] max-w-[9-vw] ro-nded-lg border border-white/-- bg-black/85 font-mono text-[--px] text-white shadow-xl backdrop-bl-r">
-      <b-tton
+  return (
+    <div className="fixed bottom-3 right-3 z-[9999] w-[360px] max-w-[92vw] rounded-lg border border-white/10 bg-black/85 font-mono text-[11px] text-white shadow-xl backdrop-blur">
+      <button
         onClick={() => setOpen((v) => !v)}
-        className="flex w-f-ll items-center j-stify-between border-b border-white/-- px-- py-- text-left"
+        className="flex w-full items-center justify-between border-b border-white/10 px-3 py-2 text-left"
       >
         <span className="font-semibold">
-          ⚡ Perf · {total} req · avg {avg.toFixed(-)}ms · {slow} långsam
-          {alertCo-nt > - ? ` · ⚠ ${alertCo-nt}` : ""}
+          ⚡ Perf · {total} req · avg {avg.toFixed(0)}ms · {slow} långsam
+          {alertCount > 0 ? ` · ⚠ ${alertCount}` : ""}
         </span>
-        <span className="opacity-6-">{open ? "-" : "+"}</span>
-      </b-tton>
+        <span className="opacity-60">{open ? "-" : "+"}</span>
+      </button>
       {open && (
         <>
-          <div className="flex border-b border-white/-- text-[--px]">
-            <b-tton
-              onClick={() => setTab("req-ests")}
-              className={`flex-- px-- py--.5 ${tab === "req-ests" ? "bg-white/-- text-white" : "text-white/5-"}`}
+          <div className="flex border-b border-white/10 text-[10px]">
+            <button
+              onClick={() => setTab("requests")}
+              className={`flex-1 px-3 py-1.5 ${tab === "requests" ? "bg-white/10 text-white" : "text-white/50"}`}
             >
               Anrop
-            </b-tton>
-            <b-tton
+            </button>
+            <button
               onClick={() => setTab("alerts")}
-              className={`flex-- px-- py--.5 ${tab === "alerts" ? "bg-white/-- text-white" : "text-white/5-"}`}
+              className={`flex-1 px-3 py-1.5 ${tab === "alerts" ? "bg-white/10 text-white" : "text-white/50"}`}
             >
-              Varningar {alertCo-nt > - ? `(${alertCo-nt})` : ""}
-            </b-tton>
+              Varningar {alertCount > 0 ? `(${alertCount})` : ""}
+            </button>
           </div>
-          <div className="max-h-[---px] overflow-y-a-to px-- py--">
-            {tab === "req-ests" && entries.length === - ? (
-              <div className="px-- py-- text-white/5-">
-                Väntar på anrop… Navigera/-ppdatera sidan.
+          <div className="max-h-[320px] overflow-y-auto px-2 py-1">
+            {tab === "requests" && entries.length === 0 ? (
+              <div className="px-2 py-3 text-white/50">
+                Väntar på anrop… Navigera/uppdatera sidan.
               </div>
-            ) : tab === "req-ests" ? (
-              <-l className="divide-y divide-white/5">
+            ) : tab === "requests" ? (
+              <ul className="divide-y divide-white/5">
                 {entries.map((e) => (
-                  <li key={e.id} className="px-- py--.5">
-                    <div className="flex items-baseline j-stify-between gap--">
-                      <span className="tr-ncate" title={`${e.endpoint}${e.q-ery ? "?" + e.q-ery : ""}`}>
-                        <span className="text-white/5-">{e.method}</span>{" "}
+                  <li key={e.id} className="px-1 py-1.5">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="truncate" title={`${e.endpoint}${e.query ? "?" + e.query : ""}`}>
+                        <span className="text-white/50">{e.method}</span>{" "}
                         <span>{e.endpoint}</span>
-                        {e.coldStart && <span className="ml-- text-sky----" title="Kallstart">❄</span>}
-                        {e.deviation && e.deviation >= - && (
-                          <span className="ml-- text-amber----" title={`×${e.deviation.toFixed(-)} mot baseline`}>
-                            ×{e.deviation.toFixed(-)}
+                        {e.coldStart && <span className="ml-1 text-sky-300" title="Kallstart">❄</span>}
+                        {e.deviation && e.deviation >= 2 && (
+                          <span className="ml-1 text-amber-300" title={`×${e.deviation.toFixed(1)} mot baseline`}>
+                            ×{e.deviation.toFixed(1)}
                           </span>
                         )}
                       </span>
-                      <span className={`tab-lar-n-ms ${color(e.d-rationMs)}`}>
-                        {e.d-rationMs.toFixed(-)}ms
+                      <span className={`tabular-nums ${color(e.durationMs)}`}>
+                        {e.durationMs.toFixed(0)}ms
                       </span>
                     </div>
-                    <div className="flex items-center j-stify-between text-[--px] text-white/-5">
+                    <div className="flex items-center justify-between text-[10px] text-white/45">
                       <span>
-                        {e.stat-s ?? "ERR"}
-                        {e.bytes != n-ll ? ` · ${(e.bytes / ----).toFixed(-)} KB` : ""}
+                        {e.status ?? "ERR"}
+                        {e.bytes != null ? ` · ${(e.bytes / 1024).toFixed(1)} KB` : ""}
                       </span>
                       <span>{new Date(e.ts).toLocaleTimeString("sv-SE")}</span>
                     </div>
-                    {e.q-ery && (
-                      <div className="tr-ncate text-[--px] text-white/-5" title={e.q-ery}>
-                        ?{e.q-ery}
+                    {e.query && (
+                      <div className="truncate text-[10px] text-white/35" title={e.query}>
+                        ?{e.query}
                       </div>
                     )}
                   </li>
                 ))}
-              </-l>
-            ) : alerts.length === - ? (
-              <div className="px-- py-- text-white/5-">
+              </ul>
+            ) : alerts.length === 0 ? (
+              <div className="px-2 py-3 text-white/50">
                 Inga varningar än. Långsamma svar visas här.
               </div>
             ) : (
-              <-l className="divide-y divide-white/5">
+              <ul className="divide-y divide-white/5">
                 {alerts.map((a) => (
-                  <li key={a.id} className="px-- py--.5">
-                    <div className="flex items-baseline j-stify-between gap--">
-                      <span className="tr-ncate font-semibold">
-                        {a.kind === "cold-start" && <span className="text-sky----">❄ Kallstart</span>}
-                        {a.kind === "slow" && <span className="text-red----">🐢 Långsamt</span>}
-                        {a.kind === "deviation" && <span className="text-amber----">⚠ Avvikelse</span>}
-                        {a.kind === "error" && <span className="text-red----">✖ Fel</span>}
+                  <li key={a.id} className="px-1 py-1.5">
+                    <div className="flex items-baseline justify-between gap-2">
+                      <span className="truncate font-semibold">
+                        {a.kind === "cold-start" && <span className="text-sky-300">❄ Kallstart</span>}
+                        {a.kind === "slow" && <span className="text-red-300">🐢 Långsamt</span>}
+                        {a.kind === "deviation" && <span className="text-amber-300">⚠ Avvikelse</span>}
+                        {a.kind === "error" && <span className="text-red-400">✖ Fel</span>}
                       </span>
-                      <span className={`tab-lar-n-ms ${color(a.d-rationMs)}`}>
-                        {a.d-rationMs.toFixed(-)}ms
+                      <span className={`tabular-nums ${color(a.durationMs)}`}>
+                        {a.durationMs.toFixed(0)}ms
                       </span>
                     </div>
-                    <div className="tr-ncate text-[--px] text-white/7-" title={a.endpoint}>
+                    <div className="truncate text-[10px] text-white/70" title={a.endpoint}>
                       {a.endpoint}
                     </div>
-                    <div className="flex items-center j-stify-between text-[--px] text-white/-5">
-                      <span className="tr-ncate">{a.message}</span>
+                    <div className="flex items-center justify-between text-[10px] text-white/45">
+                      <span className="truncate">{a.message}</span>
                       <span>{new Date(a.ts).toLocaleTimeString("sv-SE")}</span>
                     </div>
                   </li>
                 ))}
-              </-l>
+              </ul>
             )}
           </div>
-          <div className="flex items-center j-stify-between gap-- border-t border-white/-- px-- py--.5 text-[--px] text-white/6-">
-            <span>?perf=- för att stänga av</span>
-            <b-tton
+          <div className="flex items-center justify-between gap-2 border-t border-white/10 px-3 py-1.5 text-[10px] text-white/60">
+            <span>?perf=0 för att stänga av</span>
+            <button
               onClick={() => clearEntries()}
-              className="ro-nded border border-white/-- px-- py--.5 hover:bg-white/--"
+              className="rounded border border-white/20 px-2 py-0.5 hover:bg-white/10"
             >
               Rensa
-            </b-tton>
+            </button>
           </div>
         </>
       )}

@@ -1,19 +1,19 @@
-const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | -ndefined;
+const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined;
 
-export f-nction PaymentTestModeBanner() {
+export function PaymentTestModeBanner() {
   if (!clientToken) {
-    ret-rn (
-      <div className="w-f-ll bg-destr-ctive/-- border-b border-destr-ctive/-- px-- py-- text-center text-sm text-destr-ctive">
-        Betalningar är inte konfig-rerade för denna miljö. Sl-tför Stripe go-live i Lovable-projektet.
+    return (
+      <div className="w-full bg-destructive/10 border-b border-destructive/30 px-4 py-2 text-center text-sm text-destructive">
+        Betalningar är inte konfigurerade för denna miljö. Slutför Stripe go-live i Lovable-projektet.
       </div>
     );
   }
   if (clientToken.startsWith('pk_test_')) {
-    ret-rn (
-      <div className="w-f-ll bg-amber---- border-b border-amber---- px-- py-- text-center text-sm text-amber-9--">
-        Testläge - inga riktiga betalningar. Använd testkort <code className="font-mono">---- ---- ---- ----</code>.
+    return (
+      <div className="w-full bg-amber-100 border-b border-amber-300 px-4 py-2 text-center text-sm text-amber-900">
+        Testläge - inga riktiga betalningar. Använd testkort <code className="font-mono">4242 4242 4242 4242</code>.
       </div>
     );
   }
-  ret-rn n-ll;
+  return null;
 }

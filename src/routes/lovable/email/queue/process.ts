@@ -1,265 +1,265 @@
 import { sendLovableEmail } from '@lovable.dev/email-js'
-import { createClient, type S-pabaseClient } from '@s-pabase/s-pabase-js'
-import { createFileRo-te } from '@tanstack/react-ro-ter'
+import { createClient, type SupabaseClient } from '@supabase/supabase-js'
+import { createFileRoute } from '@tanstack/react-router'
 
 const MAX_RETRIES = 5
-const DEFAULT_BATCH_SIZE = --
-const DEFAULT_SEND_DELAY_MS = ---
-const DEFAULT_AUTH_TTL_MINUTES = -5
-const DEFAULT_TRANSACTIONAL_TTL_MINUTES = 6-
+const DEFAULT_BATCH_SIZE = 10
+const DEFAULT_SEND_DELAY_MS = 200
+const DEFAULT_AUTH_TTL_MINUTES = 15
+const DEFAULT_TRANSACTIONAL_TTL_MINUTES = 60
 
-// Check if an error is a rate-limit (--9) response.
-// Uses EmailAPIError.stat-s when available (email-js >=-.x with str-ct-red errors),
+// Check if an error is a rate-limit (429) response.
+// Uses EmailAPIError.status when available (email-js >=0.x with structured errors),
 // falls back to parsing the error message for older versions.
-f-nction isRateLimited(error: -nknown): boolean {
-  if (error && typeof error === 'object' && 'stat-s' in error) {
-    ret-rn (error as { stat-s: n-mber }).stat-s === --9
+function isRateLimited(error: unknown): boolean {
+  if (error && typeof error === 'object' && 'status' in error) {
+    return (error as { status: number }).status === 429
   }
-  ret-rn error instanceof Error && error.message.incl-des('--9')
+  return error instanceof Error && error.message.includes('429')
 }
 
-// Check if an error is a forbidden (---) response. Retrying won't help.
+// Check if an error is a forbidden (403) response. Retrying won't help.
 // Move straight to DLQ.
-f-nction isForbidden(error: -nknown): boolean {
-  if (error && typeof error === 'object' && 'stat-s' in error) {
-    ret-rn (error as { stat-s: n-mber }).stat-s === ---
+function isForbidden(error: unknown): boolean {
+  if (error && typeof error === 'object' && 'status' in error) {
+    return (error as { status: number }).status === 403
   }
-  ret-rn error instanceof Error && error.message.incl-des('---')
+  return error instanceof Error && error.message.includes('403')
 }
 
-// Extract Retry-After seconds from a str-ct-red EmailAPIError, or defa-lt to 6-s.
-f-nction getRetryAfterSeconds(error: -nknown): n-mber {
+// Extract Retry-After seconds from a structured EmailAPIError, or default to 60s.
+function getRetryAfterSeconds(error: unknown): number {
   if (error && typeof error === 'object' && 'retryAfterSeconds' in error) {
-    ret-rn (error as { retryAfterSeconds: n-mber | n-ll }).retryAfterSeconds ?? 6-
+    return (error as { retryAfterSeconds: number | null }).retryAfterSeconds ?? 60
   }
-  ret-rn 6-
+  return 60
 }
 
-async f-nction moveToDlq(
-  s-pabase: S-pabaseClient<any, any>,
-  q-e-e: string,
-  msg: { msg_id: n-mber; message: Record<string, -nknown> },
+async function moveToDlq(
+  supabase: SupabaseClient<any, any>,
+  queue: string,
+  msg: { msg_id: number; message: Record<string, unknown> },
   reason: string
 ): Promise<void> {
   const payload = msg.message
-  await s-pabase.from('email_send_log').insert({
+  await supabase.from('email_send_log').insert({
     message_id: payload.message_id,
-    template_name: (payload.label || q-e-e) as string,
+    template_name: (payload.label || queue) as string,
     recipient_email: payload.to,
-    stat-s: 'dlq',
+    status: 'dlq',
     error_message: reason,
   })
-  const { error } = await s-pabase.rpc('move_to_dlq', {
-    so-rce_q-e-e: q-e-e,
-    dlq_name: `${q-e-e}_dlq`,
+  const { error } = await supabase.rpc('move_to_dlq', {
+    source_queue: queue,
+    dlq_name: `${queue}_dlq`,
     message_id: msg.msg_id,
     payload,
   })
   if (error) {
-    console.error('Failed to move message to DLQ', { q-e-e, msg_id: msg.msg_id, reason, error })
+    console.error('Failed to move message to DLQ', { queue, msg_id: msg.msg_id, reason, error })
   }
 }
 
-export const Ro-te = createFileRo-te("/lovable/email/q-e-e/process")({
+export const Route = createFileRoute("/lovable/email/queue/process")({
   server: {
     handlers: {
-      POST: async ({ req-est }) => {
+      POST: async ({ request }) => {
         const apiKey = process.env.LOVABLE_API_KEY
-        const s-pabaseUrl = import.meta.env.VITE_SUPABASE_URL
-        const s-pabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-        if (!apiKey || !s-pabaseUrl || !s-pabaseServiceKey) {
-          console.error('Missing req-ired environment variables')
-          ret-rn Response.json(
-            { error: 'Server config-ration error' },
-            { stat-s: 5-- }
+        if (!apiKey || !supabaseUrl || !supabaseServiceKey) {
+          console.error('Missing required environment variables')
+          return Response.json(
+            { error: 'Server configuration error' },
+            { status: 500 }
           )
         }
 
-        // Verify the caller is a-thorized with the service role key.
+        // Verify the caller is authorized with the service role key.
         // In the TanStack stack, the pg_cron job sends the service role key as a Bearer token.
-        const a-thHeader = req-est.headers.get('A-thorization')
-        if (!a-thHeader?.startsWith('Bearer ')) {
-          ret-rn Response.json({ error: 'Una-thorized' }, { stat-s: --- })
+        const authHeader = request.headers.get('Authorization')
+        if (!authHeader?.startsWith('Bearer ')) {
+          return Response.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const token = a-thHeader.slice('Bearer '.length).trim()
-        if (token !== s-pabaseServiceKey) {
-          ret-rn Response.json({ error: 'Forbidden' }, { stat-s: --- })
+        const token = authHeader.slice('Bearer '.length).trim()
+        if (token !== supabaseServiceKey) {
+          return Response.json({ error: 'Forbidden' }, { status: 403 })
         }
 
-        const s-pabase: S-pabaseClient<any, any> = createClient(s-pabaseUrl, s-pabaseServiceKey)
+        const supabase: SupabaseClient<any, any> = createClient(supabaseUrl, supabaseServiceKey)
 
-        // -. Check rate-limit cooldown and read q-e-e config
-        const { data: state } = await s-pabase
+        // 1. Check rate-limit cooldown and read queue config
+        const { data: state } = await supabase
           .from('email_send_state')
-          .select('retry_after_-ntil, batch_size, send_delay_ms, a-th_email_ttl_min-tes, transactional_email_ttl_min-tes')
+          .select('retry_after_until, batch_size, send_delay_ms, auth_email_ttl_minutes, transactional_email_ttl_minutes')
           .single()
 
-        if (state?.retry_after_-ntil && new Date(state.retry_after_-ntil) > new Date()) {
-          ret-rn Response.json({ skipped: tr-e, reason: 'rate_limited' })
+        if (state?.retry_after_until && new Date(state.retry_after_until) > new Date()) {
+          return Response.json({ skipped: true, reason: 'rate_limited' })
         }
 
         const batchSize = state?.batch_size ?? DEFAULT_BATCH_SIZE
         const sendDelayMs = state?.send_delay_ms ?? DEFAULT_SEND_DELAY_MS
-        const ttlMin-tes: Record<string, n-mber> = {
-          a-th_emails: state?.a-th_email_ttl_min-tes ?? DEFAULT_AUTH_TTL_MINUTES,
-          transactional_emails: state?.transactional_email_ttl_min-tes ?? DEFAULT_TRANSACTIONAL_TTL_MINUTES,
+        const ttlMinutes: Record<string, number> = {
+          auth_emails: state?.auth_email_ttl_minutes ?? DEFAULT_AUTH_TTL_MINUTES,
+          transactional_emails: state?.transactional_email_ttl_minutes ?? DEFAULT_TRANSACTIONAL_TTL_MINUTES,
         }
 
-        let totalProcessed = -
+        let totalProcessed = 0
 
-        // -. Process a-th_emails first (priority), then transactional_emails
-        for (const q-e-e of ['a-th_emails', 'transactional_emails']) {
-          const { data: messages, error: readError } = await s-pabase.rpc('read_email_batch', {
-            q-e-e_name: q-e-e,
+        // 2. Process auth_emails first (priority), then transactional_emails
+        for (const queue of ['auth_emails', 'transactional_emails']) {
+          const { data: messages, error: readError } = await supabase.rpc('read_email_batch', {
+            queue_name: queue,
             batch_size: batchSize,
-            vt: --,
+            vt: 30,
           })
 
           if (readError) {
-            console.error('Failed to read email batch', { q-e-e, error: readError })
-            contin-e
+            console.error('Failed to read email batch', { queue, error: readError })
+            continue
           }
 
-          if (!messages?.length) contin-e
+          if (!messages?.length) continue
 
-          // Retry b-dget is based on real send fail-res, not pgmq read_ct.
+          // Retry budget is based on real send failures, not pgmq read_ct.
           const messageIds = Array.from(
             new Set(
               messages
                 .map((msg: any) =>
                   msg?.message?.message_id && typeof msg.message.message_id === 'string'
                     ? msg.message.message_id
-                    : n-ll
+                    : null
                 )
-                .filter((id: string | n-ll): id is string => Boolean(id))
+                .filter((id: string | null): id is string => Boolean(id))
             )
           )
-          const failedAttemptsByMessageId = new Map<string, n-mber>()
-          if (messageIds.length > -) {
-            const { data: failedRows, error: failedRowsError } = await s-pabase
+          const failedAttemptsByMessageId = new Map<string, number>()
+          if (messageIds.length > 0) {
+            const { data: failedRows, error: failedRowsError } = await supabase
               .from('email_send_log')
               .select('message_id')
               .in('message_id', messageIds)
-              .eq('stat-s', 'failed')
+              .eq('status', 'failed')
 
             if (failedRowsError) {
-              console.error('Failed to load failed-attempt co-nters', {
-                q-e-e,
+              console.error('Failed to load failed-attempt counters', {
+                queue,
                 error: failedRowsError,
               })
             } else {
               for (const row of failedRows ?? []) {
                 const messageId = row?.message_id
-                if (typeof messageId !== 'string' || !messageId) contin-e
+                if (typeof messageId !== 'string' || !messageId) continue
                 failedAttemptsByMessageId.set(
                   messageId,
-                  (failedAttemptsByMessageId.get(messageId) ?? -) + -
+                  (failedAttemptsByMessageId.get(messageId) ?? 0) + 1
                 )
               }
             }
           }
 
-          for (let i = -; i < messages.length; i++) {
+          for (let i = 0; i < messages.length; i++) {
             const msg = messages[i]
             const payload = msg.message
             const failedAttempts =
               payload?.message_id && typeof payload.message_id === 'string'
-                ? (failedAttemptsByMessageId.get(payload.message_id) ?? -)
-                : msg.read_ct ?? -
+                ? (failedAttemptsByMessageId.get(payload.message_id) ?? 0)
+                : msg.read_ct ?? 0
 
             // Drop expired messages (TTL exceeded).
-            // Prefer payload.q-e-ed_at when present; fall back to PGMQ's enq-e-ed_at
-            // which is always set by the q-e-e.
-            const q-e-edAt = payload.q-e-ed_at ?? msg.enq-e-ed_at
-            if (q-e-edAt) {
-              const ageMs = Date.now() - new Date(q-e-edAt).getTime()
-              const maxAgeMs = ttlMin-tes[q-e-e] * 6- * ----
+            // Prefer payload.queued_at when present; fall back to PGMQ's enqueued_at
+            // which is always set by the queue.
+            const queuedAt = payload.queued_at ?? msg.enqueued_at
+            if (queuedAt) {
+              const ageMs = Date.now() - new Date(queuedAt).getTime()
+              const maxAgeMs = ttlMinutes[queue] * 60 * 1000
               if (ageMs > maxAgeMs) {
                 console.warn('Email expired (TTL exceeded)', {
-                  q-e-e,
+                  queue,
                   msg_id: msg.msg_id,
-                  q-e-ed_at: q-e-edAt,
-                  ttl_min-tes: ttlMin-tes[q-e-e],
+                  queued_at: queuedAt,
+                  ttl_minutes: ttlMinutes[queue],
                 })
-                await moveToDlq(s-pabase, q-e-e, msg, `TTL exceeded (${ttlMin-tes[q-e-e]} min-tes)`)
-                contin-e
+                await moveToDlq(supabase, queue, msg, `TTL exceeded (${ttlMinutes[queue]} minutes)`)
+                continue
               }
             }
 
             // Move to DLQ if max failed send attempts reached.
             if (failedAttempts >= MAX_RETRIES) {
-              await moveToDlq(s-pabase, q-e-e, msg, `Max retries (${MAX_RETRIES}) exceeded (attempted ${failedAttempts} times)`)
-              contin-e
+              await moveToDlq(supabase, queue, msg, `Max retries (${MAX_RETRIES}) exceeded (attempted ${failedAttempts} times)`)
+              continue
             }
 
-            // G-ard: skip if another worker already sent this message (VT expired race)
+            // Guard: skip if another worker already sent this message (VT expired race)
             if (payload.message_id) {
-              const { data: alreadySent } = await s-pabase
+              const { data: alreadySent } = await supabase
                 .from('email_send_log')
                 .select('id')
                 .eq('message_id', payload.message_id)
-                .eq('stat-s', 'sent')
+                .eq('status', 'sent')
                 .maybeSingle()
 
               if (alreadySent) {
-                console.warn('Skipping d-plicate send (already sent)', {
-                  q-e-e,
+                console.warn('Skipping duplicate send (already sent)', {
+                  queue,
                   msg_id: msg.msg_id,
                   message_id: payload.message_id,
                 })
-                const { error: d-pDelError } = await s-pabase.rpc('delete_email', {
-                  q-e-e_name: q-e-e,
+                const { error: dupDelError } = await supabase.rpc('delete_email', {
+                  queue_name: queue,
                   message_id: msg.msg_id,
                 })
-                if (d-pDelError) {
-                  console.error('Failed to delete d-plicate message from q-e-e', { q-e-e, msg_id: msg.msg_id, error: d-pDelError })
+                if (dupDelError) {
+                  console.error('Failed to delete duplicate message from queue', { queue, msg_id: msg.msg_id, error: dupDelError })
                 }
-                contin-e
+                continue
               }
             }
 
             try {
               await sendLovableEmail(
                 {
-                  r-n_id: payload.r-n_id,
+                  run_id: payload.run_id,
                   to: payload.to,
                   from: payload.from,
                   sender_domain: payload.sender_domain,
-                  s-bject: payload.s-bject,
+                  subject: payload.subject,
                   html: payload.html,
                   text: payload.text,
-                  p-rpose: payload.p-rpose,
+                  purpose: payload.purpose,
                   label: payload.label,
                   idempotency_key: payload.idempotency_key,
-                  -ns-bscribe_token: payload.-ns-bscribe_token,
+                  unsubscribe_token: payload.unsubscribe_token,
                   message_id: payload.message_id,
                 },
                 { apiKey, sendUrl: process.env.LOVABLE_SEND_URL }
               )
 
-              // Log s-ccess
-              await s-pabase.from('email_send_log').insert({
+              // Log success
+              await supabase.from('email_send_log').insert({
                 message_id: payload.message_id,
-                template_name: payload.label || q-e-e,
+                template_name: payload.label || queue,
                 recipient_email: payload.to,
-                stat-s: 'sent',
+                status: 'sent',
               })
 
-              // Delete from q-e-e
-              const { error: delError } = await s-pabase.rpc('delete_email', {
-                q-e-e_name: q-e-e,
+              // Delete from queue
+              const { error: delError } = await supabase.rpc('delete_email', {
+                queue_name: queue,
                 message_id: msg.msg_id,
               })
               if (delError) {
-                console.error('Failed to delete sent message from q-e-e', { q-e-e, msg_id: msg.msg_id, error: delError })
+                console.error('Failed to delete sent message from queue', { queue, msg_id: msg.msg_id, error: delError })
               }
               totalProcessed++
             } catch (error) {
               const errorMsg = error instanceof Error ? error.message : String(error)
               console.error('Email send failed', {
-                q-e-e,
+                queue,
                 msg_id: msg.msg_id,
                 read_ct: msg.read_ct,
                 failed_attempts: failedAttempts,
@@ -267,59 +267,59 @@ export const Ro-te = createFileRo-te("/lovable/email/q-e-e/process")({
               })
 
               if (isRateLimited(error)) {
-                await s-pabase.from('email_send_log').insert({
+                await supabase.from('email_send_log').insert({
                   message_id: payload.message_id,
-                  template_name: payload.label || q-e-e,
+                  template_name: payload.label || queue,
                   recipient_email: payload.to,
-                  stat-s: 'failed',
-                  error_message: errorMsg.slice(-, ----),
+                  status: 'failed',
+                  error_message: errorMsg.slice(0, 1000),
                 })
 
                 const retryAfterSecs = getRetryAfterSeconds(error)
-                await s-pabase
+                await supabase
                   .from('email_send_state')
-                  .-pdate({
-                    retry_after_-ntil: new Date(
-                      Date.now() + retryAfterSecs * ----
+                  .update({
+                    retry_after_until: new Date(
+                      Date.now() + retryAfterSecs * 1000
                     ).toISOString(),
-                    -pdated_at: new Date().toISOString(),
+                    updated_at: new Date().toISOString(),
                   })
-                  .eq('id', -)
+                  .eq('id', 1)
 
-                // Stop processing - remaining messages stay in q-e-e (VT expires, retried next cycle)
-                ret-rn Response.json({ processed: totalProcessed, stopped: 'rate_limited' })
+                // Stop processing - remaining messages stay in queue (VT expires, retried next cycle)
+                return Response.json({ processed: totalProcessed, stopped: 'rate_limited' })
               }
 
-              // ---s are permanent config-ration or a-thorization fail-res for this
+              // 403s are permanent configuration or authorization failures for this
               // message, so move straight to DLQ and stop processing the rest of the batch.
               if (isForbidden(error)) {
-                await moveToDlq(s-pabase, q-e-e, msg, errorMsg.slice(-, ----))
-                ret-rn Response.json({ processed: totalProcessed, stopped: 'forbidden' })
+                await moveToDlq(supabase, queue, msg, errorMsg.slice(0, 1000))
+                return Response.json({ processed: totalProcessed, stopped: 'forbidden' })
               }
 
-              // Log non---9 fail-res to track real retry attempts.
-              await s-pabase.from('email_send_log').insert({
+              // Log non-429 failures to track real retry attempts.
+              await supabase.from('email_send_log').insert({
                 message_id: payload.message_id,
-                template_name: payload.label || q-e-e,
+                template_name: payload.label || queue,
                 recipient_email: payload.to,
-                stat-s: 'failed',
-                error_message: errorMsg.slice(-, ----),
+                status: 'failed',
+                error_message: errorMsg.slice(0, 1000),
               })
               if (payload?.message_id && typeof payload.message_id === 'string') {
-                failedAttemptsByMessageId.set(payload.message_id, failedAttempts + -)
+                failedAttemptsByMessageId.set(payload.message_id, failedAttempts + 1)
               }
 
-              // Non---9 errors: message stays invisible -ntil VT expires, then retried
+              // Non-429 errors: message stays invisible until VT expires, then retried
             }
 
-            // Small delay between sends to smooth b-rsts
-            if (i < messages.length - -) {
-              await new Promise((r) => setTimeo-t(r, sendDelayMs))
+            // Small delay between sends to smooth bursts
+            if (i < messages.length - 1) {
+              await new Promise((r) => setTimeout(r, sendDelayMs))
             }
           }
         }
 
-        ret-rn Response.json({ processed: totalProcessed })
+        return Response.json({ processed: totalProcessed })
       },
     },
   },

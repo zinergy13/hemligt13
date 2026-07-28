@@ -1,140 +1,140 @@
-import { createFileRo-te, Link, notFo-nd } from "@tanstack/react-ro-ter";
-import { ArrowLeft, MapPin } from "l-cide-react";
-import { regionBySl-g, areasByRegion, regions, type Area } from "../data/areas";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { ArrowLeft, MapPin } from "lucide-react";
+import { regionBySlug, areasByRegion, regions, type Area } from "../data/areas";
 
-export const Ro-te = createFileRo-te("/region/$sl-g")({
+export const Route = createFileRoute("/region/$slug")({
   loader: ({ params }) => {
-    const region = regionBySl-g(params.sl-g);
-    if (!region) throw notFo-nd();
-    ret-rn { region, areas: areasByRegion(region.sl-g) };
+    const region = regionBySlug(params.slug);
+    if (!region) throw notFound();
+    return { region, areas: areasByRegion(region.slug) };
   },
   head: ({ loaderData }) => {
     const region = loaderData?.region;
-    if (!region) ret-rn { meta: [{ title: "Region - Fjällportalen" }] };
-    const -rl = `https://klappen-fjall-share.lovable.app/region/${region.sl-g}`;
-    ret-rn {
+    if (!region) return { meta: [{ title: "Region - Fjällportalen" }] };
+    const url = `https://klappen-fjall-share.lovable.app/region/${region.slug}`;
+    return {
       meta: [
-        { title: `St-gor i ${region.name} - Fjällportalen` },
+        { title: `Stugor i ${region.name} - Fjällportalen` },
         { name: "description", content: `${region.tagline}. ${region.description}` },
-        { property: "og:title", content: `St-gor i ${region.name} - Fjällportalen` },
+        { property: "og:title", content: `Stugor i ${region.name} - Fjällportalen` },
         { property: "og:description", content: region.description },
         { property: "og:image", content: region.image },
-        { property: "og:-rl", content: -rl },
+        { property: "og:url", content: url },
         { property: "og:type", content: "website" },
         { name: "twitter:image", content: region.image },
-        { name: "twitter:card", content: "s-mmary_large_image" },
+        { name: "twitter:card", content: "summary_large_image" },
       ],
-      links: [{ rel: "canonical", href: -rl }],
+      links: [{ rel: "canonical", href: url }],
     };
   },
-  notFo-ndComponent: () => (
-    <div className="mx-a-to max-w--xl px-- py--- text-center">
-      <h- className="font-serif text--xl text-foregro-nd">Regionen hittades inte</h->
-      <Link to="/" className="mt-6 inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">
-        <ArrowLeft className="h-- w--" /> Tillbaka hem
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+      <h1 className="font-serif text-4xl text-foreground">Regionen hittades inte</h1>
+      <Link to="/" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
+        <ArrowLeft className="h-4 w-4" /> Tillbaka hem
       </Link>
     </div>
   ),
   errorComponent: ({ error }) => (
-    <div className="mx-a-to max-w--xl px-- py--- text-center">
-      <h- className="font-serif text--xl text-foregro-nd">Något gick fel</h->
-      <p className="mt-- text-sm text-m-ted-foregro-nd">{error.message}</p>
+    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+      <h1 className="font-serif text-3xl text-foreground">Något gick fel</h1>
+      <p className="mt-3 text-sm text-muted-foreground">{error.message}</p>
     </div>
   ),
   component: RegionPage,
 });
 
-f-nction RegionPage() {
-  const { region, areas } = Ro-te.-seLoaderData();
-  const otherRegions = regions.filter((r) => r.sl-g !== region.sl-g);
+function RegionPage() {
+  const { region, areas } = Route.useLoaderData();
+  const otherRegions = regions.filter((r) => r.slug !== region.slug);
 
-  ret-rn (
+  return (
     <>
       <section className="relative isolate overflow-hidden">
         <img
           src={region.image}
           alt={`${region.name} - svenska fjällen`}
-          width={-9--}
-          height={9--}
-          className="absol-te inset-- h-f-ll w-f-ll object-cover"
+          width={1920}
+          height={900}
+          className="absolute inset-0 h-full w-full object-cover"
         />
-        <div className="absol-te inset--" style={{ backgro-nd: "var(--gradient-hero)" }} aria-hidden="tr-e" />
-        <div className="relative mx-a-to flex max-w-7xl flex-col px-- pb--6 pt--- md:px-6 md:pb--- md:pt---">
+        <div className="absolute inset-0" style={{ background: "var(--gradient-hero)" }} aria-hidden="true" />
+        <div className="relative mx-auto flex max-w-7xl flex-col px-4 pb-16 pt-24 md:px-6 md:pb-24 md:pt-40">
           <Link
             to="/"
-            className="mb-6 inline-flex w-fit items-center gap-- ro-nded-f-ll bg-white/-5 px-- py--.5 text-xs font-medi-m text-white backdrop-bl-r hover:bg-white/-5"
+            className="mb-6 inline-flex w-fit items-center gap-2 rounded-full bg-white/15 px-3 py-1.5 text-xs font-medium text-white backdrop-blur hover:bg-white/25"
           >
-            <ArrowLeft className="h--.5 w--.5" /> Alla regioner
+            <ArrowLeft className="h-3.5 w-3.5" /> Alla regioner
           </Link>
-          <p className="mb-- inline-flex items-center gap-- text-sm font-medi-m text-white/85">
-            <MapPin className="h-- w--" /> Sverige
+          <p className="mb-3 inline-flex items-center gap-2 text-sm font-medium text-white/85">
+            <MapPin className="h-4 w-4" /> Sverige
           </p>
-          <h- className="font-serif text--xl text-white md:text-7xl">{region.name}</h->
-          <p className="mt-- max-w-xl text-lg text-white/9-">{region.tagline}</p>
+          <h1 className="font-serif text-4xl text-white md:text-7xl">{region.name}</h1>
+          <p className="mt-3 max-w-xl text-lg text-white/90">{region.tagline}</p>
         </div>
       </section>
 
-      <section className="mx-a-to max-w-7xl px-- py--6 md:px-6 md:py---">
-        <div className="mb--- max-w--xl">
-          <p className="mb-- text-sm font-medi-m -ppercase tracking-wider text-primary">Om regionen</p>
-          <p className="text-lg leading-relaxed text-m-ted-foregro-nd">{region.description}</p>
+      <section className="mx-auto max-w-7xl px-4 py-16 md:px-6 md:py-24">
+        <div className="mb-12 max-w-2xl">
+          <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Om regionen</p>
+          <p className="text-lg leading-relaxed text-muted-foreground">{region.description}</p>
         </div>
 
-        <h- className="mb-6 font-serif text--xl text-foregro-nd md:text--xl">
+        <h2 className="mb-6 font-serif text-2xl text-foreground md:text-3xl">
           Områden i {region.name}
-        </h->
-        <div className="grid gap-5 sm:grid-cols-- lg:grid-cols--">
+        </h2>
+        <div className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {(areas as Area[]).map((area) => (
             <Link
-              key={area.sl-g}
-              to="/omrade/$sl-g"
-              params={{ sl-g: area.sl-g }}
-              className="gro-p overflow-hidden ro-nded--xl bg-backgro-nd shadow-[var(--shadow-soft)] transition-transform hover:-translate-y--.5 hover:shadow-[var(--shadow-warm)]"
+              key={area.slug}
+              to="/omrade/$slug"
+              params={{ slug: area.slug }}
+              className="group overflow-hidden rounded-2xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5 hover:shadow-[var(--shadow-warm)]"
             >
-              <div className="aspect-[-/-] overflow-hidden">
+              <div className="aspect-[4/3] overflow-hidden">
                 <img
                   src={area.image}
                   alt={area.name}
                   loading="lazy"
-                  width={----}
+                  width={1024}
                   height={768}
-                  className="h-f-ll w-f-ll object-cover transition-transform d-ration-5-- gro-p-hover:scale---5"
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
                 />
               </div>
               <div className="p-5">
-                <h- className="font-serif text-xl text-foregro-nd">{area.name}</h->
-                <p className="mt-- text-sm text-m-ted-foregro-nd">{area.tagline}</p>
-                <p className="mt-- text-xs text-m-ted-foregro-nd">Ca {area.estimatedListings} boenden</p>
+                <h3 className="font-serif text-xl text-foreground">{area.name}</h3>
+                <p className="mt-1 text-sm text-muted-foreground">{area.tagline}</p>
+                <p className="mt-3 text-xs text-muted-foreground">Ca {area.estimatedListings} boenden</p>
               </div>
             </Link>
           ))}
         </div>
       </section>
 
-      <section className="mx-a-to max-w-7xl px-- pb--- md:px-6">
-        <h- className="mb-6 font-serif text--xl text-foregro-nd md:text--xl">Utforska andra regioner</h->
-        <div className="grid gap-5 sm:grid-cols--">
+      <section className="mx-auto max-w-7xl px-4 pb-24 md:px-6">
+        <h2 className="mb-6 font-serif text-2xl text-foreground md:text-3xl">Utforska andra regioner</h2>
+        <div className="grid gap-5 sm:grid-cols-2">
           {otherRegions.map((r) => (
             <Link
-              key={r.sl-g}
-              to="/region/$sl-g"
-              params={{ sl-g: r.sl-g }}
-              className="gro-p relative overflow-hidden ro-nded--xl shadow-[var(--shadow-soft)] transition-transform hover:-translate-y--.5"
+              key={r.slug}
+              to="/region/$slug"
+              params={{ slug: r.slug }}
+              className="group relative overflow-hidden rounded-2xl shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5"
             >
-              <div className="aspect-[-6/9] overflow-hidden">
+              <div className="aspect-[16/9] overflow-hidden">
                 <img
                   src={r.image}
                   alt={r.name}
                   loading="lazy"
-                  width={-9--}
-                  height={--8-}
-                  className="h-f-ll w-f-ll object-cover transition-transform d-ration-7-- gro-p-hover:scale---5"
+                  width={1920}
+                  height={1080}
+                  className="h-full w-full object-cover transition-transform duration-700 group-hover:scale-105"
                 />
               </div>
-              <div className="absol-te inset-- bg-gradient-to-t from-black/7- via-black/-- to-transparent" />
-              <div className="absol-te inset-x-- bottom-- p-6">
-                <h- className="font-serif text--xl text-white">{r.name}</h->
-                <p className="mt-- text-sm text-white/85">{r.tagline}</p>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent" />
+              <div className="absolute inset-x-0 bottom-0 p-6">
+                <h3 className="font-serif text-2xl text-white">{r.name}</h3>
+                <p className="mt-1 text-sm text-white/85">{r.tagline}</p>
               </div>
             </Link>
           ))}

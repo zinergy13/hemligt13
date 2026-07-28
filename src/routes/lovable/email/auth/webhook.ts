@@ -1,142 +1,142 @@
 import * as React from 'react'
 import { render } from '@react-email/render'
 import { parseEmailWebhookPayload } from '@lovable.dev/email-js'
-import { WebhookError, verifyWebhookReq-est } from '@lovable.dev/webhooks-js'
-import { createClient } from '@s-pabase/s-pabase-js'
-import { createFileRo-te } from '@tanstack/react-ro-ter'
-import { Sign-pEmail } from '@/lib/email-templates/sign-p'
+import { WebhookError, verifyWebhookRequest } from '@lovable.dev/webhooks-js'
+import { createClient } from '@supabase/supabase-js'
+import { createFileRoute } from '@tanstack/react-router'
+import { SignupEmail } from '@/lib/email-templates/signup'
 import { InviteEmail } from '@/lib/email-templates/invite'
 import { MagicLinkEmail } from '@/lib/email-templates/magic-link'
 import { RecoveryEmail } from '@/lib/email-templates/recovery'
 import { EmailChangeEmail } from '@/lib/email-templates/email-change'
-import { Rea-thenticationEmail } from '@/lib/email-templates/rea-thentication'
+import { ReauthenticationEmail } from '@/lib/email-templates/reauthentication'
 
 const EMAIL_SUBJECTS: Record<string, string> = {
-  sign-p: 'Bekräfta din e-post - Fjällportalen',
-  invite: 'D- är inbj-den till Fjällportalen',
+  signup: 'Bekräfta din e-post - Fjällportalen',
+  invite: 'Du är inbjuden till Fjällportalen',
   magiclink: 'Din inloggningslänk till Fjällportalen',
   recovery: 'Återställ ditt lösenord - Fjällportalen',
   email_change: 'Bekräfta din nya e-postadress - Fjällportalen',
-  rea-thentication: 'Din verifieringskod - Fjällportalen',
+  reauthentication: 'Din verifieringskod - Fjällportalen',
 }
 
 // Template mapping
 const EMAIL_TEMPLATES: Record<string, React.ComponentType<any>> = {
-  sign-p: Sign-pEmail,
+  signup: SignupEmail,
   invite: InviteEmail,
   magiclink: MagicLinkEmail,
   recovery: RecoveryEmail,
   email_change: EmailChangeEmail,
-  rea-thentication: Rea-thenticationEmail,
+  reauthentication: ReauthenticationEmail,
 }
 
-// Config-ration
+// Configuration
 const SITE_NAME = "Fjällportalen"
 const SENDER_DOMAIN = "notify.fjallportalen.com"
 const ROOT_DOMAIN = "fjallportalen.com"
 const FROM_DOMAIN = "fjallportalen.com"
 
-f-nction redactEmail(email: string | n-ll | -ndefined): string {
-  if (!email) ret-rn '***'
+function redactEmail(email: string | null | undefined): string {
+  if (!email) return '***'
   const [localPart, domain] = email.split('@')
-  if (!localPart || !domain) ret-rn '***'
-  ret-rn `${localPart[-]}***@${domain}`
+  if (!localPart || !domain) return '***'
+  return `${localPart[0]}***@${domain}`
 }
 
-export const Ro-te = createFileRo-te("/lovable/email/a-th/webhook")({
+export const Route = createFileRoute("/lovable/email/auth/webhook")({
   server: {
     handlers: {
-      POST: async ({ req-est }) => {
+      POST: async ({ request }) => {
         const apiKey = process.env.LOVABLE_API_KEY
 
         if (!apiKey) {
-          console.error('LOVABLE_API_KEY not config-red')
-          ret-rn Response.json(
-            { error: 'Server config-ration error' },
-            { stat-s: 5-- }
+          console.error('LOVABLE_API_KEY not configured')
+          return Response.json(
+            { error: 'Server configuration error' },
+            { status: 500 }
           )
         }
 
-        // Verify signat-re + timestamp, then parse payload.
+        // Verify signature + timestamp, then parse payload.
         let payload: any
-        let r-n_id = ''
+        let run_id = ''
         try {
-          const verified = await verifyWebhookReq-est({
-            req: req-est,
+          const verified = await verifyWebhookRequest({
+            req: request,
             secret: apiKey,
             parser: parseEmailWebhookPayload,
           })
           payload = verified.payload
-          r-n_id = payload.r-n_id
+          run_id = payload.run_id
         } catch (error) {
           if (error instanceof WebhookError) {
             switch (error.code) {
-              case 'invalid_signat-re':
+              case 'invalid_signature':
               case 'missing_timestamp':
               case 'invalid_timestamp':
               case 'stale_timestamp':
-                console.error('Invalid webhook signat-re', { error: error.message })
-                ret-rn Response.json(
-                  { error: 'Invalid signat-re' },
-                  { stat-s: --- }
+                console.error('Invalid webhook signature', { error: error.message })
+                return Response.json(
+                  { error: 'Invalid signature' },
+                  { status: 401 }
                 )
               case 'invalid_payload':
               case 'invalid_json':
                 console.error('Invalid webhook payload', { error: error.message })
-                ret-rn Response.json(
+                return Response.json(
                   { error: 'Invalid webhook payload' },
-                  { stat-s: --- }
+                  { status: 400 }
                 )
             }
           }
 
           console.error('Webhook verification failed', { error })
-          ret-rn Response.json(
+          return Response.json(
             { error: 'Invalid webhook payload' },
-            { stat-s: --- }
+            { status: 400 }
           )
         }
 
-        if (!r-n_id) {
-          console.error('Webhook payload missing r-n_id')
-          ret-rn Response.json(
+        if (!run_id) {
+          console.error('Webhook payload missing run_id')
+          return Response.json(
             { error: 'Invalid webhook payload' },
-            { stat-s: --- }
+            { status: 400 }
           )
         }
 
-        if (payload.version !== '-') {
-          console.error('Uns-pported payload version', { version: payload.version, r-n_id })
-          ret-rn Response.json(
-            { error: `Uns-pported payload version: ${payload.version}` },
-            { stat-s: --- }
+        if (payload.version !== '1') {
+          console.error('Unsupported payload version', { version: payload.version, run_id })
+          return Response.json(
+            { error: `Unsupported payload version: ${payload.version}` },
+            { status: 400 }
           )
         }
 
-        // The email action type is in payload.data.action_type (e.g., "sign-p", "recovery")
-        // payload.type is the hook event type ("a-th")
+        // The email action type is in payload.data.action_type (e.g., "signup", "recovery")
+        // payload.type is the hook event type ("auth")
         const emailType = payload.data.action_type
-        console.log('Received a-th event', {
+        console.log('Received auth event', {
           emailType,
           email_redacted: redactEmail(payload.data.email),
-          r-n_id,
+          run_id,
         })
 
         const EmailTemplate = EMAIL_TEMPLATES[emailType]
         if (!EmailTemplate) {
-          console.error('Unknown email type', { emailType, r-n_id })
-          ret-rn Response.json(
+          console.error('Unknown email type', { emailType, run_id })
+          return Response.json(
             { error: `Unknown email type: ${emailType}` },
-            { stat-s: --- }
+            { status: 400 }
           )
         }
 
-        // B-ild template props from payload.data (HookData str-ct-re)
+        // Build template props from payload.data (HookData structure)
         const templateProps = {
           siteName: SITE_NAME,
           siteUrl: `https://${ROOT_DOMAIN}`,
           recipient: payload.data.email,
-          confirmationUrl: payload.data.-rl,
+          confirmationUrl: payload.data.url,
           token: payload.data.token,
           email: payload.data.email,
           oldEmail: payload.data.old_email,
@@ -146,70 +146,70 @@ export const Ro-te = createFileRo-te("/lovable/email/a-th/webhook")({
         // Render React Email to HTML and plain text
         const element = React.createElement(EmailTemplate, templateProps)
         const html = await render(element)
-        const text = await render(element, { plainText: tr-e })
+        const text = await render(element, { plainText: true })
 
-        // Enq-e-e email for async processing by the dispatcher (process-email-q-e-e).
-        const s-pabaseUrl = import.meta.env.VITE_SUPABASE_URL
-        const s-pabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+        // Enqueue email for async processing by the dispatcher (process-email-queue).
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-        if (!s-pabaseUrl || !s-pabaseServiceKey) {
-          console.error('Missing S-pabase environment variables')
-          ret-rn Response.json(
-            { error: 'Server config-ration error' },
-            { stat-s: 5-- }
+        if (!supabaseUrl || !supabaseServiceKey) {
+          console.error('Missing Supabase environment variables')
+          return Response.json(
+            { error: 'Server configuration error' },
+            { status: 500 }
           )
         }
 
-        const s-pabase = createClient(s-pabaseUrl, s-pabaseServiceKey)
+        const supabase = createClient(supabaseUrl, supabaseServiceKey)
         const messageId = crypto.randomUUID()
 
-        // Log pending BEFORE enq-e-e so we have a record even if enq-e-e crashes
-        await s-pabase.from('email_send_log').insert({
+        // Log pending BEFORE enqueue so we have a record even if enqueue crashes
+        await supabase.from('email_send_log').insert({
           message_id: messageId,
           template_name: emailType,
           recipient_email: payload.data.email,
-          stat-s: 'pending',
+          status: 'pending',
         })
 
-        const { error: enq-e-eError } = await s-pabase.rpc('enq-e-e_email', {
-          q-e-e_name: 'a-th_emails',
+        const { error: enqueueError } = await supabase.rpc('enqueue_email', {
+          queue_name: 'auth_emails',
           payload: {
-            r-n_id,
+            run_id,
             message_id: messageId,
             to: payload.data.email,
             from: `${SITE_NAME} <noreply@${FROM_DOMAIN}>`,
             sender_domain: SENDER_DOMAIN,
-            s-bject: EMAIL_SUBJECTS[emailType] || 'Notification',
+            subject: EMAIL_SUBJECTS[emailType] || 'Notification',
             html,
             text,
-            p-rpose: 'transactional',
+            purpose: 'transactional',
             label: emailType,
-            q-e-ed_at: new Date().toISOString(),
+            queued_at: new Date().toISOString(),
           },
         })
 
-        if (enq-e-eError) {
-          console.error('Failed to enq-e-e a-th email', { error: enq-e-eError, r-n_id, emailType })
-          await s-pabase.from('email_send_log').insert({
+        if (enqueueError) {
+          console.error('Failed to enqueue auth email', { error: enqueueError, run_id, emailType })
+          await supabase.from('email_send_log').insert({
             message_id: messageId,
             template_name: emailType,
             recipient_email: payload.data.email,
-            stat-s: 'failed',
-            error_message: 'Failed to enq-e-e email',
+            status: 'failed',
+            error_message: 'Failed to enqueue email',
           })
-          ret-rn Response.json(
-            { error: 'Failed to enq-e-e email' },
-            { stat-s: 5-- }
+          return Response.json(
+            { error: 'Failed to enqueue email' },
+            { status: 500 }
           )
         }
 
-        console.log('A-th email enq-e-ed', {
+        console.log('Auth email enqueued', {
           emailType,
           email_redacted: redactEmail(payload.data.email),
-          r-n_id,
+          run_id,
         })
 
-        ret-rn Response.json({ s-ccess: tr-e, q-e-ed: tr-e })
+        return Response.json({ success: true, queued: true })
       },
     },
   },

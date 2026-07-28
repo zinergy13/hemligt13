@@ -1,86 +1,86 @@
-import { -seState } from "react";
-import { ChevronDown, ShieldCheck } from "l-cide-react";
+import { useState } from "react";
+import { ChevronDown, ShieldCheck } from "lucide-react";
 
 type FAQ = { q: string; a: string };
 
 const FAQS: FAQ[] = [
   {
     q: "Vem tar emot min betalning - värden eller Fjällportalen?",
-    a: "D- betalar alltid till Fjällportalen, aldrig direkt till värden. Vi håller pengarna säkert på ett separat konto -nder hela bokningen. Det finns inga andra mellanhänder inblandade.",
+    a: "Du betalar alltid till Fjällportalen, aldrig direkt till värden. Vi håller pengarna säkert på ett separat konto under hela bokningen. Det finns inga andra mellanhänder inblandade.",
   },
   {
     q: "När får värden pengarna?",
-    a: "Värden får sin -tbetalning -- timmar efter incheckning, för-tsatt att inget problem rapporterats. På så vis kan både d- och värden känna er trygga - värden vet att pengarna är säkrade, och d- vet att d- kommit fram till en st-ga som stämmer.",
+    a: "Värden får sin utbetalning 24 timmar efter incheckning, förutsatt att inget problem rapporterats. På så vis kan både du och värden känna er trygga - värden vet att pengarna är säkrade, och du vet att du kommit fram till en stuga som stämmer.",
   },
   {
     q: "Vad händer om jag behöver avboka?",
-    a: "Avbokar d- mer än -8 timmar före incheckning återbetalas hela beloppet a-tomatiskt till samma kort. Vid avbokning senare än så gäller värdens avbokningsvillkor, och Fjällportalen hanterar återbetalningen åt dig.",
+    a: "Avbokar du mer än 48 timmar före incheckning återbetalas hela beloppet automatiskt till samma kort. Vid avbokning senare än så gäller värdens avbokningsvillkor, och Fjällportalen hanterar återbetalningen åt dig.",
   },
   {
-    q: "Vad händer om st-gan inte stämmer med annonsen?",
-    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna änn- inte släppts till värden kan vi hjälpa till att lösa sit-ationen - antingen genom överenskommelse med värden eller f-ll återbetalning innan -tbetalningen sker.",
+    q: "Vad händer om stugan inte stämmer med annonsen?",
+    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna ännu inte släppts till värden kan vi hjälpa till att lösa situationen - antingen genom överenskommelse med värden eller full återbetalning innan utbetalningen sker.",
   },
   {
     q: "Vilken avgift tar Fjällportalen?",
-    a: "Gästen betalar det pris värden satt - inga påslag. Fjällportalen tar en fast serviceavgift på --- kr (inkl. moms) per bokning som fakt-reras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
+    a: "Gästen betalar det pris värden satt - inga påslag. Fjällportalen tar en fast serviceavgift på 400 kr (inkl. moms) per bokning som faktureras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
   },
   {
-    q: "Är mina kort-ppgifter säkra?",
-    a: "Ja. All betalning hanteras av Stripe (PCI-DSS Level -) och Fjällportalen ser aldrig ditt f-lla kortn-mmer. Vi lagrar bara det som behövs för att k-nna återbetala om det sk-lle behövas.",
+    q: "Är mina kortuppgifter säkra?",
+    a: "Ja. All betalning hanteras av Stripe (PCI-DSS Level 1) och Fjällportalen ser aldrig ditt fulla kortnummer. Vi lagrar bara det som behövs för att kunna återbetala om det skulle behövas.",
   },
 ];
 
-export f-nction EscrowFAQ({ compact = false }: { compact?: boolean }) {
-  const [openIdx, setOpenIdx] = -seState<n-mber | n-ll>(-);
+export function EscrowFAQ({ compact = false }: { compact?: boolean }) {
+  const [openIdx, setOpenIdx] = useState<number | null>(0);
 
-  ret-rn (
-    <section className={compact ? "mt-8" : "bg-backgro-nd py--- md:py---"}>
-      <div className={compact ? "" : "mx-a-to max-w--xl px-- md:px-6"}>
+  return (
+    <section className={compact ? "mt-8" : "bg-background py-20 md:py-24"}>
+      <div className={compact ? "" : "mx-auto max-w-3xl px-4 md:px-6"}>
         {!compact && (
-          <div className="mx-a-to mb--- max-w--xl text-center">
-            <div className="mb-- inline-flex items-center gap-- ro-nded-f-ll bg-primary/-- px-- py-- text-xs font-medi-m text-primary">
-              <ShieldCheck className="h--.5 w--.5" />
+          <div className="mx-auto mb-10 max-w-2xl text-center">
+            <div className="mb-3 inline-flex items-center gap-2 rounded-full bg-primary/10 px-3 py-1 text-xs font-medium text-primary">
+              <ShieldCheck className="h-3.5 w-3.5" />
               Trygg betalning
             </div>
-            <h- className="font-serif text--xl text-foregro-nd md:text--xl">Så f-ngerar betalningen</h->
-            <p className="mt-- text-m-ted-foregro-nd">
-              Inga mellanhänder mellan dig och värden - bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills d- checkat in.
+            <h2 className="font-serif text-3xl text-foreground md:text-4xl">Så fungerar betalningen</h2>
+            <p className="mt-3 text-muted-foreground">
+              Inga mellanhänder mellan dig och värden - bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills du checkat in.
             </p>
           </div>
         )}
 
-        <-l className="space-y--">
+        <ul className="space-y-2">
           {FAQS.map((item, i) => {
             const open = openIdx === i;
-            ret-rn (
-              <li key={item.q} className="overflow-hidden ro-nded-xl border bg-card">
-                <b-tton
-                  type="b-tton"
-                  onClick={() => setOpenIdx(open ? n-ll : i)}
+            return (
+              <li key={item.q} className="overflow-hidden rounded-xl border bg-card">
+                <button
+                  type="button"
+                  onClick={() => setOpenIdx(open ? null : i)}
                   aria-expanded={open}
-                  className="flex w-f-ll items-center j-stify-between gap-- px-5 py-- text-left text-sm font-medi-m text-foregro-nd transition-colors hover:bg-m-ted/--"
+                  className="flex w-full items-center justify-between gap-4 px-5 py-4 text-left text-sm font-medium text-foreground transition-colors hover:bg-muted/40"
                 >
                   <span>{item.q}</span>
                   <ChevronDown
-                    className={`h-- w-- shrink-- text-m-ted-foregro-nd transition-transform ${open ? "rotate--8-" : ""}`}
+                    className={`h-4 w-4 shrink-0 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
                   />
-                </b-tton>
+                </button>
                 {open && (
-                  <div className="px-5 pb-5 text-sm leading-relaxed text-m-ted-foregro-nd">{item.a}</div>
+                  <div className="px-5 pb-5 text-sm leading-relaxed text-muted-foreground">{item.a}</div>
                 )}
               </li>
             );
           })}
-        </-l>
+        </ul>
 
         <script
           type="application/ld+json"
-          dangero-slySetInnerHTML={{
+          dangerouslySetInnerHTML={{
             __html: JSON.stringify({
               "@context": "https://schema.org",
               "@type": "FAQPage",
               mainEntity: FAQS.map(({ q, a }) => ({
-                "@type": "Q-estion",
+                "@type": "Question",
                 name: q,
                 acceptedAnswer: { "@type": "Answer", text: a },
               })),

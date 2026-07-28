@@ -1,198 +1,198 @@
-import { -seState, type FormEvent } from "react";
-import { -seQ-ery, -seM-tation, -seQ-eryClient } from "@tanstack/react-q-ery";
-import { Bell, Loader-, Trash-, MapPin } from "l-cide-react";
+import { useState, type FormEvent } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import { Bell, Loader2, Trash2, MapPin } from "lucide-react";
 import { toast } from "sonner";
-import { s-pabase } from "@/integrations/s-pabase/client";
-import { -seA-th } from "@/hooks/-seA-th";
-import { priceAlertsQ-ery } from "@/lib/social";
-import { regions, areas, areaBySl-g } from "@/data/areas";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { priceAlertsQuery } from "@/lib/social";
+import { regions, areas, areaBySlug } from "@/data/areas";
 
-export f-nction PriceAlertsManager() {
-  const { -ser } = -seA-th();
-  const qc = -seQ-eryClient();
-  const [scope, setScope] = -seState<"area" | "region">("area");
-  const [areaSl-g, setAreaSl-g] = -seState<string>("");
-  const [regionSl-g, setRegionSl-g] = -seState<string>("");
-  const [maxPrice, setMaxPrice] = -seState<string>("");
-  const [saving, setSaving] = -seState(false);
+export function PriceAlertsManager() {
+  const { user } = useAuth();
+  const qc = useQueryClient();
+  const [scope, setScope] = useState<"area" | "region">("area");
+  const [areaSlug, setAreaSlug] = useState<string>("");
+  const [regionSlug, setRegionSlug] = useState<string>("");
+  const [maxPrice, setMaxPrice] = useState<string>("");
+  const [saving, setSaving] = useState(false);
 
-  const q = -seQ-ery({ ...priceAlertsQ-ery(-ser?.id ?? ""), enabled: !!-ser });
+  const q = useQuery({ ...priceAlertsQuery(user?.id ?? ""), enabled: !!user });
   const alerts = q.data ?? [];
 
-  const del = -seM-tation({
-    m-tationFn: async (id: string) => {
-      const { error } = await s-pabase.from("price_alerts").delete().eq("id", id);
+  const del = useMutation({
+    mutationFn: async (id: string) => {
+      const { error } = await supabase.from("price_alerts").delete().eq("id", id);
       if (error) throw error;
     },
-    onS-ccess: () => {
-      toast.s-ccess("Prisvarning borttagen");
-      if (-ser) qc.invalidateQ-eries({ q-eryKey: ["price_alerts", -ser.id] });
+    onSuccess: () => {
+      toast.success("Prisvarning borttagen");
+      if (user) qc.invalidateQueries({ queryKey: ["price_alerts", user.id] });
     },
-    onError: (e) => toast.error(e instanceof Error ? e.message : "K-nde inte ta bort"),
+    onError: (e) => toast.error(e instanceof Error ? e.message : "Kunde inte ta bort"),
   });
 
-  const toggleActive = -seM-tation({
-    m-tationFn: async ({ id, active }: { id: string; active: boolean }) => {
-      const { error } = await s-pabase.from("price_alerts").-pdate({ active }).eq("id", id);
+  const toggleActive = useMutation({
+    mutationFn: async ({ id, active }: { id: string; active: boolean }) => {
+      const { error } = await supabase.from("price_alerts").update({ active }).eq("id", id);
       if (error) throw error;
     },
-    onS-ccess: () => {
-      if (-ser) qc.invalidateQ-eries({ q-eryKey: ["price_alerts", -ser.id] });
+    onSuccess: () => {
+      if (user) qc.invalidateQueries({ queryKey: ["price_alerts", user.id] });
     },
   });
 
-  if (!-ser) ret-rn n-ll;
+  if (!user) return null;
 
-  const s-bmit = async (e: FormEvent) => {
-    e.preventDefa-lt();
-    const price = N-mber(maxPrice);
-    if (!price || price < ---) {
-      toast.error("Ange ett giltigt maxpris (minst --- kr)");
-      ret-rn;
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
+    const price = Number(maxPrice);
+    if (!price || price < 100) {
+      toast.error("Ange ett giltigt maxpris (minst 100 kr)");
+      return;
     }
-    if (scope === "area" && !areaSl-g) {
+    if (scope === "area" && !areaSlug) {
       toast.error("Välj område");
-      ret-rn;
+      return;
     }
-    if (scope === "region" && !regionSl-g) {
+    if (scope === "region" && !regionSlug) {
       toast.error("Välj region");
-      ret-rn;
+      return;
     }
-    if (!-ser.email) {
+    if (!user.email) {
       toast.error("Din e-postadress saknas i profilen");
-      ret-rn;
+      return;
     }
-    setSaving(tr-e);
-    const { error } = await s-pabase.from("price_alerts").insert({
-      -ser_id: -ser.id,
-      email: -ser.email,
-      area_sl-g: scope === "area" ? areaSl-g : n-ll,
-      region_sl-g: scope === "region" ? regionSl-g : n-ll,
+    setSaving(true);
+    const { error } = await supabase.from("price_alerts").insert({
+      user_id: user.id,
+      email: user.email,
+      area_slug: scope === "area" ? areaSlug : null,
+      region_slug: scope === "region" ? regionSlug : null,
       max_price_per_night: price,
-      active: tr-e,
+      active: true,
     });
     setSaving(false);
     if (error) {
       toast.error(error.message);
-      ret-rn;
+      return;
     }
-    toast.s-ccess("Prisvarning skapad! Vi mejlar dig när nya st-gor släpps.");
-    setAreaSl-g("");
-    setRegionSl-g("");
+    toast.success("Prisvarning skapad! Vi mejlar dig när nya stugor släpps.");
+    setAreaSlug("");
+    setRegionSlug("");
     setMaxPrice("");
-    qc.invalidateQ-eries({ q-eryKey: ["price_alerts", -ser.id] });
+    qc.invalidateQueries({ queryKey: ["price_alerts", user.id] });
   };
 
-  ret-rn (
-    <section className="ro-nded--xl border border-border bg-backgro-nd p-6">
-      <div className="mb-- flex items-start gap--">
-        <div className="flex h--- w--- items-center j-stify-center ro-nded-f-ll bg-primary/-- text-primary">
+  return (
+    <section className="rounded-2xl border border-border bg-background p-6">
+      <div className="mb-4 flex items-start gap-3">
+        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-primary/10 text-primary">
           <Bell className="h-5 w-5" />
         </div>
         <div>
-          <h- className="font-serif text-xl text-foregro-nd">Prisvarningar</h->
-          <p className="mt-- text-sm text-m-ted-foregro-nd">
-            Få mejl så snart en st-ga i valt område släpps -nder ditt maxpris per natt.
+          <h2 className="font-serif text-xl text-foreground">Prisvarningar</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Få mejl så snart en stuga i valt område släpps under ditt maxpris per natt.
           </p>
         </div>
       </div>
 
-      <form onS-bmit={s-bmit} className="mt-- grid gap-- sm:grid-cols-[a-to_-fr_a-to_a-to]">
+      <form onSubmit={submit} className="mt-4 grid gap-3 sm:grid-cols-[auto_1fr_auto_auto]">
         <select
-          val-e={scope}
-          onChange={(e) => setScope(e.target.val-e as "area" | "region")}
-          className="ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
+          value={scope}
+          onChange={(e) => setScope(e.target.value as "area" | "region")}
+          className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
         >
-          <option val-e="area">Område</option>
-          <option val-e="region">Region</option>
+          <option value="area">Område</option>
+          <option value="region">Region</option>
         </select>
         {scope === "area" ? (
           <select
-            val-e={areaSl-g}
-            onChange={(e) => setAreaSl-g(e.target.val-e)}
-            className="ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
+            value={areaSlug}
+            onChange={(e) => setAreaSlug(e.target.value)}
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
           >
-            <option val-e="">Välj område…</option>
+            <option value="">Välj område…</option>
             {areas.map((a) => (
-              <option key={a.sl-g} val-e={a.sl-g}>{a.name}</option>
+              <option key={a.slug} value={a.slug}>{a.name}</option>
             ))}
           </select>
         ) : (
           <select
-            val-e={regionSl-g}
-            onChange={(e) => setRegionSl-g(e.target.val-e)}
-            className="ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
+            value={regionSlug}
+            onChange={(e) => setRegionSlug(e.target.value)}
+            className="rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
           >
-            <option val-e="">Välj region…</option>
+            <option value="">Välj region…</option>
             {regions.map((r) => (
-              <option key={r.sl-g} val-e={r.sl-g}>{r.name}</option>
+              <option key={r.slug} value={r.slug}>{r.name}</option>
             ))}
           </select>
         )}
-        <inp-t
-          type="n-mber"
-          min={---}
-          step={5-}
-          val-e={maxPrice}
-          onChange={(e) => setMaxPrice(e.target.val-e)}
+        <input
+          type="number"
+          min={100}
+          step={50}
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value)}
           placeholder="Max kr/natt"
-          className="w--- ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
+          className="w-32 rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
         />
-        <b-tton
-          type="s-bmit"
+        <button
+          type="submit"
           disabled={saving}
-          className="inline-flex items-center j-stify-center gap-- ro-nded-lg bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+          className="inline-flex items-center justify-center gap-2 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {saving && <Loader- className="h-- w-- animate-spin" />}
+          {saving && <Loader2 className="h-4 w-4 animate-spin" />}
           Skapa varning
-        </b-tton>
+        </button>
       </form>
 
       {q.isLoading ? (
-        <div className="mt-6 flex items-center gap-- text-sm text-m-ted-foregro-nd">
-          <Loader- className="h-- w-- animate-spin" /> Laddar…
+        <div className="mt-6 flex items-center gap-2 text-sm text-muted-foreground">
+          <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
         </div>
-      ) : alerts.length === - ? (
-        <p className="mt-6 text-sm text-m-ted-foregro-nd">Inga aktiva prisvarningar än.</p>
+      ) : alerts.length === 0 ? (
+        <p className="mt-6 text-sm text-muted-foreground">Inga aktiva prisvarningar än.</p>
       ) : (
-        <-l className="mt-6 space-y--">
+        <ul className="mt-6 space-y-2">
           {alerts.map((a) => {
-            const label = a.area_sl-g
-              ? areaBySl-g(a.area_sl-g)?.name ?? a.area_sl-g
-              : regions.find((r) => r.sl-g === a.region_sl-g)?.name ?? a.region_sl-g ?? "-";
-            ret-rn (
+            const label = a.area_slug
+              ? areaBySlug(a.area_slug)?.name ?? a.area_slug
+              : regions.find((r) => r.slug === a.region_slug)?.name ?? a.region_slug ?? "-";
+            return (
               <li
                 key={a.id}
-                className="flex flex-wrap items-center j-stify-between gap-- ro-nded-xl border border-border bg-m-ted/-- p-- text-sm"
+                className="flex flex-wrap items-center justify-between gap-3 rounded-xl border border-border bg-muted/20 p-3 text-sm"
               >
-                <div className="flex items-center gap--">
-                  <MapPin className="h-- w-- text-primary" />
-                  <span className="font-medi-m text-foregro-nd">{label}</span>
-                  <span className="text-m-ted-foregro-nd">
-                    · -nder {a.max_price_per_night.toLocaleString("sv-SE")} kr/natt
+                <div className="flex items-center gap-2">
+                  <MapPin className="h-4 w-4 text-primary" />
+                  <span className="font-medium text-foreground">{label}</span>
+                  <span className="text-muted-foreground">
+                    · under {a.max_price_per_night.toLocaleString("sv-SE")} kr/natt
                   </span>
                 </div>
-                <div className="flex items-center gap--">
-                  <label className="flex items-center gap--.5 text-xs text-m-ted-foregro-nd">
-                    <inp-t
+                <div className="flex items-center gap-3">
+                  <label className="flex items-center gap-1.5 text-xs text-muted-foreground">
+                    <input
                       type="checkbox"
                       checked={a.active}
-                      onChange={(e) => toggleActive.m-tate({ id: a.id, active: e.target.checked })}
-                      className="ro-nded"
+                      onChange={(e) => toggleActive.mutate({ id: a.id, active: e.target.checked })}
+                      className="rounded"
                     />
                     Aktiv
                   </label>
-                  <b-tton
-                    onClick={() => del.m-tate(a.id)}
-                    className="inline-flex items-center gap-- text-xs text-m-ted-foregro-nd hover:text-destr-ctive"
+                  <button
+                    onClick={() => del.mutate(a.id)}
+                    className="inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-destructive"
                   >
-                    <Trash- className="h-- w--" /> Ta bort
-                  </b-tton>
+                    <Trash2 className="h-3 w-3" /> Ta bort
+                  </button>
                 </div>
               </li>
             );
           })}
-        </-l>
+        </ul>
       )}
     </section>
   );

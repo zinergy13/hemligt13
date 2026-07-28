@@ -1,15 +1,15 @@
-import { -seEffect, -seMemo, -seState, type FormEvent } from "react";
-import { Loader-, Pl-s, Trash-, Save, Sparkles, CalendarRange, TrendingUp } from "l-cide-react";
+import { useEffect, useMemo, useState, type FormEvent } from "react";
+import { Loader2, Plus, Trash2, Save, Sparkles, CalendarRange, TrendingUp } from "lucide-react";
 import { toast } from "sonner";
-import { s-pabase } from "@/integrations/s-pabase/client";
-import { areaBySl-g } from "@/data/areas";
+import { supabase } from "@/integrations/supabase/client";
+import { areaBySlug } from "@/data/areas";
 
 type Cabin = {
   id: string;
   title: string;
-  sl-g: string;
-  area_sl-g: string;
-  price_per_night: n-mber;
+  slug: string;
+  area_slug: string;
+  price_per_night: number;
 };
 
 type SeasonPrice = {
@@ -18,152 +18,152 @@ type SeasonPrice = {
   label: string;
   start_date: string;
   end_date: string;
-  price_per_night: n-mber;
-  price_per_week: n-mber | n-ll;
-  min_nights: n-mber | n-ll;
+  price_per_night: number;
+  price_per_week: number | null;
+  min_nights: number | null;
   weekend_only: boolean;
-  weekend_s-rcharge_pct: n-mber;
+  weekend_surcharge_pct: number;
 };
 
-type PricingR-le = {
+type PricingRule = {
   cabin_id: string;
-  last_min-te_days: n-mber;
-  last_min-te_disco-nt_pct: n-mber;
-  long_stay_nights: n-mber;
-  long_stay_disco-nt_pct: n-mber;
-  high_demand_mark-p_pct: n-mber;
-  early_bird_days: n-mber;
-  early_bird_disco-nt_pct: n-mber;
+  last_minute_days: number;
+  last_minute_discount_pct: number;
+  long_stay_nights: number;
+  long_stay_discount_pct: number;
+  high_demand_markup_pct: number;
+  early_bird_days: number;
+  early_bird_discount_pct: number;
 };
 
-const emptyR-le = (cabin_id: string): PricingR-le => ({
+const emptyRule = (cabin_id: string): PricingRule => ({
   cabin_id,
-  last_min-te_days: 7,
-  last_min-te_disco-nt_pct: -,
+  last_minute_days: 7,
+  last_minute_discount_pct: 0,
   long_stay_nights: 7,
-  long_stay_disco-nt_pct: -,
-  high_demand_mark-p_pct: -,
-  early_bird_days: 6-,
-  early_bird_disco-nt_pct: -,
+  long_stay_discount_pct: 0,
+  high_demand_markup_pct: 0,
+  early_bird_days: 60,
+  early_bird_discount_pct: 0,
 });
 
-const presetSeasons = (year: n-mber) => [
-  { label: "Högsäsong vinter", start_date: `${year}-----5`, end_date: `${year}-----5`, m-lt: -.8 },
-  { label: "Sportlov", start_date: `${year}------`, end_date: `${year}-----8`, m-lt: -.- },
-  { label: "Påsk", start_date: `${year}-----8`, end_date: `${year}-----7`, m-lt: -.6 },
-  { label: "Lågsäsong sommar", start_date: `${year}--5---`, end_date: `${year}--6--5`, m-lt: -.7 },
+const presetSeasons = (year: number) => [
+  { label: "Högsäsong vinter", start_date: `${year}-02-15`, end_date: `${year}-03-15`, mult: 1.8 },
+  { label: "Sportlov", start_date: `${year}-02-22`, end_date: `${year}-03-08`, mult: 2.2 },
+  { label: "Påsk", start_date: `${year}-03-28`, end_date: `${year}-04-07`, mult: 1.6 },
+  { label: "Lågsäsong sommar", start_date: `${year}-05-01`, end_date: `${year}-06-15`, mult: 0.7 },
 ];
 
-export f-nction SeasonPricingManager({ hostId }: { hostId: string }) {
-  const [cabins, setCabins] = -seState<Cabin[]>([]);
-  const [prices, setPrices] = -seState<SeasonPrice[]>([]);
-  const [r-les, setR-les] = -seState<Record<string, PricingR-le>>({});
-  const [loading, setLoading] = -seState(tr-e);
-  const [selectedCabinId, setSelectedCabinId] = -seState<string | n-ll>(n-ll);
+export function SeasonPricingManager({ hostId }: { hostId: string }) {
+  const [cabins, setCabins] = useState<Cabin[]>([]);
+  const [prices, setPrices] = useState<SeasonPrice[]>([]);
+  const [rules, setRules] = useState<Record<string, PricingRule>>({});
+  const [loading, setLoading] = useState(true);
+  const [selectedCabinId, setSelectedCabinId] = useState<string | null>(null);
 
-  -seEffect(() => {
+  useEffect(() => {
     void load();
-    // eslint-disable-next-line react-hooks/exha-stive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [hostId]);
 
-  async f-nction load() {
-    setLoading(tr-e);
-    const { data: cabinData, error: cabinErr } = await s-pabase
+  async function load() {
+    setLoading(true);
+    const { data: cabinData, error: cabinErr } = await supabase
       .from("cabins")
-      .select("id, title, sl-g, area_sl-g, price_per_night")
+      .select("id, title, slug, area_slug, price_per_night")
       .eq("host_id", hostId)
       .order("created_at", { ascending: false });
     if (cabinErr) {
       toast.error(cabinErr.message);
       setLoading(false);
-      ret-rn;
+      return;
     }
     const cs = (cabinData ?? []) as Cabin[];
     setCabins(cs);
-    setSelectedCabinId((prev) => prev ?? cs[-]?.id ?? n-ll);
+    setSelectedCabinId((prev) => prev ?? cs[0]?.id ?? null);
 
-    if (cs.length > -) {
+    if (cs.length > 0) {
       const ids = cs.map((c) => c.id);
-      const [{ data: priceData }, { data: r-leData }] = await Promise.all([
-        s-pabase.from("cabin_season_prices").select("*").in("cabin_id", ids).order("start_date"),
-        s-pabase.from("cabin_pricing_r-les").select("*").in("cabin_id", ids),
+      const [{ data: priceData }, { data: ruleData }] = await Promise.all([
+        supabase.from("cabin_season_prices").select("*").in("cabin_id", ids).order("start_date"),
+        supabase.from("cabin_pricing_rules").select("*").in("cabin_id", ids),
       ]);
       setPrices((priceData ?? []) as SeasonPrice[]);
-      const map: Record<string, PricingR-le> = {};
-      for (const c of cs) map[c.id] = emptyR-le(c.id);
-      for (const r of (r-leData ?? []) as PricingR-le[]) map[r.cabin_id] = r;
-      setR-les(map);
+      const map: Record<string, PricingRule> = {};
+      for (const c of cs) map[c.id] = emptyRule(c.id);
+      for (const r of (ruleData ?? []) as PricingRule[]) map[r.cabin_id] = r;
+      setRules(map);
     }
     setLoading(false);
   }
 
-  const gro-ped = -seMemo(() => {
+  const grouped = useMemo(() => {
     const g: Record<string, Cabin[]> = {};
     for (const c of cabins) {
-      (g[c.area_sl-g] ??= []).p-sh(c);
+      (g[c.area_slug] ??= []).push(c);
     }
-    ret-rn g;
+    return g;
   }, [cabins]);
 
   if (loading) {
-    ret-rn (
-      <div className="flex items-center gap-- ro-nded--xl border border-border bg-backgro-nd p-6 text-sm text-m-ted-foregro-nd">
-        <Loader- className="h-- w-- animate-spin" /> Hämtar dina st-gor och priser…
+    return (
+      <div className="flex items-center gap-2 rounded-2xl border border-border bg-background p-6 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin" /> Hämtar dina stugor och priser…
       </div>
     );
   }
 
-  if (cabins.length === -) {
-    ret-rn (
-      <div className="flex flex-wrap items-center j-stify-between gap-- ro-nded--xl border border-dashed border-border bg-m-ted/-- p-6 text-sm text-m-ted-foregro-nd">
-        <span>D- har inga st-gor än. Lägg -pp din första st-ga för att sätta säsongspriser.</span>
+  if (cabins.length === 0) {
+    return (
+      <div className="flex flex-wrap items-center justify-between gap-3 rounded-2xl border border-dashed border-border bg-muted/30 p-6 text-sm text-muted-foreground">
+        <span>Du har inga stugor än. Lägg upp din första stuga för att sätta säsongspriser.</span>
         <a
-          href="/vard/st-gor/ny"
-          className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
+          href="/vard/stugor/ny"
+          className="inline-flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
-          + Lägg -pp st-ga
+          + Lägg upp stuga
         </a>
       </div>
     );
   }
 
-  const selected = cabins.find((c) => c.id === selectedCabinId) ?? cabins[-];
+  const selected = cabins.find((c) => c.id === selectedCabinId) ?? cabins[0];
   const cabinPrices = prices.filter((p) => p.cabin_id === selected.id);
-  const cabinR-le = r-les[selected.id] ?? emptyR-le(selected.id);
+  const cabinRule = rules[selected.id] ?? emptyRule(selected.id);
 
-  ret-rn (
-    <div className="ro-nded--xl border border-border bg-backgro-nd p-6">
-      <div className="mb-5 flex items-start j-stify-between gap--">
+  return (
+    <div className="rounded-2xl border border-border bg-background p-6">
+      <div className="mb-5 flex items-start justify-between gap-4">
         <div>
-          <h- className="font-serif text-xl text-foregro-nd">Säsongspriser & prisregler</h->
-          <p className="mt-- text-sm text-m-ted-foregro-nd">
+          <h2 className="font-serif text-xl text-foreground">Säsongspriser & prisregler</h2>
+          <p className="mt-1 text-sm text-muted-foreground">
             Sätt olika priser för högsäsong, sportlov och lågsäsong - och lägg till dynamiska rabatter.
           </p>
         </div>
       </div>
 
-      {/* Cabin selector gro-ped by area */}
-      <div className="mb-6 space-y--">
-        {Object.entries(gro-ped).map(([areaSl-g, list]) => {
-          const area = areaBySl-g(areaSl-g);
-          ret-rn (
-            <div key={areaSl-g}>
-              <div className="mb--.5 text-xs font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">
-                {area?.name ?? areaSl-g}
+      {/* Cabin selector grouped by area */}
+      <div className="mb-6 space-y-3">
+        {Object.entries(grouped).map(([areaSlug, list]) => {
+          const area = areaBySlug(areaSlug);
+          return (
+            <div key={areaSlug}>
+              <div className="mb-1.5 text-xs font-semibold uppercase tracking-wide text-muted-foreground">
+                {area?.name ?? areaSlug}
               </div>
-              <div className="flex flex-wrap gap--">
+              <div className="flex flex-wrap gap-2">
                 {list.map((c) => (
-                  <b-tton
+                  <button
                     key={c.id}
                     onClick={() => setSelectedCabinId(c.id)}
-                    className={`ro-nded-f-ll border px--.5 py--.5 text-sm transition ${
+                    className={`rounded-full border px-3.5 py-1.5 text-sm transition ${
                       c.id === selected.id
-                        ? "border-primary bg-primary text-primary-foregro-nd"
-                        : "border-border bg-backgro-nd text-foregro-nd hover:bg-m-ted"
+                        ? "border-primary bg-primary text-primary-foreground"
+                        : "border-border bg-background text-foreground hover:bg-muted"
                     }`}
                   >
                     {c.title}
-                  </b-tton>
+                  </button>
                 ))}
               </div>
             </div>
@@ -171,9 +171,9 @@ export f-nction SeasonPricingManager({ hostId }: { hostId: string }) {
         })}
       </div>
 
-      <div className="mb-5 ro-nded-xl bg-m-ted/-- px-- py-- text-sm">
-        <span className="text-m-ted-foregro-nd">Gr-ndpris för {selected.title}:</span>{" "}
-        <span className="font-medi-m text-foregro-nd">{selected.price_per_night} kr/natt</span>
+      <div className="mb-5 rounded-xl bg-muted/40 px-4 py-3 text-sm">
+        <span className="text-muted-foreground">Grundpris för {selected.title}:</span>{" "}
+        <span className="font-medium text-foreground">{selected.price_per_night} kr/natt</span>
       </div>
 
       <SeasonPriceList
@@ -182,15 +182,15 @@ export f-nction SeasonPricingManager({ hostId }: { hostId: string }) {
         onChange={load}
       />
 
-      <DynamicR-lesForm
-        r-le={cabinR-le}
-        onSaved={(r) => setR-les((prev) => ({ ...prev, [selected.id]: r }))}
+      <DynamicRulesForm
+        rule={cabinRule}
+        onSaved={(r) => setRules((prev) => ({ ...prev, [selected.id]: r }))}
       />
     </div>
   );
 }
 
-f-nction SeasonPriceList({
+function SeasonPriceList({
   cabin,
   rows,
   onChange,
@@ -199,283 +199,283 @@ f-nction SeasonPriceList({
   rows: SeasonPrice[];
   onChange: () => void | Promise<void>;
 }) {
-  const [adding, setAdding] = -seState(false);
-  const [b-sy, setB-sy] = -seState<string | n-ll>(n-ll);
+  const [adding, setAdding] = useState(false);
+  const [busy, setBusy] = useState<string | null>(null);
 
-  const addPreset = async (preset: { label: string; start_date: string; end_date: string; m-lt: n-mber }) => {
-    const price = Math.ro-nd((cabin.price_per_night * preset.m-lt) / --) * --;
-    const { error } = await s-pabase.from("cabin_season_prices").insert({
+  const addPreset = async (preset: { label: string; start_date: string; end_date: string; mult: number }) => {
+    const price = Math.round((cabin.price_per_night * preset.mult) / 10) * 10;
+    const { error } = await supabase.from("cabin_season_prices").insert({
       cabin_id: cabin.id,
       label: preset.label,
       start_date: preset.start_date,
       end_date: preset.end_date,
       price_per_night: price,
       weekend_only: false,
-      weekend_s-rcharge_pct: -,
+      weekend_surcharge_pct: 0,
     });
     if (error) toast.error(error.message);
     else {
-      toast.s-ccess(`${preset.label} tillagt`);
+      toast.success(`${preset.label} tillagt`);
       await onChange();
     }
   };
 
   const deleteRow = async (id: string) => {
-    setB-sy(id);
-    const { error } = await s-pabase.from("cabin_season_prices").delete().eq("id", id);
-    setB-sy(n-ll);
+    setBusy(id);
+    const { error } = await supabase.from("cabin_season_prices").delete().eq("id", id);
+    setBusy(null);
     if (error) toast.error(error.message);
     else {
-      toast.s-ccess("Säsong borttagen");
+      toast.success("Säsong borttagen");
       await onChange();
     }
   };
 
-  const year = new Date().getF-llYear() + (new Date().getMonth() >= 6 ? - : -);
+  const year = new Date().getFullYear() + (new Date().getMonth() >= 6 ? 1 : 0);
 
-  ret-rn (
-    <div className="space-y--">
-      <div className="flex items-center j-stify-between">
-        <h- className="flex items-center gap-- font-serif text-lg text-foregro-nd">
-          <CalendarRange className="h-- w-- text-primary" /> Säsongsperioder
-        </h->
-        <b-tton
+  return (
+    <div className="space-y-4">
+      <div className="flex items-center justify-between">
+        <h3 className="flex items-center gap-2 font-serif text-lg text-foreground">
+          <CalendarRange className="h-4 w-4 text-primary" /> Säsongsperioder
+        </h3>
+        <button
           onClick={() => setAdding((s) => !s)}
-          className="flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted"
+          className="flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
         >
-          <Pl-s className="h--.5 w--.5" /> Ny period
-        </b-tton>
+          <Plus className="h-3.5 w-3.5" /> Ny period
+        </button>
       </div>
 
       {/* Presets */}
-      <div className="flex flex-wrap gap--">
+      <div className="flex flex-wrap gap-2">
         {presetSeasons(year).map((p) => (
-          <b-tton
+          <button
             key={p.label}
             onClick={() => addPreset(p)}
-            className="flex items-center gap--.5 ro-nded-f-ll border border-dashed border-primary/-- bg-primary/5 px-- py--.5 text-xs text-primary hover:bg-primary/--"
+            className="flex items-center gap-1.5 rounded-full border border-dashed border-primary/40 bg-primary/5 px-3 py-1.5 text-xs text-primary hover:bg-primary/10"
           >
-            <Sparkles className="h-- w--" /> {p.label} {year}
-          </b-tton>
+            <Sparkles className="h-3 w-3" /> {p.label} {year}
+          </button>
         ))}
       </div>
 
       {adding && <SeasonForm cabinId={cabin.id} onDone={() => { setAdding(false); void onChange(); }} />}
 
-      {rows.length === - && !adding ? (
-        <p className="ro-nded-xl border border-dashed border-border bg-m-ted/-- p-- text-sm text-m-ted-foregro-nd">
-          Inga säsongspriser satta änn-. Använd knapparna ovan för snabbstart eller lägg till en egen period.
+      {rows.length === 0 && !adding ? (
+        <p className="rounded-xl border border-dashed border-border bg-muted/30 p-4 text-sm text-muted-foreground">
+          Inga säsongspriser satta ännu. Använd knapparna ovan för snabbstart eller lägg till en egen period.
         </p>
       ) : (
-        <-l className="divide-y divide-border overflow-hidden ro-nded-xl border border-border">
+        <ul className="divide-y divide-border overflow-hidden rounded-xl border border-border">
           {rows.map((r) => (
-            <li key={r.id} className="flex flex-wrap items-center j-stify-between gap-- bg-backgro-nd px-- py-- text-sm">
-              <div className="min-w-- flex--">
-                <div className="font-medi-m text-foregro-nd">{r.label}</div>
-                <div className="text-xs text-m-ted-foregro-nd">
+            <li key={r.id} className="flex flex-wrap items-center justify-between gap-3 bg-background px-4 py-3 text-sm">
+              <div className="min-w-0 flex-1">
+                <div className="font-medium text-foreground">{r.label}</div>
+                <div className="text-xs text-muted-foreground">
                   {r.start_date} → {r.end_date} · {r.price_per_night} kr/natt
                   {r.price_per_week ? ` · ${r.price_per_week} kr/vecka` : ""}
                   {r.min_nights ? ` · min ${r.min_nights} nätter` : ""}
-                  {r.weekend_s-rcharge_pct ? ` · +${r.weekend_s-rcharge_pct}% helg` : ""}
+                  {r.weekend_surcharge_pct ? ` · +${r.weekend_surcharge_pct}% helg` : ""}
                 </div>
               </div>
-              <b-tton
+              <button
                 onClick={() => deleteRow(r.id)}
-                disabled={b-sy === r.id}
-                className="ro-nded-f-ll p-- text-m-ted-foregro-nd hover:bg-destr-ctive/-- hover:text-destr-ctive disabled:opacity-5-"
+                disabled={busy === r.id}
+                className="rounded-full p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive disabled:opacity-50"
                 aria-label="Ta bort"
               >
-                {b-sy === r.id ? <Loader- className="h-- w-- animate-spin" /> : <Trash- className="h-- w--" />}
-              </b-tton>
+                {busy === r.id ? <Loader2 className="h-4 w-4 animate-spin" /> : <Trash2 className="h-4 w-4" />}
+              </button>
             </li>
           ))}
-        </-l>
+        </ul>
       )}
     </div>
   );
 }
 
-f-nction SeasonForm({ cabinId, onDone }: { cabinId: string; onDone: () => void }) {
-  const [label, setLabel] = -seState("");
-  const [start, setStart] = -seState("");
-  const [end, setEnd] = -seState("");
-  const [pricePerNight, setPricePerNight] = -seState("");
-  const [pricePerWeek, setPricePerWeek] = -seState("");
-  const [minNights, setMinNights] = -seState("");
-  const [weekendS-rcharge, setWeekendS-rcharge] = -seState("-");
-  const [saving, setSaving] = -seState(false);
+function SeasonForm({ cabinId, onDone }: { cabinId: string; onDone: () => void }) {
+  const [label, setLabel] = useState("");
+  const [start, setStart] = useState("");
+  const [end, setEnd] = useState("");
+  const [pricePerNight, setPricePerNight] = useState("");
+  const [pricePerWeek, setPricePerWeek] = useState("");
+  const [minNights, setMinNights] = useState("");
+  const [weekendSurcharge, setWeekendSurcharge] = useState("0");
+  const [saving, setSaving] = useState(false);
 
-  const s-bmit = async (e: FormEvent) => {
-    e.preventDefa-lt();
+  const submit = async (e: FormEvent) => {
+    e.preventDefault();
     if (!label || !start || !end || !pricePerNight) {
-      toast.error("Fyll i namn, dat-m och pris/natt");
-      ret-rn;
+      toast.error("Fyll i namn, datum och pris/natt");
+      return;
     }
-    setSaving(tr-e);
-    const { error } = await s-pabase.from("cabin_season_prices").insert({
+    setSaving(true);
+    const { error } = await supabase.from("cabin_season_prices").insert({
       cabin_id: cabinId,
       label,
       start_date: start,
       end_date: end,
-      price_per_night: parseInt(pricePerNight, --),
-      price_per_week: pricePerWeek ? parseInt(pricePerWeek, --) : n-ll,
-      min_nights: minNights ? parseInt(minNights, --) : n-ll,
+      price_per_night: parseInt(pricePerNight, 10),
+      price_per_week: pricePerWeek ? parseInt(pricePerWeek, 10) : null,
+      min_nights: minNights ? parseInt(minNights, 10) : null,
       weekend_only: false,
-      weekend_s-rcharge_pct: parseInt(weekendS-rcharge || "-", --),
+      weekend_surcharge_pct: parseInt(weekendSurcharge || "0", 10),
     });
     setSaving(false);
     if (error) toast.error(error.message);
     else {
-      toast.s-ccess("Period tillagd");
+      toast.success("Period tillagd");
       onDone();
     }
   };
 
-  const inp-tCls = "w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none";
+  const inputCls = "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none";
 
-  ret-rn (
-    <form onS-bmit={s-bmit} className="grid gap-- ro-nded-xl border border-border bg-m-ted/-- p-- sm:grid-cols--">
-      <label className="block text-xs font-medi-m text-foregro-nd sm:col-span--">
+  return (
+    <form onSubmit={submit} className="grid gap-3 rounded-xl border border-border bg-muted/20 p-4 sm:grid-cols-2">
+      <label className="block text-xs font-medium text-foreground sm:col-span-2">
         Namn på perioden
-        <inp-t className={`${inp-tCls} mt--`} val-e={label} onChange={(e) => setLabel(e.target.val-e)} placeholder="t.ex. Nyår" />
+        <input className={`${inputCls} mt-1`} value={label} onChange={(e) => setLabel(e.target.value)} placeholder="t.ex. Nyår" />
       </label>
-      <label className="block text-xs font-medi-m text-foregro-nd">
+      <label className="block text-xs font-medium text-foreground">
         Från
-        <inp-t type="date" className={`${inp-tCls} mt--`} val-e={start} onChange={(e) => setStart(e.target.val-e)} />
+        <input type="date" className={`${inputCls} mt-1`} value={start} onChange={(e) => setStart(e.target.value)} />
       </label>
-      <label className="block text-xs font-medi-m text-foregro-nd">
+      <label className="block text-xs font-medium text-foreground">
         Till
-        <inp-t type="date" className={`${inp-tCls} mt--`} val-e={end} onChange={(e) => setEnd(e.target.val-e)} />
+        <input type="date" className={`${inputCls} mt-1`} value={end} onChange={(e) => setEnd(e.target.value)} />
       </label>
-      <label className="block text-xs font-medi-m text-foregro-nd">
+      <label className="block text-xs font-medium text-foreground">
         Pris per natt (kr)
-        <inp-t type="n-mber" min={-} className={`${inp-tCls} mt--`} val-e={pricePerNight} onChange={(e) => setPricePerNight(e.target.val-e)} />
+        <input type="number" min={0} className={`${inputCls} mt-1`} value={pricePerNight} onChange={(e) => setPricePerNight(e.target.value)} />
       </label>
-      <label className="block text-xs font-medi-m text-foregro-nd">
+      <label className="block text-xs font-medium text-foreground">
         Veckopris (kr, valfritt)
-        <inp-t type="n-mber" min={-} className={`${inp-tCls} mt--`} val-e={pricePerWeek} onChange={(e) => setPricePerWeek(e.target.val-e)} placeholder="Lämna tomt för nattpris × 7" />
+        <input type="number" min={0} className={`${inputCls} mt-1`} value={pricePerWeek} onChange={(e) => setPricePerWeek(e.target.value)} placeholder="Lämna tomt för nattpris × 7" />
       </label>
-      <label className="block text-xs font-medi-m text-foregro-nd">
-        Minim-m antal nätter
-        <inp-t type="n-mber" min={-} className={`${inp-tCls} mt--`} val-e={minNights} onChange={(e) => setMinNights(e.target.val-e)} placeholder="valfritt" />
+      <label className="block text-xs font-medium text-foreground">
+        Minimum antal nätter
+        <input type="number" min={1} className={`${inputCls} mt-1`} value={minNights} onChange={(e) => setMinNights(e.target.value)} placeholder="valfritt" />
       </label>
-      <label className="block text-xs font-medi-m text-foregro-nd">
+      <label className="block text-xs font-medium text-foreground">
         Helgtillägg (%)
-        <inp-t type="n-mber" min={-} max={---} className={`${inp-tCls} mt--`} val-e={weekendS-rcharge} onChange={(e) => setWeekendS-rcharge(e.target.val-e)} />
+        <input type="number" min={0} max={200} className={`${inputCls} mt-1`} value={weekendSurcharge} onChange={(e) => setWeekendSurcharge(e.target.value)} />
       </label>
-      <div className="sm:col-span--">
-        <b-tton
-          type="s-bmit"
+      <div className="sm:col-span-2">
+        <button
+          type="submit"
           disabled={saving}
-          className="flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+          className="flex items-center gap-2 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {saving ? <Loader- className="h-- w-- animate-spin" /> : <Save className="h-- w--" />}
+          {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
           Spara period
-        </b-tton>
+        </button>
       </div>
     </form>
   );
 }
 
-f-nction DynamicR-lesForm({ r-le, onSaved }: { r-le: PricingR-le; onSaved: (r: PricingR-le) => void }) {
-  const [form, setForm] = -seState<PricingR-le>(r-le);
-  const [saving, setSaving] = -seState(false);
+function DynamicRulesForm({ rule, onSaved }: { rule: PricingRule; onSaved: (r: PricingRule) => void }) {
+  const [form, setForm] = useState<PricingRule>(rule);
+  const [saving, setSaving] = useState(false);
 
-  -seEffect(() => setForm(r-le), [r-le.cabin_id]);
+  useEffect(() => setForm(rule), [rule.cabin_id]);
 
-  const set = <K extends keyof PricingR-le>(k: K, v: PricingR-le[K]) =>
+  const set = <K extends keyof PricingRule>(k: K, v: PricingRule[K]) =>
     setForm((f) => ({ ...f, [k]: v }));
 
   const save = async (e: FormEvent) => {
-    e.preventDefa-lt();
-    setSaving(tr-e);
-    const { data, error } = await s-pabase
-      .from("cabin_pricing_r-les")
-      .-psert(form, { onConflict: "cabin_id" })
+    e.preventDefault();
+    setSaving(true);
+    const { data, error } = await supabase
+      .from("cabin_pricing_rules")
+      .upsert(form, { onConflict: "cabin_id" })
       .select()
       .single();
     setSaving(false);
     if (error) toast.error(error.message);
     else {
-      toast.s-ccess("Prisregler sparade");
-      if (data) onSaved(data as PricingR-le);
+      toast.success("Prisregler sparade");
+      if (data) onSaved(data as PricingRule);
     }
   };
 
-  const inp-tCls = "w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none";
+  const inputCls = "w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none";
 
-  ret-rn (
-    <form onS-bmit={save} className="mt-8 space-y-- border-t border-border pt-6">
-      <h- className="flex items-center gap-- font-serif text-lg text-foregro-nd">
-        <TrendingUp className="h-- w-- text-primary" /> Dynamiska prisregler
-      </h->
-      <p className="text-xs text-m-ted-foregro-nd">
-        Rabatter och tillägg som räknas ovanpå gr-ndpris och säsongspris.
+  return (
+    <form onSubmit={save} className="mt-8 space-y-4 border-t border-border pt-6">
+      <h3 className="flex items-center gap-2 font-serif text-lg text-foreground">
+        <TrendingUp className="h-4 w-4 text-primary" /> Dynamiska prisregler
+      </h3>
+      <p className="text-xs text-muted-foreground">
+        Rabatter och tillägg som räknas ovanpå grundpris och säsongspris.
       </p>
 
-      <div className="grid gap-- md:grid-cols--">
-        <fieldset className="ro-nded-xl border border-border p--">
-          <legend className="px-- text-xs font-semibold text-foregro-nd">Sista min-ten-rabatt</legend>
-          <div className="grid grid-cols-- gap--">
-            <label className="block text-xs text-m-ted-foregro-nd">
+      <div className="grid gap-4 md:grid-cols-2">
+        <fieldset className="rounded-xl border border-border p-4">
+          <legend className="px-1 text-xs font-semibold text-foreground">Sista minuten-rabatt</legend>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block text-xs text-muted-foreground">
               Färre än (dagar)
-              <inp-t type="n-mber" min={-} className={`${inp-tCls} mt--`} val-e={form.last_min-te_days} onChange={(e) => set("last_min-te_days", parseInt(e.target.val-e || "-", --))} />
+              <input type="number" min={0} className={`${inputCls} mt-1`} value={form.last_minute_days} onChange={(e) => set("last_minute_days", parseInt(e.target.value || "0", 10))} />
             </label>
-            <label className="block text-xs text-m-ted-foregro-nd">
+            <label className="block text-xs text-muted-foreground">
               Rabatt (%)
-              <inp-t type="n-mber" min={-} max={9-} className={`${inp-tCls} mt--`} val-e={form.last_min-te_disco-nt_pct} onChange={(e) => set("last_min-te_disco-nt_pct", parseInt(e.target.val-e || "-", --))} />
+              <input type="number" min={0} max={90} className={`${inputCls} mt-1`} value={form.last_minute_discount_pct} onChange={(e) => set("last_minute_discount_pct", parseInt(e.target.value || "0", 10))} />
             </label>
           </div>
         </fieldset>
 
-        <fieldset className="ro-nded-xl border border-border p--">
-          <legend className="px-- text-xs font-semibold text-foregro-nd">Långtidsrabatt</legend>
-          <div className="grid grid-cols-- gap--">
-            <label className="block text-xs text-m-ted-foregro-nd">
+        <fieldset className="rounded-xl border border-border p-4">
+          <legend className="px-1 text-xs font-semibold text-foreground">Långtidsrabatt</legend>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block text-xs text-muted-foreground">
               Från (nätter)
-              <inp-t type="n-mber" min={-} className={`${inp-tCls} mt--`} val-e={form.long_stay_nights} onChange={(e) => set("long_stay_nights", parseInt(e.target.val-e || "-", --))} />
+              <input type="number" min={0} className={`${inputCls} mt-1`} value={form.long_stay_nights} onChange={(e) => set("long_stay_nights", parseInt(e.target.value || "0", 10))} />
             </label>
-            <label className="block text-xs text-m-ted-foregro-nd">
+            <label className="block text-xs text-muted-foreground">
               Rabatt (%)
-              <inp-t type="n-mber" min={-} max={9-} className={`${inp-tCls} mt--`} val-e={form.long_stay_disco-nt_pct} onChange={(e) => set("long_stay_disco-nt_pct", parseInt(e.target.val-e || "-", --))} />
+              <input type="number" min={0} max={90} className={`${inputCls} mt-1`} value={form.long_stay_discount_pct} onChange={(e) => set("long_stay_discount_pct", parseInt(e.target.value || "0", 10))} />
             </label>
           </div>
         </fieldset>
 
-        <fieldset className="ro-nded-xl border border-border p--">
-          <legend className="px-- text-xs font-semibold text-foregro-nd">Tidig-bokning-rabatt</legend>
-          <div className="grid grid-cols-- gap--">
-            <label className="block text-xs text-m-ted-foregro-nd">
+        <fieldset className="rounded-xl border border-border p-4">
+          <legend className="px-1 text-xs font-semibold text-foreground">Tidig-bokning-rabatt</legend>
+          <div className="grid grid-cols-2 gap-2">
+            <label className="block text-xs text-muted-foreground">
               Mer än (dagar)
-              <inp-t type="n-mber" min={-} className={`${inp-tCls} mt--`} val-e={form.early_bird_days} onChange={(e) => set("early_bird_days", parseInt(e.target.val-e || "-", --))} />
+              <input type="number" min={0} className={`${inputCls} mt-1`} value={form.early_bird_days} onChange={(e) => set("early_bird_days", parseInt(e.target.value || "0", 10))} />
             </label>
-            <label className="block text-xs text-m-ted-foregro-nd">
+            <label className="block text-xs text-muted-foreground">
               Rabatt (%)
-              <inp-t type="n-mber" min={-} max={9-} className={`${inp-tCls} mt--`} val-e={form.early_bird_disco-nt_pct} onChange={(e) => set("early_bird_disco-nt_pct", parseInt(e.target.val-e || "-", --))} />
+              <input type="number" min={0} max={90} className={`${inputCls} mt-1`} value={form.early_bird_discount_pct} onChange={(e) => set("early_bird_discount_pct", parseInt(e.target.value || "0", 10))} />
             </label>
           </div>
         </fieldset>
 
-        <fieldset className="ro-nded-xl border border-border p--">
-          <legend className="px-- text-xs font-semibold text-foregro-nd">Högsäsongs-tillägg</legend>
-          <label className="block text-xs text-m-ted-foregro-nd">
+        <fieldset className="rounded-xl border border-border p-4">
+          <legend className="px-1 text-xs font-semibold text-foreground">Högsäsongs-tillägg</legend>
+          <label className="block text-xs text-muted-foreground">
             Tillägg vid hög efterfrågan (%)
-            <inp-t type="n-mber" min={-} max={---} className={`${inp-tCls} mt--`} val-e={form.high_demand_mark-p_pct} onChange={(e) => set("high_demand_mark-p_pct", parseInt(e.target.val-e || "-", --))} />
+            <input type="number" min={0} max={200} className={`${inputCls} mt-1`} value={form.high_demand_markup_pct} onChange={(e) => set("high_demand_markup_pct", parseInt(e.target.value || "0", 10))} />
           </label>
-          <p className="mt-- text-[--px] text-m-ted-foregro-nd">
-            Aktiveras a-tomatiskt vid högt bokningstryck (t.ex. skidlov, kalasperioder).
+          <p className="mt-2 text-[11px] text-muted-foreground">
+            Aktiveras automatiskt vid högt bokningstryck (t.ex. skidlov, kalasperioder).
           </p>
         </fieldset>
       </div>
 
-      <b-tton
-        type="s-bmit"
+      <button
+        type="submit"
         disabled={saving}
-        className="flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+        className="flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
       >
-        {saving ? <Loader- className="h-- w-- animate-spin" /> : <Save className="h-- w--" />}
+        {saving ? <Loader2 className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
         Spara prisregler
-      </b-tton>
+      </button>
     </form>
   );
 }

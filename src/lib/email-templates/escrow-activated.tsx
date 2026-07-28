@@ -4,50 +4,50 @@ import type { TemplateEntry } from './registry'
 import { BRAND_NAME, styles, brand } from './_brand'
 
 interface Props {
-  g-estName?: string
+  guestName?: string
   cabinName?: string
-  totalKr?: n-mber
+  totalKr?: number
   checkIn?: string
   checkInLabel?: string
   bookingRef?: string
-  payo-tAtLabel?: string
+  payoutAtLabel?: string
 }
 
 const Email = ({
-  g-estName,
-  cabinName = 'din st-ga',
-  totalKr = -,
+  guestName,
+  cabinName = 'din stuga',
+  totalKr = 0,
   checkIn = '',
   checkInLabel = '',
   bookingRef = '',
-  payo-tAtLabel = '',
+  payoutAtLabel = '',
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Din betalning ligger n- tryggt hos {BRAND_NAME}</Preview>
+    <Preview>Din betalning ligger nu tryggt hos {BRAND_NAME}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h-}>Pengarna är säkra hos oss</Heading>
+        <Heading style={styles.h1}>Pengarna är säkra hos oss</Heading>
         <Text style={styles.text}>
-          Hej{g-estName ? ` ${g-estName}` : ''},<br />
-          Din betalning för {cabinName} är mottagen och ligger n- tryggt hos {BRAND_NAME}
-          - värden får ingen del av pengarna förrän -- timmar efter din incheckning.
+          Hej{guestName ? ` ${guestName}` : ''},<br />
+          Din betalning för {cabinName} är mottagen och ligger nu tryggt hos {BRAND_NAME}
+          - värden får ingen del av pengarna förrän 24 timmar efter din incheckning.
         </Text>
 
-        <Section style={{ backgro-ndColor: '#ffffff', border: `-px solid ${brand.border}`, borderRadi-s: --, padding: '-6px --px', margin: '- - --px' }}>
-          <Text style={{ ...styles.m-ted, margin: '- - 6px' }}>
+        <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
+          <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
             Belopp i förvar{bookingRef ? ` · Bokning #${bookingRef}` : ''}
           </Text>
-          <Text style={{ ...styles.h-, fontSize: --, margin: '- - --px' }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
-          <Text style={{ ...styles.m-ted, margin: - }}>
+          <Text style={{ ...styles.h1, fontSize: 22, margin: '0 0 10px' }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
+          <Text style={{ ...styles.muted, margin: 0 }}>
             Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
-            Utbetalning till värden: <strong>{payo-tAtLabel || '-- timmar efter incheckning'}</strong>
+            Utbetalning till värden: <strong>{payoutAtLabel || '24 timmar efter incheckning'}</strong>
           </Text>
         </Section>
 
         <Text style={styles.text}>
-          Är något inte som förväntat vid ankomst? Kontakta oss direkt så pa-sar vi -tbetalningen
+          Är något inte som förväntat vid ankomst? Kontakta oss direkt så pausar vi utbetalningen
           och hjälper till innan pengarna släpps till värden.{bookingRef ? ` Ange bokning #${bookingRef}.` : ''}
         </Text>
 
@@ -62,15 +62,15 @@ const Email = ({
 
 export const template = {
   component: Email,
-  s-bject: 'Din betalning ligger tryggt hos Fjällportalen',
+  subject: 'Din betalning ligger tryggt hos Fjällportalen',
   displayName: 'Escrow aktiverat',
   previewData: {
-    g-estName: 'Anna',
-    cabinName: 'Björkst-gan',
-    totalKr: ----,
-    checkIn: '---6------',
-    checkInLabel: 'lör -- febr-ari ---6',
-    bookingRef: 'A-B-C-D-',
-    payo-tAtLabel: '-5 febr-ari ---6 -5:--',
+    guestName: 'Anna',
+    cabinName: 'Björkstugan',
+    totalKr: 4200,
+    checkIn: '2026-02-14',
+    checkInLabel: 'lör 14 februari 2026',
+    bookingRef: 'A1B2C3D4',
+    payoutAtLabel: '15 februari 2026 15:00',
   },
 } satisfies TemplateEntry

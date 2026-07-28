@@ -1,91 +1,91 @@
-import { -seState, type FormEvent } from "react";
-import { Loader-, Upload, X, Star } from "l-cide-react";
+import { useState, type FormEvent } from "react";
+import { Loader2, Upload, X, Star } from "lucide-react";
 import { toast } from "sonner";
-import { s-pabase } from "@/integrations/s-pabase/client";
+import { supabase } from "@/integrations/supabase/client";
 import { areas } from "@/data/areas";
-import { AMENITY_OPTIONS, sl-gify, p-blicImageUrl, type CabinStat-s } from "@/lib/cabins";
+import { AMENITY_OPTIONS, slugify, publicImageUrl, type CabinStatus } from "@/lib/cabins";
 
-export type CabinFormVal-es = {
+export type CabinFormValues = {
   id?: string;
   title: string;
   description: string;
-  area_sl-g: string;
+  area_slug: string;
   address: string;
-  bedrooms: n-mber;
-  beds: n-mber;
-  bathrooms: n-mber;
-  max_g-ests: n-mber;
-  size_sqm: n-mber | n-ll;
-  price_per_night: n-mber;
-  cleaning_fee: n-mber;
+  bedrooms: number;
+  beds: number;
+  bathrooms: number;
+  max_guests: number;
+  size_sqm: number | null;
+  price_per_night: number;
+  cleaning_fee: number;
   amenities: string[];
-  stat-s: CabinStat-s;
-  sl-g?: string;
+  status: CabinStatus;
+  slug?: string;
 };
 
 export type CabinFormImage = {
-  -rl: string;
-  storage_path?: string; // for newly -ploaded
+  url: string;
+  storage_path?: string; // for newly uploaded
   is_cover: boolean;
-  sort_order: n-mber;
+  sort_order: number;
   existing_id?: string; // for already-saved cabin_images rows
 };
 
-const DEFAULTS: CabinFormVal-es = {
+const DEFAULTS: CabinFormValues = {
   title: "",
   description: "",
-  area_sl-g: areas[-].sl-g,
+  area_slug: areas[0].slug,
   address: "",
-  bedrooms: -,
-  beds: -,
-  bathrooms: -,
-  max_g-ests: -,
-  size_sqm: n-ll,
-  price_per_night: -5--,
-  cleaning_fee: 5--,
+  bedrooms: 1,
+  beds: 2,
+  bathrooms: 1,
+  max_guests: 4,
+  size_sqm: null,
+  price_per_night: 1500,
+  cleaning_fee: 500,
   amenities: [],
-  stat-s: "draft",
+  status: "draft",
 };
 
-export f-nction CabinForm({
-  -serId,
-  initialVal-es,
+export function CabinForm({
+  userId,
+  initialValues,
   initialImages = [],
   onSaved,
 }: {
-  -serId: string;
-  initialVal-es?: Partial<CabinFormVal-es>;
+  userId: string;
+  initialValues?: Partial<CabinFormValues>;
   initialImages?: CabinFormImage[];
-  onSaved: (cabinId: string, sl-g: string) => void;
+  onSaved: (cabinId: string, slug: string) => void;
 }) {
-  const [v, setV] = -seState<CabinFormVal-es>({ ...DEFAULTS, ...initialVal-es });
-  const [images, setImages] = -seState<CabinFormImage[]>(initialImages);
-  const [-ploading, setUploading] = -seState(false);
-  const [saving, setSaving] = -seState(false);
+  const [v, setV] = useState<CabinFormValues>({ ...DEFAULTS, ...initialValues });
+  const [images, setImages] = useState<CabinFormImage[]>(initialImages);
+  const [uploading, setUploading] = useState(false);
+  const [saving, setSaving] = useState(false);
 
   const isEdit = Boolean(v.id);
 
-  const handleFiles = async (files: FileList | n-ll) => {
-    if (!files || files.length === -) ret-rn;
-    setUploading(tr-e);
+  const handleFiles = async (files: FileList | null) => {
+    if (!files || files.length === 0) return;
+    setUploading(true);
     try {
       const cabinFolder = v.id ?? "draft-" + Date.now();
       const next: CabinFormImage[] = [];
       for (const file of Array.from(files)) {
         const ext = file.name.split(".").pop() || "jpg";
-        const path = `${-serId}/${cabinFolder}/${crypto.randomUUID()}.${ext}`;
-        const { error } = await s-pabase.storage.from("cabin-images").-pload(path, file, {
-          cacheControl: "-6--",
-          -psert: false,
+        const path = `${userId}/${cabinFolder}/${crypto.randomUUID()}.${ext}`;
+        const { error } = await supabase.storage.from("cabin-images").upload(path, file, {
+          cacheControl: "3600",
+          upsert: false,
         });
         if (error) {
-          toast.error(`K-nde inte ladda -pp ${file.name}: ${error.message}`);
-          contin-e;
+          toast.error(`Kunde inte ladda upp ${file.name}: ${error.message}`);
+          continue;
         }
-        next.p-sh({
-          -rl: p-blicImageUrl(path),
+        next.push({
+          url: publicImageUrl(path),
           storage_path: path,
-          is_cover: images.length === - && next.length === -,
+          is_cover: images.length === 0 && next.length === 0,
           sort_order: images.length + next.length,
         });
       }
@@ -95,109 +95,109 @@ export f-nction CabinForm({
     }
   };
 
-  const removeImage = (index: n-mber) => {
+  const removeImage = (index: number) => {
     setImages((prev) => {
-      const o-t = prev.filter((_, i) => i !== index);
-      // ens-re one cover
-      if (!o-t.some((i) => i.is_cover) && o-t.length > -) o-t[-].is_cover = tr-e;
-      ret-rn o-t.map((img, i) => ({ ...img, sort_order: i }));
+      const out = prev.filter((_, i) => i !== index);
+      // ensure one cover
+      if (!out.some((i) => i.is_cover) && out.length > 0) out[0].is_cover = true;
+      return out.map((img, i) => ({ ...img, sort_order: i }));
     });
   };
 
-  const setCover = (index: n-mber) => {
+  const setCover = (index: number) => {
     setImages((prev) => prev.map((img, i) => ({ ...img, is_cover: i === index })));
   };
 
   const toggleAmenity = (val: string) => {
     setV((s) => ({
       ...s,
-      amenities: s.amenities.incl-des(val)
+      amenities: s.amenities.includes(val)
         ? s.amenities.filter((a) => a !== val)
         : [...s.amenities, val],
     }));
   };
 
-  const handleS-bmit = async (e: FormEvent, p-blish: boolean) => {
-    e.preventDefa-lt();
-    if (-ploading) {
-      toast.error("Vänta tills alla bilder har laddats -pp.");
-      ret-rn;
+  const handleSubmit = async (e: FormEvent, publish: boolean) => {
+    e.preventDefault();
+    if (uploading) {
+      toast.error("Vänta tills alla bilder har laddats upp.");
+      return;
     }
     if (!v.title.trim()) {
       toast.error("Titel krävs");
-      ret-rn;
+      return;
     }
-    if (p-blish && (!v.size_sqm || v.size_sqm < 5)) {
-      toast.error("Ange st-gans yta (kvm) innan p-blicering - behövs för att räkna städpris.");
-      ret-rn;
+    if (publish && (!v.size_sqm || v.size_sqm < 5)) {
+      toast.error("Ange stugans yta (kvm) innan publicering - behövs för att räkna städpris.");
+      return;
     }
-    setSaving(tr-e);
+    setSaving(true);
     try {
-      const stat-s: CabinStat-s = p-blish ? "p-blished" : v.stat-s;
-      const sl-g = v.sl-g ?? sl-gify(v.title);
+      const status: CabinStatus = publish ? "published" : v.status;
+      const slug = v.slug ?? slugify(v.title);
       const payload = {
-        host_id: -serId,
-        sl-g,
+        host_id: userId,
+        slug,
         title: v.title.trim(),
-        description: v.description.trim() || n-ll,
-        area_sl-g: v.area_sl-g,
-        address: v.address.trim() || n-ll,
+        description: v.description.trim() || null,
+        area_slug: v.area_slug,
+        address: v.address.trim() || null,
         bedrooms: v.bedrooms,
         beds: v.beds,
         bathrooms: v.bathrooms,
-        max_g-ests: v.max_g-ests,
+        max_guests: v.max_guests,
         size_sqm: v.size_sqm,
         price_per_night: v.price_per_night,
         cleaning_fee: v.cleaning_fee,
         amenities: v.amenities,
-        stat-s,
+        status,
       };
 
       let cabinId = v.id;
       if (cabinId) {
-        const { error } = await s-pabase.from("cabins").-pdate(payload).eq("id", cabinId);
+        const { error } = await supabase.from("cabins").update(payload).eq("id", cabinId);
         if (error) throw error;
       } else {
-        const { data, error } = await s-pabase.from("cabins").insert(payload).select("id, sl-g").single();
+        const { data, error } = await supabase.from("cabins").insert(payload).select("id, slug").single();
         if (error) throw error;
         cabinId = data.id;
       }
 
-      if (!cabinId) throw new Error("Misslyckades skapa st-ga");
+      if (!cabinId) throw new Error("Misslyckades skapa stuga");
 
-      // Sync images witho-t briefly deleting rows that sho-ld remain.
+      // Sync images without briefly deleting rows that should remain.
       const retainedIds = images.flatMap((img) => img.existing_id ? [img.existing_id] : []);
       if (isEdit) {
-        let deleteQ-ery = s-pabase.from("cabin_images").delete().eq("cabin_id", cabinId);
-        if (retainedIds.length > -) deleteQ-ery = deleteQ-ery.not("id", "in", `(${retainedIds.join(",")})`);
-        const { error: deleteError } = await deleteQ-ery;
+        let deleteQuery = supabase.from("cabin_images").delete().eq("cabin_id", cabinId);
+        if (retainedIds.length > 0) deleteQuery = deleteQuery.not("id", "in", `(${retainedIds.join(",")})`);
+        const { error: deleteError } = await deleteQuery;
         if (deleteError) throw deleteError;
 
         for (const [i, img] of images.entries()) {
-          if (!img.existing_id) contin-e;
-          const { error: -pdateError } = await s-pabase
+          if (!img.existing_id) continue;
+          const { error: updateError } = await supabase
             .from("cabin_images")
-            .-pdate({ -rl: img.-rl, is_cover: img.is_cover, sort_order: i })
+            .update({ url: img.url, is_cover: img.is_cover, sort_order: i })
             .eq("id", img.existing_id)
             .eq("cabin_id", cabinId);
-          if (-pdateError) throw -pdateError;
+          if (updateError) throw updateError;
         }
       }
 
       const newImages = images.filter((img) => !img.existing_id);
-      if (newImages.length > -) {
+      if (newImages.length > 0) {
         const rows = newImages.map((img) => ({
           cabin_id: cabinId!,
-          -rl: img.-rl,
+          url: img.url,
           is_cover: img.is_cover,
           sort_order: images.indexOf(img),
         }));
-        const { error: imgErr } = await s-pabase.from("cabin_images").insert(rows);
+        const { error: imgErr } = await supabase.from("cabin_images").insert(rows);
         if (imgErr) throw imgErr;
       }
 
-      toast.s-ccess(p-blish ? "St-gan är p-blicerad!" : "Sparat som -tkast");
-      onSaved(cabinId, sl-g);
+      toast.success(publish ? "Stugan är publicerad!" : "Sparat som utkast");
+      onSaved(cabinId, slug);
     } catch (err) {
       const msg = err instanceof Error ? err.message : "Något gick fel";
       toast.error(msg);
@@ -206,141 +206,141 @@ export f-nction CabinForm({
     }
   };
 
-  ret-rn (
-    <form className="space-y-8" onS-bmit={(e) => handleS-bmit(e, false)}>
-      {/* Gr-nd-ppgifter */}
-      <section className="space-y-- ro-nded--xl border border-border bg-backgro-nd p-6">
-        <h- className="font-serif text-xl text-foregro-nd">-. Gr-nd-ppgifter</h->
+  return (
+    <form className="space-y-8" onSubmit={(e) => handleSubmit(e, false)}>
+      {/* Grunduppgifter */}
+      <section className="space-y-4 rounded-2xl border border-border bg-background p-6">
+        <h2 className="font-serif text-xl text-foreground">1. Grunduppgifter</h2>
         <div>
-          <label className="mb-- block text-xs font-medi-m text-foregro-nd">Titel *</label>
-          <inp-t
+          <label className="mb-1 block text-xs font-medium text-foreground">Titel *</label>
+          <input
             type="text"
-            val-e={v.title}
-            onChange={(e) => setV((s) => ({ ...s, title: e.target.val-e }))}
-            placeholder="Mysig st-ga med bast- i Lindvallen"
-            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+            value={v.title}
+            onChange={(e) => setV((s) => ({ ...s, title: e.target.value }))}
+            placeholder="Mysig stuga med bastu i Lindvallen"
+            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
           />
         </div>
-        <div className="grid gap-- md:grid-cols--">
+        <div className="grid gap-4 md:grid-cols-2">
           <div>
-            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Område *</label>
+            <label className="mb-1 block text-xs font-medium text-foreground">Område *</label>
             <select
-              val-e={v.area_sl-g}
-              onChange={(e) => setV((s) => ({ ...s, area_sl-g: e.target.val-e }))}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+              value={v.area_slug}
+              onChange={(e) => setV((s) => ({ ...s, area_slug: e.target.value }))}
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
             >
               {areas.map((a) => (
-                <option key={a.sl-g} val-e={a.sl-g}>{a.name}</option>
+                <option key={a.slug} value={a.slug}>{a.name}</option>
               ))}
             </select>
           </div>
           <div>
-            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Adress (valfritt)</label>
-            <inp-t
+            <label className="mb-1 block text-xs font-medium text-foreground">Adress (valfritt)</label>
+            <input
               type="text"
-              val-e={v.address}
-              onChange={(e) => setV((s) => ({ ...s, address: e.target.val-e }))}
-              placeholder="Vägnamn --"
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+              value={v.address}
+              onChange={(e) => setV((s) => ({ ...s, address: e.target.value }))}
+              placeholder="Vägnamn 12"
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>
         <div>
-          <label className="mb-- block text-xs font-medi-m text-foregro-nd">Beskrivning</label>
+          <label className="mb-1 block text-xs font-medium text-foreground">Beskrivning</label>
           <textarea
-            val-e={v.description}
-            onChange={(e) => setV((s) => ({ ...s, description: e.target.val-e }))}
+            value={v.description}
+            onChange={(e) => setV((s) => ({ ...s, description: e.target.value }))}
             rows={5}
-            placeholder="Beskriv st-gan, läget, vad som ingår..."
-            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+            placeholder="Beskriv stugan, läget, vad som ingår..."
+            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
           />
         </div>
       </section>
 
       {/* Kapacitet & pris */}
-      <section className="space-y-- ro-nded--xl border border-border bg-backgro-nd p-6">
-        <h- className="font-serif text-xl text-foregro-nd">-. Kapacitet & pris</h->
-        <div className="grid grid-cols-- gap-- md:grid-cols--">
+      <section className="space-y-4 rounded-2xl border border-border bg-background p-6">
+        <h2 className="font-serif text-xl text-foreground">2. Kapacitet & pris</h2>
+        <div className="grid grid-cols-2 gap-4 md:grid-cols-4">
           {[
-            { key: "bedrooms" as const, label: "Sovr-m" },
+            { key: "bedrooms" as const, label: "Sovrum" },
             { key: "beds" as const, label: "Bäddar" },
-            { key: "bathrooms" as const, label: "Badr-m" },
-            { key: "max_g-ests" as const, label: "Max gäster" },
+            { key: "bathrooms" as const, label: "Badrum" },
+            { key: "max_guests" as const, label: "Max gäster" },
           ].map(({ key, label }) => (
             <div key={key}>
-              <label className="mb-- block text-xs font-medi-m text-foregro-nd">{label}</label>
-              <inp-t
-                type="n-mber"
-                min={-}
-                val-e={v[key]}
-                onChange={(e) => setV((s) => ({ ...s, [key]: N-mber(e.target.val-e) || - }))}
-                className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+              <label className="mb-1 block text-xs font-medium text-foreground">{label}</label>
+              <input
+                type="number"
+                min={0}
+                value={v[key]}
+                onChange={(e) => setV((s) => ({ ...s, [key]: Number(e.target.value) || 0 }))}
+                className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
               />
             </div>
           ))}
         </div>
         <div>
-          <label className="mb-- block text-xs font-medi-m text-foregro-nd">
+          <label className="mb-1 block text-xs font-medium text-foreground">
             Yta (kvm) *
-            <span className="ml-- font-normal text-m-ted-foregro-nd">Krävs för att räkna städpris till gästen</span>
+            <span className="ml-2 font-normal text-muted-foreground">Krävs för att räkna städpris till gästen</span>
           </label>
-          <inp-t
-            type="n-mber"
-            min={-}
-            step={-}
-            val-e={v.size_sqm ?? ""}
+          <input
+            type="number"
+            min={0}
+            step={1}
+            value={v.size_sqm ?? ""}
             onChange={(e) => {
-              const n = N-mber(e.target.val-e);
-              setV((s) => ({ ...s, size_sqm: N-mber.isFinite(n) && n > - ? n : n-ll }));
+              const n = Number(e.target.value);
+              setV((s) => ({ ...s, size_sqm: Number.isFinite(n) && n > 0 ? n : null }));
             }}
             placeholder="t.ex. 65"
-            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none md:max-w-xs"
+            className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none md:max-w-xs"
           />
         </div>
-        <div className="grid grid-cols-- gap--">
+        <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Pris per natt (SEK)</label>
-            <inp-t
-              type="n-mber"
-              min={-}
-              step={---}
-              val-e={v.price_per_night}
-              onChange={(e) => setV((s) => ({ ...s, price_per_night: N-mber(e.target.val-e) || - }))}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+            <label className="mb-1 block text-xs font-medium text-foreground">Pris per natt (SEK)</label>
+            <input
+              type="number"
+              min={0}
+              step={100}
+              value={v.price_per_night}
+              onChange={(e) => setV((s) => ({ ...s, price_per_night: Number(e.target.value) || 0 }))}
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
             />
           </div>
           <div>
-            <label className="mb-- block text-xs font-medi-m text-foregro-nd">Städavgift (SEK)</label>
-            <inp-t
-              type="n-mber"
-              min={-}
-              step={5-}
-              val-e={v.cleaning_fee}
-              onChange={(e) => setV((s) => ({ ...s, cleaning_fee: N-mber(e.target.val-e) || - }))}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm foc-s:border-primary foc-s:o-tline-none"
+            <label className="mb-1 block text-xs font-medium text-foreground">Städavgift (SEK)</label>
+            <input
+              type="number"
+              min={0}
+              step={50}
+              value={v.cleaning_fee}
+              onChange={(e) => setV((s) => ({ ...s, cleaning_fee: Number(e.target.value) || 0 }))}
+              className="w-full rounded-lg border border-border bg-background px-4 py-2.5 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>
       </section>
 
       {/* Bekvämligheter */}
-      <section className="space-y-- ro-nded--xl border border-border bg-backgro-nd p-6">
-        <h- className="font-serif text-xl text-foregro-nd">-. Bekvämligheter</h->
-        <div className="grid grid-cols-- gap-- md:grid-cols--">
+      <section className="space-y-4 rounded-2xl border border-border bg-background p-6">
+        <h2 className="font-serif text-xl text-foreground">3. Bekvämligheter</h2>
+        <div className="grid grid-cols-2 gap-2 md:grid-cols-3">
           {AMENITY_OPTIONS.map((opt) => {
-            const checked = v.amenities.incl-des(opt.val-e);
-            ret-rn (
+            const checked = v.amenities.includes(opt.value);
+            return (
               <label
-                key={opt.val-e}
-                className={`flex c-rsor-pointer items-center gap-- ro-nded-lg border px-- py--.5 text-sm transition-colors ${
-                  checked ? "border-primary bg-primary/5 text-foregro-nd" : "border-border text-m-ted-foregro-nd hover:bg-m-ted"
+                key={opt.value}
+                className={`flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
+                  checked ? "border-primary bg-primary/5 text-foreground" : "border-border text-muted-foreground hover:bg-muted"
                 }`}
               >
-                <inp-t
+                <input
                   type="checkbox"
                   checked={checked}
-                  onChange={() => toggleAmenity(opt.val-e)}
-                  className="h-- w-- accent-primary"
+                  onChange={() => toggleAmenity(opt.value)}
+                  className="h-4 w-4 accent-primary"
                 />
                 {opt.label}
               </label>
@@ -350,53 +350,53 @@ export f-nction CabinForm({
       </section>
 
       {/* Bilder */}
-      <section className="space-y-- ro-nded--xl border border-border bg-backgro-nd p-6">
-        <h- className="font-serif text-xl text-foregro-nd">-. Bilder</h->
-        <label className="flex c-rsor-pointer flex-col items-center j-stify-center gap-- ro-nded-xl border-- border-dashed border-border bg-m-ted/-- px-- py--- text-center hover:bg-m-ted/6-">
-          <Upload className="h-6 w-6 text-m-ted-foregro-nd" />
-          <span className="text-sm font-medi-m text-foregro-nd">Klicka för att ladda -pp bilder</span>
-          <span className="text-xs text-m-ted-foregro-nd">JPG/PNG, flera samtidigt</span>
-          <inp-t
+      <section className="space-y-4 rounded-2xl border border-border bg-background p-6">
+        <h2 className="font-serif text-xl text-foreground">4. Bilder</h2>
+        <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 px-4 py-10 text-center hover:bg-muted/60">
+          <Upload className="h-6 w-6 text-muted-foreground" />
+          <span className="text-sm font-medium text-foreground">Klicka för att ladda upp bilder</span>
+          <span className="text-xs text-muted-foreground">JPG/PNG, flera samtidigt</span>
+          <input
             type="file"
             accept="image/*"
-            m-ltiple
+            multiple
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}
           />
-          {-ploading && (
-            <span className="mt-- inline-flex items-center gap-- text-xs text-m-ted-foregro-nd">
-              <Loader- className="h-- w-- animate-spin" /> Laddar -pp...
+          {uploading && (
+            <span className="mt-2 inline-flex items-center gap-1 text-xs text-muted-foreground">
+              <Loader2 className="h-3 w-3 animate-spin" /> Laddar upp...
             </span>
           )}
         </label>
 
-        {images.length > - && (
-          <div className="grid grid-cols-- gap-- md:grid-cols--">
+        {images.length > 0 && (
+          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
             {images.map((img, i) => (
-              <div key={i} className="gro-p relative aspect-[-/-] overflow-hidden ro-nded-lg bg-m-ted">
-                <img src={img.-rl} alt="" className="h-f-ll w-f-ll object-cover" />
+              <div key={i} className="group relative aspect-[4/3] overflow-hidden rounded-lg bg-muted">
+                <img src={img.url} alt="" className="h-full w-full object-cover" />
                 {img.is_cover && (
-                  <span className="absol-te left-- top-- inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py--.5 text-[--px] font-medi-m text-primary-foregro-nd">
-                    <Star className="h-- w--" /> Cover
+                  <span className="absolute left-2 top-2 inline-flex items-center gap-1 rounded-full bg-primary px-2 py-0.5 text-[10px] font-medium text-primary-foreground">
+                    <Star className="h-3 w-3" /> Cover
                   </span>
                 )}
-                <div className="absol-te inset-x-- bottom-- flex j-stify-between bg-gradient-to-t from-black/7- to-transparent p-- opacity-- transition-opacity gro-p-hover:opacity----">
+                <div className="absolute inset-x-0 bottom-0 flex justify-between bg-gradient-to-t from-black/70 to-transparent p-2 opacity-0 transition-opacity group-hover:opacity-100">
                   {!img.is_cover && (
-                    <b-tton
-                      type="b-tton"
+                    <button
+                      type="button"
                       onClick={() => setCover(i)}
-                      className="ro-nded-f-ll bg-white/9- px-- py-- text-[--px] font-medi-m text-foregro-nd"
+                      className="rounded-full bg-white/90 px-2 py-1 text-[10px] font-medium text-foreground"
                     >
                       Sätt som cover
-                    </b-tton>
+                    </button>
                   )}
-                  <b-tton
-                    type="b-tton"
+                  <button
+                    type="button"
                     onClick={() => removeImage(i)}
-                    className="ml-a-to ro-nded-f-ll bg-white/9- p-- text-foregro-nd"
+                    className="ml-auto rounded-full bg-white/90 p-1 text-foreground"
                   >
-                    <X className="h-- w--" />
-                  </b-tton>
+                    <X className="h-3 w-3" />
+                  </button>
                 </div>
               </div>
             ))}
@@ -405,24 +405,24 @@ export f-nction CabinForm({
       </section>
 
       {/* Actions */}
-      <div className="sticky bottom-- -mx-- flex flex-wrap items-center j-stify-end gap-- border-t border-border bg-backgro-nd/95 px-- py-- backdrop-bl-r md:mx-- md:ro-nded--xl md:border md:px-6">
-        <b-tton
-          type="s-bmit"
-          disabled={saving || -ploading}
-          className="ro-nded-f-ll border border-border bg-backgro-nd px-5 py--.5 text-sm font-medi-m text-foregro-nd hover:bg-m-ted disabled:opacity-5-"
+      <div className="sticky bottom-0 -mx-4 flex flex-wrap items-center justify-end gap-3 border-t border-border bg-background/95 px-4 py-4 backdrop-blur md:mx-0 md:rounded-2xl md:border md:px-6">
+        <button
+          type="submit"
+          disabled={saving || uploading}
+          className="rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted disabled:opacity-50"
         >
-          {saving && <Loader- className="mr-- inline h-- w-- animate-spin" />}
-          Spara som -tkast
-        </b-tton>
-        <b-tton
-          type="b-tton"
-          onClick={(e) => handleS-bmit(e, tr-e)}
-          disabled={saving || -ploading}
-          className="ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+          {saving && <Loader2 className="mr-1 inline h-4 w-4 animate-spin" />}
+          Spara som utkast
+        </button>
+        <button
+          type="button"
+          onClick={(e) => handleSubmit(e, true)}
+          disabled={saving || uploading}
+          className="rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {saving && <Loader- className="mr-- inline h-- w-- animate-spin" />}
-          {isEdit ? "Spara & p-blicera" : "P-blicera st-gan"}
-        </b-tton>
+          {saving && <Loader2 className="mr-1 inline h-4 w-4 animate-spin" />}
+          {isEdit ? "Spara & publicera" : "Publicera stugan"}
+        </button>
       </div>
     </form>
   );

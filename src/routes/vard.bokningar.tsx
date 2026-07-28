@@ -1,86 +1,86 @@
-import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
-import { -seEffect, -seState } from "react";
-import { -seM-tation, -seQ-ery, -seQ-eryClient } from "@tanstack/react-q-ery";
-import { Loader-, CalendarDays, MapPin, Inbox, Check, X, User, MessageSq-are } from "l-cide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { Loader2, CalendarDays, MapPin, Inbox, Check, X, User, MessageSquare } from "lucide-react";
 import { toast } from "sonner";
-import { -seA-th } from "@/hooks/-seA-th";
-import { s-pabase } from "@/integrations/s-pabase/client";
-import { areaBySl-g } from "@/data/areas";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { areaBySlug } from "@/data/areas";
 import { coverImage } from "@/lib/cabins";
-import { formatDateRange, stat-sLabel } from "@/lib/bookings";
-import { hostBookingsQ-ery, type HostBookingRow } from "@/lib/q-eries";
+import { formatDateRange, statusLabel } from "@/lib/bookings";
+import { hostBookingsQuery, type HostBookingRow } from "@/lib/queries";
 import { ListSkeleton } from "@/components/Skeleton";
-import { -seUnreadCo-nts } from "@/hooks/-seUnreadCo-nts";
-import { Tr-stPaymentBanner } from "@/components/Tr-stPaymentBanner";
+import { useUnreadCounts } from "@/hooks/useUnreadCounts";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 
 type Filter = "all" | "pending" | "confirmed" | "declined";
 
-export const Ro-te = createFileRo-te("/vard/bokningar")({
+export const Route = createFileRoute("/vard/bokningar")({
   head: () => ({ meta: [{ title: "Bokningar - Värd - Fjällportalen" }] }),
   component: HostBookingsPage,
 });
 
-f-nction HostBookingsPage() {
-  const { -ser, profile, loading } = -seA-th();
-  const navigate = -seNavigate();
-  const q-eryClient = -seQ-eryClient();
-  const [filter, setFilter] = -seState<Filter>("all");
+function HostBookingsPage() {
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+  const queryClient = useQueryClient();
+  const [filter, setFilter] = useState<Filter>("all");
 
-  -seEffect(() => {
-    if (!loading && !-ser) {
+  useEffect(() => {
+    if (!loading && !user) {
       navigate({ to: "/logga-in", search: { redirect: "/vard/bokningar" } });
     }
-  }, [loading, -ser, navigate]);
+  }, [loading, user, navigate]);
 
-  const bookingsQ = -seQ-ery({
-    ...hostBookingsQ-ery(-ser?.id ?? ""),
-    enabled: !!-ser,
+  const bookingsQ = useQuery({
+    ...hostBookingsQuery(user?.id ?? ""),
+    enabled: !!user,
   });
   const rows = bookingsQ.data;
   const bookingIds = (rows ?? []).map((b) => b.id);
-  const -nread = -seUnreadCo-nts(-ser?.id, bookingIds);
+  const unread = useUnreadCounts(user?.id, bookingIds);
 
-  const stat-sM-tation = -seM-tation({
-    m-tationFn: async ({ id, stat-s }: { id: string; stat-s: "confirmed" | "declined" }) => {
-      const { error } = await s-pabase.from("bookings").-pdate({ stat-s }).eq("id", id);
+  const statusMutation = useMutation({
+    mutationFn: async ({ id, status }: { id: string; status: "confirmed" | "declined" }) => {
+      const { error } = await supabase.from("bookings").update({ status }).eq("id", id);
       if (error) throw error;
-      ret-rn { id, stat-s };
+      return { id, status };
     },
-    onM-tate: async ({ id, stat-s }) => {
-      if (!-ser) ret-rn;
-      const key = hostBookingsQ-ery(-ser.id).q-eryKey;
-      await q-eryClient.cancelQ-eries({ q-eryKey: key });
-      const previo-s = q-eryClient.getQ-eryData<HostBookingRow[]>(key);
-      // Optimistically -pdate the booking stat-s so the UI feels instant.
-      q-eryClient.setQ-eryData<HostBookingRow[]>(key, (old) =>
-        (old ?? []).map((b) => (b.id === id ? { ...b, stat-s } : b)),
+    onMutate: async ({ id, status }) => {
+      if (!user) return;
+      const key = hostBookingsQuery(user.id).queryKey;
+      await queryClient.cancelQueries({ queryKey: key });
+      const previous = queryClient.getQueryData<HostBookingRow[]>(key);
+      // Optimistically update the booking status so the UI feels instant.
+      queryClient.setQueryData<HostBookingRow[]>(key, (old) =>
+        (old ?? []).map((b) => (b.id === id ? { ...b, status } : b)),
       );
-      ret-rn { previo-s };
+      return { previous };
     },
     onError: (err, _vars, ctx) => {
-      if (-ser && ctx?.previo-s) {
-        q-eryClient.setQ-eryData(hostBookingsQ-ery(-ser.id).q-eryKey, ctx.previo-s);
+      if (user && ctx?.previous) {
+        queryClient.setQueryData(hostBookingsQuery(user.id).queryKey, ctx.previous);
       }
       toast.error(err instanceof Error ? err.message : "Något gick fel");
     },
-    onS-ccess: ({ stat-s }) => {
-      toast.s-ccess(stat-s === "confirmed" ? "Bokning bekräftad" : "Bokning avvisad");
+    onSuccess: ({ status }) => {
+      toast.success(status === "confirmed" ? "Bokning bekräftad" : "Bokning avvisad");
     },
     onSettled: () => {
-      if (!-ser) ret-rn;
-      q-eryClient.invalidateQ-eries({ q-eryKey: hostBookingsQ-ery(-ser.id).q-eryKey });
-      // Stat-s changes affect commission/balance, refresh those too.
-      q-eryClient.invalidateQ-eries({ q-eryKey: ["host", -ser.id] });
+      if (!user) return;
+      queryClient.invalidateQueries({ queryKey: hostBookingsQuery(user.id).queryKey });
+      // Status changes affect commission/balance, refresh those too.
+      queryClient.invalidateQueries({ queryKey: ["host", user.id] });
     },
   });
-  const b-syId = stat-sM-tation.isPending ? stat-sM-tation.variables?.id ?? n-ll : n-ll;
-  const -pdateStat-s = (id: string, stat-s: "confirmed" | "declined") =>
-    stat-sM-tation.m-tate({ id, stat-s });
+  const busyId = statusMutation.isPending ? statusMutation.variables?.id ?? null : null;
+  const updateStatus = (id: string, status: "confirmed" | "declined") =>
+    statusMutation.mutate({ id, status });
 
-  if (loading || !-ser) {
-    ret-rn (
-      <div className="flex min-h-[6-vh] items-center j-stify-center">
-        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
@@ -88,59 +88,59 @@ f-nction HostBookingsPage() {
   const initialLoading = bookingsQ.isLoading && !rows;
 
   if (!profile?.is_host) {
-    ret-rn (
-      <div className="mx-a-to max-w--xl px-- py--6 text-center">
-        <h- className="font-serif text--xl text-foregro-nd">Endast för värdar</h->
-        <p className="mt-- text-sm text-m-ted-foregro-nd">
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <h1 className="font-serif text-3xl text-foreground">Endast för värdar</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
           Aktivera värdkontot på din kontosida.
         </p>
-        <Link to="/konto" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-">
+        <Link to="/konto" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
           Till mitt konto
         </Link>
       </div>
     );
   }
 
-  const co-nts = {
+  const counts = {
     all: safeRows.length,
-    pending: safeRows.filter((r) => r.stat-s === "pending").length,
-    confirmed: safeRows.filter((r) => r.stat-s === "confirmed").length,
-    declined: safeRows.filter((r) => r.stat-s === "declined" || r.stat-s === "cancelled").length,
+    pending: safeRows.filter((r) => r.status === "pending").length,
+    confirmed: safeRows.filter((r) => r.status === "confirmed").length,
+    declined: safeRows.filter((r) => r.status === "declined" || r.status === "cancelled").length,
   };
 
   const visible = safeRows.filter((r) => {
-    if (filter === "all") ret-rn tr-e;
-    if (filter === "declined") ret-rn r.stat-s === "declined" || r.stat-s === "cancelled";
-    ret-rn r.stat-s === filter;
+    if (filter === "all") return true;
+    if (filter === "declined") return r.status === "declined" || r.status === "cancelled";
+    return r.status === filter;
   });
 
-  ret-rn (
-    <section className="mx-a-to max-w-5xl px-- py--- md:px-6 md:py--6">
-      <div className="mb-6 flex flex-wrap items-end j-stify-between gap--">
+  return (
+    <section className="mx-auto max-w-5xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mb-6 flex flex-wrap items-end justify-between gap-4">
         <div>
-          <h- className="font-serif text--xl text-foregro-nd md:text--xl">Bokningar</h->
-          <p className="mt-- text-sm text-m-ted-foregro-nd">
-            Hantera förfrågningar och bekräftade vistelser för dina st-gor.
+          <h1 className="font-serif text-3xl text-foreground md:text-4xl">Bokningar</h1>
+          <p className="mt-1 text-sm text-muted-foreground">
+            Hantera förfrågningar och bekräftade vistelser för dina stugor.
           </p>
         </div>
-        <div className="flex flex-wrap gap--">
+        <div className="flex flex-wrap gap-2">
           <Link
             to="/vard"
-            className="ro-nded-f-ll border border-border px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
+            className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
           >
-            Mina st-gor
+            Mina stugor
           </Link>
           <Link
-            to="/vard/fakt-ra"
-            className="ro-nded-f-ll border border-border px-- py-- text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
+            to="/vard/faktura"
+            className="rounded-full border border-border px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
           >
             Mitt saldo
           </Link>
         </div>
       </div>
-      <Tr-stPaymentBanner variant="host" className="mb-6" />
+      <TrustPaymentBanner variant="host" className="mb-6" />
 
-      <div className="mb-6 flex flex-wrap gap--">
+      <div className="mb-6 flex flex-wrap gap-2">
         {(["all", "pending", "confirmed", "declined"] as Filter[]).map((f) => {
           const labels: Record<Filter, string> = {
             all: "Alla",
@@ -149,119 +149,119 @@ f-nction HostBookingsPage() {
             declined: "Avvisade/avbokade",
           };
           const active = filter === f;
-          ret-rn (
-            <b-tton
+          return (
+            <button
               key={f}
               onClick={() => setFilter(f)}
-              className={`ro-nded-f-ll border px-- py--.5 text-xs font-medi-m transition ${
+              className={`rounded-full border px-4 py-1.5 text-xs font-medium transition ${
                 active
-                  ? "border-primary bg-primary text-primary-foregro-nd"
-                  : "border-border bg-backgro-nd text-foregro-nd hover:bg-m-ted"
+                  ? "border-primary bg-primary text-primary-foreground"
+                  : "border-border bg-background text-foreground hover:bg-muted"
               }`}
             >
-              {labels[f]} ({co-nts[f]})
-            </b-tton>
+              {labels[f]} ({counts[f]})
+            </button>
           );
         })}
       </div>
 
       {initialLoading ? (
-        <ListSkeleton co-nt={-} />
-      ) : visible.length === - ? (
-        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p--- text-center">
-          <Inbox className="mx-a-to mb-- h--- w--- text-primary" />
-          <h- className="font-serif text--xl text-foregro-nd">Inga bokningar här</h->
-          <p className="mx-a-to mt-- max-w-md text-sm text-m-ted-foregro-nd">
-            När gäster bokar dina st-gor visas de här.
+        <ListSkeleton count={3} />
+      ) : visible.length === 0 ? (
+        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
+          <Inbox className="mx-auto mb-4 h-10 w-10 text-primary" />
+          <h2 className="font-serif text-2xl text-foreground">Inga bokningar här</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            När gäster bokar dina stugor visas de här.
           </p>
         </div>
       ) : (
-        <-l className="space-y--">
+        <ul className="space-y-4">
           {visible.map((b) => {
             const c = b.cabins;
-            const area = c ? areaBySl-g(c.area_sl-g) : n-ll;
-            const cover = c ? coverImage({ cabin_images: c.cabin_images }) : n-ll;
-            const s = stat-sLabel(b.stat-s);
-            const g-estName = b.profiles?.f-ll_name?.trim() || "Gäst";
-            const isPending = b.stat-s === "pending";
-            const b-sy = b-syId === b.id;
-            ret-rn (
+            const area = c ? areaBySlug(c.area_slug) : null;
+            const cover = c ? coverImage({ cabin_images: c.cabin_images }) : null;
+            const s = statusLabel(b.status);
+            const guestName = b.profiles?.full_name?.trim() || "Gäst";
+            const isPending = b.status === "pending";
+            const busy = busyId === b.id;
+            return (
               <li
                 key={b.id}
-                className="flex flex-col gap-- ro-nded--xl border border-border bg-backgro-nd p-- sm:flex-row"
+                className="flex flex-col gap-4 rounded-2xl border border-border bg-background p-4 sm:flex-row"
               >
-                <div className="aspect-[-/-] w-f-ll overflow-hidden ro-nded-lg bg-m-ted sm:w--8 sm:flex-none">
+                <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-muted sm:w-48 sm:flex-none">
                   {cover ? (
-                    <img src={cover} alt="" className="h-f-ll w-f-ll object-cover" />
+                    <img src={cover} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-f-ll w-f-ll items-center j-stify-center text-xs text-m-ted-foregro-nd">
+                    <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">
                       Ingen bild
                     </div>
                   )}
                 </div>
-                <div className="flex flex-- flex-col">
-                  <div className="flex items-start j-stify-between gap--">
+                <div className="flex flex-1 flex-col">
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h- className="font-serif text-lg text-foregro-nd">
-                        {c?.title ?? "St-ga"}
-                      </h->
-                      <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
-                        <MapPin className="h-- w--" /> {area?.name ?? c?.area_sl-g ?? "-"}
+                      <h3 className="font-serif text-lg text-foreground">
+                        {c?.title ?? "Stuga"}
+                      </h3>
+                      <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <MapPin className="h-3 w-3" /> {area?.name ?? c?.area_slug ?? "-"}
                       </p>
-                      <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
-                        <CalendarDays className="h-- w--" />
-                        {formatDateRange(b.check_in, b.check_o-t)} · {b.nights} nätter · {b.g-ests} gäster
+                      <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <CalendarDays className="h-3 w-3" />
+                        {formatDateRange(b.check_in, b.check_out)} · {b.nights} nätter · {b.guests} gäster
                       </p>
-                      <p className="mt-- flex items-center gap-- text-xs text-m-ted-foregro-nd">
-                        <User className="h-- w--" /> {g-estName}
+                      <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                        <User className="h-3 w-3" /> {guestName}
                       </p>
                     </div>
-                    <span className={`ro-nded-f-ll px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide ${s.cls}`}>
+                    <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${s.cls}`}>
                       {s.label}
                     </span>
                   </div>
 
-                  {b.g-est_message && (
-                    <p className="mt-- ro-nded-lg bg-m-ted/5- px-- py-- text-xs text-foregro-nd">
-                      "{b.g-est_message}"
+                  {b.guest_message && (
+                    <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-foreground">
+                      "{b.guest_message}"
                     </p>
                   )}
 
-                  <div className="mt-a-to flex flex-wrap items-center j-stify-between gap-- pt-- text-sm">
-                    <span className="font-medi-m text-foregro-nd">
+                  <div className="mt-auto flex flex-wrap items-center justify-between gap-2 pt-3 text-sm">
+                    <span className="font-medium text-foreground">
                       {b.total_price.toLocaleString("sv-SE")} kr
-                      <span className="ml-- text-xs text-m-ted-foregro-nd">total</span>
+                      <span className="ml-1 text-xs text-muted-foreground">total</span>
                     </span>
-                    <div className="flex flex-wrap items-center gap--">
+                    <div className="flex flex-wrap items-center gap-2">
                       <Link
                         to="/meddelanden/$bookingId"
                         params={{ bookingId: b.id }}
-                        className="relative inline-flex items-center gap--.5 ro-nded-f-ll bg-primary/-- px-- py--.5 text-xs font-medi-m text-primary hover:bg-primary/--"
+                        className="relative inline-flex items-center gap-1.5 rounded-full bg-primary/10 px-3 py-1.5 text-xs font-medium text-primary hover:bg-primary/20"
                       >
-                        <MessageSq-are className="h--.5 w--.5" />
+                        <MessageSquare className="h-3.5 w-3.5" />
                         Meddelanden
-                        {-nread[b.id] > - && (
-                          <span className="ml--.5 inline-flex h-- min-w-[-6px] items-center j-stify-center ro-nded-f-ll bg-primary px-- text-[--px] font-bold text-primary-foregro-nd">
-                            {-nread[b.id]}
+                        {unread[b.id] > 0 && (
+                          <span className="ml-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded-full bg-primary px-1 text-[10px] font-bold text-primary-foreground">
+                            {unread[b.id]}
                           </span>
                         )}
                       </Link>
                       {isPending && (
-                      <div className="flex gap--">
-                        <b-tton
-                          disabled={b-sy}
-                          onClick={() => -pdateStat-s(b.id, "declined")}
-                          className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-destr-ctive hover:bg-destr-ctive/-- disabled:opacity-5-"
+                      <div className="flex gap-2">
+                        <button
+                          disabled={busy}
+                          onClick={() => updateStatus(b.id, "declined")}
+                          className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10 disabled:opacity-50"
                         >
-                          <X className="h--.5 w--.5" /> Avvisa
-                        </b-tton>
-                        <b-tton
-                          disabled={b-sy}
-                          onClick={() => -pdateStat-s(b.id, "confirmed")}
-                          className="inline-flex items-center gap--.5 ro-nded-f-ll bg-primary px-- py--.5 text-xs font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+                          <X className="h-3.5 w-3.5" /> Avvisa
+                        </button>
+                        <button
+                          disabled={busy}
+                          onClick={() => updateStatus(b.id, "confirmed")}
+                          className="inline-flex items-center gap-1.5 rounded-full bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                         >
-                          <Check className="h--.5 w--.5" /> Godkänn
-                        </b-tton>
+                          <Check className="h-3.5 w-3.5" /> Godkänn
+                        </button>
                       </div>
                       )}
                     </div>
@@ -270,7 +270,7 @@ f-nction HostBookingsPage() {
               </li>
             );
           })}
-        </-l>
+        </ul>
       )}
     </section>
   );

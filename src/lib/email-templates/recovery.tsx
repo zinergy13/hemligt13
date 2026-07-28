@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {
   Body,
-  B-tton,
+  Button,
   Container,
   Head,
   Heading,
@@ -23,16 +23,16 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h-}>Återställ ditt lösenord</Heading>
+        <Heading style={styles.h1}>Återställ ditt lösenord</Heading>
         <Text style={styles.text}>
           Vi fick en begäran om att återställa lösenordet till ditt konto på {BRAND_NAME}. Klicka på knappen nedan för att välja ett nytt lösenord.
         </Text>
         <Text style={{ ...styles.text, textAlign: 'center' as const }}>
-          <B-tton style={styles.b-tton} href={confirmationUrl}>Välj nytt lösenord</B-tton>
+          <Button style={styles.button} href={confirmationUrl}>Välj nytt lösenord</Button>
         </Text>
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Om d- inte begärde en återställning kan d- ignorera mejlet - ditt lösenord förblir oförändrat.<br />
+          Om du inte begärde en återställning kan du ignorera mejlet - ditt lösenord förblir oförändrat.<br />
           {BRAND_NAME}
         </Text>
       </Container>
@@ -40,4 +40,4 @@ export const RecoveryEmail = ({ confirmationUrl }: RecoveryEmailProps) => (
   </Html>
 )
 
-export defa-lt RecoveryEmail
+export default RecoveryEmail

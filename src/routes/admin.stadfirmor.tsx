@@ -1,13 +1,13 @@
-import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
-import { -seEffect, -seState } from "react";
-import { Loader-, Pl-s, Trash-, ShieldAlert, ArrowLeft } from "l-cide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Loader2, Plus, Trash2, ShieldAlert, ArrowLeft } from "lucide-react";
 import { toast } from "sonner";
-import { -seA-th } from "@/hooks/-seA-th";
-import { s-pabase } from "@/integrations/s-pabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import { areas } from "@/data/areas";
 import { formatOreKr } from "@/lib/extras";
 
-export const Ro-te = createFileRo-te("/admin/stadfirmor")({
+export const Route = createFileRoute("/admin/stadfirmor")({
   head: () => ({ meta: [{ title: "Städfirmor - Admin - Fjällportalen" }] }),
   component: AdminFirmsPage,
 });
@@ -15,34 +15,34 @@ export const Ro-te = createFileRo-te("/admin/stadfirmor")({
 type Firm = {
   id: string;
   name: string;
-  contact_email: string | n-ll;
-  contact_phone: string | n-ll;
-  invoice_email: string | n-ll;
+  contact_email: string | null;
+  contact_phone: string | null;
+  invoice_email: string | null;
   is_active: boolean;
 };
 
-type Price = { id: string; firm_id: string; min_sqm: n-mber; max_sqm: n-mber; price_to_firm: n-mber };
-type Area = { firm_id: string; area_sl-g: string };
+type Price = { id: string; firm_id: string; min_sqm: number; max_sqm: number; price_to_firm: number };
+type Area = { firm_id: string; area_slug: string };
 
-f-nction AdminFirmsPage() {
-  const { -ser, isAdmin, loading } = -seA-th();
-  const navigate = -seNavigate();
-  const [firms, setFirms] = -seState<Firm[]>([]);
-  const [prices, setPrices] = -seState<Price[]>([]);
-  const [firmAreas, setFirmAreas] = -seState<Area[]>([]);
-  const [loadingData, setLoadingData] = -seState(tr-e);
-  const [newName, setNewName] = -seState("");
+function AdminFirmsPage() {
+  const { user, isAdmin, loading } = useAuth();
+  const navigate = useNavigate();
+  const [firms, setFirms] = useState<Firm[]>([]);
+  const [prices, setPrices] = useState<Price[]>([]);
+  const [firmAreas, setFirmAreas] = useState<Area[]>([]);
+  const [loadingData, setLoadingData] = useState(true);
+  const [newName, setNewName] = useState("");
 
-  -seEffect(() => {
-    if (!loading && !-ser) navigate({ to: "/logga-in", search: { redirect: "/admin/stadfirmor" } });
-  }, [loading, -ser, navigate]);
+  useEffect(() => {
+    if (!loading && !user) navigate({ to: "/logga-in", search: { redirect: "/admin/stadfirmor" } });
+  }, [loading, user, navigate]);
 
   const reload = async () => {
-    setLoadingData(tr-e);
+    setLoadingData(true);
     const [f, p, a] = await Promise.all([
-      s-pabase.from("cleaning_firms").select("*").order("created_at"),
-      s-pabase.from("cleaning_firm_prices").select("*").order("min_sqm"),
-      s-pabase.from("firm_areas").select("firm_id, area_sl-g"),
+      supabase.from("cleaning_firms").select("*").order("created_at"),
+      supabase.from("cleaning_firm_prices").select("*").order("min_sqm"),
+      supabase.from("firm_areas").select("firm_id, area_slug"),
     ]);
     setFirms((f.data as Firm[]) ?? []);
     setPrices((p.data as Price[]) ?? []);
@@ -50,24 +50,24 @@ f-nction AdminFirmsPage() {
     setLoadingData(false);
   };
 
-  -seEffect(() => {
+  useEffect(() => {
     if (isAdmin) reload();
   }, [isAdmin]);
 
-  if (loading || !-ser) {
-    ret-rn (
-      <div className="flex min-h-[6-vh] items-center j-stify-center">
-        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!isAdmin) {
-    ret-rn (
-      <div className="mx-a-to max-w--xl px-- py--6 text-center">
-        <ShieldAlert className="mx-a-to mb-- h--- w--- text-m-ted-foregro-nd" />
-        <h- className="font-serif text--xl text-foregro-nd">Endast för admin</h->
-        <Link to="/" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <ShieldAlert className="mx-auto mb-4 h-10 w-10 text-muted-foreground" />
+        <h1 className="font-serif text-3xl text-foreground">Endast för admin</h1>
+        <Link to="/" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
           Till startsidan
         </Link>
       </div>
@@ -76,94 +76,94 @@ f-nction AdminFirmsPage() {
 
   const addFirm = async () => {
     const name = newName.trim();
-    if (!name) ret-rn;
-    const { error } = await s-pabase.from("cleaning_firms").insert({ name });
+    if (!name) return;
+    const { error } = await supabase.from("cleaning_firms").insert({ name });
     if (error) toast.error(error.message);
     else {
       setNewName("");
-      toast.s-ccess("Firma tillagd");
+      toast.success("Firma tillagd");
       reload();
     }
   };
 
   const removeFirm = async (id: string) => {
-    if (!confirm("Radera firma? Alla kopplade priser och områden försvinner.")) ret-rn;
-    const { error } = await s-pabase.from("cleaning_firms").delete().eq("id", id);
+    if (!confirm("Radera firma? Alla kopplade priser och områden försvinner.")) return;
+    const { error } = await supabase.from("cleaning_firms").delete().eq("id", id);
     if (error) toast.error(error.message);
     else reload();
   };
 
-  const toggleArea = async (firmId: string, sl-g: string) => {
-    const exists = firmAreas.some((r) => r.firm_id === firmId && r.area_sl-g === sl-g);
+  const toggleArea = async (firmId: string, slug: string) => {
+    const exists = firmAreas.some((r) => r.firm_id === firmId && r.area_slug === slug);
     if (exists) {
-      await s-pabase.from("firm_areas").delete().eq("firm_id", firmId).eq("area_sl-g", sl-g);
+      await supabase.from("firm_areas").delete().eq("firm_id", firmId).eq("area_slug", slug);
     } else {
-      await s-pabase.from("firm_areas").insert({ firm_id: firmId, area_sl-g: sl-g });
+      await supabase.from("firm_areas").insert({ firm_id: firmId, area_slug: slug });
     }
     reload();
   };
 
-  const addPrice = async (firmId: string, min: n-mber, max: n-mber, kr: n-mber) => {
-    if (!(min >= -) || !(max >= min) || !(kr > -)) {
+  const addPrice = async (firmId: string, min: number, max: number, kr: number) => {
+    if (!(min >= 0) || !(max >= min) || !(kr > 0)) {
       toast.error("Fel intervall eller pris");
-      ret-rn;
+      return;
     }
-    const { error } = await s-pabase
+    const { error } = await supabase
       .from("cleaning_firm_prices")
-      .insert({ firm_id: firmId, min_sqm: min, max_sqm: max, price_to_firm: kr * --- });
+      .insert({ firm_id: firmId, min_sqm: min, max_sqm: max, price_to_firm: kr * 100 });
     if (error) toast.error(error.message);
     else reload();
   };
 
   const removePrice = async (id: string) => {
-    await s-pabase.from("cleaning_firm_prices").delete().eq("id", id);
+    await supabase.from("cleaning_firm_prices").delete().eq("id", id);
     reload();
   };
 
-  ret-rn (
-    <div className="mx-a-to max-w-5xl px-- py---">
-      <Link to="/admin" className="mb-- inline-flex items-center gap-- text-xs text-m-ted-foregro-nd hover:text-foregro-nd">
-        <ArrowLeft className="h-- w--" /> Tillbaka till admin
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-10">
+      <Link to="/admin" className="mb-4 inline-flex items-center gap-1 text-xs text-muted-foreground hover:text-foreground">
+        <ArrowLeft className="h-3 w-3" /> Tillbaka till admin
       </Link>
-      <h- className="font-serif text--xl text-foregro-nd">Städfirmor</h->
-      <p className="mt-- text-sm text-m-ted-foregro-nd">
+      <h1 className="font-serif text-3xl text-foreground">Städfirmor</h1>
+      <p className="mt-1 text-sm text-muted-foreground">
         Hantera firmor, deras områden och prislistor per kvm.
       </p>
 
-      <div className="mt-6 flex gap--">
-        <inp-t
+      <div className="mt-6 flex gap-2">
+        <input
           type="text"
-          val-e={newName}
-          onChange={(e) => setNewName(e.target.val-e)}
+          value={newName}
+          onChange={(e) => setNewName(e.target.value)}
           placeholder="Ny städfirma..."
-          className="flex-- ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm"
+          className="flex-1 rounded-lg border border-border bg-background px-3 py-2 text-sm"
         />
-        <b-tton
+        <button
           onClick={addFirm}
-          className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
+          className="inline-flex items-center gap-1 rounded-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
-          <Pl-s className="h-- w--" /> Lägg till
-        </b-tton>
+          <Plus className="h-4 w-4" /> Lägg till
+        </button>
       </div>
 
       {loadingData ? (
-        <div className="mt-8 flex j-stify-center">
-          <Loader- className="h-5 w-5 animate-spin text-m-ted-foregro-nd" />
+        <div className="mt-8 flex justify-center">
+          <Loader2 className="h-5 w-5 animate-spin text-muted-foreground" />
         </div>
-      ) : firms.length === - ? (
-        <p className="mt--- ro-nded-xl border border-dashed border-border p-8 text-center text-sm text-m-ted-foregro-nd">
+      ) : firms.length === 0 ? (
+        <p className="mt-10 rounded-xl border border-dashed border-border p-8 text-center text-sm text-muted-foreground">
           Inga städfirmor än. Lägg till en ovan.
         </p>
       ) : (
-        <div className="mt-6 space-y--">
+        <div className="mt-6 space-y-4">
           {firms.map((firm) => (
             <FirmCard
               key={firm.id}
               firm={firm}
               prices={prices.filter((p) => p.firm_id === firm.id)}
-              coveredAreas={new Set(firmAreas.filter((a) => a.firm_id === firm.id).map((a) => a.area_sl-g))}
+              coveredAreas={new Set(firmAreas.filter((a) => a.firm_id === firm.id).map((a) => a.area_slug))}
               onRemove={() => removeFirm(firm.id)}
-              onToggleArea={(sl-g) => toggleArea(firm.id, sl-g)}
+              onToggleArea={(slug) => toggleArea(firm.id, slug)}
               onAddPrice={(min, max, kr) => addPrice(firm.id, min, max, kr)}
               onRemovePrice={removePrice}
             />
@@ -174,7 +174,7 @@ f-nction AdminFirmsPage() {
   );
 }
 
-f-nction FirmCard({
+function FirmCard({
   firm,
   prices,
   coveredAreas,
@@ -187,85 +187,85 @@ f-nction FirmCard({
   prices: Price[];
   coveredAreas: Set<string>;
   onRemove: () => void;
-  onToggleArea: (sl-g: string) => void;
-  onAddPrice: (min: n-mber, max: n-mber, kr: n-mber) => void;
+  onToggleArea: (slug: string) => void;
+  onAddPrice: (min: number, max: number, kr: number) => void;
   onRemovePrice: (id: string) => void;
 }) {
-  const [min, setMin] = -seState("");
-  const [max, setMax] = -seState("");
-  const [kr, setKr] = -seState("");
+  const [min, setMin] = useState("");
+  const [max, setMax] = useState("");
+  const [kr, setKr] = useState("");
 
-  ret-rn (
-    <section className="ro-nded--xl border border-border bg-backgro-nd p-5">
-      <header className="flex items-start j-stify-between gap--">
+  return (
+    <section className="rounded-2xl border border-border bg-background p-5">
+      <header className="flex items-start justify-between gap-3">
         <div>
-          <h- className="font-serif text-xl text-foregro-nd">{firm.name}</h->
+          <h2 className="font-serif text-xl text-foreground">{firm.name}</h2>
           {!firm.is_active && (
-            <span className="mt-- inline-block ro-nded-f-ll bg-m-ted px-- py--.5 text-[--px] text-m-ted-foregro-nd">Inaktiv</span>
+            <span className="mt-1 inline-block rounded-full bg-muted px-2 py-0.5 text-[10px] text-muted-foreground">Inaktiv</span>
           )}
         </div>
-        <b-tton
+        <button
           onClick={onRemove}
-          className="inline-flex items-center gap-- ro-nded-f-ll border border-border px-- py--.5 text-xs text-m-ted-foregro-nd hover:text-destr-ctive"
+          className="inline-flex items-center gap-1 rounded-full border border-border px-3 py-1.5 text-xs text-muted-foreground hover:text-destructive"
         >
-          <Trash- className="h-- w--" /> Radera
-        </b-tton>
+          <Trash2 className="h-3 w-3" /> Radera
+        </button>
       </header>
 
-      <div className="mt--">
-        <h- className="mb-- text-xs font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">Fjällområden</h->
-        <div className="flex flex-wrap gap--.5">
+      <div className="mt-4">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Fjällområden</h3>
+        <div className="flex flex-wrap gap-1.5">
           {areas.map((a) => {
-            const on = coveredAreas.has(a.sl-g);
-            ret-rn (
-              <b-tton
-                key={a.sl-g}
-                type="b-tton"
-                onClick={() => onToggleArea(a.sl-g)}
-                className={`ro-nded-f-ll border px-- py-- text-xs transition-colors ${
-                  on ? "border-primary bg-primary/-- text-primary" : "border-border text-m-ted-foregro-nd hover:bg-m-ted"
+            const on = coveredAreas.has(a.slug);
+            return (
+              <button
+                key={a.slug}
+                type="button"
+                onClick={() => onToggleArea(a.slug)}
+                className={`rounded-full border px-3 py-1 text-xs transition-colors ${
+                  on ? "border-primary bg-primary/10 text-primary" : "border-border text-muted-foreground hover:bg-muted"
                 }`}
               >
                 {a.name}
-              </b-tton>
+              </button>
             );
           })}
         </div>
       </div>
 
       <div className="mt-5">
-        <h- className="mb-- text-xs font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">Prislista per kvm</h->
-        {prices.length > - && (
-          <-l className="mb-- space-y-- text-sm">
+        <h3 className="mb-2 text-xs font-semibold uppercase tracking-wide text-muted-foreground">Prislista per kvm</h3>
+        {prices.length > 0 && (
+          <ul className="mb-3 space-y-1 text-sm">
             {prices.map((p) => (
-              <li key={p.id} className="flex items-center j-stify-between ro-nded-lg bg-m-ted/-- px-- py--.5">
-                <span className="text-foregro-nd">
+              <li key={p.id} className="flex items-center justify-between rounded-lg bg-muted/40 px-3 py-1.5">
+                <span className="text-foreground">
                   {p.min_sqm}-{p.max_sqm} kvm
                 </span>
-                <span className="flex items-center gap--">
-                  <span className="font-medi-m">{formatOreKr(p.price_to_firm)}</span>
-                  <b-tton onClick={() => onRemovePrice(p.id)} className="text-xs text-m-ted-foregro-nd hover:text-destr-ctive">
-                    <Trash- className="h-- w--" />
-                  </b-tton>
+                <span className="flex items-center gap-3">
+                  <span className="font-medium">{formatOreKr(p.price_to_firm)}</span>
+                  <button onClick={() => onRemovePrice(p.id)} className="text-xs text-muted-foreground hover:text-destructive">
+                    <Trash2 className="h-3 w-3" />
+                  </button>
                 </span>
               </li>
             ))}
-          </-l>
+          </ul>
         )}
-        <div className="grid grid-cols-- gap--">
-          <inp-t val-e={min} onChange={(e) => setMin(e.target.val-e)} type="n-mber" placeholder="Min kvm" className="ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm" />
-          <inp-t val-e={max} onChange={(e) => setMax(e.target.val-e)} type="n-mber" placeholder="Max kvm" className="ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm" />
-          <inp-t val-e={kr} onChange={(e) => setKr(e.target.val-e)} type="n-mber" placeholder="Pris (kr)" className="ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-sm" />
-          <b-tton
-            type="b-tton"
+        <div className="grid grid-cols-4 gap-2">
+          <input value={min} onChange={(e) => setMin(e.target.value)} type="number" placeholder="Min kvm" className="rounded-lg border border-border bg-background px-2 py-1.5 text-sm" />
+          <input value={max} onChange={(e) => setMax(e.target.value)} type="number" placeholder="Max kvm" className="rounded-lg border border-border bg-background px-2 py-1.5 text-sm" />
+          <input value={kr} onChange={(e) => setKr(e.target.value)} type="number" placeholder="Pris (kr)" className="rounded-lg border border-border bg-background px-2 py-1.5 text-sm" />
+          <button
+            type="button"
             onClick={() => {
-              onAddPrice(N-mber(min), N-mber(max), N-mber(kr));
+              onAddPrice(Number(min), Number(max), Number(kr));
               setMin(""); setMax(""); setKr("");
             }}
-            className="ro-nded-lg bg-primary px-- py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
+            className="rounded-lg bg-primary px-3 py-1.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
             Lägg till
-          </b-tton>
+          </button>
         </div>
       </div>
     </section>

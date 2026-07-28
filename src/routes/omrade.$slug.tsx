@@ -140,6 +140,9 @@ function AreaPage() {
                   Sök i hela fjällkedjan
                 </Link>
               </div>
+              <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
+                Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.
+              </p>
             </div>
           )}
         </div>

@@ -68,14 +68,14 @@ function PayoutBox({ hostId, totalPrice }: { hostId: string; totalPrice: number 
   if (data === null || (!data.swish_number && !data.bankgiro && !data.bank_account && !data.payment_instructions)) {
     return (
       <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-        Värden har inte lagt in betaluppgifter ännu. Kontakta värden direkt.
+        Betalningen hanteras tryggt via Fjällportalen. Använd knappen "Betala" ovan.
       </p>
     );
   }
 
   return (
     <div className="mt-3 space-y-1.5 rounded-lg border border-primary/20 bg-primary/5 p-3 text-xs">
-      <div className="mb-1 font-medium text-foreground">Betala {totalPrice.toLocaleString("sv-SE")} kr direkt till värden</div>
+      <div className="mb-1 font-medium text-foreground">Betalning på {totalPrice.toLocaleString("sv-SE")} kr hanteras via Fjällportalen</div>
       {data.swish_number && (
         <div><span className="text-muted-foreground">Swish:</span> <span className="font-mono text-foreground">{data.swish_number}</span></div>
       )}

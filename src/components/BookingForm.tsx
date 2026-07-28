@@ -300,8 +300,8 @@ export function BookingForm({
 
       <p className="text-center text-[11px] text-muted-foreground">
         {instantBook
-          ? "Direktbokning bekräftas omedelbart. Betalning sker direkt till värden (Swish, faktura eller efter överenskommelse)."
-          : "Värden svarar inom 24 timmar. Betalning sker direkt mellan dig och värden — Fjällportalen hanterar inte pengarna."}
+          ? "Direktbokning bekräftas omedelbart. Betala tryggt med kort eller Swish — pengarna släpps till värden 24 timmar efter incheckning."
+          : "Värden svarar inom 24 timmar. När bokningen bekräftas betalar du tryggt via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning."}
       </p>
     </form>
   );

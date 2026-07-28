@@ -75,9 +75,9 @@ export function HostPayoutForm({ hostId }: { hostId: string }) {
   return (
     <form onSubmit={handleSave} className="space-y-4 rounded-2xl border border-border bg-background p-6">
       <div>
-        <h2 className="font-serif text-xl text-foreground">Betaluppgifter</h2>
+        <h2 className="font-serif text-xl text-foreground">Utbetalningsuppgifter</h2>
         <p className="mt-1 text-sm text-muted-foreground">
-          Visas endast för gäster med en bekräftad bokning hos dig. Fjällportalen hanterar aldrig pengarna — gästen betalar dig direkt.
+          Gästen betalar tryggt via Fjällportalen. Vi betalar ut till dig 24 timmar efter incheckning — fyll i vart pengarna ska.
         </p>
       </div>
 

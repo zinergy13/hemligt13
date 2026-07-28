@@ -282,6 +282,8 @@ export function BookingForm({
         </div>
       )}
 
+      {nights > 0 && !overlaps && <PaymentPayoutTimeline />}
+
       {!user && !authLoading ? (
         <Link
           to="/logga-in"

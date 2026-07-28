@@ -223,7 +223,17 @@ function CheckoutReceipt() {
 
       {/* Live timeline */}
       <div className="mt-6">
-        <PaymentPayoutTimeline booking={live ?? { payment_status: booking.payment_status, escrow_status: booking.escrow_status, escrow_released_at: booking.escrow_released_at, check_in: booking.check_in }} />
+        <PaymentPayoutTimeline
+          booking={
+            live ?? {
+              status: isPaid ? 'confirmed' : 'pending',
+              payment_status: booking.payment_status,
+              escrow_status: booking.escrow_status,
+              escrow_released_at: booking.escrow_released_at,
+              check_in: booking.check_in,
+            }
+          }
+        />
       </div>
 
       <p className="mt-8 text-center text-xs text-muted-foreground">

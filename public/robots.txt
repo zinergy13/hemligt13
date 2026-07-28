@@ -5,6 +5,8 @@ Disallow: /konto
 Disallow: /admin
 Disallow: /vard
 Disallow: /mina-bokningar
+Disallow: /checkout
+Disallow: /meddelanden
 Disallow: /logga-in
 Disallow: /aterstall-losenord
 Disallow: /api/

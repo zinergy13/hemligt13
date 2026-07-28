@@ -4,6 +4,7 @@ import { template as giftCardTemplate } from './gift-card'
 import { template as bookingConfirmationTemplate } from './booking-confirmation'
 import { template as checkinReminderTemplate } from './checkin-reminder'
 import { template as payoutReleasedTemplate } from './payout-released'
+import { template as escrowActivatedTemplate } from './escrow-activated'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -28,6 +29,7 @@ export const TEMPLATES: Record<string, TemplateEntry> = {
   'host-invoice': hostInvoiceTemplate,
   'gift-card': giftCardTemplate,
   'booking-confirmation': bookingConfirmationTemplate,
+  'escrow-activated': escrowActivatedTemplate,
   'checkin-reminder': checkinReminderTemplate,
   'payout-released': payoutReleasedTemplate,
 }

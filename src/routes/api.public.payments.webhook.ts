@@ -2,6 +2,7 @@ import { createFileRoute } from '@tanstack/react-router';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 import { type StripeEnv, verifyWebhook } from '@/lib/stripe.server';
+import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
 
 let _admin: ReturnType<typeof createClient<Database>> | null = null;
 function admin() {
@@ -35,6 +36,73 @@ async function handleCheckoutCompleted(session: any) {
 
   // Mark extras as confirmed too
   await admin().from('booking_extras').update({ status: 'confirmed' }).eq('booking_id', bookingId);
+
+  await notifyGuestPaymentAndEscrow(bookingId);
+}
+
+async function notifyGuestPaymentAndEscrow(bookingId: string) {
+  // Idempotency guard — only send once per booking
+  const { data: booking } = await admin()
+    .from('bookings')
+    .select('id, guest_id, cabin_id, check_in, check_out, nights, guests, total_price, payment_notified_at')
+    .eq('id', bookingId)
+    .maybeSingle();
+  if (!booking) return;
+  if (booking.payment_notified_at) return;
+
+  const [{ data: authUser }, { data: cabin }] = await Promise.all([
+    admin().auth.admin.getUserById(booking.guest_id),
+    admin()
+      .from('cabins')
+      .select('title, area_slug')
+      .eq('id', booking.cabin_id)
+      .maybeSingle(),
+  ]);
+  const email = authUser?.user?.email;
+  if (!email) {
+    console.warn('No guest email for booking, skipping notify', { bookingId });
+    return;
+  }
+  const { data: profile } = await admin()
+    .from('profiles')
+    .select('full_name')
+    .eq('id', booking.guest_id)
+    .maybeSingle();
+
+  const guestName = profile?.full_name?.split(' ')[0] ?? undefined;
+  const shared = {
+    guestName,
+    cabinName: cabin?.title ?? 'din stuga',
+    areaName: cabin?.area_slug ?? '',
+    checkIn: booking.check_in,
+    checkOut: booking.check_out,
+    nights: booking.nights,
+    guests: booking.guests,
+    totalKr: booking.total_price,
+  };
+
+  await sendInternalTemplatedEmail({
+    templateName: 'booking-confirmation',
+    recipientEmail: email,
+    idempotencyKey: `booking-confirm-${bookingId}`,
+    templateData: shared,
+  });
+  await sendInternalTemplatedEmail({
+    templateName: 'escrow-activated',
+    recipientEmail: email,
+    idempotencyKey: `escrow-activated-${bookingId}`,
+    templateData: {
+      guestName,
+      cabinName: shared.cabinName,
+      totalKr: shared.totalKr,
+      checkIn: shared.checkIn,
+    },
+  });
+
+  await admin()
+    .from('bookings')
+    .update({ payment_notified_at: new Date().toISOString() })
+    .eq('id', bookingId);
 }
 
 async function handleRefundCreated(refund: any) {

@@ -154,6 +154,7 @@ export type Database = {
           cancellation_reason: string | null
           check_in: string
           check_out: string
+          checkin_notified_at: string | null
           checkout_session_id: string | null
           cleaning_fee: number
           commission_amount: number
@@ -173,7 +174,9 @@ export type Database = {
           id: string
           nightly_total: number
           nights: number
+          payment_notified_at: string | null
           payment_status: Database["public"]["Enums"]["payment_status"]
+          payout_notified_at: string | null
           refund_amount_ore: number
           refunded_at: string | null
           service_fee: number
@@ -188,6 +191,7 @@ export type Database = {
           cancellation_reason?: string | null
           check_in: string
           check_out: string
+          checkin_notified_at?: string | null
           checkout_session_id?: string | null
           cleaning_fee?: number
           commission_amount?: number
@@ -207,7 +211,9 @@ export type Database = {
           id?: string
           nightly_total: number
           nights: number
+          payment_notified_at?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          payout_notified_at?: string | null
           refund_amount_ore?: number
           refunded_at?: string | null
           service_fee?: number
@@ -222,6 +228,7 @@ export type Database = {
           cancellation_reason?: string | null
           check_in?: string
           check_out?: string
+          checkin_notified_at?: string | null
           checkout_session_id?: string | null
           cleaning_fee?: number
           commission_amount?: number
@@ -241,7 +248,9 @@ export type Database = {
           id?: string
           nightly_total?: number
           nights?: number
+          payment_notified_at?: string | null
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          payout_notified_at?: string | null
           refund_amount_ore?: number
           refunded_at?: string | null
           service_fee?: number

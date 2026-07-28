@@ -151,8 +151,10 @@ export type Database = {
       bookings: {
         Row: {
           cabin_id: string
+          cancellation_reason: string | null
           check_in: string
           check_out: string
+          checkout_session_id: string | null
           cleaning_fee: number
           commission_amount: number
           commission_earned_at: string | null
@@ -161,6 +163,8 @@ export type Database = {
           commission_status: string
           created_at: string
           currency: string
+          escrow_released_at: string | null
+          escrow_status: string
           guest_id: string
           guest_message: string | null
           guests: number
@@ -170,6 +174,8 @@ export type Database = {
           nightly_total: number
           nights: number
           payment_status: Database["public"]["Enums"]["payment_status"]
+          refund_amount_ore: number
+          refunded_at: string | null
           service_fee: number
           status: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent: string | null
@@ -179,8 +185,10 @@ export type Database = {
         }
         Insert: {
           cabin_id: string
+          cancellation_reason?: string | null
           check_in: string
           check_out: string
+          checkout_session_id?: string | null
           cleaning_fee?: number
           commission_amount?: number
           commission_earned_at?: string | null
@@ -189,6 +197,8 @@ export type Database = {
           commission_status?: string
           created_at?: string
           currency?: string
+          escrow_released_at?: string | null
+          escrow_status?: string
           guest_id: string
           guest_message?: string | null
           guests?: number
@@ -198,6 +208,8 @@ export type Database = {
           nightly_total: number
           nights: number
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          refund_amount_ore?: number
+          refunded_at?: string | null
           service_fee?: number
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent?: string | null
@@ -207,8 +219,10 @@ export type Database = {
         }
         Update: {
           cabin_id?: string
+          cancellation_reason?: string | null
           check_in?: string
           check_out?: string
+          checkout_session_id?: string | null
           cleaning_fee?: number
           commission_amount?: number
           commission_earned_at?: string | null
@@ -217,6 +231,8 @@ export type Database = {
           commission_status?: string
           created_at?: string
           currency?: string
+          escrow_released_at?: string | null
+          escrow_status?: string
           guest_id?: string
           guest_message?: string | null
           guests?: number
@@ -226,6 +242,8 @@ export type Database = {
           nightly_total?: number
           nights?: number
           payment_status?: Database["public"]["Enums"]["payment_status"]
+          refund_amount_ore?: number
+          refunded_at?: string | null
           service_fee?: number
           status?: Database["public"]["Enums"]["booking_status"]
           stripe_payment_intent?: string | null
@@ -1523,6 +1541,7 @@ export type Database = {
           remaining_ore: number
         }[]
       }
+      release_eligible_escrow: { Args: never; Returns: number }
     }
     Enums: {
       app_role: "guest" | "host" | "admin"

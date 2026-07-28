@@ -116,6 +116,7 @@ function HostInvoicePage() {
           </Link>
         </div>
       </div>
+      <TrustPaymentBanner variant="host" className="mb-8" />
 
       {initialBalance ? (
         <SummaryCardsSkeleton count={3} />

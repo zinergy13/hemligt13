@@ -117,6 +117,76 @@ async function sendPayoutNotifications(origin: string) {
   return results;
 }
 
+/**
+ * Fallback: fångar bokningar där Stripe-webhooken av någon anledning inte
+ * hann skicka bekräftelsen (payment_status = 'paid' men payment_notified_at
+ * är null). Kör varje timme via samma cron som övriga notiser.
+ */
+async function sendMissedBookingConfirmations(origin: string) {
+  const { data: rows, error } = await admin()
+    .from('bookings')
+    .select('id, guest_id, cabin_id, check_in, check_out, host_id, nights, guests, total_price')
+    .eq('payment_status', 'paid')
+    .is('payment_notified_at', null)
+    .limit(25);
+  if (error) throw error;
+  const results: Array<{ id: string; sent: boolean }> = [];
+  for (const b of rows ?? []) {
+    const [{ email, firstName }, { data: cabin }] = await Promise.all([
+      guestEmailAndName(b.guest_id),
+      admin().from('cabins').select('title, area_slug').eq('id', b.cabin_id).maybeSingle(),
+    ]);
+    if (!email) {
+      await admin().from('bookings').update({ payment_notified_at: new Date().toISOString() }).eq('id', b.id);
+      results.push({ id: b.id, sent: false });
+      continue;
+    }
+    const fields = buildBookingEmailFields({
+      id: b.id,
+      check_in: b.check_in,
+      check_out: b.check_out,
+    });
+    const shared = {
+      guestName: firstName,
+      cabinName: cabin?.title ?? 'din stuga',
+      areaName: cabin?.area_slug ?? '',
+      ...fields,
+      nights: b.nights,
+      guests: b.guests,
+      totalKr: b.total_price,
+    };
+    const confirmRes = await sendInternalTemplatedEmail({
+      templateName: 'booking-confirmation',
+      recipientEmail: email,
+      idempotencyKey: `booking-confirm-${b.id}`,
+      bookingId: b.id,
+      origin,
+      templateData: shared,
+    });
+    const escrowRes = await sendInternalTemplatedEmail({
+      templateName: 'escrow-activated',
+      recipientEmail: email,
+      idempotencyKey: `escrow-activated-${b.id}`,
+      bookingId: b.id,
+      origin,
+      templateData: {
+        guestName: firstName,
+        cabinName: shared.cabinName,
+        totalKr: shared.totalKr,
+        checkIn: shared.checkIn,
+        checkInLabel: shared.checkInLabel,
+        bookingRef: shared.bookingRef,
+        payoutAtLabel: shared.payoutAtLabel,
+      },
+    });
+    if (confirmRes.ok && escrowRes.ok) {
+      await admin().from('bookings').update({ payment_notified_at: new Date().toISOString() }).eq('id', b.id);
+    }
+    results.push({ id: b.id, sent: confirmRes.ok && escrowRes.ok });
+  }
+  return results;
+}
+
 export const Route = createFileRoute('/api/public/hooks/booking-notifications')({
   server: {
     handlers: {

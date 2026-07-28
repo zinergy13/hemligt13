@@ -4,7 +4,7 @@ export function PaymentTestModeBanner() {
   if (!clientToken) {
     return (
       <div className="w-full bg-destructive/10 border-b border-destructive/30 px-4 py-2 text-center text-sm text-destructive">
-        Betalningar är inte konfigurerade för denna miljö. Slutför Stripe go-live i Lovable-projektet.
+        Betalningar är inte konfigurerade för denna miljö. Slutför Stripe go-live i projektet.
       </div>
     );
   }

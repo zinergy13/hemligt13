@@ -1,6 +1,9 @@
 import type { ComponentType } from 'react'
 import { template as hostInvoiceTemplate } from './host-invoice'
 import { template as giftCardTemplate } from './gift-card'
+import { template as bookingConfirmationTemplate } from './booking-confirmation'
+import { template as checkinReminderTemplate } from './checkin-reminder'
+import { template as payoutReleasedTemplate } from './payout-released'
 
 export interface TemplateEntry {
   component: ComponentType<any>
@@ -24,4 +27,7 @@ export interface TemplateEntry {
 export const TEMPLATES: Record<string, TemplateEntry> = {
   'host-invoice': hostInvoiceTemplate,
   'gift-card': giftCardTemplate,
+  'booking-confirmation': bookingConfirmationTemplate,
+  'checkin-reminder': checkinReminderTemplate,
+  'payout-released': payoutReleasedTemplate,
 }

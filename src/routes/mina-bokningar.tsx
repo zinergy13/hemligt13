@@ -132,6 +132,8 @@ function MyBookingsPage() {
         Översikt av alla dina bokningar och förfrågningar.
       </p>
 
+      <TrustPaymentBanner className="mt-5" />
+
       {initialLoading ? (
         <div className="mt-8">
           <ListSkeleton count={3} />

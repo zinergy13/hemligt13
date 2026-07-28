@@ -10,6 +10,7 @@ import {
   Clock,
   AlertTriangle,
   Mail,
+  Download,
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.functions';
@@ -56,6 +57,7 @@ function EmailStatusPage() {
   const [search, setSearch] = useState('');
   const [offset, setOffset] = useState(0);
   const limit = 50;
+  const [exporting, setExporting] = useState(false);
 
   const query = useQuery({
     queryKey: ['email-attempts', status, templateName, search, offset],
@@ -84,6 +86,89 @@ function EmailStatusPage() {
   const rows = query.data?.rows ?? [];
   const summary = query.data?.summary ?? { pending: 0, sent: 0, failed: 0 };
   const total = query.data?.total ?? 0;
+
+  const handleExportCsv = async () => {
+    setExporting(true);
+    try {
+      const pageSize = 200;
+      const all: any[] = [];
+      let off = 0;
+      // Paginate through the current filter selection
+      // Safety cap: 10 000 rader
+      while (all.length < 10000) {
+        const res = await list({
+          data: {
+            status,
+            templateName: templateName || undefined,
+            search: search || undefined,
+            limit: pageSize,
+            offset: off,
+          },
+        });
+        const batch = res?.rows ?? [];
+        all.push(...batch);
+        if (batch.length < pageSize) break;
+        off += pageSize;
+      }
+
+      const headers = [
+        'bookingId',
+        'templateName',
+        'recipient',
+        'status',
+        'attempts',
+        'last_status_code',
+        'last_error',
+        'sent_at',
+        'next_retry_at',
+        'last_attempt_at',
+        'created_at',
+      ];
+      const escape = (v: unknown) => {
+        if (v === null || v === undefined) return '';
+        const s = String(v).replace(/"/g, '""');
+        return `"${s}"`;
+      };
+      const lines = [headers.join(',')];
+      for (const r of all) {
+        lines.push(
+          [
+            r.booking_id ?? '',
+            r.template_name ?? '',
+            r.recipient_email ?? '',
+            r.status ?? '',
+            r.attempts ?? '',
+            r.last_status_code ?? '',
+            r.last_error ?? '',
+            r.sent_at ?? '',
+            r.next_retry_at ?? '',
+            r.last_attempt_at ?? '',
+            r.created_at ?? '',
+          ]
+            .map(escape)
+            .join(','),
+        );
+      }
+      // UTF-8 BOM så Excel öppnar svenska tecken korrekt
+      const blob = new Blob(['\uFEFF' + lines.join('\n')], {
+        type: 'text/csv;charset=utf-8;',
+      });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+      a.href = url;
+      a.download = `epost-${status}-${stamp}.csv`;
+      document.body.appendChild(a);
+      a.click();
+      a.remove();
+      URL.revokeObjectURL(url);
+      toast.success(`Exporterade ${all.length} rader`);
+    } catch (err: any) {
+      toast.error(err?.message ?? 'Kunde inte exportera');
+    } finally {
+      setExporting(false);
+    }
+  };
 
   return (
     <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
@@ -156,6 +241,19 @@ function EmailStatusPage() {
           className="ml-auto inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted"
         >
           <RefreshCw className="h-3.5 w-3.5" /> Uppdatera
+        </button>
+        <button
+          onClick={handleExportCsv}
+          disabled={exporting || total === 0}
+          className="inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50"
+          title="Exportera aktuellt filter till CSV"
+        >
+          {exporting ? (
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
+          ) : (
+            <Download className="h-3.5 w-3.5" />
+          )}
+          Exportera CSV
         </button>
       </div>
 

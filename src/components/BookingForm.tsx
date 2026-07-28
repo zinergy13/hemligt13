@@ -20,6 +20,7 @@ import {
 import { PriceBreakdown } from "@/components/PriceBreakdown";
 import { BookingExtras } from "@/components/BookingExtras";
 import { extrasTotal, formatOreKr, type ExtraLine } from "@/lib/extras";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
 
 type Props = {
   cabinId: string;
@@ -179,6 +180,7 @@ export function BookingForm({
 
   return (
     <form onSubmit={handleSubmit} className="space-y-4">
+      <TrustPaymentBanner />
       <div className="grid grid-cols-2 gap-2">
         <label className="block">
           <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">

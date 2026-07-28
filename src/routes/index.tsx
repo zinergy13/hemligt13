@@ -204,6 +204,9 @@ function HomePage() {
                 Lägg upp din stuga
                 <ArrowRight className="h-4 w-4" />
               </Link>
+              <p className="mt-3 max-w-xs text-xs text-primary-foreground/85 md:text-right">
+                Gästen betalar tryggt via Fjällportalen — utbetalning till dig 24 timmar efter incheckning.
+              </p>
             </div>
           </div>
         </div>

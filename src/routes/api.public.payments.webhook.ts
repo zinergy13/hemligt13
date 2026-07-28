@@ -85,12 +85,14 @@ async function notifyGuestPaymentAndEscrow(bookingId: string) {
     templateName: 'booking-confirmation',
     recipientEmail: email,
     idempotencyKey: `booking-confirm-${bookingId}`,
+    bookingId,
     templateData: shared,
   });
   await sendInternalTemplatedEmail({
     templateName: 'escrow-activated',
     recipientEmail: email,
     idempotencyKey: `escrow-activated-${bookingId}`,
+    bookingId,
     templateData: {
       guestName,
       cabinName: shared.cabinName,

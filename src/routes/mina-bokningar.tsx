@@ -217,9 +217,34 @@ function MyBookingsPage() {
                       )}
                     </Link>
                   </div>
-                  {b.status === "confirmed" && (
-                    <PayoutBox hostId={b.host_id} totalPrice={b.total_price} />
-                  )}
+                  {(() => {
+                    const paymentStatus = (b as unknown as { payment_status?: string }).payment_status;
+                    const needsPayment = (b.status === "confirmed" || b.status === "pending") && paymentStatus !== "paid" && paymentStatus !== "refunded";
+                    if (needsPayment) {
+                      return (
+                        <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
+                          <div className="text-xs text-muted-foreground">
+                            Betala tryggt via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.
+                          </div>
+                          <Link
+                            to="/checkout/$bookingId"
+                            params={{ bookingId: b.id }}
+                            className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
+                          >
+                            Betala {b.total_price.toLocaleString("sv-SE")} kr
+                          </Link>
+                        </div>
+                      );
+                    }
+                    if (b.status === "confirmed" && paymentStatus === "paid") {
+                      return (
+                        <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
+                          ✓ Betald. Pengarna hålls tryggt hos Fjällportalen och betalas ut till värden 24 timmar efter incheckning.
+                        </p>
+                      );
+                    }
+                    return null;
+                  })()}
                   {b.status === "completed" && c && (
                     <ReviewCTA bookingId={b.id} cabinId={b.cabin_id} />
                   )}

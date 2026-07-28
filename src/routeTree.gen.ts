@@ -31,6 +31,8 @@ import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminPresentkortRouteImport } from './routes/admin.presentkort'
 import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner'
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
+import { Route as CheckoutBookingIdRouteImport } from './routes/checkout.$bookingId'
+import { Route as CheckoutKlarRouteImport } from './routes/checkout.klar'
 import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
@@ -46,6 +48,7 @@ import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
 import { Route as ApiPublicHooksGenerateMonthlyInvoicesRouteImport } from './routes/api.public.hooks.generate-monthly-invoices'
 import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical.$token'
+import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api.public.payments.webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
 import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
@@ -164,6 +167,16 @@ const AdminStadfirmorRoute = AdminStadfirmorRouteImport.update({
   path: '/stadfirmor',
   getParentRoute: () => AdminRoute,
 } as any)
+const CheckoutBookingIdRoute = CheckoutBookingIdRouteImport.update({
+  id: '/checkout/$bookingId',
+  path: '/checkout/$bookingId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const CheckoutKlarRoute = CheckoutKlarRouteImport.update({
+  id: '/checkout/klar',
+  path: '/checkout/klar',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
   id: '/email/unsubscribe',
   path: '/email/unsubscribe',
@@ -240,6 +253,12 @@ const ApiPublicIcalTokenRoute = ApiPublicIcalTokenRouteImport.update({
   path: '/api/public/ical/$token',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiPublicPaymentsWebhookRoute =
+  ApiPublicPaymentsWebhookRouteImport.update({
+    id: '/api/public/payments/webhook',
+    path: '/api/public/payments/webhook',
+    getParentRoute: () => rootRouteImport,
+  } as any)
 const LovableEmailAuthPreviewRoute = LovableEmailAuthPreviewRouteImport.update({
   id: '/lovable/email/auth/preview',
   path: '/lovable/email/auth/preview',
@@ -301,6 +320,8 @@ export interface FileRoutesByFullPath {
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/checkout/$bookingId': typeof CheckoutBookingIdRoute
+  '/checkout/klar': typeof CheckoutKlarRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -317,6 +338,7 @@ export interface FileRoutesByFullPath {
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -345,6 +367,8 @@ export interface FileRoutesByTo {
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/checkout/$bookingId': typeof CheckoutBookingIdRoute
+  '/checkout/klar': typeof CheckoutKlarRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -361,6 +385,7 @@ export interface FileRoutesByTo {
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -392,6 +417,8 @@ export interface FileRoutesById {
   '/admin/presentkort': typeof AdminPresentkortRoute
   '/admin/recensioner': typeof AdminRecensionerRoute
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
+  '/checkout/$bookingId': typeof CheckoutBookingIdRoute
+  '/checkout/klar': typeof CheckoutKlarRoute
   '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
@@ -408,6 +435,7 @@ export interface FileRoutesById {
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/generate-monthly-invoices': typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   '/api/public/ical/$token': typeof ApiPublicIcalTokenRoute
+  '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
   '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
@@ -440,6 +468,8 @@ export interface FileRouteTypes {
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/checkout/$bookingId'
+    | '/checkout/klar'
     | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -456,6 +486,7 @@ export interface FileRouteTypes {
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -484,6 +515,8 @@ export interface FileRouteTypes {
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/checkout/$bookingId'
+    | '/checkout/klar'
     | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -500,6 +533,7 @@ export interface FileRouteTypes {
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -530,6 +564,8 @@ export interface FileRouteTypes {
     | '/admin/presentkort'
     | '/admin/recensioner'
     | '/admin/stadfirmor'
+    | '/checkout/$bookingId'
+    | '/checkout/klar'
     | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
@@ -546,6 +582,7 @@ export interface FileRouteTypes {
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/generate-monthly-invoices'
     | '/api/public/ical/$token'
+    | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
     | '/lovable/email/queue/process'
@@ -572,6 +609,8 @@ export interface RootRouteChildren {
   SokRoute: typeof SokRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VardRoute: typeof VardRouteWithChildren
+  CheckoutBookingIdRoute: typeof CheckoutBookingIdRoute
+  CheckoutKlarRoute: typeof CheckoutKlarRoute
   EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
@@ -581,6 +620,7 @@ export interface RootRouteChildren {
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksGenerateMonthlyInvoicesRoute: typeof ApiPublicHooksGenerateMonthlyInvoicesRoute
   ApiPublicIcalTokenRoute: typeof ApiPublicIcalTokenRoute
+  ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
   LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
@@ -744,6 +784,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminStadfirmorRouteImport
       parentRoute: typeof AdminRoute
     }
+    '/checkout/$bookingId': {
+      id: '/checkout/$bookingId'
+      path: '/checkout/$bookingId'
+      fullPath: '/checkout/$bookingId'
+      preLoaderRoute: typeof CheckoutBookingIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/checkout/klar': {
+      id: '/checkout/klar'
+      path: '/checkout/klar'
+      fullPath: '/checkout/klar'
+      preLoaderRoute: typeof CheckoutKlarRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/email/unsubscribe': {
       id: '/email/unsubscribe'
       path: '/email/unsubscribe'
@@ -847,6 +901,13 @@ declare module '@tanstack/react-router' {
       path: '/api/public/ical/$token'
       fullPath: '/api/public/ical/$token'
       preLoaderRoute: typeof ApiPublicIcalTokenRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/api/public/payments/webhook': {
+      id: '/api/public/payments/webhook'
+      path: '/api/public/payments/webhook'
+      fullPath: '/api/public/payments/webhook'
+      preLoaderRoute: typeof ApiPublicPaymentsWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/lovable/email/auth/preview': {
@@ -971,6 +1032,8 @@ const rootRouteChildren: RootRouteChildren = {
   SokRoute: SokRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VardRoute: VardRouteWithChildren,
+  CheckoutBookingIdRoute: CheckoutBookingIdRoute,
+  CheckoutKlarRoute: CheckoutKlarRoute,
   EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,
@@ -981,6 +1044,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicHooksGenerateMonthlyInvoicesRoute:
     ApiPublicHooksGenerateMonthlyInvoicesRoute,
   ApiPublicIcalTokenRoute: ApiPublicIcalTokenRoute,
+  ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
   LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,

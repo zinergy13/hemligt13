@@ -8,7 +8,7 @@ function paymentsEnvironment(): StripeEnv {
   if (clientToken?.startsWith('pk_test_')) return 'sandbox';
   if (clientToken?.startsWith('pk_live_')) return 'live';
   throw new Error(
-    'Stripe är inte konfigurerad för denna miljö. Slutför Stripe go-live i ditt Lovable-projekt.',
+    'Stripe är inte konfigurerad för denna miljö. Slutför Stripe go-live i projektet.',
   );
 }
 

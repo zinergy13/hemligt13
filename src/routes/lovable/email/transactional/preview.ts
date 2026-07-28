@@ -1,37 +1,37 @@
 import * as React from 'react'
 import { render } from '@react-email/render'
-import { createFileRo-te } from '@tanstack/react-ro-ter'
+import { createFileRoute } from '@tanstack/react-router'
 import { TEMPLATES } from '@/lib/email-templates/registry'
 
 // Renders all registered templates with their previewData.
-// Gated by LOVABLE_API_KEY - only the Go API calls this.
+// Gated by LOVABLE_API_KEY — only the Go API calls this.
 
-export const Ro-te = createFileRo-te("/lovable/email/transactional/preview")({
+export const Route = createFileRoute("/lovable/email/transactional/preview")({
   server: {
     handlers: {
-      POST: async ({ req-est }) => {
+      POST: async ({ request }) => {
         const apiKey = process.env.LOVABLE_API_KEY
         if (!apiKey) {
-          ret-rn Response.json(
-            { error: 'Server config-ration error' },
-            { stat-s: 5-- }
+          return Response.json(
+            { error: 'Server configuration error' },
+            { status: 500 }
           )
         }
 
-        // Verify the caller is a-thorized with LOVABLE_API_KEY
-        const a-thHeader = req-est.headers.get('A-thorization')
-        const token = a-thHeader?.replace(/^Bearer-s+/i, '')
+        // Verify the caller is authorized with LOVABLE_API_KEY
+        const authHeader = request.headers.get('Authorization')
+        const token = authHeader?.replace(/^Bearer\s+/i, '')
         if (token !== apiKey) {
-          ret-rn Response.json({ error: 'Una-thorized' }, { stat-s: --- })
+          return Response.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
         const templateNames = Object.keys(TEMPLATES)
-        const res-lts: Array<{
+        const results: Array<{
           templateName: string
           displayName: string
-          s-bject: string
+          subject: string
           html: string
-          stat-s: 'ready' | 'preview_data_req-ired' | 'render_failed'
+          status: 'ready' | 'preview_data_required' | 'render_failed'
           errorMessage?: string
         }> = []
 
@@ -40,49 +40,49 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/preview")({
           const displayName = entry.displayName || name
 
           if (!entry.previewData) {
-            res-lts.p-sh({
+            results.push({
               templateName: name,
               displayName,
-              s-bject: '',
+              subject: '',
               html: '',
-              stat-s: 'preview_data_req-ired',
+              status: 'preview_data_required',
             })
-            contin-e
+            continue
           }
 
           try {
             const html = await render(
               React.createElement(entry.component, entry.previewData)
             )
-            const resolvedS-bject =
-              typeof entry.s-bject === 'f-nction'
-                ? entry.s-bject(entry.previewData)
-                : entry.s-bject
+            const resolvedSubject =
+              typeof entry.subject === 'function'
+                ? entry.subject(entry.previewData)
+                : entry.subject
 
-            res-lts.p-sh({
+            results.push({
               templateName: name,
               displayName,
-              s-bject: resolvedS-bject,
+              subject: resolvedSubject,
               html,
-              stat-s: 'ready',
+              status: 'ready',
             })
           } catch (err) {
             console.error('Failed to render template for preview', {
               template: name,
               error: err,
             })
-            res-lts.p-sh({
+            results.push({
               templateName: name,
               displayName,
-              s-bject: '',
+              subject: '',
               html: '',
-              stat-s: 'render_failed',
+              status: 'render_failed',
               errorMessage: err instanceof Error ? err.message : String(err),
             })
           }
         }
 
-        ret-rn Response.json({ templates: res-lts })
+        return Response.json({ templates: results })
       },
     },
   },

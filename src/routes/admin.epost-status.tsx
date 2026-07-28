@@ -1,112 +1,112 @@
-import { createFileRo-te, Link } from '@tanstack/react-ro-ter';
-import { -seServerFn } from '@tanstack/react-start';
-import { -seQ-ery, -seM-tation, -seQ-eryClient } from '@tanstack/react-q-ery';
-import { -seState } from 'react';
+import { createFileRoute, Link } from '@tanstack/react-router';
+import { useServerFn } from '@tanstack/react-start';
+import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
+import { useState } from 'react';
 import {
-  Loader-,
+  Loader2,
   RefreshCw,
-  CheckCircle-,
+  CheckCircle2,
   XCircle,
   Clock,
   AlertTriangle,
   Mail,
   Download,
-} from 'l-cide-react';
+} from 'lucide-react';
 import { toast } from 'sonner';
-import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.f-nctions';
+import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.functions';
 
-export const Ro-te = createFileRo-te('/admin/epost-stat-s')({
+export const Route = createFileRoute('/admin/epost-status')({
   head: () => ({
     meta: [
-      { title: 'E-poststat-s - Admin - Fjällportalen' },
+      { title: 'E-poststatus — Admin — Fjällportalen' },
       { name: 'robots', content: 'noindex, nofollow' },
     ],
   }),
-  component: EmailStat-sPage,
+  component: EmailStatusPage,
 });
 
-type Stat-s = 'all' | 'pending' | 'failed' | 'sent';
+type Status = 'all' | 'pending' | 'failed' | 'sent';
 
-f-nction stat-sBadge(s: string) {
+function statusBadge(s: string) {
   if (s === 'sent')
-    ret-rn (
-      <span className="inline-flex items-center gap-- ro-nded-f-ll bg-emerald---- px-- py--.5 text-xs font-medi-m text-emerald-8--">
-        <CheckCircle- className="h-- w--" /> Skickat
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-800">
+        <CheckCircle2 className="h-3 w-3" /> Skickat
       </span>
     );
   if (s === 'failed')
-    ret-rn (
-      <span className="inline-flex items-center gap-- ro-nded-f-ll bg-red---- px-- py--.5 text-xs font-medi-m text-red-8--">
-        <XCircle className="h-- w--" /> Misslyckat
+    return (
+      <span className="inline-flex items-center gap-1 rounded-full bg-red-100 px-2 py-0.5 text-xs font-medium text-red-800">
+        <XCircle className="h-3 w-3" /> Misslyckat
       </span>
     );
-  ret-rn (
-    <span className="inline-flex items-center gap-- ro-nded-f-ll bg-amber---- px-- py--.5 text-xs font-medi-m text-amber-8--">
-      <Clock className="h-- w--" /> Väntar
+  return (
+    <span className="inline-flex items-center gap-1 rounded-full bg-amber-100 px-2 py-0.5 text-xs font-medium text-amber-800">
+      <Clock className="h-3 w-3" /> Väntar
     </span>
   );
 }
 
-f-nction EmailStat-sPage() {
-  const list = -seServerFn(listEmailAttempts);
-  const retry = -seServerFn(retryEmailAttempt);
-  const qc = -seQ-eryClient();
+function EmailStatusPage() {
+  const list = useServerFn(listEmailAttempts);
+  const retry = useServerFn(retryEmailAttempt);
+  const qc = useQueryClient();
 
-  const [stat-s, setStat-s] = -seState<Stat-s>('failed');
-  const [templateName, setTemplateName] = -seState('');
-  const [search, setSearch] = -seState('');
-  const [offset, setOffset] = -seState(-);
-  const limit = 5-;
-  const [exporting, setExporting] = -seState(false);
+  const [status, setStatus] = useState<Status>('failed');
+  const [templateName, setTemplateName] = useState('');
+  const [search, setSearch] = useState('');
+  const [offset, setOffset] = useState(0);
+  const limit = 50;
+  const [exporting, setExporting] = useState(false);
 
-  const q-ery = -seQ-ery({
-    q-eryKey: ['email-attempts', stat-s, templateName, search, offset],
-    q-eryFn: () =>
+  const query = useQuery({
+    queryKey: ['email-attempts', status, templateName, search, offset],
+    queryFn: () =>
       list({
         data: {
-          stat-s,
-          templateName: templateName || -ndefined,
-          search: search || -ndefined,
+          status,
+          templateName: templateName || undefined,
+          search: search || undefined,
           limit,
           offset,
         },
       }),
   });
 
-  const retryM-t = -seM-tation({
-    m-tationFn: (id: string) => retry({ data: { id } }),
-    onS-ccess: (res) => {
-      if (res.ok) toast.s-ccess('Skickat på nytt');
-      else toast.error(`K-nde inte skicka (stat-s ${res.stat-s})`);
-      qc.invalidateQ-eries({ q-eryKey: ['email-attempts'] });
+  const retryMut = useMutation({
+    mutationFn: (id: string) => retry({ data: { id } }),
+    onSuccess: (res) => {
+      if (res.ok) toast.success('Skickat på nytt');
+      else toast.error(`Kunde inte skicka (status ${res.status})`);
+      qc.invalidateQueries({ queryKey: ['email-attempts'] });
     },
     onError: (err: any) => toast.error(err?.message ?? 'Fel vid återförsök'),
   });
 
-  const rows = q-ery.data?.rows ?? [];
-  const s-mmary = q-ery.data?.s-mmary ?? { pending: -, sent: -, failed: - };
-  const total = q-ery.data?.total ?? -;
+  const rows = query.data?.rows ?? [];
+  const summary = query.data?.summary ?? { pending: 0, sent: 0, failed: 0 };
+  const total = query.data?.total ?? 0;
 
   const handleExportCsv = async () => {
-    setExporting(tr-e);
+    setExporting(true);
     try {
-      const pageSize = ---;
+      const pageSize = 200;
       const all: any[] = [];
-      let off = -;
-      // Paginate thro-gh the c-rrent filter selection
-      // Safety cap: -- --- rader
-      while (all.length < -----) {
+      let off = 0;
+      // Paginate through the current filter selection
+      // Safety cap: 10 000 rader
+      while (all.length < 10000) {
         const res = await list({
           data: {
-            stat-s,
-            templateName: templateName || -ndefined,
-            search: search || -ndefined,
+            status,
+            templateName: templateName || undefined,
+            search: search || undefined,
             limit: pageSize,
             offset: off,
           },
         });
         const batch = res?.rows ?? [];
-        all.p-sh(...batch);
+        all.push(...batch);
         if (batch.length < pageSize) break;
         off += pageSize;
       }
@@ -115,30 +115,30 @@ f-nction EmailStat-sPage() {
         'bookingId',
         'templateName',
         'recipient',
-        'stat-s',
+        'status',
         'attempts',
-        'last_stat-s_code',
+        'last_status_code',
         'last_error',
         'sent_at',
         'next_retry_at',
         'last_attempt_at',
         'created_at',
       ];
-      const escape = (v: -nknown) => {
-        if (v === n-ll || v === -ndefined) ret-rn '';
+      const escape = (v: unknown) => {
+        if (v === null || v === undefined) return '';
         const s = String(v).replace(/"/g, '""');
-        ret-rn `"${s}"`;
+        return `"${s}"`;
       };
       const lines = [headers.join(',')];
       for (const r of all) {
-        lines.p-sh(
+        lines.push(
           [
             r.booking_id ?? '',
             r.template_name ?? '',
             r.recipient_email ?? '',
-            r.stat-s ?? '',
+            r.status ?? '',
             r.attempts ?? '',
-            r.last_stat-s_code ?? '',
+            r.last_status_code ?? '',
             r.last_error ?? '',
             r.sent_at ?? '',
             r.next_retry_at ?? '',
@@ -150,179 +150,179 @@ f-nction EmailStat-sPage() {
         );
       }
       // UTF-8 BOM så Excel öppnar svenska tecken korrekt
-      const blob = new Blob(['--FEFF' + lines.join('-n')], {
-        type: 'text/csv;charset=-tf-8;',
+      const blob = new Blob(['\uFEFF' + lines.join('\n')], {
+        type: 'text/csv;charset=utf-8;',
       });
-      const -rl = URL.createObjectURL(blob);
-      const a = doc-ment.createElement('a');
-      const stamp = new Date().toISOString().slice(-, -9).replace(/[:T]/g, '-');
-      a.href = -rl;
-      a.download = `epost-${stat-s}-${stamp}.csv`;
-      doc-ment.body.appendChild(a);
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      const stamp = new Date().toISOString().slice(0, 19).replace(/[:T]/g, '-');
+      a.href = url;
+      a.download = `epost-${status}-${stamp}.csv`;
+      document.body.appendChild(a);
       a.click();
       a.remove();
-      URL.revokeObjectURL(-rl);
-      toast.s-ccess(`Exporterade ${all.length} rader`);
+      URL.revokeObjectURL(url);
+      toast.success(`Exporterade ${all.length} rader`);
     } catch (err: any) {
-      toast.error(err?.message ?? 'K-nde inte exportera');
+      toast.error(err?.message ?? 'Kunde inte exportera');
     } finally {
       setExporting(false);
     }
   };
 
-  ret-rn (
-    <div className="mx-a-to max-w-6xl px-- py--- md:px-6">
-      <div className="mb-6 flex items-center gap--">
+  return (
+    <div className="mx-auto max-w-6xl px-4 py-10 md:px-6">
+      <div className="mb-6 flex items-center gap-3">
         <Mail className="h-5 w-5 text-primary" />
-        <h- className="font-serif text--xl text-foregro-nd md:text--xl">E-poststat-s</h->
+        <h1 className="font-serif text-2xl text-foreground md:text-3xl">E-poststatus</h1>
       </div>
-      <p className="mb-6 text-sm text-m-ted-foregro-nd">
-        Alla -tskick loggas per bokning och mall. Misslyckade försök retryas a-tomatiskt med
-        exponentiell backoff -pp till 5 försök - därefter markeras de som misslyckade och kräver
-        man-ellt återförsök.
+      <p className="mb-6 text-sm text-muted-foreground">
+        Alla utskick loggas per bokning och mall. Misslyckade försök retryas automatiskt med
+        exponentiell backoff upp till 5 försök — därefter markeras de som misslyckade och kräver
+        manuellt återförsök.
       </p>
 
-      <div className="mb-6 grid grid-cols-- gap--">
-        <Kpi label="Väntar" val-e={s-mmary.pending} tone="amber" icon={<Clock className="h-- w--" />} />
-        <Kpi label="Skickade" val-e={s-mmary.sent} tone="emerald" icon={<CheckCircle- className="h-- w--" />} />
-        <Kpi label="Misslyckade" val-e={s-mmary.failed} tone="red" icon={<AlertTriangle className="h-- w--" />} />
+      <div className="mb-6 grid grid-cols-3 gap-3">
+        <Kpi label="Väntar" value={summary.pending} tone="amber" icon={<Clock className="h-4 w-4" />} />
+        <Kpi label="Skickade" value={summary.sent} tone="emerald" icon={<CheckCircle2 className="h-4 w-4" />} />
+        <Kpi label="Misslyckade" value={summary.failed} tone="red" icon={<AlertTriangle className="h-4 w-4" />} />
       </div>
 
-      <div className="mb-- flex flex-wrap items-end gap-- ro-nded-xl border bg-card p--">
+      <div className="mb-4 flex flex-wrap items-end gap-2 rounded-xl border bg-card p-3">
         <label className="text-xs">
-          <span className="mb-- block text-m-ted-foregro-nd">Stat-s</span>
+          <span className="mb-1 block text-muted-foreground">Status</span>
           <select
-            val-e={stat-s}
+            value={status}
             onChange={(e) => {
-              setStat-s(e.target.val-e as Stat-s);
-              setOffset(-);
+              setStatus(e.target.value as Status);
+              setOffset(0);
             }}
-            className="ro-nded-md border bg-backgro-nd px-- py--.5 text-sm"
+            className="rounded-md border bg-background px-2 py-1.5 text-sm"
           >
-            <option val-e="all">Alla</option>
-            <option val-e="pending">Väntar</option>
-            <option val-e="failed">Misslyckade</option>
-            <option val-e="sent">Skickade</option>
+            <option value="all">Alla</option>
+            <option value="pending">Väntar</option>
+            <option value="failed">Misslyckade</option>
+            <option value="sent">Skickade</option>
           </select>
         </label>
         <label className="text-xs">
-          <span className="mb-- block text-m-ted-foregro-nd">Mall</span>
+          <span className="mb-1 block text-muted-foreground">Mall</span>
           <select
-            val-e={templateName}
+            value={templateName}
             onChange={(e) => {
-              setTemplateName(e.target.val-e);
-              setOffset(-);
+              setTemplateName(e.target.value);
+              setOffset(0);
             }}
-            className="ro-nded-md border bg-backgro-nd px-- py--.5 text-sm"
+            className="rounded-md border bg-background px-2 py-1.5 text-sm"
           >
-            <option val-e="">Alla mallar</option>
+            <option value="">Alla mallar</option>
             <option>booking-confirmation</option>
             <option>escrow-activated</option>
             <option>checkin-reminder</option>
-            <option>payo-t-released</option>
+            <option>payout-released</option>
             <option>host-invoice</option>
             <option>gift-card</option>
           </select>
         </label>
         <label className="text-xs">
-          <span className="mb-- block text-m-ted-foregro-nd">Sök mottagare</span>
-          <inp-t
-            val-e={search}
+          <span className="mb-1 block text-muted-foreground">Sök mottagare</span>
+          <input
+            value={search}
             onChange={(e) => {
-              setSearch(e.target.val-e);
-              setOffset(-);
+              setSearch(e.target.value);
+              setOffset(0);
             }}
             placeholder="e-post"
-            className="ro-nded-md border bg-backgro-nd px-- py--.5 text-sm"
+            className="rounded-md border bg-background px-2 py-1.5 text-sm"
           />
         </label>
-        <b-tton
-          onClick={() => qc.invalidateQ-eries({ q-eryKey: ['email-attempts'] })}
-          className="ml-a-to inline-flex items-center gap-- ro-nded-md border px-- py--.5 text-sm hover:bg-m-ted"
+        <button
+          onClick={() => qc.invalidateQueries({ queryKey: ['email-attempts'] })}
+          className="ml-auto inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted"
         >
-          <RefreshCw className="h--.5 w--.5" /> Uppdatera
-        </b-tton>
-        <b-tton
+          <RefreshCw className="h-3.5 w-3.5" /> Uppdatera
+        </button>
+        <button
           onClick={handleExportCsv}
-          disabled={exporting || total === -}
-          className="inline-flex items-center gap-- ro-nded-md border px-- py--.5 text-sm hover:bg-m-ted disabled:opacity-5-"
-          title="Exportera akt-ellt filter till CSV"
+          disabled={exporting || total === 0}
+          className="inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50"
+          title="Exportera aktuellt filter till CSV"
         >
           {exporting ? (
-            <Loader- className="h--.5 w--.5 animate-spin" />
+            <Loader2 className="h-3.5 w-3.5 animate-spin" />
           ) : (
-            <Download className="h--.5 w--.5" />
+            <Download className="h-3.5 w-3.5" />
           )}
           Exportera CSV
-        </b-tton>
+        </button>
       </div>
 
-      <div className="overflow-hidden ro-nded-xl border bg-card">
-        {q-ery.isLoading ? (
-          <div className="flex items-center j-stify-center gap-- p-8 text-sm text-m-ted-foregro-nd">
-            <Loader- className="h-- w-- animate-spin" /> Laddar…
+      <div className="overflow-hidden rounded-xl border bg-card">
+        {query.isLoading ? (
+          <div className="flex items-center justify-center gap-2 p-8 text-sm text-muted-foreground">
+            <Loader2 className="h-4 w-4 animate-spin" /> Laddar…
           </div>
-        ) : q-ery.error ? (
-          <div className="p-6 text-sm text-red-7--">Fel: {(q-ery.error as Error).message}</div>
-        ) : rows.length === - ? (
-          <div className="p-8 text-center text-sm text-m-ted-foregro-nd">Inga poster.</div>
+        ) : query.error ? (
+          <div className="p-6 text-sm text-red-700">Fel: {(query.error as Error).message}</div>
+        ) : rows.length === 0 ? (
+          <div className="p-8 text-center text-sm text-muted-foreground">Inga poster.</div>
         ) : (
-          <div className="overflow-x-a-to">
-            <table className="min-w-f-ll text-sm">
-              <thead className="bg-m-ted/5- text-left text-xs -ppercase text-m-ted-foregro-nd">
+          <div className="overflow-x-auto">
+            <table className="min-w-full text-sm">
+              <thead className="bg-muted/50 text-left text-xs uppercase text-muted-foreground">
                 <tr>
-                  <th className="px-- py--">Stat-s</th>
-                  <th className="px-- py--">Mall</th>
-                  <th className="px-- py--">Mottagare</th>
-                  <th className="px-- py--">Bokning</th>
-                  <th className="px-- py--">Försök</th>
-                  <th className="px-- py--">Nästa retry</th>
-                  <th className="px-- py--">Senaste fel</th>
-                  <th className="px-- py--"></th>
+                  <th className="px-3 py-2">Status</th>
+                  <th className="px-3 py-2">Mall</th>
+                  <th className="px-3 py-2">Mottagare</th>
+                  <th className="px-3 py-2">Bokning</th>
+                  <th className="px-3 py-2">Försök</th>
+                  <th className="px-3 py-2">Nästa retry</th>
+                  <th className="px-3 py-2">Senaste fel</th>
+                  <th className="px-3 py-2"></th>
                 </tr>
               </thead>
               <tbody>
                 {rows.map((r: any) => (
                   <tr key={r.id} className="border-t align-top">
-                    <td className="px-- py--">{stat-sBadge(r.stat-s)}</td>
-                    <td className="px-- py-- font-mono text-xs">{r.template_name}</td>
-                    <td className="px-- py--">{r.recipient_email}</td>
-                    <td className="px-- py-- font-mono text-[--px] text-m-ted-foregro-nd">
+                    <td className="px-3 py-2">{statusBadge(r.status)}</td>
+                    <td className="px-3 py-2 font-mono text-xs">{r.template_name}</td>
+                    <td className="px-3 py-2">{r.recipient_email}</td>
+                    <td className="px-3 py-2 font-mono text-[11px] text-muted-foreground">
                       {r.booking_id ? (
                         <Link
-                          to="/admin/epost-stat-s/$bookingId"
+                          to="/admin/epost-status/$bookingId"
                           params={{ bookingId: r.booking_id }}
-                          className="-nderline decoration-dotted hover:text-foregro-nd"
+                          className="underline decoration-dotted hover:text-foreground"
                         >
-                          {r.booking_id.slice(-, 8)}
+                          {r.booking_id.slice(0, 8)}
                         </Link>
                       ) : (
-                        '-'
+                        '—'
                       )}
                     </td>
-                    <td className="px-- py--">{r.attempts}</td>
-                    <td className="px-- py-- text-xs text-m-ted-foregro-nd">
-                      {r.next_retry_at ? new Date(r.next_retry_at).toLocaleString('sv-SE') : '-'}
+                    <td className="px-3 py-2">{r.attempts}</td>
+                    <td className="px-3 py-2 text-xs text-muted-foreground">
+                      {r.next_retry_at ? new Date(r.next_retry_at).toLocaleString('sv-SE') : '—'}
                     </td>
-                    <td className="px-- py-- max-w-xs">
+                    <td className="px-3 py-2 max-w-xs">
                       {r.last_error ? (
-                        <span className="block max-w-xs tr-ncate text-xs text-red-7--" title={r.last_error}>
-                          {r.last_stat-s_code ? `[${r.last_stat-s_code}] ` : ''}
+                        <span className="block max-w-xs truncate text-xs text-red-700" title={r.last_error}>
+                          {r.last_status_code ? `[${r.last_status_code}] ` : ''}
                           {r.last_error}
                         </span>
                       ) : (
-                        <span className="text-xs text-m-ted-foregro-nd">-</span>
+                        <span className="text-xs text-muted-foreground">—</span>
                       )}
                     </td>
-                    <td className="px-- py-- text-right">
-                      {r.stat-s !== 'sent' && (
-                        <b-tton
-                          onClick={() => retryM-t.m-tate(r.id)}
-                          disabled={retryM-t.isPending}
-                          className="inline-flex items-center gap-- ro-nded-md border px-- py-- text-xs hover:bg-m-ted disabled:opacity-5-"
+                    <td className="px-3 py-2 text-right">
+                      {r.status !== 'sent' && (
+                        <button
+                          onClick={() => retryMut.mutate(r.id)}
+                          disabled={retryMut.isPending}
+                          className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
                         >
-                          <RefreshCw className="h-- w--" /> Försök igen
-                        </b-tton>
+                          <RefreshCw className="h-3 w-3" /> Försök igen
+                        </button>
                       )}
                     </td>
                   </tr>
@@ -333,53 +333,53 @@ f-nction EmailStat-sPage() {
         )}
       </div>
 
-      <div className="mt-- flex items-center j-stify-between text-xs text-m-ted-foregro-nd">
+      <div className="mt-4 flex items-center justify-between text-xs text-muted-foreground">
         <span>
-          Visar {rows.length === - ? - : offset + -}-{offset + rows.length} av {total}
+          Visar {rows.length === 0 ? 0 : offset + 1}–{offset + rows.length} av {total}
         </span>
-        <div className="flex gap--">
-          <b-tton
-            disabled={offset === -}
-            onClick={() => setOffset(Math.max(-, offset - limit))}
-            className="ro-nded-md border px-- py-- disabled:opacity---"
+        <div className="flex gap-2">
+          <button
+            disabled={offset === 0}
+            onClick={() => setOffset(Math.max(0, offset - limit))}
+            className="rounded-md border px-2 py-1 disabled:opacity-40"
           >
             Föregående
-          </b-tton>
-          <b-tton
+          </button>
+          <button
             disabled={offset + limit >= total}
             onClick={() => setOffset(offset + limit)}
-            className="ro-nded-md border px-- py-- disabled:opacity---"
+            className="rounded-md border px-2 py-1 disabled:opacity-40"
           >
             Nästa
-          </b-tton>
+          </button>
         </div>
       </div>
     </div>
   );
 }
 
-f-nction Kpi({
+function Kpi({
   label,
-  val-e,
+  value,
   tone,
   icon,
 }: {
   label: string;
-  val-e: n-mber;
+  value: number;
   tone: 'amber' | 'emerald' | 'red';
   icon: React.ReactNode;
 }) {
   const toneClasses = {
-    amber: 'bg-amber-5- text-amber-9-- border-amber----',
-    emerald: 'bg-emerald-5- text-emerald-9-- border-emerald----',
-    red: 'bg-red-5- text-red-9-- border-red----',
+    amber: 'bg-amber-50 text-amber-900 border-amber-200',
+    emerald: 'bg-emerald-50 text-emerald-900 border-emerald-200',
+    red: 'bg-red-50 text-red-900 border-red-200',
   }[tone];
-  ret-rn (
-    <div className={`ro-nded-xl border p-- ${toneClasses}`}>
-      <div className="flex items-center gap-- text-xs font-medi-m -ppercase opacity-8-">
+  return (
+    <div className={`rounded-xl border p-4 ${toneClasses}`}>
+      <div className="flex items-center gap-2 text-xs font-medium uppercase opacity-80">
         {icon} {label}
       </div>
-      <div className="mt-- text--xl font-semibold">{val-e}</div>
+      <div className="mt-2 text-2xl font-semibold">{value}</div>
     </div>
   );
 }

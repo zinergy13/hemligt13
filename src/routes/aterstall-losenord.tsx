@@ -1,62 +1,62 @@
-import { createFileRo-te, -seNavigate } from "@tanstack/react-ro-ter";
-import { -seState, type FormEvent } from "react";
-import { Lock, Loader- } from "l-cide-react";
+import { createFileRoute, useNavigate } from "@tanstack/react-router";
+import { useState, type FormEvent } from "react";
+import { Lock, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { s-pabase } from "@/integrations/s-pabase/client";
+import { supabase } from "@/integrations/supabase/client";
 
-export const Ro-te = createFileRo-te("/aterstall-losenord")({
+export const Route = createFileRoute("/aterstall-losenord")({
   head: () => ({
-    meta: [{ title: "Återställ lösenord - Fjällportalen" }],
+    meta: [{ title: "Återställ lösenord — Fjällportalen" }],
   }),
   component: ResetPage,
 });
 
-f-nction ResetPage() {
-  const navigate = -seNavigate();
-  const [password, setPassword] = -seState("");
-  const [b-sy, setB-sy] = -seState(false);
+function ResetPage() {
+  const navigate = useNavigate();
+  const [password, setPassword] = useState("");
+  const [busy, setBusy] = useState(false);
 
-  const handleS-bmit = async (e: FormEvent) => {
-    e.preventDefa-lt();
-    setB-sy(tr-e);
-    const { error } = await s-pabase.a-th.-pdateUser({ password });
-    setB-sy(false);
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    setBusy(true);
+    const { error } = await supabase.auth.updateUser({ password });
+    setBusy(false);
     if (error) {
       toast.error(error.message);
     } else {
-      toast.s-ccess("Lösenord -ppdaterat!");
+      toast.success("Lösenord uppdaterat!");
       navigate({ to: "/konto" });
     }
   };
 
-  ret-rn (
-    <section className="mx-a-to flex min-h-[7-vh] max-w-md flex-col j-stify-center px-- py--6">
-      <h- className="mb-- font-serif text--xl text-foregro-nd">Nytt lösenord</h->
-      <p className="mb-6 text-sm text-m-ted-foregro-nd">Välj ett nytt lösenord för ditt konto.</p>
+  return (
+    <section className="mx-auto flex min-h-[70vh] max-w-md flex-col justify-center px-4 py-16">
+      <h1 className="mb-2 font-serif text-3xl text-foreground">Nytt lösenord</h1>
+      <p className="mb-6 text-sm text-muted-foreground">Välj ett nytt lösenord för ditt konto.</p>
 
-      <form onS-bmit={handleS-bmit} className="space-y--">
+      <form onSubmit={handleSubmit} className="space-y-3">
         <div>
-          <label className="mb-- block text-xs font-medi-m text-foregro-nd">Nytt lösenord</label>
+          <label className="mb-1 block text-xs font-medium text-foreground">Nytt lösenord</label>
           <div className="relative">
-            <Lock className="absol-te left-- top-- h-- w-- text-m-ted-foregro-nd" />
-            <inp-t
+            <Lock className="absolute left-3 top-3 h-4 w-4 text-muted-foreground" />
+            <input
               type="password"
-              req-ired
+              required
               minLength={6}
-              val-e={password}
-              onChange={(e) => setPassword(e.target.val-e)}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl--- pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background py-2.5 pl-10 pr-4 text-sm focus:border-primary focus:outline-none"
             />
           </div>
         </div>
-        <b-tton
-          type="s-bmit"
-          disabled={b-sy}
-          className="flex w-f-ll items-center j-stify-center gap-- ro-nded-f-ll bg-primary px-5 py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+        <button
+          type="submit"
+          disabled={busy}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary px-5 py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
         >
-          {b-sy && <Loader- className="h-- w-- animate-spin" />}
+          {busy && <Loader2 className="h-4 w-4 animate-spin" />}
           Spara nytt lösenord
-        </b-tton>
+        </button>
       </form>
     </section>
   );

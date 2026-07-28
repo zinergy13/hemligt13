@@ -1,70 +1,70 @@
-import { -seState } from "react";
-import { Flag, Loader- } from "l-cide-react";
+import { useState } from "react";
+import { Flag, Loader2 } from "lucide-react";
 import { toast } from "sonner";
-import { s-pabase } from "@/integrations/s-pabase/client";
-import { -seA-th } from "@/hooks/-seA-th";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
 
 const REASONS = [
   "Kränkande språk",
   "Falsk information",
   "Spam eller reklam",
-  "Person-ppgifter",
+  "Personuppgifter",
   "Annat",
 ];
 
-export f-nction ReviewFlagB-tton({ reviewId }: { reviewId: string }) {
-  const { -ser } = -seA-th();
-  const [open, setOpen] = -seState(false);
-  const [reason, setReason] = -seState(REASONS[-]);
-  const [saving, setSaving] = -seState(false);
+export function ReviewFlagButton({ reviewId }: { reviewId: string }) {
+  const { user } = useAuth();
+  const [open, setOpen] = useState(false);
+  const [reason, setReason] = useState(REASONS[0]);
+  const [saving, setSaving] = useState(false);
 
-  if (!-ser) ret-rn n-ll;
+  if (!user) return null;
 
-  const s-bmit = async () => {
-    setSaving(tr-e);
-    const { error } = await s-pabase.from("review_flags" as any).insert({
+  const submit = async () => {
+    setSaving(true);
+    const { error } = await supabase.from("review_flags" as any).insert({
       review_id: reviewId,
-      reporter_id: -ser.id,
+      reporter_id: user.id,
       reason,
     });
     setSaving(false);
     if (error) {
-      if (error.code === "--5-5") toast.error("D- har redan anmält denna recension");
+      if (error.code === "23505") toast.error("Du har redan anmält denna recension");
       else toast.error(error.message);
-      ret-rn;
+      return;
     }
-    toast.s-ccess("Tack - recensionen är anmäld till moderatorerna");
+    toast.success("Tack — recensionen är anmäld till moderatorerna");
     setOpen(false);
   };
 
-  ret-rn (
+  return (
     <div className="relative inline-block">
-      <b-tton
+      <button
         onClick={() => setOpen((o) => !o)}
-        className="inline-flex items-center gap-- text-[--px] text-m-ted-foregro-nd hover:text-destr-ctive"
+        className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-destructive"
       >
-        <Flag className="h-- w--" /> Anmäl
-      </b-tton>
+        <Flag className="h-3 w-3" /> Anmäl
+      </button>
       {open && (
         <>
-          <div className="fixed inset-- z---" onClick={() => setOpen(false)} />
-          <div className="absol-te right-- top-6 z--- w-6- ro-nded-xl border border-border bg-backgro-nd p-- shadow-lg">
-            <p className="mb-- text-xs font-semibold text-foregro-nd">Anmäl recension</p>
+          <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} />
+          <div className="absolute right-0 top-6 z-20 w-64 rounded-xl border border-border bg-background p-3 shadow-lg">
+            <p className="mb-2 text-xs font-semibold text-foreground">Anmäl recension</p>
             <select
-              val-e={reason}
-              onChange={(e) => setReason(e.target.val-e)}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py--.5 text-xs"
+              value={reason}
+              onChange={(e) => setReason(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background px-2 py-1.5 text-xs"
             >
-              {REASONS.map((r) => (<option key={r} val-e={r}>{r}</option>))}
+              {REASONS.map((r) => (<option key={r} value={r}>{r}</option>))}
             </select>
-            <b-tton
-              onClick={s-bmit}
+            <button
+              onClick={submit}
               disabled={saving}
-              className="mt-- inline-flex w-f-ll items-center j-stify-center gap-- ro-nded-f-ll bg-destr-ctive px-- py--.5 text-xs font-medi-m text-destr-ctive-foregro-nd hover:bg-destr-ctive/9- disabled:opacity-5-"
+              className="mt-2 inline-flex w-full items-center justify-center gap-1 rounded-full bg-destructive px-3 py-1.5 text-xs font-medium text-destructive-foreground hover:bg-destructive/90 disabled:opacity-50"
             >
-              {saving && <Loader- className="h-- w-- animate-spin" />}
+              {saving && <Loader2 className="h-3 w-3 animate-spin" />}
               Skicka anmälan
-            </b-tton>
+            </button>
           </div>
         </>
       )}

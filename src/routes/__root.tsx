@@ -1,52 +1,52 @@
-import { O-tlet, Link, createRootRo-te, HeadContent, Scripts } from "@tanstack/react-ro-ter";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
-import { A-thProvider } from "../hooks/-seA-th";
-import { Toaster } from "../components/-i/sonner";
-import { -seEffect, -seState } from "react";
+import { AuthProvider } from "../hooks/useAuth";
+import { Toaster } from "../components/ui/sonner";
+import { useEffect, useState } from "react";
 import { toast } from "sonner";
-import { Q-eryClient, Q-eryClientProvider } from "@tanstack/react-q-ery";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { installPerfMonitor, isPerfEnabled } from "../lib/perf";
 import { PerfOverlay } from "../components/PerfOverlay";
-import { Ro-teProgressBar } from "../components/Ro-teProgressBar";
+import { RouteProgressBar } from "../components/RouteProgressBar";
 
-import appCss from "../styles.css?-rl";
+import appCss from "../styles.css?url";
 
-// Install once at mod-le load - b-t ONLY when the perf flag is on.
-// Patching window.fetch + logging every S-pabase call adds real overhead
-// (extra work per req-est, console spam, retained arrays) that made the
-// site feel sl-ggish for reg-lar visitors. Activate with ?perf=-.
-if (typeof window !== "-ndefined" && isPerfEnabled()) installPerfMonitor();
+// Install once at module load — but ONLY when the perf flag is on.
+// Patching window.fetch + logging every Supabase call adds real overhead
+// (extra work per request, console spam, retained arrays) that made the
+// site feel sluggish for regular visitors. Activate with ?perf=1.
+if (typeof window !== "undefined" && isPerfEnabled()) installPerfMonitor();
 
-// Single Q-eryClient for the app. All a-thenticated data is keyed by -ser id,
-// so re--sing one client between -sers is safe - the keys differ. We also
-// reset on a-th changes via A-thProvider if needed.
-const q-eryClient = new Q-eryClient({
-  defa-ltOptions: {
-    q-eries: {
-      staleTime: 6-_---,
-      gcTime: -- * 6-_---,
-      refetchOnWindowFoc-s: false,
-      retry: -,
+// Single QueryClient for the app. All authenticated data is keyed by user id,
+// so re-using one client between users is safe — the keys differ. We also
+// reset on auth changes via AuthProvider if needed.
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 60_000,
+      gcTime: 10 * 60_000,
+      refetchOnWindowFocus: false,
+      retry: 1,
     },
   },
 });
 
-f-nction NotFo-ndComponent() {
-  ret-rn (
+function NotFoundComponent() {
+  return (
     <>
       <Header />
-      <div className="flex min-h-[6-vh] items-center j-stify-center bg-backgro-nd px--">
+      <div className="flex min-h-[60vh] items-center justify-center bg-background px-4">
         <div className="max-w-md text-center">
-          <h- className="text-7xl font-serif text-foregro-nd">---</h->
-          <h- className="mt-- text-xl font-serif text-foregro-nd">Sidan finns inte</h->
-          <p className="mt-- text-sm text-m-ted-foregro-nd">
+          <h1 className="text-7xl font-serif text-foreground">404</h1>
+          <h2 className="mt-4 text-xl font-serif text-foreground">Sidan finns inte</h2>
+          <p className="mt-2 text-sm text-muted-foreground">
             Den här sidan har antingen flyttat eller hittats inte.
           </p>
           <div className="mt-6">
             <Link
               to="/"
-              className="inline-flex items-center j-stify-center ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd transition-colors hover:bg-primary/9-"
+              className="inline-flex items-center justify-center rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
             >
               Tillbaka hem
             </Link>
@@ -58,19 +58,19 @@ f-nction NotFo-ndComponent() {
   );
 }
 
-export const Ro-te = createRootRo-te({
+export const Route = createRootRoute({
   head: () => ({
     meta: [
-      { charSet: "-tf-8" },
-      { name: "viewport", content: "width=device-width, initial-scale=-" },
-      { title: "Fjällportalen - Hyr st-ga i svenska fjällen" },
-      { name: "description", content: "Hitta och hyr st-gor och lägenheter i Sälen, Åre, Vemdalen, Idre, F-näsdalen och hela svenska fjällkedjan - med trygg betalning och lokala värdar." },
-      { name: "a-thor", content: "Fjällportalen" },
+      { charSet: "utf-8" },
+      { name: "viewport", content: "width=device-width, initial-scale=1" },
+      { title: "Fjällportalen — Hyr stuga i svenska fjällen" },
+      { name: "description", content: "Hitta och hyr stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan — med trygg betalning och lokala värdar." },
+      { name: "author", content: "Fjällportalen" },
       { property: "og:site_name", content: "Fjällportalen" },
-      { property: "og:title", content: "Fjällportalen - Hyr st-ga i svenska fjällen" },
-      { property: "og:description", content: "Sveriges samlade plats för st-g-thyrning i fjällen. Hyr eller hyr -t din st-ga tryggt - vi håller betalningen och släpper den till värden -- timmar efter incheckning." },
+      { property: "og:title", content: "Fjällportalen — Hyr stuga i svenska fjällen" },
+      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt — vi håller betalningen och släpper den till värden 24 timmar efter incheckning." },
       { property: "og:type", content: "website" },
-      { name: "twitter:card", content: "s-mmary" },
+      { name: "twitter:card", content: "summary" },
     ],
     links: [
       {
@@ -83,7 +83,7 @@ export const Ro-te = createRootRo-te({
       },
       {
         rel: "stylesheet",
-        href: "https://fonts.googleapis.com/css-?family=Fra-nces:opsz,wght@9..---,5--;9..---,7--&family=Inter:wght@---;6--&display=swap",
+        href: "https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700&family=Inter:wght@400;600&display=swap",
       },
     ],
     scripts: [
@@ -96,29 +96,29 @@ export const Ro-te = createRootRo-te({
               "@type": "Organization",
               "@id": "https://fjallportalen.com/#organization",
               name: "Fjällportalen",
-              -rl: "https://fjallportalen.com",
+              url: "https://fjallportalen.com",
               logo: "https://fjallportalen.com/favicon.ico",
               description:
-                "Sveriges samlade plats för st-g-thyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning.",
+                "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning.",
               areaServed: "SE",
               contactPoint: {
                 "@type": "ContactPoint",
-                contactType: "c-stomer s-pport",
+                contactType: "customer support",
                 email: "hej@fjallportalen.com",
-                availableLang-age: ["Swedish", "English"],
+                availableLanguage: ["Swedish", "English"],
               },
             },
             {
               "@type": "WebSite",
               "@id": "https://fjallportalen.com/#website",
-              -rl: "https://fjallportalen.com",
+              url: "https://fjallportalen.com",
               name: "Fjällportalen",
-              p-blisher: { "@id": "https://fjallportalen.com/#organization" },
-              inLang-age: "sv-SE",
+              publisher: { "@id": "https://fjallportalen.com/#organization" },
+              inLanguage: "sv-SE",
               potentialAction: {
                 "@type": "SearchAction",
                 target: "https://fjallportalen.com/sok?q={search_term_string}",
-                "q-ery-inp-t": "req-ired name=search_term_string",
+                "query-input": "required name=search_term_string",
               },
             },
           ],
@@ -128,11 +128,11 @@ export const Ro-te = createRootRo-te({
   }),
   shellComponent: RootShell,
   component: RootComponent,
-  notFo-ndComponent: NotFo-ndComponent,
+  notFoundComponent: NotFoundComponent,
 });
 
-f-nction RootShell({ children }: { children: React.ReactNode }) {
-  ret-rn (
+function RootShell({ children }: { children: React.ReactNode }) {
+  return (
     <html lang="en">
       <head>
         <HeadContent />
@@ -145,155 +145,155 @@ f-nction RootShell({ children }: { children: React.ReactNode }) {
   );
 }
 
-f-nction RootComponent() {
-  const [recovering, setRecovering] = -seState(false);
-  const [errorDetails, setErrorDetails] = -seState<{
+function RootComponent() {
+  const [recovering, setRecovering] = useState(false);
+  const [errorDetails, setErrorDetails] = useState<{
     message: string;
-    ch-nk?: string;
-    so-rce?: string;
+    chunk?: string;
+    source?: string;
     stack?: string;
     time: string;
-  } | n-ll>(n-ll);
-  const [showDetails, setShowDetails] = -seState(false);
-  const [copied, setCopied] = -seState(false);
+  } | null>(null);
+  const [showDetails, setShowDetails] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  -seEffect(() => {
+  useEffect(() => {
     try {
-      if (sessionStorage.getItem("__ch-nk_reload_done") === "-") {
-        sessionStorage.removeItem("__ch-nk_reload_done");
-        toast.s-ccess("Sidan -ppdaterades", {
-          description: "Vi laddade om appen efter ett tillfälligt laddningsfel. D- kan fortsätta som vanligt.",
+      if (sessionStorage.getItem("__chunk_reload_done") === "1") {
+        sessionStorage.removeItem("__chunk_reload_done");
+        toast.success("Sidan uppdaterades", {
+          description: "Vi laddade om appen efter ett tillfälligt laddningsfel. Du kan fortsätta som vanligt.",
         });
       }
     } catch {}
   }, []);
 
-  -seEffect(() => {
-    const isCh-nkError = (msg: -nknown) => {
+  useEffect(() => {
+    const isChunkError = (msg: unknown) => {
       const s = typeof msg === "string" ? msg : (msg as Error)?.message ?? "";
-      ret-rn /Failed to fetch dynamically imported mod-le|Importing a mod-le script failed|Ch-nkLoadError|Loading ch-nk [-d]+ failed/i.test(s);
+      return /Failed to fetch dynamically imported module|Importing a module script failed|ChunkLoadError|Loading chunk [\d]+ failed/i.test(s);
     };
-    const extractCh-nk = (msg: string) => {
+    const extractChunk = (msg: string) => {
       const m =
-        msg.match(/Loading ch-nk ([-w-]+) failed/i) ||
-        msg.match(/imported mod-le:?-s*(-S+)/i) ||
-        msg.match(/ch-nk[:-s]+([-w./-]+)/i);
-      ret-rn m?.[-];
+        msg.match(/Loading chunk ([\w-]+) failed/i) ||
+        msg.match(/imported module:?\s*(\S+)/i) ||
+        msg.match(/chunk[:\s]+([\w./-]+)/i);
+      return m?.[1];
     };
-    const recover = (raw: -nknown, so-rce: string) => {
-      const err = raw instanceof Error ? raw : -ndefined;
+    const recover = (raw: unknown, source: string) => {
+      const err = raw instanceof Error ? raw : undefined;
       const message = err?.message ?? (typeof raw === "string" ? raw : "Okänt laddningsfel");
       setErrorDetails({
         message,
-        ch-nk: extractCh-nk(message),
-        so-rce,
+        chunk: extractChunk(message),
+        source,
         stack: err?.stack,
         time: new Date().toISOString(),
       });
       try {
-        const key = "__ch-nk_reload_at";
-        const last = N-mber(sessionStorage.getItem(key) || "-");
+        const key = "__chunk_reload_at";
+        const last = Number(sessionStorage.getItem(key) || "0");
         const now = Date.now();
-        if (now - last < -----) ret-rn;
+        if (now - last < 10000) return;
         sessionStorage.setItem(key, String(now));
-        sessionStorage.setItem("__ch-nk_reload_done", "-");
+        sessionStorage.setItem("__chunk_reload_done", "1");
       } catch {}
-      setRecovering(tr-e);
+      setRecovering(true);
       toast.loading("Laddar om appen…", {
-        description: "Vi -pptäckte ett laddningsfel och hämtar senaste versionen åt dig.",
-        d-ration: ----,
+        description: "Vi upptäckte ett laddningsfel och hämtar senaste versionen åt dig.",
+        duration: 4000,
       });
-      const -rl = new URL(window.location.href);
-      -rl.searchParams.set("_r", Date.now().toString(-6));
-      setTimeo-t(() => window.location.replace(-rl.toString()), -5--);
+      const url = new URL(window.location.href);
+      url.searchParams.set("_r", Date.now().toString(36));
+      setTimeout(() => window.location.replace(url.toString()), 1500);
     };
     const onError = (e: ErrorEvent) => {
-      if (isCh-nkError(e.message) || isCh-nkError(e.error)) recover(e.error ?? e.message, "window.error");
+      if (isChunkError(e.message) || isChunkError(e.error)) recover(e.error ?? e.message, "window.error");
     };
     const onRejection = (e: PromiseRejectionEvent) => {
-      const reason = e.reason as { message?: string } | string | -ndefined;
+      const reason = e.reason as { message?: string } | string | undefined;
       const msg = typeof reason === "string" ? reason : reason?.message;
-      if (isCh-nkError(msg)) recover(e.reason, "-nhandledrejection");
+      if (isChunkError(msg)) recover(e.reason, "unhandledrejection");
     };
     window.addEventListener("error", onError);
-    window.addEventListener("-nhandledrejection", onRejection);
-    ret-rn () => {
+    window.addEventListener("unhandledrejection", onRejection);
+    return () => {
       window.removeEventListener("error", onError);
-      window.removeEventListener("-nhandledrejection", onRejection);
+      window.removeEventListener("unhandledrejection", onRejection);
     };
   }, []);
 
   const detailsText = errorDetails
     ? [
         `Tid: ${errorDetails.time}`,
-        `Källa: ${errorDetails.so-rce ?? "-"}`,
-        `Ch-nk: ${errorDetails.ch-nk ?? "-"}`,
-        `URL: ${typeof window !== "-ndefined" ? window.location.href : "-"}`,
-        `UA: ${typeof navigator !== "-ndefined" ? navigator.-serAgent : "-"}`,
+        `Källa: ${errorDetails.source ?? "-"}`,
+        `Chunk: ${errorDetails.chunk ?? "-"}`,
+        `URL: ${typeof window !== "undefined" ? window.location.href : "-"}`,
+        `UA: ${typeof navigator !== "undefined" ? navigator.userAgent : "-"}`,
         `Meddelande: ${errorDetails.message}`,
-        errorDetails.stack ? `Stack:-n${errorDetails.stack}` : "",
+        errorDetails.stack ? `Stack:\n${errorDetails.stack}` : "",
       ]
         .filter(Boolean)
-        .join("-n")
+        .join("\n")
     : "";
 
   const copyDetails = async () => {
     try {
       await navigator.clipboard.writeText(detailsText);
-      setCopied(tr-e);
-      setTimeo-t(() => setCopied(false), ----);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
     } catch {}
   };
 
-  ret-rn (
-    <Q-eryClientProvider client={q-eryClient}>
-      <A-thProvider>
+  return (
+    <QueryClientProvider client={queryClient}>
+      <AuthProvider>
         <div className="flex min-h-screen flex-col">
         {recovering && (
           <div
-            role="stat-s"
+            role="status"
             aria-live="polite"
-            className="sticky top-- z-5- w-f-ll bg-primary px-- py-- text-sm font-medi-m text-primary-foregro-nd shadow-md"
+            className="sticky top-0 z-50 w-full bg-primary px-4 py-2 text-sm font-medium text-primary-foreground shadow-md"
           >
-            <div className="mx-a-to flex max-w-5xl flex-wrap items-center j-stify-center gap-x-- gap-y-- text-center">
-              <span>Återhämtar appen efter ett laddningsfel - sidan laddas om a-tomatiskt…</span>
+            <div className="mx-auto flex max-w-5xl flex-wrap items-center justify-center gap-x-4 gap-y-2 text-center">
+              <span>Återhämtar appen efter ett laddningsfel — sidan laddas om automatiskt…</span>
               {errorDetails && (
-                <b-tton
-                  type="b-tton"
+                <button
+                  type="button"
                   onClick={() => setShowDetails((v) => !v)}
-                  className="ro-nded-f-ll border border-primary-foregro-nd/-- bg-primary-foregro-nd/-- px-- py-- text-xs font-medi-m text-primary-foregro-nd transition-colors hover:bg-primary-foregro-nd/--"
+                  className="rounded-full border border-primary-foreground/40 bg-primary-foreground/10 px-3 py-1 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary-foreground/20"
                 >
                   {showDetails ? "Dölj felinformation" : "Visa felinformation"}
-                </b-tton>
+                </button>
               )}
             </div>
             {showDetails && errorDetails && (
-              <div className="mx-a-to mt-- max-w-5xl ro-nded-md bg-backgro-nd/95 p-- text-left text-xs text-foregro-nd shadow-inner">
-                <div className="mb-- flex items-center j-stify-between gap--">
+              <div className="mx-auto mt-2 max-w-5xl rounded-md bg-background/95 p-3 text-left text-xs text-foreground shadow-inner">
+                <div className="mb-2 flex items-center justify-between gap-2">
                   <span className="font-semibold">Teknisk felinformation</span>
-                  <b-tton
-                    type="b-tton"
+                  <button
+                    type="button"
                     onClick={copyDetails}
-                    className="ro-nded-f-ll border border-border bg-backgro-nd px-- py-- text-xs font-medi-m hover:bg-m-ted"
+                    className="rounded-full border border-border bg-background px-2 py-1 text-xs font-medium hover:bg-muted"
                   >
                     {copied ? "Kopierat ✓" : "Kopiera"}
-                  </b-tton>
+                  </button>
                 </div>
-                <pre className="max-h-6- overflow-a-to whitespace-pre-wrap break-all font-mono text-[--px] leading-relaxed">{detailsText}</pre>
+                <pre className="max-h-60 overflow-auto whitespace-pre-wrap break-all font-mono text-[11px] leading-relaxed">{detailsText}</pre>
               </div>
             )}
           </div>
         )}
         <Header />
-        <main className="flex--">
-          <O-tlet />
+        <main className="flex-1">
+          <Outlet />
         </main>
         <Footer />
         <Toaster />
-        <Ro-teProgressBar />
+        <RouteProgressBar />
         <PerfOverlay />
         </div>
-      </A-thProvider>
-    </Q-eryClientProvider>
+      </AuthProvider>
+    </QueryClientProvider>
   );
 }

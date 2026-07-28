@@ -1,157 +1,157 @@
-import { createClient } from '@s-pabase/s-pabase-js'
-import { WebhookError, verifyWebhookReq-est } from '@lovable.dev/webhooks-js'
-import { createFileRo-te } from '@tanstack/react-ro-ter'
+import { createClient } from '@supabase/supabase-js'
+import { WebhookError, verifyWebhookRequest } from '@lovable.dev/webhooks-js'
+import { createFileRoute } from '@tanstack/react-router'
 
-// S-ppression event payload sent by the Go API when Mailg-n reports
-// a bo-nce, complaint, or -ns-bscribe.
-interface S-ppressionPayload {
+// Suppression event payload sent by the Go API when Mailgun reports
+// a bounce, complaint, or unsubscribe.
+interface SuppressionPayload {
   email: string
-  reason: 'bo-nce' | 'complaint' | '-ns-bscribe'
+  reason: 'bounce' | 'complaint' | 'unsubscribe'
   message_id?: string
-  metadata?: Record<string, -nknown>
+  metadata?: Record<string, unknown>
   is_retry: boolean
-  retry_co-nt: n-mber
+  retry_count: number
 }
 
-f-nction parseS-ppressionPayload(body: string): S-ppressionPayload {
+function parseSuppressionPayload(body: string): SuppressionPayload {
   const parsed = JSON.parse(body)
   if (!parsed.data) {
     throw new Error('Missing data field in payload')
   }
-  const data = parsed.data as S-ppressionPayload
+  const data = parsed.data as SuppressionPayload
   if (!data.email || !data.reason) {
-    throw new Error('Missing req-ired fields: email, reason')
+    throw new Error('Missing required fields: email, reason')
   }
-  ret-rn data
+  return data
 }
 
-f-nction mapReasonToStat-s(
+function mapReasonToStatus(
   reason: string,
-): 'bo-nced' | 'complained' | 's-ppressed' {
+): 'bounced' | 'complained' | 'suppressed' {
   switch (reason) {
-    case 'bo-nce':
-      ret-rn 'bo-nced'
+    case 'bounce':
+      return 'bounced'
     case 'complaint':
-      ret-rn 'complained'
-    defa-lt:
-      ret-rn 's-ppressed'
+      return 'complained'
+    default:
+      return 'suppressed'
   }
 }
 
-f-nction mapReasonToMessage(reason: string): string {
+function mapReasonToMessage(reason: string): string {
   switch (reason) {
-    case 'bo-nce':
-      ret-rn 'Permanent bo-nce - email address is invalid or rejected'
+    case 'bounce':
+      return 'Permanent bounce — email address is invalid or rejected'
     case 'complaint':
-      ret-rn 'Spam complaint - recipient marked email as spam'
-    case '-ns-bscribe':
-      ret-rn 'Recipient -ns-bscribed'
-    defa-lt:
-      ret-rn 'Email s-ppressed'
+      return 'Spam complaint — recipient marked email as spam'
+    case 'unsubscribe':
+      return 'Recipient unsubscribed'
+    default:
+      return 'Email suppressed'
   }
 }
 
-export const Ro-te = createFileRo-te("/lovable/email/s-ppression")({
+export const Route = createFileRoute("/lovable/email/suppression")({
   server: {
     handlers: {
-      POST: async ({ req-est }) => {
+      POST: async ({ request }) => {
         const apiKey = process.env.LOVABLE_API_KEY
-        const s-pabaseUrl = import.meta.env.VITE_SUPABASE_URL
-        const s-pabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-        if (!apiKey || !s-pabaseUrl || !s-pabaseServiceKey) {
-          console.error('Missing req-ired environment variables')
-          ret-rn Response.json({ error: 'Server config-ration error' }, { stat-s: 5-- })
+        if (!apiKey || !supabaseUrl || !supabaseServiceKey) {
+          console.error('Missing required environment variables')
+          return Response.json({ error: 'Server configuration error' }, { status: 500 })
         }
 
-        // Verify HMAC signat-re -sing the Lovable API Key (same as a-th-email-hook)
-        let payload: S-ppressionPayload
+        // Verify HMAC signature using the Lovable API Key (same as auth-email-hook)
+        let payload: SuppressionPayload
         try {
-          const verified = await verifyWebhookReq-est({
-            req: req-est,
+          const verified = await verifyWebhookRequest({
+            req: request,
             secret: apiKey,
-            parser: parseS-ppressionPayload,
+            parser: parseSuppressionPayload,
           })
           payload = verified.payload
         } catch (error) {
           if (error instanceof WebhookError) {
             switch (error.code) {
-              case 'invalid_signat-re':
-                console.error('Invalid webhook signat-re')
-                ret-rn Response.json({ error: 'Invalid signat-re' }, { stat-s: --- })
+              case 'invalid_signature':
+                console.error('Invalid webhook signature')
+                return Response.json({ error: 'Invalid signature' }, { status: 401 })
               case 'stale_timestamp':
                 console.error('Stale webhook timestamp')
-                ret-rn Response.json({ error: 'Stale timestamp' }, { stat-s: --- })
+                return Response.json({ error: 'Stale timestamp' }, { status: 401 })
               case 'invalid_payload':
               case 'invalid_json':
                 console.error('Invalid payload', { code: error.code })
-                ret-rn Response.json({ error: 'Invalid payload' }, { stat-s: --- })
-              defa-lt:
+                return Response.json({ error: 'Invalid payload' }, { status: 400 })
+              default:
                 console.error('Webhook verification failed', {
                   code: error.code,
                   message: error.message,
                 })
-                ret-rn Response.json({ error: 'Verification failed' }, { stat-s: --- })
+                return Response.json({ error: 'Verification failed' }, { status: 401 })
             }
           }
-          console.error('Unexpected error d-ring verification', { error })
-          ret-rn Response.json({ error: 'Internal error' }, { stat-s: 5-- })
+          console.error('Unexpected error during verification', { error })
+          return Response.json({ error: 'Internal error' }, { status: 500 })
         }
 
-        const s-pabase = createClient(s-pabaseUrl, s-pabaseServiceKey)
+        const supabase = createClient(supabaseUrl, supabaseServiceKey)
         const normalizedEmail = payload.email.toLowerCase()
 
-        // -. Upsert to s-ppressed_emails (idempotent - safe for retries)
-        const { error: s-ppressError } = await s-pabase
-          .from('s-ppressed_emails')
-          .-psert(
+        // 1. Upsert to suppressed_emails (idempotent — safe for retries)
+        const { error: suppressError } = await supabase
+          .from('suppressed_emails')
+          .upsert(
             {
               email: normalizedEmail,
               reason: payload.reason,
-              metadata: payload.metadata ?? n-ll,
+              metadata: payload.metadata ?? null,
             },
             { onConflict: 'email' },
           )
 
-        if (s-ppressError) {
-          console.error('Failed to -psert s-ppressed email', {
-            error: s-ppressError,
-            email_redacted: normalizedEmail[-] + '***@' + normalizedEmail.split('@')[-],
+        if (suppressError) {
+          console.error('Failed to upsert suppressed email', {
+            error: suppressError,
+            email_redacted: normalizedEmail[0] + '***@' + normalizedEmail.split('@')[1],
           })
-          ret-rn Response.json({ error: 'Failed to write s-ppression' }, { stat-s: 5-- })
+          return Response.json({ error: 'Failed to write suppression' }, { status: 500 })
         }
 
-        // -. Append a new log entry for the s-ppression event (never -pdate existing rows)
-        const sendLogStat-s = mapReasonToStat-s(payload.reason)
+        // 2. Append a new log entry for the suppression event (never update existing rows)
+        const sendLogStatus = mapReasonToStatus(payload.reason)
         const sendLogMessage = mapReasonToMessage(payload.reason)
 
-        const { error: insertError } = await s-pabase
+        const { error: insertError } = await supabase
           .from('email_send_log')
           .insert({
-            message_id: payload.message_id ?? n-ll,
+            message_id: payload.message_id ?? null,
             template_name: 'system',
             recipient_email: normalizedEmail,
-            stat-s: sendLogStat-s,
+            status: sendLogStatus,
             error_message: sendLogMessage,
-            metadata: payload.metadata ?? n-ll,
+            metadata: payload.metadata ?? null,
           })
 
         if (insertError) {
-          // Non-fatal - log and contin-e. The s-ppression was already recorded.
+          // Non-fatal — log and continue. The suppression was already recorded.
           console.warn('Failed to insert email_send_log', {
             error: insertError,
           })
         }
 
-        console.log('S-ppression processed', {
-          email_redacted: normalizedEmail[-] + '***@' + normalizedEmail.split('@')[-],
+        console.log('Suppression processed', {
+          email_redacted: normalizedEmail[0] + '***@' + normalizedEmail.split('@')[1],
           reason: payload.reason,
           is_retry: payload.is_retry,
-          retry_co-nt: payload.retry_co-nt,
+          retry_count: payload.retry_count,
           has_message_id: !!payload.message_id,
         })
 
-        ret-rn Response.json({ s-ccess: tr-e })
+        return Response.json({ success: true })
       },
     },
   },

@@ -1,206 +1,206 @@
-import { createFileRo-te, Link, -seNavigate } from "@tanstack/react-ro-ter";
-import { -seEffect, -seState } from "react";
-import { Pl-s, Loader-, Pencil, Eye, Pa-se, Play, Trash-, Home, Inbox, Wallet, Calendar as CalendarIcon, BarChart- } from "l-cide-react";
+import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
-import { -seA-th } from "@/hooks/-seA-th";
-import { s-pabase } from "@/integrations/s-pabase/client";
-import { coverImage, type CabinStat-s, type CabinWithImages } from "@/lib/cabins";
-import { areaBySl-g } from "@/data/areas";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { coverImage, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
+import { areaBySlug } from "@/data/areas";
 import { CabinGridSkeleton } from "@/components/Skeleton";
 
-export const Ro-te = createFileRo-te("/vard/")({
-  head: () => ({ meta: [{ title: "Mina st-gor - Fjällportalen" }] }),
+export const Route = createFileRoute("/vard/")({
+  head: () => ({ meta: [{ title: "Mina stugor — Fjällportalen" }] }),
   component: HostDashboard,
 });
 
-f-nction HostDashboard() {
-  const { -ser, profile, loading } = -seA-th();
-  const navigate = -seNavigate();
-  const [cabins, setCabins] = -seState<CabinWithImages[] | n-ll>(n-ll);
-  const [refreshKey, setRefreshKey] = -seState(-);
+function HostDashboard() {
+  const { user, profile, loading } = useAuth();
+  const navigate = useNavigate();
+  const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
+  const [refreshKey, setRefreshKey] = useState(0);
 
-  -seEffect(() => {
-    if (!loading && !-ser) {
+  useEffect(() => {
+    if (!loading && !user) {
       navigate({ to: "/logga-in", search: { redirect: "/vard" } });
     }
-  }, [loading, -ser, navigate]);
+  }, [loading, user, navigate]);
 
-  -seEffect(() => {
-    if (!-ser) ret-rn;
-    let active = tr-e;
+  useEffect(() => {
+    if (!user) return;
+    let active = true;
     (async () => {
-      const { data } = await s-pabase
+      const { data } = await supabase
         .from("cabins")
-        .select("*, cabin_images(-rl, is_cover, sort_order)")
-        .eq("host_id", -ser.id)
+        .select("*, cabin_images(url, is_cover, sort_order)")
+        .eq("host_id", user.id)
         .order("created_at", { ascending: false });
       if (active) setCabins((data as CabinWithImages[]) ?? []);
     })();
-    ret-rn () => {
+    return () => {
       active = false;
     };
-  }, [-ser, refreshKey]);
+  }, [user, refreshKey]);
 
-  if (loading || !-ser) {
-    ret-rn (
-      <div className="flex min-h-[6-vh] items-center j-stify-center">
-        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
+  if (loading || !user) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!profile?.is_host) {
-    ret-rn (
-      <div className="mx-a-to max-w--xl px-- py--6 text-center">
-        <Home className="mx-a-to mb-- h--- w--- text-primary" />
-        <h- className="font-serif text--xl text-foregro-nd">D- är inte värd änn-</h->
-        <p className="mt-- text-sm text-m-ted-foregro-nd">
-          Aktivera värdkontot på din kontosida så kan d- lägga -pp st-gor.
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-16 text-center">
+        <Home className="mx-auto mb-4 h-10 w-10 text-primary" />
+        <h1 className="font-serif text-3xl text-foreground">Du är inte värd ännu</h1>
+        <p className="mt-3 text-sm text-muted-foreground">
+          Aktivera värdkontot på din kontosida så kan du lägga upp stugor.
         </p>
-        <Link to="/konto" className="mt-6 inline-flex ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-">
+        <Link to="/konto" className="mt-6 inline-flex rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90">
           Till mitt konto
         </Link>
       </div>
     );
   }
 
-  const setStat-s = async (id: string, stat-s: CabinStat-s) => {
-    const { error } = await s-pabase.from("cabins").-pdate({ stat-s }).eq("id", id);
+  const setStatus = async (id: string, status: CabinStatus) => {
+    const { error } = await supabase.from("cabins").update({ status }).eq("id", id);
     if (error) toast.error(error.message);
     else {
-      toast.s-ccess(stat-s === "p-blished" ? "P-blicerad" : "Pa-sad");
-      setRefreshKey((k) => k + -);
+      toast.success(status === "published" ? "Publicerad" : "Pausad");
+      setRefreshKey((k) => k + 1);
     }
   };
 
   const remove = async (id: string) => {
-    if (!confirm("Vill d- verkligen radera den här st-gan? Det går inte att ångra.")) ret-rn;
-    const { error } = await s-pabase.from("cabins").delete().eq("id", id);
+    if (!confirm("Vill du verkligen radera den här stugan? Det går inte att ångra.")) return;
+    const { error } = await supabase.from("cabins").delete().eq("id", id);
     if (error) toast.error(error.message);
     else {
-      toast.s-ccess("Raderad");
-      setRefreshKey((k) => k + -);
+      toast.success("Raderad");
+      setRefreshKey((k) => k + 1);
     }
   };
 
-  ret-rn (
-    <section className="mx-a-to max-w-6xl px-- py--- md:px-6 md:py--6">
-      <div className="mb-8 flex flex-wrap items-center j-stify-between gap--">
+  return (
+    <section className="mx-auto max-w-6xl px-4 py-12 md:px-6 md:py-16">
+      <div className="mb-8 flex flex-wrap items-center justify-between gap-4">
         <div>
-          <h- className="font-serif text--xl text-foregro-nd md:text--xl">Mina st-gor</h->
-          <p className="mt-- text-sm text-m-ted-foregro-nd">Hantera dina annonser, stat-s och bilder.</p>
+          <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mina stugor</h1>
+          <p className="mt-1 text-sm text-muted-foreground">Hantera dina annonser, status och bilder.</p>
         </div>
-        <div className="flex flex-wrap gap--">
+        <div className="flex flex-wrap gap-2">
           <Link
-            to="/vard/fakt-ra"
-            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-5 py--.5 text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
+            to="/vard/faktura"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
           >
-            <Wallet className="h-- w--" /> Mitt saldo
+            <Wallet className="h-4 w-4" /> Mitt saldo
           </Link>
           <Link
             to="/vard/kalender"
-            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-5 py--.5 text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
           >
-            <CalendarIcon className="h-- w--" /> Kalendersync
+            <CalendarIcon className="h-4 w-4" /> Kalendersync
           </Link>
           <Link
             to="/vard/bokningar"
-            className="inline-flex items-center gap-- ro-nded-f-ll border border-border bg-backgro-nd px-5 py--.5 text-sm font-medi-m text-foregro-nd hover:bg-m-ted"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-5 py-2.5 text-sm font-medium text-foreground hover:bg-muted"
           >
-            <Inbox className="h-- w--" /> Bokningar
+            <Inbox className="h-4 w-4" /> Bokningar
           </Link>
           <Link
-            to="/vard/st-gor/ny"
-            className="inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
+            to="/vard/stugor/ny"
+            className="inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            <Pl-s className="h-- w--" /> Ny st-ga
+            <Plus className="h-4 w-4" /> Ny stuga
           </Link>
         </div>
       </div>
 
-      {cabins === n-ll ? (
-        <CabinGridSkeleton co-nt={-} />
-      ) : cabins.length === - ? (
-        <div className="ro-nded--xl border border-dashed border-border bg-m-ted/-- p--- text-center">
-          <Home className="mx-a-to mb-- h--- w--- text-primary" />
-          <h- className="font-serif text--xl text-foregro-nd">D- har inga st-gor änn-</h->
-          <p className="mx-a-to mt-- max-w-md text-sm text-m-ted-foregro-nd">
-            Skapa din första annons - det tar några min-ter.
+      {cabins === null ? (
+        <CabinGridSkeleton count={3} />
+      ) : cabins.length === 0 ? (
+        <div className="rounded-3xl border border-dashed border-border bg-muted/30 p-12 text-center">
+          <Home className="mx-auto mb-4 h-10 w-10 text-primary" />
+          <h2 className="font-serif text-2xl text-foreground">Du har inga stugor ännu</h2>
+          <p className="mx-auto mt-2 max-w-md text-sm text-muted-foreground">
+            Skapa din första annons — det tar några minuter.
           </p>
           <Link
-            to="/vard/st-gor/ny"
-            className="mt-6 inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
+            to="/vard/stugor/ny"
+            className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90"
           >
-            <Pl-s className="h-- w--" /> Lägg -pp st-ga
+            <Plus className="h-4 w-4" /> Lägg upp stuga
           </Link>
         </div>
       ) : (
-        <div className="space-y--">
+        <div className="space-y-4">
           {cabins.map((c) => {
             const cover = coverImage(c);
-            const area = areaBySl-g(c.area_sl-g);
-            ret-rn (
-              <div key={c.id} className="flex flex-col gap-- ro-nded--xl border border-border bg-backgro-nd p-- sm:flex-row">
-                <div className="aspect-[-/-] w-f-ll overflow-hidden ro-nded-lg bg-m-ted sm:w--8 sm:flex-none">
+            const area = areaBySlug(c.area_slug);
+            return (
+              <div key={c.id} className="flex flex-col gap-4 rounded-2xl border border-border bg-background p-4 sm:flex-row">
+                <div className="aspect-[4/3] w-full overflow-hidden rounded-lg bg-muted sm:w-48 sm:flex-none">
                   {cover ? (
-                    <img src={cover} alt={c.title} className="h-f-ll w-f-ll object-cover" />
+                    <img src={cover} alt={c.title} className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-f-ll w-f-ll items-center j-stify-center text-xs text-m-ted-foregro-nd">Ingen bild</div>
+                    <div className="flex h-full w-full items-center justify-center text-xs text-muted-foreground">Ingen bild</div>
                   )}
                 </div>
-                <div className="flex flex-- flex-col">
-                  <div className="flex items-start j-stify-between gap--">
+                <div className="flex flex-1 flex-col">
+                  <div className="flex items-start justify-between gap-2">
                     <div>
-                      <h- className="font-serif text-lg text-foregro-nd">{c.title}</h->
-                      <p className="text-xs text-m-ted-foregro-nd">{area?.name ?? c.area_sl-g} · {c.price_per_night.toLocaleString("sv-SE")} kr/natt</p>
+                      <h3 className="font-serif text-lg text-foreground">{c.title}</h3>
+                      <p className="text-xs text-muted-foreground">{area?.name ?? c.area_slug} · {c.price_per_night.toLocaleString("sv-SE")} kr/natt</p>
                     </div>
-                    <Stat-sBadge stat-s={c.stat-s} />
+                    <StatusBadge status={c.status} />
                   </div>
-                  <div className="mt-a-to flex flex-wrap gap-- pt--">
+                  <div className="mt-auto flex flex-wrap gap-2 pt-3">
                     <Link
-                      to="/vard/st-gor/$id/redigera"
+                      to="/vard/stugor/$id/redigera"
                       params={{ id: c.id }}
-                      className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                     >
-                      <Pencil className="h--.5 w--.5" /> Redigera
+                      <Pencil className="h-3.5 w-3.5" /> Redigera
                     </Link>
                     <Link
-                      to="/vard/st-gor/$id/insikter"
+                      to="/vard/stugor/$id/insikter"
                       params={{ id: c.id }}
-                      className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted"
+                      className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                     >
-                      <BarChart- className="h--.5 w--.5" /> Insikter
+                      <BarChart3 className="h-3.5 w-3.5" /> Insikter
                     </Link>
-                    {c.stat-s === "p-blished" && (
+                    {c.status === "published" && (
                       <Link
-                        to="/st-ga/$sl-g"
-                        params={{ sl-g: c.sl-g }}
-                        className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted"
+                        to="/stuga/$slug"
+                        params={{ slug: c.slug }}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                       >
-                        <Eye className="h--.5 w--.5" /> Visa p-blik sida
+                        <Eye className="h-3.5 w-3.5" /> Visa publik sida
                       </Link>
                     )}
-                    {c.stat-s === "p-blished" ? (
-                      <b-tton
-                        onClick={() => setStat-s(c.id, "pa-sed")}
-                        className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted"
+                    {c.status === "published" ? (
+                      <button
+                        onClick={() => setStatus(c.id, "paused")}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                       >
-                        <Pa-se className="h--.5 w--.5" /> Pa-sa
-                      </b-tton>
+                        <Pause className="h-3.5 w-3.5" /> Pausa
+                      </button>
                     ) : (
-                      <b-tton
-                        onClick={() => setStat-s(c.id, "p-blished")}
-                        className="inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-foregro-nd hover:bg-m-ted"
+                      <button
+                        onClick={() => setStatus(c.id, "published")}
+                        className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
                       >
-                        <Play className="h--.5 w--.5" /> P-blicera
-                      </b-tton>
+                        <Play className="h-3.5 w-3.5" /> Publicera
+                      </button>
                     )}
-                    <b-tton
+                    <button
                       onClick={() => remove(c.id)}
-                      className="ml-a-to inline-flex items-center gap--.5 ro-nded-f-ll border border-border px-- py--.5 text-xs font-medi-m text-destr-ctive hover:bg-destr-ctive/--"
+                      className="ml-auto inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-destructive hover:bg-destructive/10"
                     >
-                      <Trash- className="h--.5 w--.5" /> Radera
-                    </b-tton>
+                      <Trash2 className="h-3.5 w-3.5" /> Radera
+                    </button>
                   </div>
                 </div>
               </div>
@@ -212,12 +212,12 @@ f-nction HostDashboard() {
   );
 }
 
-f-nction Stat-sBadge({ stat-s }: { stat-s: CabinStat-s }) {
+function StatusBadge({ status }: { status: CabinStatus }) {
   const map = {
-    p-blished: { label: "P-blicerad", cls: "bg-primary/-- text-primary" },
-    draft: { label: "Utkast", cls: "bg-m-ted text-m-ted-foregro-nd" },
-    pa-sed: { label: "Pa-sad", cls: "bg-amber-5--/-- text-amber-7-- dark:text-amber----" },
+    published: { label: "Publicerad", cls: "bg-primary/10 text-primary" },
+    draft: { label: "Utkast", cls: "bg-muted text-muted-foreground" },
+    paused: { label: "Pausad", cls: "bg-amber-500/10 text-amber-700 dark:text-amber-400" },
   } as const;
-  const m = map[stat-s];
-  ret-rn <span className={`ro-nded-f-ll px--.5 py-- text-[--px] font-medi-m -ppercase tracking-wide ${m.cls}`}>{m.label}</span>;
+  const m = map[status];
+  return <span className={`rounded-full px-2.5 py-1 text-[10px] font-medium uppercase tracking-wide ${m.cls}`}>{m.label}</span>;
 }

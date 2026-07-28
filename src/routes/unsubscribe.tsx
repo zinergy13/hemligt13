@@ -1,17 +1,17 @@
-import { createFileRo-te } from '@tanstack/react-ro-ter'
-import { -seEffect, -seState } from 'react'
-import { Loader-, CheckCircle-, AlertCircle } from 'l-cide-react'
+import { createFileRoute } from '@tanstack/react-router'
+import { useEffect, useState } from 'react'
+import { Loader2, CheckCircle2, AlertCircle } from 'lucide-react'
 import { Header } from '@/components/Header'
 import { Footer } from '@/components/Footer'
 
-export const Ro-te = createFileRo-te('/-ns-bscribe')({
+export const Route = createFileRoute('/unsubscribe')({
   head: () => ({
     meta: [
-      { title: 'Avsl-ta pren-meration - Fjällportalen' },
+      { title: 'Avsluta prenumeration — Fjällportalen' },
       { name: 'robots', content: 'noindex' },
     ],
   }),
-  component: Uns-bscribePage,
+  component: UnsubscribePage,
 })
 
 type State =
@@ -22,20 +22,20 @@ type State =
   | { kind: 'done' }
   | { kind: 'error'; message: string }
 
-f-nction Uns-bscribePage() {
-  const [state, setState] = -seState<State>({ kind: 'loading' })
-  const [s-bmitting, setS-bmitting] = -seState(false)
-  const token = typeof window !== '-ndefined' ? new URLSearchParams(window.location.search).get('token') : n-ll
+function UnsubscribePage() {
+  const [state, setState] = useState<State>({ kind: 'loading' })
+  const [submitting, setSubmitting] = useState(false)
+  const token = typeof window !== 'undefined' ? new URLSearchParams(window.location.search).get('token') : null
 
-  -seEffect(() => {
-    if (!token) { setState({ kind: 'invalid' }); ret-rn }
+  useEffect(() => {
+    if (!token) { setState({ kind: 'invalid' }); return }
     ;(async () => {
       try {
-        const res = await fetch(`/email/-ns-bscribe?token=${encodeURIComponent(token)}`)
+        const res = await fetch(`/email/unsubscribe?token=${encodeURIComponent(token)}`)
         const data = await res.json()
-        if (!res.ok) { setState({ kind: 'invalid' }); ret-rn }
+        if (!res.ok) { setState({ kind: 'invalid' }); return }
         if (data.valid) setState({ kind: 'ready' })
-        else if (data.reason === 'already_-ns-bscribed') setState({ kind: 'already' })
+        else if (data.reason === 'already_unsubscribed') setState({ kind: 'already' })
         else setState({ kind: 'invalid' })
       } catch (e: any) {
         setState({ kind: 'error', message: e?.message ?? 'Ett fel inträffade' })
@@ -44,67 +44,67 @@ f-nction Uns-bscribePage() {
   }, [token])
 
   const confirm = async () => {
-    if (!token) ret-rn
-    setS-bmitting(tr-e)
+    if (!token) return
+    setSubmitting(true)
     try {
-      const res = await fetch('/email/-ns-bscribe', {
+      const res = await fetch('/email/unsubscribe', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ token }),
       })
       const data = await res.json()
-      if (data.s-ccess) setState({ kind: 'done' })
-      else if (data.reason === 'already_-ns-bscribed') setState({ kind: 'already' })
-      else setState({ kind: 'error', message: data.error ?? 'K-nde inte avsl-ta' })
+      if (data.success) setState({ kind: 'done' })
+      else if (data.reason === 'already_unsubscribed') setState({ kind: 'already' })
+      else setState({ kind: 'error', message: data.error ?? 'Kunde inte avsluta' })
     } catch (e: any) {
       setState({ kind: 'error', message: e?.message ?? 'Ett fel inträffade' })
     } finally {
-      setS-bmitting(false)
+      setSubmitting(false)
     }
   }
 
-  ret-rn (
+  return (
     <>
       <Header />
-      <main className="mx-a-to min-h-[6-vh] max-w-lg px-- py--6 md:px-6">
-        <div className="ro-nded--xl border border-border bg-backgro-nd p-8 text-center">
-          <h- className="font-serif text--xl text-foregro-nd">Avsl-ta pren-meration</h->
+      <main className="mx-auto min-h-[60vh] max-w-lg px-4 py-16 md:px-6">
+        <div className="rounded-3xl border border-border bg-background p-8 text-center">
+          <h1 className="font-serif text-2xl text-foreground">Avsluta prenumeration</h1>
           <div className="mt-6">
             {state.kind === 'loading' && (
-              <p className="flex items-center j-stify-center gap-- text-sm text-m-ted-foregro-nd">
-                <Loader- className="h-- w-- animate-spin" /> Kontrollerar länken…
+              <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <Loader2 className="h-4 w-4 animate-spin" /> Kontrollerar länken…
               </p>
             )}
             {state.kind === 'ready' && (
               <>
-                <p className="text-sm text-foregro-nd">Vill d- sl-ta få mejl från Fjällportalen till denna adress?</p>
-                <b-tton
+                <p className="text-sm text-foreground">Vill du sluta få mejl från Fjällportalen till denna adress?</p>
+                <button
                   onClick={confirm}
-                  disabled={s-bmitting}
-                  className="mt-6 inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:opacity-5-"
+                  disabled={submitting}
+                  className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:opacity-50"
                 >
-                  {s-bmitting && <Loader- className="h-- w-- animate-spin" />}
-                  Bekräfta avsl-t
-                </b-tton>
+                  {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
+                  Bekräfta avslut
+                </button>
               </>
             )}
             {state.kind === 'done' && (
-              <p className="flex items-center j-stify-center gap-- text-sm text-foregro-nd">
-                <CheckCircle- className="h-5 w-5 text-primary" /> Klart - d- är avanmäld.
+              <p className="flex items-center justify-center gap-2 text-sm text-foreground">
+                <CheckCircle2 className="h-5 w-5 text-primary" /> Klart — du är avanmäld.
               </p>
             )}
             {state.kind === 'already' && (
-              <p className="flex items-center j-stify-center gap-- text-sm text-m-ted-foregro-nd">
-                <CheckCircle- className="h-5 w-5 text-primary" /> Adressen är redan avanmäld.
+              <p className="flex items-center justify-center gap-2 text-sm text-muted-foreground">
+                <CheckCircle2 className="h-5 w-5 text-primary" /> Adressen är redan avanmäld.
               </p>
             )}
             {state.kind === 'invalid' && (
-              <p className="flex items-center j-stify-center gap-- text-sm text-destr-ctive">
-                <AlertCircle className="h-5 w-5" /> Länken är ogiltig eller har gått -t.
+              <p className="flex items-center justify-center gap-2 text-sm text-destructive">
+                <AlertCircle className="h-5 w-5" /> Länken är ogiltig eller har gått ut.
               </p>
             )}
             {state.kind === 'error' && (
-              <p className="flex items-center j-stify-center gap-- text-sm text-destr-ctive">
+              <p className="flex items-center justify-center gap-2 text-sm text-destructive">
                 <AlertCircle className="h-5 w-5" /> {state.message}
               </p>
             )}

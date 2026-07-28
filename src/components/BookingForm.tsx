@@ -1,318 +1,318 @@
-import { -seEffect, -seMemo, -seState } from "react";
-import { Loader-, CalendarDays, Users } from "l-cide-react";
-import { Link, -seNavigate } from "@tanstack/react-ro-ter";
+import { useEffect, useMemo, useState } from "react";
+import { Loader2, CalendarDays, Users } from "lucide-react";
+import { Link, useNavigate } from "@tanstack/react-router";
 import { toast } from "sonner";
-import { -seA-th } from "@/hooks/-seA-th";
-import { s-pabase } from "@/integrations/s-pabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
 import {
   fetchUnavailableRanges,
   rangeOverlapsAny,
   todayISO,
 } from "@/lib/bookings";
 import {
-  comp-teQ-ote,
-  applyDynamicR-les,
+  computeQuote,
+  applyDynamicRules,
   fetchSeasonPrices,
-  fetchPricingR-le,
+  fetchPricingRule,
   type SeasonPrice,
-  type PricingR-le,
+  type PricingRule,
 } from "@/lib/pricing";
 import { PriceBreakdown } from "@/components/PriceBreakdown";
 import { BookingExtras } from "@/components/BookingExtras";
 import { extrasTotal, formatOreKr, type ExtraLine } from "@/lib/extras";
-import { Tr-stPaymentBanner } from "@/components/Tr-stPaymentBanner";
-import { PaymentPayo-tTimeline } from "@/components/PaymentPayo-tTimeline";
-import { Payo-tFAQ } from "@/components/Payo-tFAQ";
+import { TrustPaymentBanner } from "@/components/TrustPaymentBanner";
+import { PaymentPayoutTimeline } from "@/components/PaymentPayoutTimeline";
+import { PayoutFAQ } from "@/components/PayoutFAQ";
 
 type Props = {
   cabinId: string;
   hostId: string;
-  cabinSl-g: string;
-  areaSl-g: string;
-  sizeSqm: n-mber | n-ll;
-  pricePerNight: n-mber;
-  cleaningFee: n-mber;
-  maxG-ests: n-mber;
+  cabinSlug: string;
+  areaSlug: string;
+  sizeSqm: number | null;
+  pricePerNight: number;
+  cleaningFee: number;
+  maxGuests: number;
   instantBook: boolean;
-  minNights: n-mber | n-ll;
-  checkInWeekday: n-mber | n-ll;
+  minNights: number | null;
+  checkInWeekday: number | null;
 };
 
-export f-nction BookingForm({
+export function BookingForm({
   cabinId,
   hostId,
-  cabinSl-g,
-  areaSl-g,
+  cabinSlug,
+  areaSlug,
   sizeSqm,
   pricePerNight,
   cleaningFee,
-  maxG-ests,
+  maxGuests,
   instantBook,
   minNights,
   checkInWeekday,
 }: Props) {
-  const { -ser, loading: a-thLoading } = -seA-th();
-  const navigate = -seNavigate();
+  const { user, loading: authLoading } = useAuth();
+  const navigate = useNavigate();
 
   const today = todayISO();
-  const [checkIn, setCheckIn] = -seState<string>("");
-  const [checkO-t, setCheckO-t] = -seState<string>("");
-  const [g-ests, setG-ests] = -seState<n-mber>(-);
-  const [message, setMessage] = -seState<string>("");
-  const [s-bmitting, setS-bmitting] = -seState(false);
-  const [-navailable, setUnavailable] = -seState<{ check_in: string; check_o-t: string }[]>([]);
-  const [seasons, setSeasons] = -seState<SeasonPrice[]>([]);
-  const [r-le, setR-le] = -seState<PricingR-le | n-ll>(n-ll);
-  const [extras, setExtras] = -seState<ExtraLine[]>([]);
+  const [checkIn, setCheckIn] = useState<string>("");
+  const [checkOut, setCheckOut] = useState<string>("");
+  const [guests, setGuests] = useState<number>(2);
+  const [message, setMessage] = useState<string>("");
+  const [submitting, setSubmitting] = useState(false);
+  const [unavailable, setUnavailable] = useState<{ check_in: string; check_out: string }[]>([]);
+  const [seasons, setSeasons] = useState<SeasonPrice[]>([]);
+  const [rule, setRule] = useState<PricingRule | null>(null);
+  const [extras, setExtras] = useState<ExtraLine[]>([]);
 
-  -seEffect(() => {
-    let active = tr-e;
+  useEffect(() => {
+    let active = true;
     Promise.all([
       fetchUnavailableRanges(cabinId),
       fetchSeasonPrices(cabinId),
-      fetchPricingR-le(cabinId),
+      fetchPricingRule(cabinId),
     ])
       .then(([ranges, s, r]) => {
-        if (!active) ret-rn;
+        if (!active) return;
         setUnavailable(ranges);
         setSeasons(s);
-        setR-le(r);
+        setRule(r);
       })
       .catch(() => {});
-    ret-rn () => {
+    return () => {
       active = false;
     };
   }, [cabinId]);
 
-  const q-ote = -seMemo(() => {
-    const base = comp-teQ-ote({
+  const quote = useMemo(() => {
+    const base = computeQuote({
       checkIn,
-      checkO-t,
+      checkOut,
       pricePerNight,
       cleaningFee,
       minNights,
       checkInWeekday,
       seasons,
     });
-    ret-rn applyDynamicR-les(base, r-le, { checkIn });
-  }, [checkIn, checkO-t, pricePerNight, cleaningFee, minNights, checkInWeekday, seasons, r-le]);
-  const nights = q-ote.nights;
+    return applyDynamicRules(base, rule, { checkIn });
+  }, [checkIn, checkOut, pricePerNight, cleaningFee, minNights, checkInWeekday, seasons, rule]);
+  const nights = quote.nights;
 
-  const extrasTotalOre = -seMemo(() => extrasTotal(extras), [extras]);
-  const grandTotal = q-ote.total + Math.ro-nd(extrasTotalOre / ---);
+  const extrasTotalOre = useMemo(() => extrasTotal(extras), [extras]);
+  const grandTotal = quote.total + Math.round(extrasTotalOre / 100);
 
-  const overlaps = checkIn && checkO-t && rangeOverlapsAny(checkIn, checkO-t, -navailable);
-  const tooManyG-ests = g-ests > maxG-ests;
-  const datesValid = nights > - && checkIn >= today;
+  const overlaps = checkIn && checkOut && rangeOverlapsAny(checkIn, checkOut, unavailable);
+  const tooManyGuests = guests > maxGuests;
+  const datesValid = nights > 0 && checkIn >= today;
 
-  const canS-bmit = !!-ser && datesValid && !overlaps && !tooManyG-ests && !s-bmitting && !q-ote.blocked;
+  const canSubmit = !!user && datesValid && !overlaps && !tooManyGuests && !submitting && !quote.blocked;
 
-  const handleS-bmit = async (e: React.FormEvent) => {
-    e.preventDefa-lt();
-    if (!-ser) {
-      navigate({ to: "/logga-in", search: { redirect: `/st-ga/${cabinSl-g}` } });
-      ret-rn;
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      navigate({ to: "/logga-in", search: { redirect: `/stuga/${cabinSlug}` } });
+      return;
     }
-    if (!canS-bmit) ret-rn;
+    if (!canSubmit) return;
 
-    setS-bmitting(tr-e);
+    setSubmitting(true);
     try {
-      const stat-s = instantBook ? "confirmed" : "pending";
-      const { data, error } = await s-pabase
+      const status = instantBook ? "confirmed" : "pending";
+      const { data, error } = await supabase
         .from("bookings")
         .insert({
           cabin_id: cabinId,
           host_id: hostId,
-          g-est_id: -ser.id,
+          guest_id: user.id,
           check_in: checkIn,
-          check_o-t: checkO-t,
-          g-ests,
+          check_out: checkOut,
+          guests,
           nights,
-          nightly_total: q-ote.nightlyTotal,
-          cleaning_fee: q-ote.cleaningFee,
-          service_fee: -,
-          total_price: q-ote.total,
-          g-est_message: message.trim() || n-ll,
-          stat-s,
+          nightly_total: quote.nightlyTotal,
+          cleaning_fee: quote.cleaningFee,
+          service_fee: 0,
+          total_price: quote.total,
+          guest_message: message.trim() || null,
+          status,
         })
         .select("id")
         .single();
 
       if (error) {
-        if (error.message.toLowerCase().incl-des("conflicting key val-e") || error.message.toLowerCase().incl-des("excl-d")) {
-          toast.error("Dat-men är redan -pptagna. Välj andra dat-m.");
+        if (error.message.toLowerCase().includes("conflicting key value") || error.message.toLowerCase().includes("exclud")) {
+          toast.error("Datumen är redan upptagna. Välj andra datum.");
         } else {
           toast.error(error.message);
         }
-        ret-rn;
+        return;
       }
 
       // Spara valda extras kopplade till bokningen
-      if (data?.id && extras.length > -) {
+      if (data?.id && extras.length > 0) {
         const rows = extras.map((l) => ({
           booking_id: data.id,
           service_type: l.service_type,
-          service_provider_id: l.service_provider_id ?? n-ll,
-          q-antity: l.q-antity,
+          service_provider_id: l.service_provider_id ?? null,
+          quantity: l.quantity,
           cost_price: l.cost_price,
-          g-est_price: l.g-est_price,
+          guest_price: l.guest_price,
           platform_fee: l.platform_fee,
-          stat-s: "pending" as const,
+          status: "pending" as const,
         }));
-        const { error: exErr } = await s-pabase.from("booking_extras").insert(rows);
+        const { error: exErr } = await supabase.from("booking_extras").insert(rows);
         if (exErr) {
-          toast.error("Bokningen skapades men extratjänster k-nde inte sparas: " + exErr.message);
+          toast.error("Bokningen skapades men extratjänster kunde inte sparas: " + exErr.message);
         }
       }
 
       if (instantBook && data?.id) {
-        toast.s-ccess("Bokningen är reserverad - sl-tför betalningen n-.");
-        navigate({ to: "/checko-t/$bookingId", params: { bookingId: data.id } });
+        toast.success("Bokningen är reserverad — slutför betalningen nu.");
+        navigate({ to: "/checkout/$bookingId", params: { bookingId: data.id } });
       } else {
-        toast.s-ccess("Förfrågan skickad. När värden bekräftar får d- en länk för att betala.");
+        toast.success("Förfrågan skickad. När värden bekräftar får du en länk för att betala.");
         navigate({ to: "/mina-bokningar" });
       }
       void data;
     } catch (err) {
       toast.error(err instanceof Error ? err.message : "Något gick fel");
     } finally {
-      setS-bmitting(false);
+      setSubmitting(false);
     }
   };
 
-  ret-rn (
-    <form onS-bmit={handleS-bmit} className="space-y--">
-      <Tr-stPaymentBanner />
-      <div className="grid grid-cols-- gap--">
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <TrustPaymentBanner />
+      <div className="grid grid-cols-2 gap-2">
         <label className="block">
-          <span className="mb-- block text-[--px] font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">
+          <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             Incheckning
           </span>
           <div className="relative">
-            <CalendarDays className="pointer-events-none absol-te left-- top--/- h-- w-- -translate-y--/- text-m-ted-foregro-nd" />
-            <inp-t
+            <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
               type="date"
               min={today}
-              val-e={checkIn}
+              value={checkIn}
               onChange={(e) => {
-                setCheckIn(e.target.val-e);
-                if (checkO-t && e.target.val-e && checkO-t <= e.target.val-e) setCheckO-t("");
+                setCheckIn(e.target.value);
+                if (checkOut && e.target.value && checkOut <= e.target.value) setCheckOut("");
               }}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl-9 pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
-              req-ired
+              className="w-full rounded-lg border border-border bg-background py-2.5 pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
+              required
             />
           </div>
         </label>
         <label className="block">
-          <span className="mb-- block text-[--px] font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">
+          <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             Utcheckning
           </span>
           <div className="relative">
-            <CalendarDays className="pointer-events-none absol-te left-- top--/- h-- w-- -translate-y--/- text-m-ted-foregro-nd" />
-            <inp-t
+            <CalendarDays className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+            <input
               type="date"
               min={checkIn || today}
-              val-e={checkO-t}
-              onChange={(e) => setCheckO-t(e.target.val-e)}
-              className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl-9 pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
-              req-ired
+              value={checkOut}
+              onChange={(e) => setCheckOut(e.target.value)}
+              className="w-full rounded-lg border border-border bg-background py-2.5 pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
+              required
             />
           </div>
         </label>
       </div>
 
       <label className="block">
-        <span className="mb-- block text-[--px] font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">
+        <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
           Gäster
         </span>
         <div className="relative">
-          <Users className="pointer-events-none absol-te left-- top--/- h-- w-- -translate-y--/- text-m-ted-foregro-nd" />
-          <inp-t
-            type="n-mber"
-            min={-}
-            max={maxG-ests}
-            val-e={g-ests}
-            onChange={(e) => setG-ests(Math.max(-, N-mber(e.target.val-e) || -))}
-            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd py--.5 pl-9 pr-- text-sm foc-s:border-primary foc-s:o-tline-none"
+          <Users className="pointer-events-none absolute left-3 top-1/2 h-4 w-4 -translate-y-1/2 text-muted-foreground" />
+          <input
+            type="number"
+            min={1}
+            max={maxGuests}
+            value={guests}
+            onChange={(e) => setGuests(Math.max(1, Number(e.target.value) || 1))}
+            className="w-full rounded-lg border border-border bg-background py-2.5 pl-9 pr-3 text-sm focus:border-primary focus:outline-none"
           />
         </div>
-        {tooManyG-ests && (
-          <p className="mt-- text-xs text-destr-ctive">Max {maxG-ests} gäster i denna st-ga.</p>
+        {tooManyGuests && (
+          <p className="mt-1 text-xs text-destructive">Max {maxGuests} gäster i denna stuga.</p>
         )}
       </label>
 
       {!instantBook && (
         <label className="block">
-          <span className="mb-- block text-[--px] font-semibold -ppercase tracking-wide text-m-ted-foregro-nd">
+          <span className="mb-1 block text-[10px] font-semibold uppercase tracking-wide text-muted-foreground">
             Meddelande till värden (valfritt)
           </span>
           <textarea
-            val-e={message}
-            onChange={(e) => setMessage(e.target.val-e)}
-            rows={-}
-            placeholder="Hej! Vi är två v-xna och en h-nd som ser fram emot…"
-            className="w-f-ll ro-nded-lg border border-border bg-backgro-nd px-- py-- text-sm foc-s:border-primary foc-s:o-tline-none"
+            value={message}
+            onChange={(e) => setMessage(e.target.value)}
+            rows={3}
+            placeholder="Hej! Vi är två vuxna och en hund som ser fram emot…"
+            className="w-full rounded-lg border border-border bg-background px-3 py-2 text-sm focus:border-primary focus:outline-none"
           />
         </label>
       )}
 
       {overlaps && (
-        <p className="ro-nded-lg bg-destr-ctive/-- px-- py-- text-xs text-destr-ctive">
-          St-gan är -pptagen på de valda dat-men.
+        <p className="rounded-lg bg-destructive/10 px-3 py-2 text-xs text-destructive">
+          Stugan är upptagen på de valda datumen.
         </p>
       )}
 
-      {!overlaps && nights > - && <PriceBreakdown q-ote={q-ote} />}
+      {!overlaps && nights > 0 && <PriceBreakdown quote={quote} />}
 
-      {nights > - && (
+      {nights > 0 && (
         <BookingExtras
-          areaSl-g={areaSl-g}
+          areaSlug={areaSlug}
           sizeSqm={sizeSqm}
-          g-ests={g-ests}
+          guests={guests}
           onChange={setExtras}
         />
       )}
 
-      {extras.length > - && (
-        <div className="flex items-center j-stify-between ro-nded-lg bg-primary/5 px-- py-- text-sm">
-          <span className="text-foregro-nd">Totalt inkl. tillval</span>
-          <span className="font-semibold text-foregro-nd">
+      {extras.length > 0 && (
+        <div className="flex items-center justify-between rounded-lg bg-primary/5 px-3 py-2 text-sm">
+          <span className="text-foreground">Totalt inkl. tillval</span>
+          <span className="font-semibold text-foreground">
             {grandTotal.toLocaleString("sv-SE")} kr
-            <span className="ml-- text-xs text-m-ted-foregro-nd">(+{formatOreKr(extrasTotalOre)})</span>
+            <span className="ml-1 text-xs text-muted-foreground">(+{formatOreKr(extrasTotalOre)})</span>
           </span>
         </div>
       )}
 
-      {nights > - && !overlaps && (
+      {nights > 0 && !overlaps && (
         <>
-          <PaymentPayo-tTimeline />
-          <Payo-tFAQ compact />
+          <PaymentPayoutTimeline />
+          <PayoutFAQ compact />
         </>
       )}
 
-      {!-ser && !a-thLoading ? (
+      {!user && !authLoading ? (
         <Link
           to="/logga-in"
-          search={{ redirect: `/st-ga/${cabinSl-g}` }}
-          className="block w-f-ll ro-nded-f-ll bg-primary py-- text-center text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9-"
+          search={{ redirect: `/stuga/${cabinSlug}` }}
+          className="block w-full rounded-full bg-primary py-3 text-center text-sm font-medium text-primary-foreground hover:bg-primary/90"
         >
           Logga in för att boka
         </Link>
       ) : (
-        <b-tton
-          type="s-bmit"
-          disabled={!canS-bmit}
-          className="flex w-f-ll items-center j-stify-center gap-- ro-nded-f-ll bg-primary py-- text-sm font-medi-m text-primary-foregro-nd hover:bg-primary/9- disabled:c-rsor-not-allowed disabled:opacity-5-"
+        <button
+          type="submit"
+          disabled={!canSubmit}
+          className="flex w-full items-center justify-center gap-2 rounded-full bg-primary py-3 text-sm font-medium text-primary-foreground hover:bg-primary/90 disabled:cursor-not-allowed disabled:opacity-50"
         >
-          {s-bmitting && <Loader- className="h-- w-- animate-spin" />}
+          {submitting && <Loader2 className="h-4 w-4 animate-spin" />}
           {instantBook ? "Boka direkt" : "Skicka förfrågan"}
-        </b-tton>
+        </button>
       )}
 
-      <p className="text-center text-[--px] text-m-ted-foregro-nd">
+      <p className="text-center text-[11px] text-muted-foreground">
         {instantBook
-          ? "Direktbokning bekräftas omedelbart. Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning."
-          : "Värden svarar inom -- timmar. Trygg betalning via Fjällportalen - pengarna släpps till värden -- timmar efter incheckning."}
+          ? "Direktbokning bekräftas omedelbart. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning."
+          : "Värden svarar inom 24 timmar. Trygg betalning via Fjällportalen — pengarna släpps till värden 24 timmar efter incheckning."}
       </p>
     </form>
   );

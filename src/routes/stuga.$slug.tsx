@@ -1,120 +1,120 @@
-import { createFileRo-te, Link, notFo-nd } from "@tanstack/react-ro-ter";
-import { -seEffect, -seState } from "react";
-import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader-, Check, Zap, Clock, Lang-ages } from "l-cide-react";
-import { s-pabase } from "@/integrations/s-pabase/client";
+import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { useEffect, useState } from "react";
+import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader2, Check, Zap, Clock, Languages } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
 import { coverImage, AMENITY_OPTIONS, type CabinWithImages } from "@/lib/cabins";
-import { areaBySl-g } from "@/data/areas";
+import { areaBySlug } from "@/data/areas";
 import { BookingForm } from "@/components/BookingForm";
-import { FavoriteB-tton } from "@/components/FavoriteB-tton";
+import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReviewsSection } from "@/components/ReviewsSection";
 
-export const Ro-te = createFileRo-te("/st-ga/$sl-g")({
+export const Route = createFileRoute("/stuga/$slug")({
   head: ({ params }) => ({
     meta: [
-      { title: `St-ga - Fjällportalen` },
-      { name: "description", content: `St-ga ${params.sl-g} - boka tryggt via Fjällportalen med -tbetalning till värden -- timmar efter incheckning.` },
+      { title: `Stuga — Fjällportalen` },
+      { name: "description", content: `Stuga ${params.slug} — boka tryggt via Fjällportalen med utbetalning till värden 24 timmar efter incheckning.` },
     ],
     scripts: [
       {
         type: "application/ld+json",
         children: JSON.stringify({
           "@context": "https://schema.org",
-          "@type": "Breadcr-mbList",
+          "@type": "BreadcrumbList",
           itemListElement: [
-            { "@type": "ListItem", position: -, name: "Hem", item: "https://fjallportalen.com/" },
-            { "@type": "ListItem", position: -, name: "Sök", item: "https://fjallportalen.com/sok" },
-            { "@type": "ListItem", position: -, name: "St-ga", item: `https://fjallportalen.com/st-ga/${params.sl-g}` },
+            { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
+            { "@type": "ListItem", position: 2, name: "Sök", item: "https://fjallportalen.com/sok" },
+            { "@type": "ListItem", position: 3, name: "Stuga", item: `https://fjallportalen.com/stuga/${params.slug}` },
           ],
         }),
       },
     ],
   }),
-  notFo-ndComponent: () => (
-    <div className="mx-a-to max-w--xl px-- py--- text-center">
-      <h- className="font-serif text--xl text-foregro-nd">St-gan hittades inte</h->
-      <p className="mt-- text-m-ted-foregro-nd">Den här st-gan finns inte längre, eller är inte p-blicerad.</p>
-      <Link to="/sok" className="mt-6 inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">
-        <ArrowLeft className="h-- w--" /> Sök st-gor
+  notFoundComponent: () => (
+    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+      <h1 className="font-serif text-4xl text-foreground">Stugan hittades inte</h1>
+      <p className="mt-3 text-muted-foreground">Den här stugan finns inte längre, eller är inte publicerad.</p>
+      <Link to="/sok" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
+        <ArrowLeft className="h-4 w-4" /> Sök stugor
       </Link>
     </div>
   ),
   errorComponent: ({ error }) => (
-    <div className="mx-a-to max-w--xl px-- py--- text-center">
-      <h- className="font-serif text--xl text-foregro-nd">Något gick fel</h->
-      <p className="mt-- text-sm text-m-ted-foregro-nd">{error.message}</p>
+    <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+      <h1 className="font-serif text-3xl text-foreground">Något gick fel</h1>
+      <p className="mt-3 text-sm text-muted-foreground">{error.message}</p>
     </div>
   ),
   component: CabinPage,
 });
 
-f-nction CabinPage() {
-  const { sl-g } = Ro-te.-seParams();
-  const [cabin, setCabin] = -seState<CabinWithImages | n-ll>(n-ll);
-  const [hostName, setHostName] = -seState<string | n-ll>(n-ll);
-  const [loading, setLoading] = -seState(tr-e);
-  const [lang, setLang] = -seState<"sv" | "en" | "de">("sv");
+function CabinPage() {
+  const { slug } = Route.useParams();
+  const [cabin, setCabin] = useState<CabinWithImages | null>(null);
+  const [hostName, setHostName] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [lang, setLang] = useState<"sv" | "en" | "de">("sv");
 
-  -seEffect(() => {
-    let active = tr-e;
+  useEffect(() => {
+    let active = true;
     (async () => {
-      const { data } = await s-pabase
+      const { data } = await supabase
         .from("cabins")
-        .select("*, cabin_images(-rl, is_cover, sort_order)")
-        .eq("sl-g", sl-g)
-        .eq("stat-s", "p-blished")
+        .select("*, cabin_images(url, is_cover, sort_order)")
+        .eq("slug", slug)
+        .eq("status", "published")
         .maybeSingle();
-      if (!active) ret-rn;
+      if (!active) return;
       if (!data) {
         setLoading(false);
-        throw notFo-nd();
+        throw notFound();
       }
       setCabin(data as CabinWithImages);
-      const { data: profile } = await s-pabase
+      const { data: profile } = await supabase
         .from("profiles")
-        .select("f-ll_name")
+        .select("full_name")
         .eq("id", data.host_id)
         .maybeSingle();
       if (active) {
-        setHostName(profile?.f-ll_name ?? n-ll);
+        setHostName(profile?.full_name ?? null);
         setLoading(false);
       }
     })();
-    ret-rn () => {
+    return () => {
       active = false;
     };
-  }, [sl-g]);
+  }, [slug]);
 
   if (loading) {
-    ret-rn (
-      <div className="flex min-h-[6-vh] items-center j-stify-center">
-        <Loader- className="h-6 w-6 animate-spin text-m-ted-foregro-nd" />
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
       </div>
     );
   }
 
   if (!cabin) {
-    ret-rn (
-      <div className="mx-a-to max-w--xl px-- py--- text-center">
-        <h- className="font-serif text--xl text-foregro-nd">St-gan hittades inte</h->
-        <Link to="/sok" className="mt-6 inline-flex items-center gap-- ro-nded-f-ll bg-primary px-5 py--.5 text-sm font-medi-m text-primary-foregro-nd">
-          <ArrowLeft className="h-- w--" /> Sök st-gor
+    return (
+      <div className="mx-auto max-w-2xl px-4 py-24 text-center">
+        <h1 className="font-serif text-3xl text-foreground">Stugan hittades inte</h1>
+        <Link to="/sok" className="mt-6 inline-flex items-center gap-2 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground">
+          <ArrowLeft className="h-4 w-4" /> Sök stugor
         </Link>
       </div>
     );
   }
 
-  const area = areaBySl-g(cabin.area_sl-g);
+  const area = areaBySlug(cabin.area_slug);
   const cover = coverImage(cabin);
   const otherImages = (cabin.cabin_images ?? [])
-    .filter((i) => i.-rl !== cover)
+    .filter((i) => i.url !== cover)
     .sort((a, b) => a.sort_order - b.sort_order);
 
   const amenityLabel = (val: string) =>
-    AMENITY_OPTIONS.find((a) => a.val-e === val)?.label ?? val;
+    AMENITY_OPTIONS.find((a) => a.value === val)?.label ?? val;
 
   const c = cabin as CabinWithImages & {
-    title_en?: string | n-ll; title_de?: string | n-ll;
-    description_en?: string | n-ll; description_de?: string | n-ll;
+    title_en?: string | null; title_de?: string | null;
+    description_en?: string | null; description_de?: string | null;
   };
   const displayTitle =
     lang === "en" && c.title_en ? c.title_en :
@@ -127,117 +127,117 @@ f-nction CabinPage() {
   const availableLangs: Array<{ code: "sv" | "en" | "de"; label: string; flag: string }> = [
     { code: "sv", label: "Svenska", flag: "🇸🇪" },
     ...(c.title_en || c.description_en ? [{ code: "en" as const, label: "English", flag: "🇬🇧" }] : []),
-    ...(c.title_de || c.description_de ? [{ code: "de" as const, label: "De-tsch", flag: "🇩🇪" }] : []),
+    ...(c.title_de || c.description_de ? [{ code: "de" as const, label: "Deutsch", flag: "🇩🇪" }] : []),
   ];
 
-  ret-rn (
-    <article className="mx-a-to max-w-7xl px-- py-8 md:px-6 md:py---">
+  return (
+    <article className="mx-auto max-w-7xl px-4 py-8 md:px-6 md:py-12">
       {area && (
         <Link
-          to="/omrade/$sl-g"
-          params={{ sl-g: area.sl-g }}
-          className="mb-- inline-flex items-center gap-- text-sm text-m-ted-foregro-nd hover:text-foregro-nd"
+          to="/omrade/$slug"
+          params={{ slug: area.slug }}
+          className="mb-4 inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground"
         >
-          <ArrowLeft className="h-- w--" /> Tillbaka till {area.name}
+          <ArrowLeft className="h-4 w-4" /> Tillbaka till {area.name}
         </Link>
       )}
-      {availableLangs.length > - && (
-        <div className="mb-- inline-flex items-center gap-- ro-nded-f-ll border border-border bg-m-ted/-- p--">
-          <Lang-ages className="ml-- h--.5 w--.5 text-m-ted-foregro-nd" />
+      {availableLangs.length > 1 && (
+        <div className="mb-3 inline-flex items-center gap-1 rounded-full border border-border bg-muted/40 p-1">
+          <Languages className="ml-2 h-3.5 w-3.5 text-muted-foreground" />
           {availableLangs.map((l) => (
-            <b-tton
+            <button
               key={l.code}
               onClick={() => setLang(l.code)}
-              className={`ro-nded-f-ll px-- py-- text-xs font-medi-m transition ${
-                lang === l.code ? "bg-backgro-nd text-foregro-nd shadow-sm" : "text-m-ted-foregro-nd hover:text-foregro-nd"
+              className={`rounded-full px-3 py-1 text-xs font-medium transition ${
+                lang === l.code ? "bg-background text-foreground shadow-sm" : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              <span className="mr--">{l.flag}</span>{l.label}
-            </b-tton>
+              <span className="mr-1">{l.flag}</span>{l.label}
+            </button>
           ))}
         </div>
       )}
-      <h- className="font-serif text--xl text-foregro-nd md:text-5xl">{displayTitle}</h->
-      <div className="mt-- flex flex-wrap items-center j-stify-between gap--">
-        <p className="flex items-center gap-- text-sm text-m-ted-foregro-nd">
-          <MapPin className="h-- w--" /> {area?.name ?? cabin.area_sl-g}
+      <h1 className="font-serif text-3xl text-foreground md:text-5xl">{displayTitle}</h1>
+      <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+        <p className="flex items-center gap-1 text-sm text-muted-foreground">
+          <MapPin className="h-4 w-4" /> {area?.name ?? cabin.area_slug}
           {cabin.address ? ` · ${cabin.address}` : ""}
         </p>
-        <FavoriteB-tton cabinId={cabin.id} variant="inline" />
+        <FavoriteButton cabinId={cabin.id} variant="inline" />
       </div>
 
       {/* Gallery */}
-      <div className="mt-6 grid gap-- md:grid-cols-- md:grid-rows--">
-        <div className="md:col-span-- md:row-span-- aspect-[-/-] md:aspect-a-to overflow-hidden ro-nded--xl bg-m-ted">
+      <div className="mt-6 grid gap-2 md:grid-cols-4 md:grid-rows-2">
+        <div className="md:col-span-2 md:row-span-2 aspect-[4/3] md:aspect-auto overflow-hidden rounded-2xl bg-muted">
           {cover ? (
-            <img src={cover} alt={cabin.title} className="h-f-ll w-f-ll object-cover" />
+            <img src={cover} alt={cabin.title} className="h-full w-full object-cover" />
           ) : (
-            <div className="flex h-f-ll w-f-ll items-center j-stify-center text-sm text-m-ted-foregro-nd">
-              Ingen bild änn-
+            <div className="flex h-full w-full items-center justify-center text-sm text-muted-foreground">
+              Ingen bild ännu
             </div>
           )}
         </div>
-        {otherImages.slice(-, -).map((img, i) => (
-          <div key={i} className="aspect-[-/-] overflow-hidden ro-nded--xl bg-m-ted">
-            <img src={img.-rl} alt="" className="h-f-ll w-f-ll object-cover" />
+        {otherImages.slice(0, 4).map((img, i) => (
+          <div key={i} className="aspect-[4/3] overflow-hidden rounded-2xl bg-muted">
+            <img src={img.url} alt="" className="h-full w-full object-cover" />
           </div>
         ))}
       </div>
 
-      <div className="mt--- grid gap--- md:grid-cols--">
-        <div className="md:col-span-- space-y-8">
-          <div className="flex flex-wrap gap-6 border-b border-border pb-6 text-sm text-foregro-nd">
-            <span className="flex items-center gap--"><Users className="h-- w--" /> {cabin.max_g-ests} gäster</span>
-            <span className="flex items-center gap--"><Home className="h-- w--" /> {cabin.bedrooms} sovr-m</span>
-            <span className="flex items-center gap--"><Bed className="h-- w--" /> {cabin.beds} bäddar</span>
-            <span className="flex items-center gap--"><Bath className="h-- w--" /> {cabin.bathrooms} badr-m</span>
+      <div className="mt-10 grid gap-10 md:grid-cols-3">
+        <div className="md:col-span-2 space-y-8">
+          <div className="flex flex-wrap gap-6 border-b border-border pb-6 text-sm text-foreground">
+            <span className="flex items-center gap-2"><Users className="h-4 w-4" /> {cabin.max_guests} gäster</span>
+            <span className="flex items-center gap-2"><Home className="h-4 w-4" /> {cabin.bedrooms} sovrum</span>
+            <span className="flex items-center gap-2"><Bed className="h-4 w-4" /> {cabin.beds} bäddar</span>
+            <span className="flex items-center gap-2"><Bath className="h-4 w-4" /> {cabin.bathrooms} badrum</span>
           </div>
 
           {displayDescription && (
             <div>
-              <h- className="font-serif text--xl text-foregro-nd">Om st-gan</h->
-              <p className="mt-- whitespace-pre-line leading-relaxed text-m-ted-foregro-nd">{displayDescription}</p>
+              <h2 className="font-serif text-2xl text-foreground">Om stugan</h2>
+              <p className="mt-3 whitespace-pre-line leading-relaxed text-muted-foreground">{displayDescription}</p>
             </div>
           )}
 
-          {cabin.amenities.length > - && (
+          {cabin.amenities.length > 0 && (
             <div>
-              <h- className="font-serif text--xl text-foregro-nd">Bekvämligheter</h->
-              <-l className="mt-- grid grid-cols-- gap-- text-sm">
+              <h2 className="font-serif text-2xl text-foreground">Bekvämligheter</h2>
+              <ul className="mt-4 grid grid-cols-2 gap-2 text-sm">
                 {cabin.amenities.map((a) => (
-                  <li key={a} className="flex items-center gap-- text-foregro-nd">
-                    <Check className="h-- w-- text-primary" /> {amenityLabel(a)}
+                  <li key={a} className="flex items-center gap-2 text-foreground">
+                    <Check className="h-4 w-4 text-primary" /> {amenityLabel(a)}
                   </li>
                 ))}
-              </-l>
+              </ul>
             </div>
           )}
 
           {hostName && (
-            <div className="ro-nded--xl border border-border bg-m-ted/-- p-5">
-              <div className="text-xs -ppercase tracking-wide text-m-ted-foregro-nd">Värd</div>
-              <div className="mt-- font-serif text-lg text-foregro-nd">{hostName}</div>
+            <div className="rounded-2xl border border-border bg-muted/30 p-5">
+              <div className="text-xs uppercase tracking-wide text-muted-foreground">Värd</div>
+              <div className="mt-1 font-serif text-lg text-foreground">{hostName}</div>
             </div>
           )}
         </div>
 
-        <aside className="md:col-span--">
-          <div className="sticky top--- ro-nded--xl border border-border bg-backgro-nd p-6 shadow-[var(--shadow-soft)]">
-            <div className="flex items-baseline gap--">
-              <span className="font-serif text--xl text-foregro-nd">{cabin.price_per_night.toLocaleString("sv-SE")} kr</span>
-              <span className="text-sm text-m-ted-foregro-nd">/ natt</span>
+        <aside className="md:col-span-1">
+          <div className="sticky top-24 rounded-2xl border border-border bg-background p-6 shadow-[var(--shadow-soft)]">
+            <div className="flex items-baseline gap-2">
+              <span className="font-serif text-3xl text-foreground">{cabin.price_per_night.toLocaleString("sv-SE")} kr</span>
+              <span className="text-sm text-muted-foreground">/ natt</span>
             </div>
-            {cabin.cleaning_fee > - && (
-              <div className="mt-- text-xs text-m-ted-foregro-nd">+ {cabin.cleaning_fee} kr städavgift</div>
+            {cabin.cleaning_fee > 0 && (
+              <div className="mt-1 text-xs text-muted-foreground">+ {cabin.cleaning_fee} kr städavgift</div>
             )}
-            <div className="mt-- inline-flex items-center gap--.5 ro-nded-f-ll bg-m-ted px--.5 py-- text-[--px] font-medi-m text-foregro-nd">
+            <div className="mt-3 inline-flex items-center gap-1.5 rounded-full bg-muted px-2.5 py-1 text-[11px] font-medium text-foreground">
               {cabin.instant_book ? (
                 <>
-                  <Zap className="h-- w-- text-primary" /> Direktbokning
+                  <Zap className="h-3 w-3 text-primary" /> Direktbokning
                 </>
               ) : (
                 <>
-                  <Clock className="h-- w-- text-primary" /> Kräver godkännande
+                  <Clock className="h-3 w-3 text-primary" /> Kräver godkännande
                 </>
               )}
             </div>
@@ -245,15 +245,15 @@ f-nction CabinPage() {
               <BookingForm
                 cabinId={cabin.id}
                 hostId={cabin.host_id}
-                cabinSl-g={cabin.sl-g}
-                areaSl-g={cabin.area_sl-g}
-                sizeSqm={cabin.size_sqm ?? n-ll}
+                cabinSlug={cabin.slug}
+                areaSlug={cabin.area_slug}
+                sizeSqm={cabin.size_sqm ?? null}
                 pricePerNight={cabin.price_per_night}
                 cleaningFee={cabin.cleaning_fee}
-                maxG-ests={cabin.max_g-ests}
+                maxGuests={cabin.max_guests}
                 instantBook={cabin.instant_book}
-                minNights={cabin.min_nights ?? n-ll}
-                checkInWeekday={cabin.check_in_weekday ?? n-ll}
+                minNights={cabin.min_nights ?? null}
+                checkInWeekday={cabin.check_in_weekday ?? null}
               />
             </div>
           </div>

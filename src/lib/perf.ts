@@ -1,275 +1,275 @@
-// Lightweight client-side instr-mentation for S-pabase REST/Storage/A-th calls.
+// Lightweight client-side instrumentation for Supabase REST/Storage/Auth calls.
 // Patches window.fetch and PerformanceObserver to record timing per endpoint,
-// then exposes the data via a tiny p-b-s-b for the PerfOverlay component.
+// then exposes the data via a tiny pub-sub for the PerfOverlay component.
 //
-// Activate by visiting any page with ?perf=- (sticky), or r-n
-//   localStorage.setItem("fjallportalen-perf", "-")
-// Disable with ?perf=- or localStorage.removeItem("fjallportalen-perf").
+// Activate by visiting any page with ?perf=1 (sticky), or run
+//   localStorage.setItem("fjallportalen-perf", "1")
+// Disable with ?perf=0 or localStorage.removeItem("fjallportalen-perf").
 
 export type PerfEntry = {
-  id: n-mber;
-  ts: n-mber; // epoch ms
-  endpoint: string; // e.g. "rest/v-/cabins" or "a-th/v-/token"
+  id: number;
+  ts: number; // epoch ms
+  endpoint: string; // e.g. "rest/v1/cabins" or "auth/v1/token"
   method: string;
-  stat-s: n-mber | n-ll;
-  d-rationMs: n-mber;
-  bytes: n-mber | n-ll;
+  status: number | null;
+  durationMs: number;
+  bytes: number | null;
   ok: boolean;
-  q-ery: string; // the raw search string for diagnostics (tr-ncated)
-  coldStart: boolean; // first call after >--s idle
+  query: string; // the raw search string for diagnostics (truncated)
+  coldStart: boolean; // first call after >30s idle
   slow: boolean; // exceeded warn threshold
-  deviation: n-mber | n-ll; // ratio vs rolling baseline (-.- = on par)
+  deviation: number | null; // ratio vs rolling baseline (1.0 = on par)
 };
 
 export type PerfAlert = {
-  id: n-mber;
-  ts: n-mber;
+  id: number;
+  ts: number;
   kind: "cold-start" | "slow" | "deviation" | "error";
   message: string;
   endpoint: string;
-  d-rationMs: n-mber;
+  durationMs: number;
 };
 
 const FLAG_KEY = "fjallportalen-perf";
-const MAX_ENTRIES = ---;
-const MAX_ALERTS = --;
-const COLD_START_IDLE_MS = --_---; // gap that co-nts as a "cold start"
-const SLOW_WARN_MS = -5--; // any single call slower than this warns
-const DEVIATION_FACTOR = -.5; // call m-st be this many × baseline to warn
-const DEVIATION_MIN_MS = ---; // ignore tiny deviations below this
+const MAX_ENTRIES = 100;
+const MAX_ALERTS = 30;
+const COLD_START_IDLE_MS = 30_000; // gap that counts as a "cold start"
+const SLOW_WARN_MS = 1500; // any single call slower than this warns
+const DEVIATION_FACTOR = 2.5; // call must be this many × baseline to warn
+const DEVIATION_MIN_MS = 400; // ignore tiny deviations below this
 const BASELINE_SAMPLES = 8; // rolling samples per endpoint
 
 let installed = false;
-let nextId = -;
-let nextAlertId = -;
-let lastCallAt = -;
+let nextId = 1;
+let nextAlertId = 1;
+let lastCallAt = 0;
 const entries: PerfEntry[] = [];
 const alerts: PerfAlert[] = [];
-const baselines = new Map<string, n-mber[]>();
+const baselines = new Map<string, number[]>();
 const listeners = new Set<() => void>();
 
-f-nction notify() {
+function notify() {
   for (const l of listeners) l();
 }
 
-export f-nction isPerfEnabled(): boolean {
-  if (typeof window === "-ndefined") ret-rn false;
+export function isPerfEnabled(): boolean {
+  if (typeof window === "undefined") return false;
   try {
     const params = new URLSearchParams(window.location.search);
     const q = params.get("perf");
-    if (q === "-") {
-      localStorage.setItem(FLAG_KEY, "-");
-      ret-rn tr-e;
+    if (q === "1") {
+      localStorage.setItem(FLAG_KEY, "1");
+      return true;
     }
-    if (q === "-") {
+    if (q === "0") {
       localStorage.removeItem(FLAG_KEY);
-      ret-rn false;
+      return false;
     }
-    ret-rn localStorage.getItem(FLAG_KEY) === "-";
+    return localStorage.getItem(FLAG_KEY) === "1";
   } catch {
-    ret-rn false;
+    return false;
   }
 }
 
-export f-nction getEntries(): PerfEntry[] {
-  ret-rn entries;
+export function getEntries(): PerfEntry[] {
+  return entries;
 }
 
-export f-nction getAlerts(): PerfAlert[] {
-  ret-rn alerts;
+export function getAlerts(): PerfAlert[] {
+  return alerts;
 }
 
-export f-nction clearEntries() {
-  entries.length = -;
-  alerts.length = -;
+export function clearEntries() {
+  entries.length = 0;
+  alerts.length = 0;
   baselines.clear();
   notify();
 }
 
-export f-nction s-bscribe(fn: () => void): () => void {
+export function subscribe(fn: () => void): () => void {
   listeners.add(fn);
-  ret-rn () => listeners.delete(fn);
+  return () => listeners.delete(fn);
 }
 
-f-nction shortenEndpoint(-rl: URL, s-pabaseHost: string): string | n-ll {
-  if (-rl.host !== s-pabaseHost) ret-rn n-ll;
-  // Drop leading slash, strip q-ery - we record q-ery separately.
-  ret-rn -rl.pathname.replace(/^-/+/, "");
+function shortenEndpoint(url: URL, supabaseHost: string): string | null {
+  if (url.host !== supabaseHost) return null;
+  // Drop leading slash, strip query — we record query separately.
+  return url.pathname.replace(/^\/+/, "");
 }
 
-f-nction median(n-ms: n-mber[]): n-mber {
-  if (n-ms.length === -) ret-rn -;
-  const sorted = [...n-ms].sort((a, b) => a - b);
-  const mid = Math.floor(sorted.length / -);
-  ret-rn sorted.length % - ? sorted[mid] : (sorted[mid - -] + sorted[mid]) / -;
+function median(nums: number[]): number {
+  if (nums.length === 0) return 0;
+  const sorted = [...nums].sort((a, b) => a - b);
+  const mid = Math.floor(sorted.length / 2);
+  return sorted.length % 2 ? sorted[mid] : (sorted[mid - 1] + sorted[mid]) / 2;
 }
 
-f-nction p-shAlert(alert: Omit<PerfAlert, "id">) {
-  const f-ll: PerfAlert = { id: nextAlertId++, ...alert };
-  alerts.-nshift(f-ll);
+function pushAlert(alert: Omit<PerfAlert, "id">) {
+  const full: PerfAlert = { id: nextAlertId++, ...alert };
+  alerts.unshift(full);
   if (alerts.length > MAX_ALERTS) alerts.length = MAX_ALERTS;
   // eslint-disable-next-line no-console
   console.warn(
-    `[perf:${f-ll.kind}] ${f-ll.endpoint} ${f-ll.d-rationMs.toFixed(-)}ms - ${f-ll.message}`,
+    `[perf:${full.kind}] ${full.endpoint} ${full.durationMs.toFixed(0)}ms — ${full.message}`,
   );
 }
 
-f-nction record(base: Omit<PerfEntry, "id" | "coldStart" | "slow" | "deviation">) {
+function record(base: Omit<PerfEntry, "id" | "coldStart" | "slow" | "deviation">) {
   const now = Date.now();
-  const idleMs = lastCallAt > - ? now - lastCallAt : -;
-  const coldStart = lastCallAt > - && idleMs > COLD_START_IDLE_MS;
+  const idleMs = lastCallAt > 0 ? now - lastCallAt : 0;
+  const coldStart = lastCallAt > 0 && idleMs > COLD_START_IDLE_MS;
   lastCallAt = now;
 
   // Rolling baseline (median) per endpoint+method.
   const key = `${base.method} ${base.endpoint}`;
   const samples = baselines.get(key) ?? [];
-  const baseline = samples.length >= - ? median(samples) : n-ll;
-  const deviation = baseline && baseline > - ? base.d-rationMs / baseline : n-ll;
+  const baseline = samples.length >= 3 ? median(samples) : null;
+  const deviation = baseline && baseline > 0 ? base.durationMs / baseline : null;
 
-  const slow = base.d-rationMs > SLOW_WARN_MS;
-  const f-ll: PerfEntry = {
+  const slow = base.durationMs > SLOW_WARN_MS;
+  const full: PerfEntry = {
     id: nextId++,
     ...base,
     coldStart,
     slow,
     deviation,
   };
-  entries.-nshift(f-ll);
+  entries.unshift(full);
   if (entries.length > MAX_ENTRIES) entries.length = MAX_ENTRIES;
 
-  // Update baseline AFTER we meas-re deviation so a fresh slow call doesn't hide itself.
+  // Update baseline AFTER we measure deviation so a fresh slow call doesn't hide itself.
   // Skip cold starts and errors so they don't poison the baseline.
-  if (f-ll.ok && !coldStart) {
-    samples.p-sh(base.d-rationMs);
+  if (full.ok && !coldStart) {
+    samples.push(base.durationMs);
     if (samples.length > BASELINE_SAMPLES) samples.shift();
     baselines.set(key, samples);
   } else if (!baselines.has(key)) {
     baselines.set(key, samples);
   }
 
-  // Always log to console so -sers can grep - concise, single line.
+  // Always log to console so users can grep — concise, single line.
   // eslint-disable-next-line no-console
   console.info(
-    `[perf]${coldStart ? " ❄ cold" : ""} ${f-ll.method} ${f-ll.endpoint} → ${f-ll.stat-s ?? "?"} in ${f-ll.d-rationMs.toFixed(-)}ms${
-      f-ll.bytes != n-ll ? ` (${(f-ll.bytes / ----).toFixed(-)} KB)` : ""
-    }${baseline ? ` (baseline ${baseline.toFixed(-)}ms${deviation ? `, ×${deviation.toFixed(-)}` : ""})` : ""}${f-ll.q-ery ? ` ?${f-ll.q-ery}` : ""}`,
+    `[perf]${coldStart ? " ❄ cold" : ""} ${full.method} ${full.endpoint} → ${full.status ?? "?"} in ${full.durationMs.toFixed(0)}ms${
+      full.bytes != null ? ` (${(full.bytes / 1024).toFixed(1)} KB)` : ""
+    }${baseline ? ` (baseline ${baseline.toFixed(0)}ms${deviation ? `, ×${deviation.toFixed(1)}` : ""})` : ""}${full.query ? ` ?${full.query}` : ""}`,
   );
 
   // Alerts.
-  if (!f-ll.ok) {
-    p-shAlert({
+  if (!full.ok) {
+    pushAlert({
       ts: now,
       kind: "error",
-      message: `Fel ${f-ll.stat-s ?? "nätverksfel"}`,
-      endpoint: f-ll.endpoint,
-      d-rationMs: f-ll.d-rationMs,
+      message: `Fel ${full.status ?? "nätverksfel"}`,
+      endpoint: full.endpoint,
+      durationMs: full.durationMs,
     });
   }
   if (coldStart) {
-    p-shAlert({
+    pushAlert({
       ts: now,
       kind: "cold-start",
-      message: `Kallstart efter ${(idleMs / ----).toFixed(-)}s pa-s`,
-      endpoint: f-ll.endpoint,
-      d-rationMs: f-ll.d-rationMs,
+      message: `Kallstart efter ${(idleMs / 1000).toFixed(1)}s paus`,
+      endpoint: full.endpoint,
+      durationMs: full.durationMs,
     });
   }
   if (slow) {
-    p-shAlert({
+    pushAlert({
       ts: now,
       kind: "slow",
       message: `Långsamt svar (>${SLOW_WARN_MS}ms)`,
-      endpoint: f-ll.endpoint,
-      d-rationMs: f-ll.d-rationMs,
+      endpoint: full.endpoint,
+      durationMs: full.durationMs,
     });
   } else if (
     deviation &&
     deviation >= DEVIATION_FACTOR &&
-    base.d-rationMs >= DEVIATION_MIN_MS &&
+    base.durationMs >= DEVIATION_MIN_MS &&
     baseline
   ) {
-    p-shAlert({
+    pushAlert({
       ts: now,
       kind: "deviation",
-      message: `${deviation.toFixed(-)}× långsammare än baseline (${baseline.toFixed(-)}ms)`,
-      endpoint: f-ll.endpoint,
-      d-rationMs: f-ll.d-rationMs,
+      message: `${deviation.toFixed(1)}× långsammare än baseline (${baseline.toFixed(0)}ms)`,
+      endpoint: full.endpoint,
+      durationMs: full.durationMs,
     });
   }
 
   notify();
 }
 
-export f-nction installPerfMonitor() {
-  if (installed || typeof window === "-ndefined") ret-rn;
-  installed = tr-e;
+export function installPerfMonitor() {
+  if (installed || typeof window === "undefined") return;
+  installed = true;
 
-  let s-pabaseHost = "";
+  let supabaseHost = "";
   try {
-    s-pabaseHost = new URL(import.meta.env.VITE_SUPABASE_URL as string).host;
+    supabaseHost = new URL(import.meta.env.VITE_SUPABASE_URL as string).host;
   } catch {
-    // No s-pabase URL config-red - nothing to monitor.
-    ret-rn;
+    // No supabase URL configured — nothing to monitor.
+    return;
   }
 
   const originalFetch = window.fetch.bind(window);
-  window.fetch = async (inp-t: Req-estInfo | URL, init?: Req-estInit): Promise<Response> => {
-    let -rl: URL | n-ll = n-ll;
+  window.fetch = async (input: RequestInfo | URL, init?: RequestInit): Promise<Response> => {
+    let url: URL | null = null;
     try {
       const raw =
-        typeof inp-t === "string"
-          ? inp-t
-          : inp-t instanceof URL
-            ? inp-t.toString()
-            : inp-t.-rl;
-      -rl = new URL(raw, window.location.origin);
+        typeof input === "string"
+          ? input
+          : input instanceof URL
+            ? input.toString()
+            : input.url;
+      url = new URL(raw, window.location.origin);
     } catch {
-      ret-rn originalFetch(inp-t as Req-estInfo, init);
+      return originalFetch(input as RequestInfo, init);
     }
 
-    const endpoint = shortenEndpoint(-rl, s-pabaseHost);
+    const endpoint = shortenEndpoint(url, supabaseHost);
     if (!endpoint) {
-      ret-rn originalFetch(inp-t as Req-estInfo, init);
+      return originalFetch(input as RequestInfo, init);
     }
 
-    const method = (init?.method ?? (typeof inp-t !== "string" && !(inp-t instanceof URL) ? inp-t.method : "GET")) || "GET";
+    const method = (init?.method ?? (typeof input !== "string" && !(input instanceof URL) ? input.method : "GET")) || "GET";
     const start = performance.now();
     let res: Response;
     try {
-      res = await originalFetch(inp-t as Req-estInfo, init);
+      res = await originalFetch(input as RequestInfo, init);
     } catch (err) {
       record({
         ts: Date.now(),
         endpoint,
         method,
-        stat-s: n-ll,
-        d-rationMs: performance.now() - start,
-        bytes: n-ll,
+        status: null,
+        durationMs: performance.now() - start,
+        bytes: null,
         ok: false,
-        q-ery: -rl.search.replace(/^-?/, "").slice(-, ---),
+        query: url.search.replace(/^\?/, "").slice(0, 200),
       });
       throw err;
     }
 
-    const d-rationMs = performance.now() - start;
-    let bytes: n-mber | n-ll = n-ll;
+    const durationMs = performance.now() - start;
+    let bytes: number | null = null;
     const lenHeader = res.headers.get("content-length");
     if (lenHeader) {
-      const n = N-mber(lenHeader);
-      if (N-mber.isFinite(n)) bytes = n;
+      const n = Number(lenHeader);
+      if (Number.isFinite(n)) bytes = n;
     }
 
     record({
       ts: Date.now(),
       endpoint,
       method,
-      stat-s: res.stat-s,
-      d-rationMs,
+      status: res.status,
+      durationMs,
       bytes,
       ok: res.ok,
-      q-ery: -rl.search.replace(/^-?/, "").slice(-, ---),
+      query: url.search.replace(/^\?/, "").slice(0, 200),
     });
 
-    ret-rn res;
+    return res;
   };
 }

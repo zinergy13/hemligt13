@@ -1,80 +1,80 @@
-import { type HTMLAttrib-tes } from "react";
+import { type HTMLAttributes } from "react";
 
-export f-nction Skeleton({ className = "", ...props }: HTMLAttrib-tes<HTMLDivElement>) {
-  ret-rn (
+export function Skeleton({ className = "", ...props }: HTMLAttributes<HTMLDivElement>) {
+  return (
     <div
-      aria-hidden="tr-e"
-      className={`animate-p-lse ro-nded-md bg-m-ted/7- ${className}`}
+      aria-hidden="true"
+      className={`animate-pulse rounded-md bg-muted/70 ${className}`}
       {...props}
     />
   );
 }
 
 /** Card skeleton matching booking/cabin list rows (image + text). */
-export f-nction ListItemSkeleton() {
-  ret-rn (
-    <li className="flex flex-col gap-- ro-nded--xl border border-border bg-backgro-nd p-- sm:flex-row">
-      <Skeleton className="aspect-[-/-] w-f-ll sm:w--8 sm:flex-none" />
-      <div className="flex flex-- flex-col gap--">
-        <div className="flex items-start j-stify-between gap--">
-          <div className="flex-- space-y--">
-            <Skeleton className="h-5 w--/-" />
-            <Skeleton className="h-- w--/-" />
-            <Skeleton className="h-- w--/-" />
+export function ListItemSkeleton() {
+  return (
+    <li className="flex flex-col gap-4 rounded-2xl border border-border bg-background p-4 sm:flex-row">
+      <Skeleton className="aspect-[4/3] w-full sm:w-48 sm:flex-none" />
+      <div className="flex flex-1 flex-col gap-2">
+        <div className="flex items-start justify-between gap-2">
+          <div className="flex-1 space-y-2">
+            <Skeleton className="h-5 w-2/3" />
+            <Skeleton className="h-3 w-1/3" />
+            <Skeleton className="h-3 w-1/2" />
           </div>
-          <Skeleton className="h-5 w--6 ro-nded-f-ll" />
+          <Skeleton className="h-5 w-16 rounded-full" />
         </div>
-        <div className="mt-a-to flex items-center j-stify-between pt--">
-          <Skeleton className="h-- w---" />
-          <Skeleton className="h-7 w--- ro-nded-f-ll" />
+        <div className="mt-auto flex items-center justify-between pt-3">
+          <Skeleton className="h-4 w-24" />
+          <Skeleton className="h-7 w-24 rounded-full" />
         </div>
       </div>
     </li>
   );
 }
 
-export f-nction ListSkeleton({ co-nt = - }: { co-nt?: n-mber }) {
-  ret-rn (
-    <-l className="space-y--">
-      {Array.from({ length: co-nt }).map((_, i) => (
+export function ListSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <ul className="space-y-4">
+      {Array.from({ length: count }).map((_, i) => (
         <ListItemSkeleton key={i} />
       ))}
-    </-l>
+    </ul>
   );
 }
 
-/** S-mmary card grid skeleton (-sed on Mitt saldo). */
-export f-nction S-mmaryCardsSkeleton({ co-nt = - }: { co-nt?: n-mber }) {
-  ret-rn (
-    <div className="grid gap-- sm:grid-cols--">
-      {Array.from({ length: co-nt }).map((_, i) => (
-        <div key={i} className="ro-nded--xl border border-border bg-backgro-nd p-5">
-          <Skeleton className="mb-- h-- w---" />
-          <Skeleton className="mb-- h-7 w---" />
-          <Skeleton className="h-- w---" />
+/** Summary card grid skeleton (used on Mitt saldo). */
+export function SummaryCardsSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div className="grid gap-4 sm:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="rounded-2xl border border-border bg-background p-5">
+          <Skeleton className="mb-3 h-3 w-20" />
+          <Skeleton className="mb-2 h-7 w-32" />
+          <Skeleton className="h-3 w-24" />
         </div>
       ))}
     </div>
   );
 }
 
-/** Table skeleton - N rows of M col-mns. */
-export f-nction TableSkeleton({ rows = -, cols = 5 }: { rows?: n-mber; cols?: n-mber }) {
-  ret-rn (
-    <div className="overflow-hidden ro-nded--xl border border-border">
-      <div className="border-b border-border bg-m-ted/5- px-- py--">
-        <div className="grid gap--" style={{ gridTemplateCol-mns: `repeat(${cols}, minmax(-,-fr))` }}>
+/** Table skeleton — N rows of M columns. */
+export function TableSkeleton({ rows = 4, cols = 5 }: { rows?: number; cols?: number }) {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-border">
+      <div className="border-b border-border bg-muted/50 px-4 py-3">
+        <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))` }}>
           {Array.from({ length: cols }).map((_, i) => (
-            <Skeleton key={i} className="h-- w--6" />
+            <Skeleton key={i} className="h-3 w-16" />
           ))}
         </div>
       </div>
-      <div className="divide-y divide-border bg-backgro-nd">
+      <div className="divide-y divide-border bg-background">
         {Array.from({ length: rows }).map((_, r) => (
-          <div key={r} className="px-- py--">
-            <div className="grid gap--" style={{ gridTemplateCol-mns: `repeat(${cols}, minmax(-,-fr))` }}>
+          <div key={r} className="px-4 py-3">
+            <div className="grid gap-3" style={{ gridTemplateColumns: `repeat(${cols}, minmax(0,1fr))` }}>
               {Array.from({ length: cols }).map((_, c) => (
-                <Skeleton key={c} className="h-- w-f-ll" />
+                <Skeleton key={c} className="h-4 w-full" />
               ))}
             </div>
           </div>
@@ -85,18 +85,18 @@ export f-nction TableSkeleton({ rows = -, cols = 5 }: { rows?: n-mber; cols?: n-
 }
 
 /** Cabin card grid skeleton. */
-export f-nction CabinGridSkeleton({ co-nt = - }: { co-nt?: n-mber }) {
-  ret-rn (
-    <div className="grid gap-6 sm:grid-cols-- lg:grid-cols--">
-      {Array.from({ length: co-nt }).map((_, i) => (
-        <div key={i} className="overflow-hidden ro-nded--xl border border-border bg-backgro-nd">
-          <Skeleton className="aspect-[-/-] w-f-ll ro-nded-none" />
-          <div className="space-y-- p--">
-            <Skeleton className="h-5 w--/-" />
-            <Skeleton className="h-- w--/-" />
-            <div className="flex j-stify-between pt--">
-              <Skeleton className="h-7 w--- ro-nded-f-ll" />
-              <Skeleton className="h-7 w--- ro-nded-f-ll" />
+export function CabinGridSkeleton({ count = 3 }: { count?: number }) {
+  return (
+    <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      {Array.from({ length: count }).map((_, i) => (
+        <div key={i} className="overflow-hidden rounded-2xl border border-border bg-background">
+          <Skeleton className="aspect-[4/3] w-full rounded-none" />
+          <div className="space-y-2 p-4">
+            <Skeleton className="h-5 w-3/4" />
+            <Skeleton className="h-3 w-1/2" />
+            <div className="flex justify-between pt-2">
+              <Skeleton className="h-7 w-20 rounded-full" />
+              <Skeleton className="h-7 w-20 rounded-full" />
             </div>
           </div>
         </div>

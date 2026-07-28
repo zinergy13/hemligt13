@@ -1,54 +1,54 @@
 import * as React from 'react'
 import { render } from '@react-email/render'
-import { createClient } from '@s-pabase/s-pabase-js'
-import { createFileRo-te } from '@tanstack/react-ro-ter'
+import { createClient } from '@supabase/supabase-js'
+import { createFileRoute } from '@tanstack/react-router'
 import { TEMPLATES } from '@/lib/email-templates/registry'
 
-// Config-ration baked in at scaffold time
+// Configuration baked in at scaffold time
 const SITE_NAME = "Fjällportalen"
-// SENDER_DOMAIN is the verified sender s-bdomain FQDN.
+// SENDER_DOMAIN is the verified sender subdomain FQDN.
 const SENDER_DOMAIN = "notify.fjallportalen.com"
 // FROM_DOMAIN is the domain shown in the From: header.
 const FROM_DOMAIN = "fjallportalen.com"
 
-f-nction redactEmail(email: string | n-ll | -ndefined): string {
-  if (!email) ret-rn '***'
+function redactEmail(email: string | null | undefined): string {
+  if (!email) return '***'
   const [localPart, domain] = email.split('@')
-  if (!localPart || !domain) ret-rn '***'
-  ret-rn `${localPart[-]}***@${domain}`
+  if (!localPart || !domain) return '***'
+  return `${localPart[0]}***@${domain}`
 }
 
-// Generate a cryptographically random ---byte hex token
-f-nction generateToken(): string {
-  const bytes = new Uint8Array(--)
-  crypto.getRandomVal-es(bytes)
-  ret-rn Array.from(bytes)
-    .map((b) => b.toString(-6).padStart(-, '-'))
+// Generate a cryptographically random 32-byte hex token
+function generateToken(): string {
+  const bytes = new Uint8Array(32)
+  crypto.getRandomValues(bytes)
+  return Array.from(bytes)
+    .map((b) => b.toString(16).padStart(2, '0'))
     .join('')
 }
 
-export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
+export const Route = createFileRoute("/lovable/email/transactional/send")({
   server: {
     handlers: {
-      POST: async ({ req-est }) => {
-        const s-pabaseUrl = import.meta.env.VITE_SUPABASE_URL
-        const s-pabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
+      POST: async ({ request }) => {
+        const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+        const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-        if (!s-pabaseUrl || !s-pabaseServiceKey) {
-          console.error('Missing req-ired environment variables')
-          ret-rn Response.json(
-            { error: 'Server config-ration error' },
-            { stat-s: 5-- }
+        if (!supabaseUrl || !supabaseServiceKey) {
+          console.error('Missing required environment variables')
+          return Response.json(
+            { error: 'Server configuration error' },
+            { status: 500 }
           )
         }
 
         // Only admins (or server-to-server callers with the shared internal
         // secret) may send templated emails. This prevents any signed-in
-        // g-est/host from relaying templated mail via o-r verified domain.
-        const s-pabase = createClient(s-pabaseUrl, s-pabaseServiceKey)
+        // guest/host from relaying templated mail via our verified domain.
+        const supabase = createClient(supabaseUrl, supabaseServiceKey)
 
         const internalSecret = process.env.EMAIL_RELAY_INTERNAL_SECRET
-        const providedSecret = req-est.headers.get('x-internal-secret')
+        const providedSecret = request.headers.get('x-internal-secret')
         const isInternalCaller =
           !!internalSecret &&
           !!providedSecret &&
@@ -56,33 +56,33 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
           providedSecret === internalSecret
 
         if (!isInternalCaller) {
-          const a-thHeader = req-est.headers.get('A-thorization')
-          if (!a-thHeader?.startsWith('Bearer ')) {
-            ret-rn Response.json({ error: 'Una-thorized' }, { stat-s: --- })
+          const authHeader = request.headers.get('Authorization')
+          if (!authHeader?.startsWith('Bearer ')) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 })
           }
-          const token = a-thHeader.slice('Bearer '.length).trim()
-          const { data: { -ser }, error: a-thError } =
-            await s-pabase.a-th.getUser(token)
-          if (a-thError || !-ser) {
-            ret-rn Response.json({ error: 'Una-thorized' }, { stat-s: --- })
+          const token = authHeader.slice('Bearer '.length).trim()
+          const { data: { user }, error: authError } =
+            await supabase.auth.getUser(token)
+          if (authError || !user) {
+            return Response.json({ error: 'Unauthorized' }, { status: 401 })
           }
-          const { data: isAdmin, error: roleErr } = await s-pabase.rpc(
+          const { data: isAdmin, error: roleErr } = await supabase.rpc(
             'has_role',
-            { _-ser_id: -ser.id, _role: 'admin' },
+            { _user_id: user.id, _role: 'admin' },
           )
           if (roleErr || !isAdmin) {
-            ret-rn Response.json({ error: 'Forbidden' }, { stat-s: --- })
+            return Response.json({ error: 'Forbidden' }, { status: 403 })
           }
         }
 
-        // Parse req-est body
+        // Parse request body
         let templateName: string
         let recipientEmail: string
         let idempotencyKey: string
         let messageId: string
         let templateData: Record<string, any> = {}
         try {
-          const body = await req-est.json()
+          const body = await request.json()
           templateName = body.templateName || body.template_name
           recipientEmail = body.recipientEmail || body.recipient_email
           messageId = crypto.randomUUID()
@@ -91,29 +91,29 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
             templateData = body.templateData
           }
         } catch {
-          ret-rn Response.json(
-            { error: 'Invalid JSON in req-est body' },
-            { stat-s: --- }
+          return Response.json(
+            { error: 'Invalid JSON in request body' },
+            { status: 400 }
           )
         }
 
         if (!templateName) {
-          ret-rn Response.json(
-            { error: 'templateName is req-ired' },
-            { stat-s: --- }
+          return Response.json(
+            { error: 'templateName is required' },
+            { status: 400 }
           )
         }
 
-        // -. Look -p template from registry (early - needed to resolve recipient)
+        // 1. Look up template from registry (early — needed to resolve recipient)
         const template = TEMPLATES[templateName]
 
         if (!template) {
-          console.error('Template not fo-nd in registry', { templateName })
-          ret-rn Response.json(
+          console.error('Template not found in registry', { templateName })
+          return Response.json(
             {
-              error: `Template '${templateName}' not fo-nd. Available: ${Object.keys(TEMPLATES).join(', ')}`,
+              error: `Template '${templateName}' not found. Available: ${Object.keys(TEMPLATES).join(', ')}`,
             },
-            { stat-s: --- }
+            { status: 404 }
           )
         }
 
@@ -123,217 +123,217 @@ export const Ro-te = createFileRo-te("/lovable/email/transactional/send")({
         const effectiveRecipient = template.to || recipientEmail
 
         if (!effectiveRecipient) {
-          ret-rn Response.json(
+          return Response.json(
             {
-              error: 'recipientEmail is req-ired (-nless the template defines a fixed recipient)',
+              error: 'recipientEmail is required (unless the template defines a fixed recipient)',
             },
-            { stat-s: --- }
+            { status: 400 }
           )
         }
 
-        // -. Check s-ppression list (fail-closed: if we can't verify, don't send)
-        const { data: s-ppressed, error: s-ppressionError } = await s-pabase
-          .from('s-ppressed_emails')
+        // 2. Check suppression list (fail-closed: if we can't verify, don't send)
+        const { data: suppressed, error: suppressionError } = await supabase
+          .from('suppressed_emails')
           .select('id')
           .eq('email', effectiveRecipient.toLowerCase())
           .maybeSingle()
 
-        if (s-ppressionError) {
-          console.error('S-ppression check failed - ref-sing to send', {
-            error: s-ppressionError,
+        if (suppressionError) {
+          console.error('Suppression check failed — refusing to send', {
+            error: suppressionError,
             recipient_redacted: redactEmail(effectiveRecipient),
           })
-          ret-rn Response.json(
-            { error: 'Failed to verify s-ppression stat-s' },
-            { stat-s: 5-- }
+          return Response.json(
+            { error: 'Failed to verify suppression status' },
+            { status: 500 }
           )
         }
 
-        if (s-ppressed) {
-          // Log the s-ppressed attempt
-          await s-pabase.from('email_send_log').insert({
+        if (suppressed) {
+          // Log the suppressed attempt
+          await supabase.from('email_send_log').insert({
             message_id: messageId,
             template_name: templateName,
             recipient_email: effectiveRecipient,
-            stat-s: 's-ppressed',
+            status: 'suppressed',
           })
 
-          console.log('Email s-ppressed', {
+          console.log('Email suppressed', {
             templateName,
             recipient_redacted: redactEmail(effectiveRecipient),
           })
-          ret-rn Response.json({ s-ccess: false, reason: 'email_s-ppressed' })
+          return Response.json({ success: false, reason: 'email_suppressed' })
         }
 
-        // -. Get or create -ns-bscribe token (one token per email address)
+        // 3. Get or create unsubscribe token (one token per email address)
         const normalizedEmail = effectiveRecipient.toLowerCase()
-        let -ns-bscribeToken: string
+        let unsubscribeToken: string
 
         // Check for existing token for this email
-        const { data: existingToken, error: tokenLook-pError } = await s-pabase
-          .from('email_-ns-bscribe_tokens')
-          .select('token, -sed_at')
+        const { data: existingToken, error: tokenLookupError } = await supabase
+          .from('email_unsubscribe_tokens')
+          .select('token, used_at')
           .eq('email', normalizedEmail)
           .maybeSingle()
 
-        if (tokenLook-pError) {
-          console.error('Token look-p failed', {
-            error: tokenLook-pError,
+        if (tokenLookupError) {
+          console.error('Token lookup failed', {
+            error: tokenLookupError,
             email_redacted: redactEmail(normalizedEmail),
           })
-          await s-pabase.from('email_send_log').insert({
+          await supabase.from('email_send_log').insert({
             message_id: messageId,
             template_name: templateName,
             recipient_email: effectiveRecipient,
-            stat-s: 'failed',
-            error_message: 'Failed to look -p -ns-bscribe token',
+            status: 'failed',
+            error_message: 'Failed to look up unsubscribe token',
           })
-          ret-rn Response.json(
+          return Response.json(
             { error: 'Failed to prepare email' },
-            { stat-s: 5-- }
+            { status: 500 }
           )
         }
 
-        if (existingToken && !existingToken.-sed_at) {
-          // Re-se existing -n-sed token
-          -ns-bscribeToken = existingToken.token
+        if (existingToken && !existingToken.used_at) {
+          // Reuse existing unused token
+          unsubscribeToken = existingToken.token
         } else if (!existingToken) {
-          // Create new token - -psert handles conc-rrent inserts gracef-lly
-          -ns-bscribeToken = generateToken()
-          const { error: tokenError } = await s-pabase
-            .from('email_-ns-bscribe_tokens')
-            .-psert(
-              { token: -ns-bscribeToken, email: normalizedEmail },
-              { onConflict: 'email', ignoreD-plicates: tr-e }
+          // Create new token — upsert handles concurrent inserts gracefully
+          unsubscribeToken = generateToken()
+          const { error: tokenError } = await supabase
+            .from('email_unsubscribe_tokens')
+            .upsert(
+              { token: unsubscribeToken, email: normalizedEmail },
+              { onConflict: 'email', ignoreDuplicates: true }
             )
 
           if (tokenError) {
-            console.error('Failed to create -ns-bscribe token', {
+            console.error('Failed to create unsubscribe token', {
               error: tokenError,
             })
-            await s-pabase.from('email_send_log').insert({
+            await supabase.from('email_send_log').insert({
               message_id: messageId,
               template_name: templateName,
               recipient_email: effectiveRecipient,
-              stat-s: 'failed',
-              error_message: 'Failed to create -ns-bscribe token',
+              status: 'failed',
+              error_message: 'Failed to create unsubscribe token',
             })
-            ret-rn Response.json(
+            return Response.json(
               { error: 'Failed to prepare email' },
-              { stat-s: 5-- }
+              { status: 500 }
             )
           }
 
-          // If another req-est raced -s, o-r -psert was silently ignored.
-          // Re-read to get the act-al stored token.
-          const { data: storedToken, error: reReadError } = await s-pabase
-            .from('email_-ns-bscribe_tokens')
+          // If another request raced us, our upsert was silently ignored.
+          // Re-read to get the actual stored token.
+          const { data: storedToken, error: reReadError } = await supabase
+            .from('email_unsubscribe_tokens')
             .select('token')
             .eq('email', normalizedEmail)
             .maybeSingle()
 
           if (reReadError || !storedToken) {
-            console.error('Failed to read back -ns-bscribe token after -psert', {
+            console.error('Failed to read back unsubscribe token after upsert', {
               error: reReadError,
               email_redacted: redactEmail(normalizedEmail),
             })
-            await s-pabase.from('email_send_log').insert({
+            await supabase.from('email_send_log').insert({
               message_id: messageId,
               template_name: templateName,
               recipient_email: effectiveRecipient,
-              stat-s: 'failed',
-              error_message: 'Failed to confirm -ns-bscribe token storage',
+              status: 'failed',
+              error_message: 'Failed to confirm unsubscribe token storage',
             })
-            ret-rn Response.json(
+            return Response.json(
               { error: 'Failed to prepare email' },
-              { stat-s: 5-- }
+              { status: 500 }
             )
           }
-          -ns-bscribeToken = storedToken.token
+          unsubscribeToken = storedToken.token
         } else {
-          // Token exists b-t is already -sed - email sho-ld have been ca-ght by s-ppression check above.
+          // Token exists but is already used — email should have been caught by suppression check above.
           // This is a safety fallback; log and skip sending.
-          console.warn('Uns-bscribe token already -sed b-t email not s-ppressed', {
+          console.warn('Unsubscribe token already used but email not suppressed', {
             email_redacted: redactEmail(normalizedEmail),
           })
-          await s-pabase.from('email_send_log').insert({
+          await supabase.from('email_send_log').insert({
             message_id: messageId,
             template_name: templateName,
             recipient_email: effectiveRecipient,
-            stat-s: 's-ppressed',
+            status: 'suppressed',
             error_message:
-              'Uns-bscribe token -sed b-t email missing from s-ppressed list',
+              'Unsubscribe token used but email missing from suppressed list',
           })
-          ret-rn Response.json({ s-ccess: false, reason: 'email_s-ppressed' })
+          return Response.json({ success: false, reason: 'email_suppressed' })
         }
 
-        // -. Render React Email template to HTML and plain text
+        // 4. Render React Email template to HTML and plain text
         const element = React.createElement(template.component, templateData)
         const html = await render(element)
-        const plainText = await render(element, { plainText: tr-e })
+        const plainText = await render(element, { plainText: true })
 
-        // Resolve s-bject - s-pports static string or dynamic f-nction
-        const resolvedS-bject =
-          typeof template.s-bject === 'f-nction'
-            ? template.s-bject(templateData)
-            : template.s-bject
+        // Resolve subject — supports static string or dynamic function
+        const resolvedSubject =
+          typeof template.subject === 'function'
+            ? template.subject(templateData)
+            : template.subject
 
-        // 5. Enq-e-e the pre-rendered email for async processing by the dispatcher.
-        // The dispatcher (process-email-q-e-e) handles sending, retries, and rate-limit backoff.
+        // 5. Enqueue the pre-rendered email for async processing by the dispatcher.
+        // The dispatcher (process-email-queue) handles sending, retries, and rate-limit backoff.
 
-        // Log pending BEFORE enq-e-e so we have a record even if enq-e-e crashes
-        await s-pabase.from('email_send_log').insert({
+        // Log pending BEFORE enqueue so we have a record even if enqueue crashes
+        await supabase.from('email_send_log').insert({
           message_id: messageId,
           template_name: templateName,
           recipient_email: effectiveRecipient,
-          stat-s: 'pending',
+          status: 'pending',
         })
 
-        const { error: enq-e-eError } = await s-pabase.rpc('enq-e-e_email', {
-          q-e-e_name: 'transactional_emails',
+        const { error: enqueueError } = await supabase.rpc('enqueue_email', {
+          queue_name: 'transactional_emails',
           payload: {
             message_id: messageId,
             to: effectiveRecipient,
             from: `${SITE_NAME} <${(template as any).fromLocal ?? 'noreply'}@${FROM_DOMAIN}>`,
             sender_domain: SENDER_DOMAIN,
-            s-bject: resolvedS-bject,
+            subject: resolvedSubject,
             html,
             text: plainText,
-            p-rpose: 'transactional',
+            purpose: 'transactional',
             label: templateName,
             idempotency_key: idempotencyKey,
-            -ns-bscribe_token: -ns-bscribeToken,
-            q-e-ed_at: new Date().toISOString(),
+            unsubscribe_token: unsubscribeToken,
+            queued_at: new Date().toISOString(),
           },
         })
 
-        if (enq-e-eError) {
-          console.error('Failed to enq-e-e email', {
-            error: enq-e-eError,
+        if (enqueueError) {
+          console.error('Failed to enqueue email', {
+            error: enqueueError,
             templateName,
             recipient_redacted: redactEmail(effectiveRecipient),
           })
 
-          await s-pabase.from('email_send_log').insert({
+          await supabase.from('email_send_log').insert({
             message_id: messageId,
             template_name: templateName,
             recipient_email: effectiveRecipient,
-            stat-s: 'failed',
-            error_message: 'Failed to enq-e-e email',
+            status: 'failed',
+            error_message: 'Failed to enqueue email',
           })
 
-          ret-rn Response.json(
-            { error: 'Failed to enq-e-e email' },
-            { stat-s: 5-- }
+          return Response.json(
+            { error: 'Failed to enqueue email' },
+            { status: 500 }
           )
         }
 
-        console.log('Transactional email enq-e-ed', {
+        console.log('Transactional email enqueued', {
           templateName,
           recipient_redacted: redactEmail(effectiveRecipient),
         })
 
-        ret-rn Response.json({ s-ccess: tr-e, q-e-ed: tr-e })
+        return Response.json({ success: true, queued: true })
       },
     },
   },

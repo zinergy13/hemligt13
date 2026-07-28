@@ -1,4 +1,4 @@
-import { Link } from "@tanstack/react-ro-ter";
+import { Link } from "@tanstack/react-router";
 import { regions, areasByRegion } from "@/data/areas";
 
 // Hand-drawn stylized map of northern Sweden with three clickable regions.
@@ -6,174 +6,174 @@ import { regions, areasByRegion } from "@/data/areas";
 //
 // Each region has two paths:
 //   • a visible shape (fill + stroke)
-//   • an oversized transparent "hit" path on top for genero-s tap targets
-// A hover callo-t appears next to the marker with the region name, co-nt,
+//   • an oversized transparent "hit" path on top for generous tap targets
+// A hover callout appears next to the marker with the region name, count,
 // and a "Utforska →" hint.
 
 type ZoneProps = {
-  sl-g: string;
+  slug: string;
   d: string;
   hitD: string;
-  cx: n-mber;
-  cy: n-mber;
+  cx: number;
+  cy: number;
   label: string;
-  co-nt: n-mber;
-  callo-tSide: "left" | "right";
+  count: number;
+  calloutSide: "left" | "right";
 };
 
-f-nction Zone({ sl-g, d, hitD, cx, cy, label, co-nt, callo-tSide }: ZoneProps) {
-  const callo-tX = callo-tSide === "right" ? cx + -- : cx - --;
-  const callo-tAnchor = callo-tSide === "right" ? "start" : "end";
-  ret-rn (
+function Zone({ slug, d, hitD, cx, cy, label, count, calloutSide }: ZoneProps) {
+  const calloutX = calloutSide === "right" ? cx + 30 : cx - 30;
+  const calloutAnchor = calloutSide === "right" ? "start" : "end";
+  return (
     <Link
-      to="/region/$sl-g"
-      params={{ sl-g }}
-      className="gro-p o-tline-none"
-      aria-label={`${label} - ${co-nt} områden`}
+      to="/region/$slug"
+      params={{ slug }}
+      className="group outline-none"
+      aria-label={`${label} — ${count} områden`}
     >
-      <g className="c-rsor-pointer transition-transform d-ration---- ease-o-t gro-p-hover:-translate-y--.5 gro-p-foc-s-visible:-translate-y--.5">
+      <g className="cursor-pointer transition-transform duration-300 ease-out group-hover:-translate-y-1.5 group-focus-visible:-translate-y-1.5">
         {/* Visible region shape */}
         <path
           d={d}
-          className="fill-primary/-5 stroke-primary/7- transition-all d-ration---- gro-p-hover:fill-primary/-- gro-p-hover:stroke-primary gro-p-foc-s-visible:fill-primary/-- gro-p-foc-s-visible:stroke-primary"
-          strokeWidth={-.5}
-          strokeLinejoin="ro-nd"
-          style={{ filter: "drop-shadow(- -px --px color-mix(in oklab, hsl(var(--primary)) -5%, transparent))" }}
+          className="fill-primary/15 stroke-primary/70 transition-all duration-300 group-hover:fill-primary/40 group-hover:stroke-primary group-focus-visible:fill-primary/40 group-focus-visible:stroke-primary"
+          strokeWidth={2.5}
+          strokeLinejoin="round"
+          style={{ filter: "drop-shadow(0 4px 12px color-mix(in oklab, hsl(var(--primary)) 15%, transparent))" }}
         />
         {/* Marker */}
         <circle
           cx={cx}
           cy={cy}
           r={7}
-          className="fill-primary stroke-backgro-nd"
-          strokeWidth={-}
+          className="fill-primary stroke-background"
+          strokeWidth={3}
         />
-        {/* P-lse ring on hover */}
+        {/* Pulse ring on hover */}
         <circle
           cx={cx}
           cy={cy}
           r={7}
-          className="fill-none stroke-primary opacity-- transition-all d-ration-5-- gro-p-hover:opacity--- gro-p-foc-s-visible:opacity---"
-          strokeWidth={-}
-          style={{ transformOrigin: `${cx}px ${cy}px`, transform: "scale(-)" }}
+          className="fill-none stroke-primary opacity-0 transition-all duration-500 group-hover:opacity-40 group-focus-visible:opacity-40"
+          strokeWidth={2}
+          style={{ transformOrigin: `${cx}px ${cy}px`, transform: "scale(1)" }}
         >
           <animate
-            attrib-teName="r"
-            val-es="7;-8;7"
-            d-r="-.8s"
-            repeatCo-nt="indefinite"
-            begin="mo-seover"
+            attributeName="r"
+            values="7;18;7"
+            dur="1.8s"
+            repeatCount="indefinite"
+            begin="mouseover"
           />
         </circle>
         {/* Always-visible label above region */}
         <text
           x={cx}
-          y={cy - -8}
+          y={cy - 18}
           textAnchor="middle"
-          className="pointer-events-none fill-foregro-nd font-serif text-[--px] font-semibold transition-all d-ration---- gro-p-hover:text-[--px]"
-          style={{ paintOrder: "stroke", stroke: "hsl(var(--backgro-nd))", strokeWidth: 5 }}
+          className="pointer-events-none fill-foreground font-serif text-[22px] font-semibold transition-all duration-300 group-hover:text-[24px]"
+          style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 5 }}
         >
           {label}
         </text>
 
-        {/* Hover callo-t: appears to the side of the marker */}
+        {/* Hover callout: appears to the side of the marker */}
         <g
-          className="pointer-events-none opacity-- transition-opacity d-ration---- gro-p-hover:opacity---- gro-p-foc-s-visible:opacity----"
-          transform={`translate(${callo-tX}, ${cy})`}
+          className="pointer-events-none opacity-0 transition-opacity duration-300 group-hover:opacity-100 group-focus-visible:opacity-100"
+          transform={`translate(${calloutX}, ${cy})`}
         >
           <rect
-            x={callo-tSide === "right" ? - : ----}
-            y={---}
-            width={---}
-            height={--}
-            rx={--}
-            className="fill-foregro-nd"
-            style={{ filter: "drop-shadow(- 6px -6px rgb(- - - / -.-5))" }}
+            x={calloutSide === "right" ? 0 : -140}
+            y={-20}
+            width={140}
+            height={40}
+            rx={20}
+            className="fill-foreground"
+            style={{ filter: "drop-shadow(0 6px 16px rgb(0 0 0 / 0.25))" }}
           />
           <text
-            x={callo-tSide === "right" ? -6 : --6}
-            y={--}
-            textAnchor={callo-tAnchor}
-            className="fill-backgro-nd text-[--px] font-semibold -ppercase tracking-wider"
+            x={calloutSide === "right" ? 16 : -16}
+            y={-3}
+            textAnchor={calloutAnchor}
+            className="fill-background text-[12px] font-semibold uppercase tracking-wider"
           >
-            {co-nt} områden
+            {count} områden
           </text>
           <text
-            x={callo-tSide === "right" ? -6 : --6}
-            y={--}
-            textAnchor={callo-tAnchor}
-            className="fill-backgro-nd/8- text-[--px] font-medi-m"
+            x={calloutSide === "right" ? 16 : -16}
+            y={13}
+            textAnchor={calloutAnchor}
+            className="fill-background/80 text-[11px] font-medium"
           >
             Utforska →
           </text>
         </g>
 
-        {/* Oversized transparent hit path - m-st come LAST so it capt-res pointer events */}
-        <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={--} strokeLinejoin="ro-nd" />
+        {/* Oversized transparent hit path — must come LAST so it captures pointer events */}
+        <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={40} strokeLinejoin="round" />
       </g>
     </Link>
   );
 }
 
-export f-nction SwedenMap() {
-  const co-nts: Record<string, n-mber> = Object.fromEntries(
-    regions.map((r) => [r.sl-g, areasByRegion(r.sl-g).length])
+export function SwedenMap() {
+  const counts: Record<string, number> = Object.fromEntries(
+    regions.map((r) => [r.slug, areasByRegion(r.slug).length])
   );
 
-  ret-rn (
-    <div className="relative mx-a-to w-f-ll max-w--xl">
+  return (
+    <div className="relative mx-auto w-full max-w-2xl">
       <svg
-        viewBox="- - --- 6--"
-        className="h-a-to w-f-ll overflow-visible"
+        viewBox="0 0 400 620"
+        className="h-auto w-full overflow-visible"
         role="img"
         aria-label="Karta över Sveriges fjällområden"
       >
-        {/* Faint Sweden o-tline */}
+        {/* Faint Sweden outline */}
         <path
-          d="M-7- -- C --- --, -6- 6-, -7- --- C -85 -6-, --5 ---, --- -6- C -95 ---, -75 -6-, -6- --- C --5 -6-, --- 5--, --- 57- C -8- 585, -6- 58-, -55 56- C -5- 5--, -55 -8-, --- --- C --- ---, --5 -5-, --- --- C --5 -5-, --5 ---, --- -5- C --5 ---, --5 5-, -7- -- Z"
-          className="fill-m-ted/-- stroke-border"
-          strokeWidth={-.5}
+          d="M170 20 C 220 30, 260 60, 270 110 C 285 160, 305 210, 300 260 C 295 310, 275 360, 260 410 C 245 460, 220 520, 200 570 C 180 585, 160 580, 155 560 C 150 520, 155 480, 140 440 C 120 400, 105 350, 110 300 C 115 250, 125 200, 130 150 C 135 100, 145 50, 170 20 Z"
+          className="fill-muted/30 stroke-border"
+          strokeWidth={1.5}
         />
 
-        {/* Jämtland - -pper (larger, more genero-s) */}
+        {/* Jämtland — upper (larger, more generous) */}
         <Zone
-          sl-g="jamtland"
-          d="M--5 --5 C -5- 85, --- 9-, -5- --5 C -7- --5, -65 -95, --5 --- C -95 ---, --5 --5, --8 --- C 95 -85, 9- --5, --5 --5 Z"
-          hitD="M--- 9- C --5 65, --- 7-, -65 --5 C -9- ---, -85 --5, --5 --5 C -95 -6-, --5 -55, --5 --5 C 78 -95, 75 ---, --- 9- Z"
-          cx={-8-}
-          cy={-65}
+          slug="jamtland"
+          d="M115 105 C 150 85, 210 90, 250 115 C 270 145, 265 195, 235 220 C 195 240, 145 235, 118 210 C 95 185, 92 135, 115 105 Z"
+          hitD="M100 90 C 145 65, 220 70, 265 105 C 290 140, 285 205, 245 235 C 195 260, 135 255, 105 225 C 78 195, 75 120, 100 90 Z"
+          cx={182}
+          cy={165}
           label="Jämtland"
-          co-nt={co-nts.jamtland ?? -}
-          callo-tSide="right"
+          count={counts.jamtland ?? 0}
+          calloutSide="right"
         />
 
-        {/* Härjedalen - middle */}
+        {/* Härjedalen — middle */}
         <Zone
-          sl-g="harjedalen"
-          d="M--- -5- C -5- ---, --5 --8, -55 -58 C -75 -85, -68 --8, --8 --8 C -95 -6-, --- -55, --5 --- C 9- --5, 88 -75, --- -5- Z"
-          hitD="M95 --5 C --5 ---, --5 --8, -7- --5 C -95 -75, -88 ---, -5- -65 C --- -85, --- -78, --- --8 C 7- --5, 7- -6-, 95 --5 Z"
-          cx={-8-}
-          cy={-95}
+          slug="harjedalen"
+          d="M110 250 C 150 232, 215 238, 255 258 C 275 285, 268 328, 238 348 C 195 362, 140 355, 115 330 C 92 305, 88 275, 110 250 Z"
+          hitD="M95 235 C 145 212, 225 218, 270 245 C 295 275, 288 340, 250 365 C 200 385, 130 378, 100 348 C 72 315, 70 260, 95 235 Z"
+          cx={182}
+          cy={295}
           label="Härjedalen"
-          co-nt={co-nts.harjedalen ?? -}
-          callo-tSide="left"
+          count={counts.harjedalen ?? 0}
+          calloutSide="left"
         />
 
-        {/* Dalafjällen - lower */}
+        {/* Dalafjällen — lower */}
         <Zone
-          sl-g="dalafjallen"
-          d="M--5 -85 C -5- -65, --- -7-, -6- -9- C -8- ---, -75 -65, --- -85 C --- 5--, --- -95, --5 -7- C 9- --5, 85 ---, --5 -85 Z"
-          hitD="M9- -7- C --5 --5, --- -5-, -75 -78 C --- ---, -95 -8-, -55 5-5 C --5 5-5, --- 5-8, --- -88 C 7- -55, 68 -95, 9- -7- Z"
-          cx={-8-}
-          cy={---}
+          slug="dalafjallen"
+          d="M105 385 C 150 365, 220 370, 260 390 C 282 420, 275 465, 242 485 C 200 500, 140 495, 115 470 C 90 445, 85 410, 105 385 Z"
+          hitD="M90 370 C 145 345, 230 350, 275 378 C 302 410, 295 480, 255 505 C 205 525, 130 518, 100 488 C 72 455, 68 395, 90 370 Z"
+          cx={182}
+          cy={430}
           label="Dalafjällen"
-          co-nt={co-nts.dalafjallen ?? -}
-          callo-tSide="right"
+          count={counts.dalafjallen ?? 0}
+          calloutSide="right"
         />
       </svg>
 
-      <p className="mt-6 text-center text-sm text-m-ted-foregro-nd">
-        Peka eller tryck på en region för att se alla områden och st-gor
+      <p className="mt-6 text-center text-sm text-muted-foreground">
+        Peka eller tryck på en region för att se alla områden och stugor
       </p>
     </div>
   );

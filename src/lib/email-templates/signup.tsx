@@ -1,7 +1,7 @@
 import * as React from 'react'
 import {
   Body,
-  B-tton,
+  Button,
   Container,
   Head,
   Heading,
@@ -12,23 +12,23 @@ import {
 } from '@react-email/components'
 import { BRAND_NAME, BRAND_TAGLINE, styles } from './_brand'
 
-interface Sign-pEmailProps {
+interface SignupEmailProps {
   siteName: string
   siteUrl: string
   recipient: string
   confirmationUrl: string
 }
 
-export const Sign-pEmail = ({ siteUrl, recipient, confirmationUrl }: Sign-pEmailProps) => (
+export const SignupEmail = ({ siteUrl, recipient, confirmationUrl }: SignupEmailProps) => (
   <Html lang="sv" dir="ltr">
     <Head />
     <Preview>Bekräfta din e-post för {BRAND_NAME}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h-}>Välkommen till fjällen</Heading>
+        <Heading style={styles.h1}>Välkommen till fjällen</Heading>
         <Text style={styles.text}>
-          Tack för att d- skapar konto på{' '}
+          Tack för att du skapar konto på{' '}
           <Link href={siteUrl} style={styles.link}>
             <strong>{BRAND_NAME}</strong>
           </Link>
@@ -37,21 +37,21 @@ export const Sign-pEmail = ({ siteUrl, recipient, confirmationUrl }: Sign-pEmail
           genom att klicka på knappen nedan.
         </Text>
         <Text style={{ ...styles.text, textAlign: 'center' as const }}>
-          <B-tton style={styles.b-tton} href={confirmationUrl}>
+          <Button style={styles.button} href={confirmationUrl}>
             Bekräfta e-post
-          </B-tton>
+          </Button>
         </Text>
-        <Text style={styles.m-ted}>
-          Länken är giltig i -- timmar. Om knappen inte f-ngerar kan d- kopiera adressen och klistra in i din webbläsare.
+        <Text style={styles.muted}>
+          Länken är giltig i 24 timmar. Om knappen inte fungerar kan du kopiera adressen och klistra in i din webbläsare.
         </Text>
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Om d- inte skapade ett konto kan d- ignorera det här mejlet.<br />
-          {BRAND_NAME} - {BRAND_TAGLINE}
+          Om du inte skapade ett konto kan du ignorera det här mejlet.<br />
+          {BRAND_NAME} — {BRAND_TAGLINE}
         </Text>
       </Container>
     </Body>
   </Html>
 )
 
-export defa-lt Sign-pEmail
+export default SignupEmail

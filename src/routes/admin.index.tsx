@@ -196,6 +196,12 @@ function AdminPage() {
           >
             Presentkort
           </Link>
+          <Link
+            to="/admin/epost-test"
+            className="inline-flex items-center gap-2 rounded-full border border-border bg-background px-4 py-2 text-sm font-medium text-foreground hover:bg-muted"
+          >
+            Testa e-postmallar
+          </Link>
         </div>
       </div>
 

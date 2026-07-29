@@ -100,6 +100,52 @@ function SearchPage() {
         <h1 className="font-serif text-3xl text-foreground md:text-5xl">Hitta din nästa fjällvistelse</h1>
       </div>
 
+      {/* Selected region/area status - only visible when a filter is active */}
+      {(activeRegion || search.omrade) && (
+        <div
+          role="status"
+          aria-live="polite"
+          className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 sm:px-5"
+        >
+          <div className="flex min-w-0 items-center gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground" aria-hidden>
+              <svg viewBox="0 0 24 24" className="h-4 w-4" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                <path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 1 1 16 0Z" />
+                <circle cx="12" cy="10" r="3" />
+              </svg>
+            </span>
+            <div className="min-w-0">
+              <p className="text-[11px] font-medium uppercase tracking-wider text-primary">Vald region</p>
+              <p className="truncate font-serif text-base text-foreground sm:text-lg">
+                {activeRegion
+                  ? regions.find((r) => r.slug === activeRegion)?.name
+                  : "Alla regioner"}
+                {search.omrade && (
+                  <>
+                    <span className="mx-2 text-muted-foreground">·</span>
+                    <span className="text-foreground">
+                      {areas.find((a) => a.slug === search.omrade)?.name}
+                    </span>
+                  </>
+                )}
+              </p>
+            </div>
+          </div>
+          <button
+            type="button"
+            onClick={() => updateSearch({ region: undefined, omrade: undefined })}
+            className="inline-flex shrink-0 items-center gap-1.5 rounded-full border border-primary/40 bg-background px-3 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary hover:bg-primary/10"
+            aria-label="Rensa valt region- och områdesfilter"
+          >
+            <svg viewBox="0 0 24 24" className="h-3.5 w-3.5" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden>
+              <path d="M18 6 6 18M6 6l12 12" />
+            </svg>
+            <span className="hidden sm:inline">Rensa val</span>
+            <span className="sm:hidden">Rensa</span>
+          </button>
+        </div>
+      )}
+
       {/* Map picker + area chips */}
       <div className="mb-8 grid gap-8 rounded-3xl border border-border bg-background p-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8">
         <div>

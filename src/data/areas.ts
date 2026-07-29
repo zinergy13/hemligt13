@@ -420,3 +420,7 @@ export const areaBySlug = (slug: string): Area | undefined =>
 
 export const areasByRegion = (region: RegionSlug): Area[] =>
   areas.filter((a) => a.region === region);
+
+// Areas ordered by the region order defined in `regions` (Lappland first),
+// preserving the in-region order from the `areas` array.
+export const areasSorted: Area[] = regions.flatMap((r) => areasByRegion(r.slug));

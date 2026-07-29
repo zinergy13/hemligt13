@@ -193,8 +193,40 @@ function SearchPage() {
   const updateSearch = (patch: Partial<SearchParams>) =>
     navigate({ to: "/sok", search: (prev: SearchParams) => ({ ...prev, ...patch }) });
 
+  const skipRef = useRef<HTMLAnchorElement | null>(null);
+
+  // Move focus into the map when the skip link is activated, so the
+  // user lands directly on the interactive content without tabbing.
+  const handleSkip = (e: React.MouseEvent<HTMLAnchorElement> | React.KeyboardEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    const target = document.getElementById("fp-interaktivt-innehall");
+    if (!target) return;
+    target.scrollIntoView({ block: "start" });
+    // Defer focus to after the scroll settles.
+    requestAnimationFrame(() => {
+      const focusable =
+        mapWrapRef.current?.querySelector<HTMLElement>(
+          '[aria-pressed="true"], [role="button"], button',
+        ) ?? target;
+      focusable?.focus();
+    });
+  };
+
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
+      {/* Skip link - hidden until focused, jumps to the interactive map/results */}
+      <a
+        ref={skipRef}
+        href="#fp-interaktivt-innehall"
+        onClick={handleSkip}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") handleSkip(e);
+        }}
+        className="sr-only z-50 rounded-full bg-primary px-5 py-2.5 text-sm font-medium text-primary-foreground focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:shadow-lg"
+      >
+        Hoppa till karta och resultat
+      </a>
+
       <div className="mb-8">
         <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Sök i svenska fjällen</p>
         <h1 className="font-serif text-3xl text-foreground md:text-5xl">Hitta din nästa fjällvistelse</h1>
@@ -261,9 +293,11 @@ function SearchPage() {
 
       {/* Map picker + area chips */}
       <div
+        id="fp-interaktivt-innehall"
         ref={mapWrapRef}
+        tabIndex={-1}
         onKeyDownCapture={handleMapKeyDownCapture}
-        className="mb-8 grid gap-8 rounded-3xl border border-border bg-background p-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8"
+        className="mb-8 scroll-mt-4 grid gap-8 rounded-3xl border border-border bg-background p-6 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8"
       >
         <div>
           <SwedenMap

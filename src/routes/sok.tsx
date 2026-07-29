@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useId, useRef, useState } from "react";
 import { SlidersHorizontal, MapPin, Loader2, Search } from "lucide-react";
 import { areas, areasSorted, regions, type RegionSlug } from "@/data/areas";
 import { supabase } from "@/integrations/supabase/client";
@@ -50,6 +50,13 @@ function SearchPage() {
   const [loading, setLoading] = useState(true);
   const statusRef = useRef<HTMLDivElement | null>(null);
   const mapWrapRef = useRef<HTMLDivElement | null>(null);
+  const regionSelectId = useId();
+  const regionHintId = useId();
+  const areaSelectId = useId();
+  const areaHintId = useId();
+  const areaCount = activeRegion
+    ? areas.filter((a) => a.region === activeRegion).length
+    : areas.length;
   // Marks whether the most recent region/area change came from a keyboard
   // interaction inside the map or legend, so we only auto-focus the status
   // banner in that case (mouse users stay where they clicked).

@@ -1,5 +1,5 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { SlidersHorizontal, MapPin, Loader2, Search } from "lucide-react";
 import { areas, areasSorted, regions, type RegionSlug } from "@/data/areas";
 import { supabase } from "@/integrations/supabase/client";
@@ -48,10 +48,55 @@ function SearchPage() {
   const navigate = useNavigate();
   const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
   const [loading, setLoading] = useState(true);
+  const statusRef = useRef<HTMLDivElement | null>(null);
+  const mapWrapRef = useRef<HTMLDivElement | null>(null);
+  // Marks whether the most recent region/area change came from a keyboard
+  // interaction inside the map or legend, so we only auto-focus the status
+  // banner in that case (mouse users stay where they clicked).
+  const shiftFocusRef = useRef(false);
+  // Where to return focus when the user presses Escape on the banner.
+  const returnFocusRef = useRef<HTMLElement | null>(null);
 
   const activeRegion = search.region && regions.some((r) => r.slug === search.region)
     ? (search.region as RegionSlug)
     : undefined;
+
+  // Move focus to the status banner when the region/area changes via keyboard
+  // inside the map or legend. Skips the change if focus already left that area.
+  useEffect(() => {
+    if (!shiftFocusRef.current) return;
+    shiftFocusRef.current = false;
+    if (activeRegion || search.omrade) {
+      // wait one frame so the banner is in the DOM
+      requestAnimationFrame(() => statusRef.current?.focus());
+    }
+  }, [activeRegion, search.omrade]);
+
+  const handleMapKeyDownCapture: React.KeyboardEventHandler<HTMLDivElement> = (e) => {
+    if (e.key === "Enter" || e.key === " " || e.key === "Spacebar") {
+      const target = e.target as HTMLElement;
+      // Only chips (buttons w/ aria-pressed) and SVG zones (role=button) select
+      const isSelector =
+        target.getAttribute("aria-pressed") !== null ||
+        target.getAttribute("role") === "button";
+      if (isSelector) {
+        shiftFocusRef.current = true;
+        returnFocusRef.current = target;
+      }
+    }
+  };
+
+  const returnFocusToMap = () => {
+    const wrap = mapWrapRef.current;
+    if (!wrap) return;
+    const preferred = returnFocusRef.current && wrap.contains(returnFocusRef.current)
+      ? returnFocusRef.current
+      : null;
+    const fallback =
+      wrap.querySelector<HTMLElement>('[aria-pressed="true"]') ??
+      wrap.querySelector<HTMLElement>('[role="button"], button');
+    (preferred ?? fallback)?.focus();
+  };
 
   // Restore last region/area from localStorage when URL has no filters set.
   useEffect(() => {
@@ -151,9 +196,18 @@ function SearchPage() {
       {/* Selected region/area status - only visible when a filter is active */}
       {(activeRegion || search.omrade) && (
         <div
+          ref={statusRef}
+          tabIndex={-1}
           role="status"
           aria-live="polite"
-          className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 sm:px-5"
+          aria-label="Vald region. Tryck Escape för att gå tillbaka till kartan."
+          onKeyDown={(e) => {
+            if (e.key === "Escape" || e.key === "Enter") {
+              e.preventDefault();
+              returnFocusToMap();
+            }
+          }}
+          className="mb-6 grid grid-cols-[minmax(0,1fr)_auto] items-center gap-3 rounded-2xl border border-primary/40 bg-primary/10 px-4 py-3 focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:px-5"
         >
           <div className="flex min-w-0 items-center gap-3">
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground" aria-hidden>
@@ -177,6 +231,9 @@ function SearchPage() {
                   </>
                 )}
               </p>
+              <p className="mt-0.5 text-[11px] text-muted-foreground">
+                Tryck <kbd className="rounded border border-border bg-background px-1 py-px text-[10px] font-medium">Esc</kbd> för att gå tillbaka till kartan
+              </p>
             </div>
           </div>
           <button
@@ -195,7 +252,11 @@ function SearchPage() {
       )}
 
       {/* Map picker + area chips */}
-      <div className="mb-8 grid gap-8 rounded-3xl border border-border bg-background p-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8">
+      <div
+        ref={mapWrapRef}
+        onKeyDownCapture={handleMapKeyDownCapture}
+        className="mb-8 grid gap-8 rounded-3xl border border-border bg-background p-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8"
+      >
         <div>
           <SwedenMap
             selectedSlug={activeRegion ?? null}

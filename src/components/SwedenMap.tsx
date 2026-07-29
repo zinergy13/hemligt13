@@ -205,7 +205,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;
           const commonClasses =
-            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors sm:w-full sm:rounded-lg sm:px-3 sm:py-2 sm:text-sm";
+            "flex w-full shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors sm:shrink sm:snap-none sm:rounded-lg sm:py-2 sm:text-sm";
           const stateClasses = isSelected
             ? "border-primary bg-primary/10 text-foreground"
             : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
@@ -233,7 +233,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
             </>
           );
           return (
-            <li key={z.slug} className="sm:contents">
+            <li key={z.slug} className="shrink-0 sm:shrink">
               {onSelect ? (
                 <button
                   type="button"

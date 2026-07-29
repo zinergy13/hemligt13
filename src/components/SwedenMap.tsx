@@ -41,9 +41,8 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
             ? "fill-primary/45 stroke-primary transition-all duration-300"
             : "fill-primary/15 stroke-primary/70 transition-all duration-300 group-hover:fill-primary/35 group-hover:stroke-primary group-focus-visible:fill-primary/35 group-focus-visible:stroke-primary"
         }
-        strokeWidth={selected ? 3 : 2.5}
+        strokeWidth={selected ? 3 : 2}
         strokeLinejoin="round"
-        style={{ filter: "drop-shadow(0 4px 12px color-mix(in oklab, hsl(var(--primary)) 15%, transparent))" }}
       />
       {/* Focus ring - only visible when the region receives keyboard focus */}
       <path
@@ -57,41 +56,41 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
       {/* Numbered badge that ties the region to the legend */}
       <g className="pointer-events-none">
         <circle
-          cx={cx - 78}
-          cy={cy - 22}
-          r={16}
+          cx={cx - 88}
+          cy={cy - 4}
+          r={15}
           className="fill-background stroke-primary"
           strokeWidth={2}
         />
         <text
-          x={cx - 78}
-          y={cy - 17}
+          x={cx - 88}
+          y={cy + 1}
           textAnchor="middle"
-          className="fill-primary text-[15px] font-bold"
+          className="fill-primary text-[14px] font-bold"
         >
           {index}
         </text>
       </g>
       <text
         x={cx}
-        y={cy - 6}
+        y={cy}
         textAnchor="middle"
-        className="pointer-events-none fill-foreground font-serif text-[22px] font-semibold"
-        style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 5 }}
+        className="pointer-events-none fill-foreground font-serif text-[19px] font-semibold"
+        style={{ paintOrder: "stroke", stroke: "var(--background)", strokeWidth: 5 }}
       >
         {label}
       </text>
       <text
         x={cx}
-        y={cy + 14}
+        y={cy + 20}
         textAnchor="middle"
-        className="pointer-events-none fill-muted-foreground text-[12px] font-medium"
-        style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 4 }}
+        className="pointer-events-none fill-muted-foreground text-[13px] font-medium"
+        style={{ paintOrder: "stroke", stroke: "var(--background)", strokeWidth: 4 }}
       >
         {count} områden
       </text>
       {/* Oversized transparent hit path - must come LAST so it captures pointer events */}
-      <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={40} strokeLinejoin="round" />
+      <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={24} strokeLinejoin="round" />
     </g>
   );
 }

@@ -106,7 +106,7 @@ export const Route = createRootRoute({
               contactPoint: {
                 "@type": "ContactPoint",
                 contactType: "customer support",
-                email: "hej@fjallportalen.com",
+                email: "info@fjallportalen.com",
                 availableLanguage: ["Swedish", "English"],
               },
             },

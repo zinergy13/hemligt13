@@ -238,17 +238,6 @@ export const areas: Area[] = [
     estimatedListings: 14,
   },
   {
-    slug: "vemdalen",
-    region: "harjedalen",
-    name: "Vemdalen",
-    tagline: "Fyra fjäll, en samlad känsla",
-    description:
-      "Vemdalen samlar Vemdalsskalet, Björnrike, Storhogna och Klövsjö - perfekt för dig som vill kombinera skidor, lugnare byar och långa vintrar. Snösäkert och familjärt.",
-    highlights: ["Fyra skidområden", "Snösäkert", "Familjevänligt", "Klövsjö-runt"],
-    image: vemdalen,
-    estimatedListings: 78,
-  },
-  {
     slug: "vemdalsskalet",
     region: "harjedalen",
     name: "Vemdalsskalet",

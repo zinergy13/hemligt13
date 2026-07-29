@@ -192,16 +192,18 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
         ))}
       </svg>
 
-      <p className="mt-6 text-center text-sm text-muted-foreground">
+      <p className="mt-4 text-center text-xs text-muted-foreground sm:mt-6 sm:text-sm">
         {helperText ?? defaultHelper}
       </p>
 
-      {/* Region legend - orders regions north to south to mirror the map */}
-      <ol className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+      {/* Region legend - orders regions north to south to mirror the map.
+          Renders as a horizontally scrollable chip row at every width so it
+          adapts to both narrow sidebars and full-width hero placements. */}
+      <ol className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mt-4">
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;
           const commonClasses =
-            "flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition-colors";
+            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors sm:text-sm";
           const stateClasses = isSelected
             ? "border-primary bg-primary/10 text-foreground"
             : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
@@ -209,7 +211,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
             <>
               <span
                 className={
-                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold " +
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold sm:h-6 sm:w-6 " +
                   (isSelected
                     ? "bg-primary text-primary-foreground"
                     : "bg-primary/15 text-primary")
@@ -217,22 +219,22 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
               >
                 {i + 1}
               </span>
-              <span className="flex flex-col leading-tight">
+              <span className="flex items-baseline gap-1 leading-tight">
                 <span className="font-medium">{z.label}</span>
-                <span className="text-xs text-muted-foreground">
-                  {counts[z.slug] ?? 0} områden
+                <span className="text-[11px] text-muted-foreground sm:text-xs">
+                  ({counts[z.slug] ?? 0})
                 </span>
               </span>
             </>
           );
           return (
-            <li key={z.slug}>
+            <li key={z.slug} className="shrink-0">
               {onSelect ? (
                 <button
                   type="button"
                   aria-pressed={isSelected}
                   onClick={() => onSelect(z.slug)}
-                  className={`${commonClasses} ${stateClasses} w-full`}
+                  className={`${commonClasses} ${stateClasses}`}
                 >
                   {inner}
                 </button>

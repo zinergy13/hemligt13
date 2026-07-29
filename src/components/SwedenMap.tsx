@@ -197,15 +197,13 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
       </p>
 
       {/* Region legend - orders regions north to south to mirror the map.
-          On phones: horizontally scrollable chip row so it stays one line.
-          On sm+: four-column grid with two-line labels. */}
-      <ol
-        className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mx-0 sm:mt-4 sm:grid sm:grid-cols-4 sm:gap-2 sm:overflow-visible sm:px-0"
-      >
+          Renders as a horizontally scrollable chip row at every width so it
+          adapts to both narrow sidebars and full-width hero placements. */}
+      <ol className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mt-4">
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;
           const commonClasses =
-            "flex w-full min-w-0 shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors sm:shrink sm:snap-none sm:rounded-lg sm:py-2 sm:text-sm";
+            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors sm:text-sm";
           const stateClasses = isSelected
             ? "border-primary bg-primary/10 text-foreground"
             : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
@@ -213,7 +211,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
             <>
               <span
                 className={
-                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold sm:h-6 sm:w-6 sm:text-xs " +
+                  "flex h-5 w-5 shrink-0 items-center justify-center rounded-full text-[11px] font-bold sm:h-6 sm:w-6 " +
                   (isSelected
                     ? "bg-primary text-primary-foreground"
                     : "bg-primary/15 text-primary")
@@ -221,19 +219,16 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
               >
                 {i + 1}
               </span>
-              <span className="flex min-w-0 flex-row items-baseline gap-1 leading-tight sm:flex-col sm:gap-0">
-                <span className="truncate font-medium">{z.label}</span>
-                <span className="hidden text-xs text-muted-foreground sm:inline">
-                  {counts[z.slug] ?? 0} områden
-                </span>
-                <span className="text-[11px] text-muted-foreground sm:hidden">
+              <span className="flex items-baseline gap-1 leading-tight">
+                <span className="font-medium">{z.label}</span>
+                <span className="text-[11px] text-muted-foreground sm:text-xs">
                   ({counts[z.slug] ?? 0})
                 </span>
               </span>
             </>
           );
           return (
-            <li key={z.slug} className="min-w-0 shrink-0 sm:shrink">
+            <li key={z.slug} className="shrink-0">
               {onSelect ? (
                 <button
                   type="button"

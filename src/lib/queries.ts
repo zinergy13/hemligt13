@@ -170,9 +170,9 @@ export const hostBookingsQuery = (userId: string) =>
       const profileMap = new Map<string, { full_name: string | null; avatar_url: string | null }>();
       if (guestIds.length > 0) {
         const { data: profs } = await supabase
-          .from("profiles")
+          .from("public_profiles" as any)
           .select("id, full_name, avatar_url")
-          .in("id", guestIds);
+          .in("id", guestIds) as { data: Array<{ id: string; full_name: string | null; avatar_url: string | null }> | null };
         for (const p of profs ?? []) {
           profileMap.set(p.id, { full_name: p.full_name, avatar_url: p.avatar_url });
         }

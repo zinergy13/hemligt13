@@ -1,8 +1,15 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
+import { timingSafeEqual, createHash } from 'node:crypto';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
 import { buildBookingEmailFields } from '@/lib/email/booking-fields';
+
+function safeEqual(a: string, b: string): boolean {
+  const ha = createHash('sha256').update(a, 'utf8').digest();
+  const hb = createHash('sha256').update(b, 'utf8').digest();
+  return timingSafeEqual(ha, hb);
+}
 
 let _admin: ReturnType<typeof createClient<Database>> | null = null;
 function admin() {
@@ -191,6 +198,13 @@ export const Route = createFileRoute('/api/public/hooks/booking-notifications')(
   server: {
     handlers: {
       POST: async ({ request }) => {
+        const provided = request.headers.get('x-cron-secret') ?? '';
+        const { data: expected, error: sErr } = await admin().rpc('get_cron_secret', {
+          _key: 'booking_notifications_hook',
+        });
+        if (sErr || !expected || !provided || !safeEqual(provided, expected as string)) {
+          return Response.json({ error: 'unauthorized' }, { status: 401 });
+        }
         const origin = new URL(request.url).origin;
         try {
           const [confirmation, checkin, payout] = await Promise.all([

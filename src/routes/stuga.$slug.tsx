@@ -70,10 +70,10 @@ function CabinPage() {
       }
       setCabin(data as CabinWithImages);
       const { data: profile } = await supabase
-        .from("profiles")
+        .from("public_profiles" as any)
         .select("full_name")
         .eq("id", data.host_id)
-        .maybeSingle();
+        .maybeSingle() as { data: { full_name: string | null } | null };
       if (active) {
         setHostName(profile?.full_name ?? null);
         setLoading(false);

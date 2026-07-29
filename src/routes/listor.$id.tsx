@@ -54,7 +54,7 @@ function WishlistDetailPage() {
     // Load member names
     const memberIds = ((wm as any[]) || []).map((m) => m.user_id);
     if (memberIds.length) {
-      const { data: profs } = await supabase.from("profiles").select("id, full_name").in("id", memberIds);
+      const { data: profs } = await supabase.from("public_profiles" as any).select("id, full_name").in("id", memberIds);
       setMembers(((profs as any[]) || []).map((p) => ({ user_id: p.id, full_name: p.full_name })));
     } else {
       setMembers([]);
@@ -65,11 +65,15 @@ function WishlistDetailPage() {
   const doSearch = async (e: FormEvent) => {
     e.preventDefault();
     if (!searchQ.trim()) return;
+    // Sanitize input: strip PostgREST reserved characters that would let a user
+    // inject additional filter clauses into the .or() expression below.
+    const safeQ = searchQ.replace(/[,()*%\\]/g, ' ').trim();
+    if (!safeQ) return;
     const { data } = await supabase
       .from("cabins")
       .select("id, slug, title, area_slug, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order)")
       .eq("status", "published")
-      .or(`title.ilike.%${searchQ}%,area.ilike.%${searchQ}%`)
+      .or(`title.ilike.%${safeQ}%,area_slug.ilike.%${safeQ}%`)
       .limit(8);
     setSearchResults(((data as any[]) || []) as CabinCardData[]);
   };

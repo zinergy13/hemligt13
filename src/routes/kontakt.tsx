@@ -19,7 +19,7 @@ export const Route = createFileRoute("/kontakt")({
           name: "Fjällportalen",
           url: "https://fjallportalen.com",
           image: "https://fjallportalen.com/favicon.ico",
-          email: "hej@fjallportalen.com",
+          email: "info@fjallportalen.com",
           priceRange: "$$",
           description:
             "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.",
@@ -68,14 +68,23 @@ function ContactPage() {
 
       <div className="mt-14 grid gap-6 md:grid-cols-3">
         {[
-          { icon: Mail, title: "E-post", value: "hej@stugaisalen.se" },
+          { icon: Mail, title: "E-post", value: "info@fjallportalen.com", href: "mailto:info@fjallportalen.com" },
           { icon: MessageCircle, title: "Chatt", value: "Vardagar 9-17" },
           { icon: MapPin, title: "På plats", value: "Storgatan 12, Åre" },
         ].map((item) => (
           <div key={item.title} className="rounded-2xl bg-background p-6 shadow-[var(--shadow-soft)]">
             <item.icon className="h-6 w-6 text-primary" />
             <h2 className="mt-4 font-serif text-lg text-foreground">{item.title}</h2>
-            <p className="mt-1 text-sm text-muted-foreground">{item.value}</p>
+            {item.href ? (
+              <a
+                href={item.href}
+                className="mt-1 block text-sm text-primary underline-offset-2 hover:underline"
+              >
+                {item.value}
+              </a>
+            ) : (
+              <p className="mt-1 text-sm text-muted-foreground">{item.value}</p>
+            )}
           </div>
         ))}
       </div>

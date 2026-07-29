@@ -61,7 +61,7 @@ function AdminPage() {
       const { data: profs } = await supabase
         .from("public_profiles" as any)
         .select("id, full_name")
-        .in("id", ids);
+        .in("id", ids) as { data: HostInfo[] | null };
       const map: Record<string, HostInfo> = {};
       (profs ?? []).forEach((p) => (map[p.id] = p as HostInfo));
       setHosts(map);

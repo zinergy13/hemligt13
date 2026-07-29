@@ -1,4 +1,5 @@
-import { Outlet, Link, createRootRoute, HeadContent, Scripts } from "@tanstack/react-router";
+import { Outlet, Link, createRootRoute, HeadContent, Scripts, redirect } from "@tanstack/react-router";
+import { isUnlocked } from "../lib/gate.functions";
 import { Header } from "../components/Header";
 import { Footer } from "../components/Footer";
 import { AuthProvider } from "../hooks/useAuth";
@@ -59,6 +60,11 @@ function NotFoundComponent() {
 }
 
 export const Route = createRootRoute({
+  beforeLoad: async ({ location }) => {
+    if (location.pathname.startsWith("/unlock") || location.pathname.startsWith("/api/")) return;
+    const { unlocked } = await isUnlocked();
+    if (!unlocked) throw redirect({ to: "/unlock" });
+  },
   head: () => ({
     meta: [
       { charSet: "utf-8" },

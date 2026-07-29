@@ -24,10 +24,11 @@ type ZoneShape = {
 type ZoneProps = ZoneShape & {
   count: number;
   selected: boolean;
+  index: number;
   onSelect?: (slug: RegionSlug) => void;
 };
 
-function ZoneBody({ d, hitD, cx, cy, label, count, selected }: Omit<ZoneProps, "slug" | "onSelect">) {
+function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneProps, "slug" | "onSelect">) {
   return (
     <g className="cursor-pointer transition-transform duration-300 ease-out group-hover:-translate-y-1 group-focus-visible:-translate-y-1">
       <path
@@ -41,6 +42,24 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected }: Omit<ZoneProps, "
         strokeLinejoin="round"
         style={{ filter: "drop-shadow(0 4px 12px color-mix(in oklab, hsl(var(--primary)) 15%, transparent))" }}
       />
+      {/* Numbered badge that ties the region to the legend */}
+      <g className="pointer-events-none">
+        <circle
+          cx={cx - 78}
+          cy={cy - 22}
+          r={16}
+          className="fill-background stroke-primary"
+          strokeWidth={2}
+        />
+        <text
+          x={cx - 78}
+          y={cy - 17}
+          textAnchor="middle"
+          className="fill-primary text-[15px] font-bold"
+        >
+          {index}
+        </text>
+      </g>
       <text
         x={cx}
         y={cy - 6}
@@ -167,6 +186,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
             {...z}
             count={counts[z.slug] ?? 0}
             selected={selectedSlug === z.slug}
+            index={ZONES.findIndex((zz) => zz.slug === z.slug) + 1}
             onSelect={onSelect}
           />
         ))}
@@ -175,6 +195,60 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
       <p className="mt-6 text-center text-sm text-muted-foreground">
         {helperText ?? defaultHelper}
       </p>
+
+      {/* Region legend - orders regions north to south to mirror the map */}
+      <ol className="mt-4 grid grid-cols-2 gap-2 sm:grid-cols-4">
+        {ZONES.map((z, i) => {
+          const isSelected = selectedSlug === z.slug;
+          const commonClasses =
+            "flex items-center gap-2 rounded-lg border px-3 py-2 text-left text-sm transition-colors";
+          const stateClasses = isSelected
+            ? "border-primary bg-primary/10 text-foreground"
+            : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
+          const inner = (
+            <>
+              <span
+                className={
+                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full text-xs font-bold " +
+                  (isSelected
+                    ? "bg-primary text-primary-foreground"
+                    : "bg-primary/15 text-primary")
+                }
+              >
+                {i + 1}
+              </span>
+              <span className="flex flex-col leading-tight">
+                <span className="font-medium">{z.label}</span>
+                <span className="text-xs text-muted-foreground">
+                  {counts[z.slug] ?? 0} områden
+                </span>
+              </span>
+            </>
+          );
+          return (
+            <li key={z.slug}>
+              {onSelect ? (
+                <button
+                  type="button"
+                  aria-pressed={isSelected}
+                  onClick={() => onSelect(z.slug)}
+                  className={`${commonClasses} ${stateClasses} w-full`}
+                >
+                  {inner}
+                </button>
+              ) : (
+                <Link
+                  to="/region/$slug"
+                  params={{ slug: z.slug }}
+                  className={`${commonClasses} ${stateClasses}`}
+                >
+                  {inner}
+                </Link>
+              )}
+            </li>
+          );
+        })}
+      </ol>
     </div>
   );
 }

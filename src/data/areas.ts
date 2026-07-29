@@ -22,8 +22,12 @@ import trillevallen from "../assets/area-trillevallen.jpg";
 import regionDalafjallen from "../assets/region-dalafjallen.jpg";
 import regionHarjedalen from "../assets/region-harjedalen.jpg";
 import regionJamtland from "../assets/region-jamtland.jpg";
+import regionLappland from "../assets/region-lappland.jpg";
+import tarnaby from "../assets/area-tarnaby.jpg";
+import hemavan from "../assets/area-hemavan.jpg";
+import kittelfjall from "../assets/area-kittelfjall.jpg";
 
-export type RegionSlug = "dalafjallen" | "harjedalen" | "jamtland";
+export type RegionSlug = "dalafjallen" | "harjedalen" | "jamtland" | "lappland";
 
 export type Region = {
   slug: RegionSlug;
@@ -34,6 +38,14 @@ export type Region = {
 };
 
 export const regions: Region[] = [
+  {
+    slug: "lappland",
+    name: "Lapplandsfjällen",
+    tagline: "Tärnaby, Hemavan och Kittelfjäll",
+    description:
+      "Sveriges nordligaste och mest alpina fjäll - Tärnaby, Hemavan och Kittelfjäll. Snösäkert från november till maj, brant off-piste, midnattssol på våren och norrsken över kalfjället i vintermörkret.",
+    image: regionLappland,
+  },
   {
     slug: "dalafjallen",
     name: "Dalafjällen",

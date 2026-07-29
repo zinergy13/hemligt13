@@ -4,6 +4,7 @@ import { SlidersHorizontal, MapPin, Loader2, Search } from "lucide-react";
 import { areas, areasSorted, regions, type RegionSlug } from "@/data/areas";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
+import { SwedenMap } from "@/components/SwedenMap";
 import type { CabinWithImages } from "@/lib/cabins";
 
 type SearchParams = {
@@ -97,6 +98,69 @@ function SearchPage() {
       <div className="mb-8">
         <p className="mb-2 text-sm font-medium uppercase tracking-wider text-primary">Sök i svenska fjällen</p>
         <h1 className="font-serif text-3xl text-foreground md:text-5xl">Hitta din nästa fjällvistelse</h1>
+      </div>
+
+      {/* Map picker + area chips */}
+      <div className="mb-8 grid gap-8 rounded-3xl border border-border bg-background p-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8">
+        <div>
+          <SwedenMap
+            selectedSlug={activeRegion ?? null}
+            onSelect={(slug) =>
+              updateSearch({
+                region: activeRegion === slug ? undefined : slug,
+                omrade: undefined,
+              })
+            }
+            helperText={
+              activeRegion
+                ? "Tryck på regionen igen för att rensa"
+                : "Tryck på en region för att filtrera"
+            }
+          />
+        </div>
+        <div className="min-w-0">
+          <div className="mb-3 flex items-baseline justify-between gap-4">
+            <h2 className="font-serif text-lg text-foreground">
+              {activeRegion
+                ? regions.find((r) => r.slug === activeRegion)?.name
+                : "Alla områden"}
+            </h2>
+            {(activeRegion || search.omrade) && (
+              <button
+                type="button"
+                onClick={() => updateSearch({ region: undefined, omrade: undefined })}
+                className="text-xs font-medium text-muted-foreground underline-offset-2 hover:text-foreground hover:underline"
+              >
+                Visa alla
+              </button>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-2">
+            {areasInRegion.map((a) => {
+              const selected = search.omrade === a.slug;
+              return (
+                <button
+                  key={a.slug}
+                  type="button"
+                  aria-pressed={selected}
+                  onClick={() =>
+                    updateSearch({
+                      omrade: selected ? undefined : a.slug,
+                      region: search.region ?? a.region,
+                    })
+                  }
+                  className={
+                    selected
+                      ? "rounded-full border border-primary bg-primary px-4 py-1.5 text-xs font-medium text-primary-foreground shadow-sm"
+                      : "rounded-full border border-border bg-muted/40 px-4 py-1.5 text-xs font-medium text-foreground transition-colors hover:border-primary/60 hover:bg-primary/10"
+                  }
+                >
+                  {a.name}
+                </button>
+              );
+            })}
+          </div>
+        </div>
       </div>
 
       {/* Filter bar */}

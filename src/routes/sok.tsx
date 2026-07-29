@@ -54,9 +54,6 @@ function SearchPage() {
   const regionHintId = useId();
   const areaSelectId = useId();
   const areaHintId = useId();
-  const areaCount = activeRegion
-    ? areas.filter((a) => a.region === activeRegion).length
-    : areas.length;
   // Marks whether the most recent region/area change came from a keyboard
   // interaction inside the map or legend, so we only auto-focus the status
   // banner in that case (mouse users stay where they clicked).
@@ -67,6 +64,9 @@ function SearchPage() {
   const activeRegion = search.region && regions.some((r) => r.slug === search.region)
     ? (search.region as RegionSlug)
     : undefined;
+  const areaCount = activeRegion
+    ? areas.filter((a) => a.region === activeRegion).length
+    : areas.length;
 
   // Move focus to the status banner when the region/area changes via keyboard
   // inside the map or legend. Skips the change if focus already left that area.

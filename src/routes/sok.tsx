@@ -1,7 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SlidersHorizontal, MapPin, Loader2, Search } from "lucide-react";
-import { areas, regions, type RegionSlug } from "@/data/areas";
+import { areas, areasSorted, regions, type RegionSlug } from "@/data/areas";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import type { CabinWithImages } from "@/lib/cabins";
@@ -51,7 +51,7 @@ function SearchPage() {
   const activeRegion = search.region && regions.some((r) => r.slug === search.region)
     ? (search.region as RegionSlug)
     : undefined;
-  const areasInRegion = activeRegion ? areas.filter((a) => a.region === activeRegion) : areas;
+  const areasInRegion = activeRegion ? areas.filter((a) => a.region === activeRegion) : areasSorted;
   const selectedArea = search.omrade ? areas.find((a) => a.slug === search.omrade) : undefined;
   // If area no longer belongs to region, clear it on next render.
   const areaMismatch = !!(activeRegion && selectedArea && selectedArea.region !== activeRegion);

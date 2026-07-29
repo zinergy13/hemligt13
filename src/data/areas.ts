@@ -22,8 +22,12 @@ import trillevallen from "../assets/area-trillevallen.jpg";
 import regionDalafjallen from "../assets/region-dalafjallen.jpg";
 import regionHarjedalen from "../assets/region-harjedalen.jpg";
 import regionJamtland from "../assets/region-jamtland.jpg";
+import regionLappland from "../assets/region-lappland.jpg";
+import tarnaby from "../assets/area-tarnaby.jpg";
+import hemavan from "../assets/area-hemavan.jpg";
+import kittelfjall from "../assets/area-kittelfjall.jpg";
 
-export type RegionSlug = "dalafjallen" | "harjedalen" | "jamtland";
+export type RegionSlug = "dalafjallen" | "harjedalen" | "jamtland" | "lappland";
 
 export type Region = {
   slug: RegionSlug;
@@ -34,6 +38,14 @@ export type Region = {
 };
 
 export const regions: Region[] = [
+  {
+    slug: "lappland",
+    name: "Lapplandsfjällen",
+    tagline: "Tärnaby, Hemavan och Kittelfjäll",
+    description:
+      "Sveriges nordligaste och mest alpina fjäll - Tärnaby, Hemavan och Kittelfjäll. Snösäkert från november till maj, brant off-piste, midnattssol på våren och norrsken över kalfjället i vintermörkret.",
+    image: regionLappland,
+  },
   {
     slug: "dalafjallen",
     name: "Dalafjällen",
@@ -75,7 +87,10 @@ export type AreaSlug =
   | "rorbacksnas"
   | "idre"
   | "grovelsjon"
-  | "vemdalen"
+  | "vemdalsskalet"
+  | "bjornrike"
+  | "storhogna"
+  | "klovsjo"
   | "funasdalen"
   | "ramundberget"
   | "bruksvallarna"
@@ -84,7 +99,10 @@ export type AreaSlug =
   | "duved"
   | "storlien"
   | "bydalen"
-  | "trillevallen";
+  | "trillevallen"
+  | "tarnaby"
+  | "hemavan"
+  | "kittelfjall";
 
 export type Area = {
   slug: AreaSlug;
@@ -220,15 +238,48 @@ export const areas: Area[] = [
     estimatedListings: 14,
   },
   {
-    slug: "vemdalen",
+    slug: "vemdalsskalet",
     region: "harjedalen",
-    name: "Vemdalen",
-    tagline: "Fyra fjäll, en samlad känsla",
+    name: "Vemdalsskalet",
+    tagline: "Klassikern med breda backar",
     description:
-      "Vemdalen samlar Vemdalsskalet, Björnrike, Storhogna och Klövsjö - perfekt för dig som vill kombinera skidor, lugnare byar och långa vintrar. Snösäkert och familjärt.",
-    highlights: ["Fyra skidområden", "Snösäkert", "Familjevänligt", "Klövsjö-runt"],
+      "Vemdalsskalet är områdets mest välkända skidby med breda familjebackar, ski-in/ski-out-boenden och nära till Björnrike via SkiStar-liftsystemet.",
+    highlights: ["Familjebackar", "Ski-in/ski-out", "SkiStar-liftar", "After-ski"],
     image: vemdalen,
-    estimatedListings: 78,
+    estimatedListings: 42,
+  },
+  {
+    slug: "bjornrike",
+    region: "harjedalen",
+    name: "Björnrike",
+    tagline: "Barnfamiljens favorit i Vemdalen",
+    description:
+      "Björnrike är känt för sina långa, lätta backar och Björnparken - en av Sveriges bästa skidskolor för de allra minsta. Lugnt tempo och nära till Vemdalsskalet.",
+    highlights: ["Barnvänligt", "Skidskola i toppklass", "Långa backar", "Lugn by"],
+    image: vemdalen,
+    estimatedListings: 34,
+  },
+  {
+    slug: "storhogna",
+    region: "harjedalen",
+    name: "Storhogna",
+    tagline: "Rofyllt högfjäll med spa",
+    description:
+      "Storhogna ligger ovanför trädgränsen med öppna vidder, klassiskt högfjällshotell med spa och en lugnare puls än grannarna. Perfekt för vandring och skidturer.",
+    highlights: ["Ovanför trädgränsen", "Spa & högfjällshotell", "Skidturer", "Lugnt tempo"],
+    image: vemdalen,
+    estimatedListings: 22,
+  },
+  {
+    slug: "klovsjo",
+    region: "harjedalen",
+    name: "Klövsjö",
+    tagline: "Sveriges vackraste by",
+    description:
+      "Klövsjö - av många utsedd till Sveriges vackraste by - erbjuder genuina timmergårdar, utsikt över Klövsjön och skidåkning på Klövsjöfjället. Bykänsla i världsklass.",
+    highlights: ["Genuina timmerhus", "Utsikt över sjön", "Klövsjöfjället", "Nära Vemdalsskalet"],
+    image: vemdalen,
+    estimatedListings: 28,
   },
   {
     slug: "funasdalen",
@@ -328,6 +379,39 @@ export const areas: Area[] = [
     highlights: ["Mysig fjällby", "Skogsbackar", "Familjer & vänner", "Nära Undersåkersfjällen"],
     image: trillevallen,
     estimatedListings: 17,
+  },
+  {
+    slug: "tarnaby",
+    region: "lappland",
+    name: "Tärnaby",
+    tagline: "Ingemar Stenmarks hemmaby",
+    description:
+      "Tärnaby är den klassiska lappländska skidbyn - hemort för både Ingemar Stenmark och Anja Pärson. Genuin bykänsla vid Laisan, brant backe med utsikt och stor närhet till Hemavan.",
+    highlights: ["Skidhistoria", "Genuin bykänsla", "Nära Hemavan", "Vidsträckt natur"],
+    image: tarnaby,
+    estimatedListings: 24,
+  },
+  {
+    slug: "hemavan",
+    region: "lappland",
+    name: "Hemavan",
+    tagline: "Kungsledens södra port",
+    description:
+      "Hemavan är porten till Kungsleden och Vindelfjällens naturreservat. Alpint skidsystem, flygplats i byn och snösäker säsong från november till maj. Perfekt för både alpint, längd och topptur.",
+    highlights: ["Kungsleden startar här", "Flygplats i byn", "Snösäkert", "Vindelfjällen"],
+    image: hemavan,
+    estimatedListings: 38,
+  },
+  {
+    slug: "kittelfjall",
+    region: "lappland",
+    name: "Kittelfjäll",
+    tagline: "Sveriges bäst dolda pudergem",
+    description:
+      "Kittelfjäll är Sveriges nordligaste alpina lilljuvel - känd bland invigda för sin extremt snörika säsong, branta off-piste och genuint lugna atmosfär. Här är det puder som räknas.",
+    highlights: ["Off-piste i världsklass", "Djup snö", "Litet & lugnt", "Autentiskt Lappland"],
+    image: kittelfjall,
+    estimatedListings: 12,
   },
 ];
 

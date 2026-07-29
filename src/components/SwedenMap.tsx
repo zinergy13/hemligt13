@@ -123,52 +123,64 @@ export function SwedenMap() {
   return (
     <div className="relative mx-auto w-full max-w-2xl">
       <svg
-        viewBox="0 0 400 620"
+        viewBox="0 0 400 720"
         className="h-auto w-full overflow-visible"
         role="img"
         aria-label="Karta över Sveriges fjällområden"
       >
         {/* Faint Sweden outline */}
         <path
-          d="M170 20 C 220 30, 260 60, 270 110 C 285 160, 305 210, 300 260 C 295 310, 275 360, 260 410 C 245 460, 220 520, 200 570 C 180 585, 160 580, 155 560 C 150 520, 155 480, 140 440 C 120 400, 105 350, 110 300 C 115 250, 125 200, 130 150 C 135 100, 145 50, 170 20 Z"
+          d="M170 20 C 220 30, 260 60, 270 110 C 285 160, 305 210, 300 260 C 295 310, 285 360, 275 410 C 265 460, 250 510, 235 560 C 220 610, 200 660, 185 690 C 170 700, 155 690, 152 670 C 148 630, 150 590, 140 550 C 125 500, 108 450, 105 400 C 102 350, 108 300, 115 250 C 122 200, 130 150, 140 100 C 150 60, 155 30, 170 20 Z"
           className="fill-muted/30 stroke-border"
           strokeWidth={1.5}
         />
 
-        {/* Jämtland - upper (larger, more generous) */}
+        {/* Lapplandsfjällen - top */}
         <Zone
-          slug="jamtland"
-          d="M115 105 C 150 85, 210 90, 250 115 C 270 145, 265 195, 235 220 C 195 240, 145 235, 118 210 C 95 185, 92 135, 115 105 Z"
-          hitD="M100 90 C 145 65, 220 70, 265 105 C 290 140, 285 205, 245 235 C 195 260, 135 255, 105 225 C 78 195, 75 120, 100 90 Z"
+          slug="lappland"
+          d="M130 45 C 165 30, 220 32, 255 55 C 275 80, 268 125, 240 145 C 200 160, 150 155, 125 135 C 105 115, 108 65, 130 45 Z"
+          hitD="M115 30 C 160 10, 230 12, 270 40 C 295 68, 288 140, 250 165 C 200 185, 140 180, 110 155 C 85 130, 82 55, 115 30 Z"
           cx={182}
-          cy={165}
-          label="Jämtland"
-          count={counts.jamtland ?? 0}
+          cy={95}
+          label="Lapplandsfjällen"
+          count={counts.lappland ?? 0}
           calloutSide="right"
         />
 
-        {/* Härjedalen - middle */}
+        {/* Jämtland */}
         <Zone
-          slug="harjedalen"
-          d="M110 250 C 150 232, 215 238, 255 258 C 275 285, 268 328, 238 348 C 195 362, 140 355, 115 330 C 92 305, 88 275, 110 250 Z"
-          hitD="M95 235 C 145 212, 225 218, 270 245 C 295 275, 288 340, 250 365 C 200 385, 130 378, 100 348 C 72 315, 70 260, 95 235 Z"
+          slug="jamtland"
+          d="M115 205 C 150 185, 210 190, 250 215 C 270 245, 265 295, 235 320 C 195 340, 145 335, 118 310 C 95 285, 92 235, 115 205 Z"
+          hitD="M100 190 C 145 165, 220 170, 265 205 C 290 240, 285 305, 245 335 C 195 360, 135 355, 105 325 C 78 295, 75 220, 100 190 Z"
           cx={182}
-          cy={295}
-          label="Härjedalen"
-          count={counts.harjedalen ?? 0}
+          cy={265}
+          label="Jämtland"
+          count={counts.jamtland ?? 0}
           calloutSide="left"
         />
 
-        {/* Dalafjällen - lower */}
+        {/* Härjedalen */}
+        <Zone
+          slug="harjedalen"
+          d="M110 360 C 150 342, 215 348, 255 368 C 275 395, 268 438, 238 458 C 195 472, 140 465, 115 440 C 92 415, 88 385, 110 360 Z"
+          hitD="M95 345 C 145 322, 225 328, 270 355 C 295 385, 288 450, 250 475 C 200 495, 130 488, 100 458 C 72 425, 70 370, 95 345 Z"
+          cx={182}
+          cy={405}
+          label="Härjedalen"
+          count={counts.harjedalen ?? 0}
+          calloutSide="right"
+        />
+
+        {/* Dalafjällen */}
         <Zone
           slug="dalafjallen"
-          d="M105 385 C 150 365, 220 370, 260 390 C 282 420, 275 465, 242 485 C 200 500, 140 495, 115 470 C 90 445, 85 410, 105 385 Z"
-          hitD="M90 370 C 145 345, 230 350, 275 378 C 302 410, 295 480, 255 505 C 205 525, 130 518, 100 488 C 72 455, 68 395, 90 370 Z"
+          d="M105 495 C 150 475, 220 480, 260 500 C 282 530, 275 575, 242 595 C 200 610, 140 605, 115 580 C 90 555, 85 520, 105 495 Z"
+          hitD="M90 480 C 145 455, 230 460, 275 488 C 302 520, 295 590, 255 615 C 205 635, 130 628, 100 598 C 72 565, 68 505, 90 480 Z"
           cx={182}
-          cy={430}
+          cy={540}
           label="Dalafjällen"
           count={counts.dalafjallen ?? 0}
-          calloutSide="right"
+          calloutSide="left"
         />
       </svg>
 

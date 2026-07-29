@@ -65,11 +65,15 @@ function WishlistDetailPage() {
   const doSearch = async (e: FormEvent) => {
     e.preventDefault();
     if (!searchQ.trim()) return;
+    // Sanitize input: strip PostgREST reserved characters that would let a user
+    // inject additional filter clauses into the .or() expression below.
+    const safeQ = searchQ.replace(/[,()*%\\]/g, ' ').trim();
+    if (!safeQ) return;
     const { data } = await supabase
       .from("cabins")
       .select("id, slug, title, area_slug, price_per_night, max_guests, bedrooms, images:cabin_images(url, sort_order)")
       .eq("status", "published")
-      .or(`title.ilike.%${searchQ}%,area.ilike.%${searchQ}%`)
+      .or(`title.ilike.%${safeQ}%,area_slug.ilike.%${safeQ}%`)
       .limit(8);
     setSearchResults(((data as any[]) || []) as CabinCardData[]);
   };

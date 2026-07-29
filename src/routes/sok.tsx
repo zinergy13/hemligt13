@@ -329,24 +329,57 @@ function SearchPage() {
       {/* Filter bar */}
       <div className="mb-8 grid gap-3 rounded-2xl border border-border bg-background p-4 md:grid-cols-[1fr_1fr_auto_auto_auto]">
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Region</label>
+          <label
+            htmlFor={regionSelectId}
+            className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
+          >
+            Region
+          </label>
           <select
+            id={regionSelectId}
             value={search.region ?? ""}
+            aria-describedby={regionHintId}
             onChange={(e) => updateSearch({ region: e.target.value || undefined, omrade: undefined })}
-            className="w-full bg-transparent py-1 text-sm text-foreground outline-none"
+            onKeyDown={(e) => {
+              // Alt+Down/Up open native picker; Escape clears the selection.
+              if (e.key === "Escape" && search.region) {
+                e.preventDefault();
+                updateSearch({ region: undefined, omrade: undefined });
+              }
+            }}
+            className="w-full rounded-md bg-transparent py-1 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <option value="">Alla regioner</option>
             {regions.map((r) => (
               <option key={r.slug} value={r.slug}>{r.name}</option>
             ))}
           </select>
+          <span id={regionHintId} className="sr-only">
+            Använd piltangenterna för att välja region. Tryck Escape för att rensa valet.
+            {activeRegion
+              ? ` Vald region: ${regions.find((r) => r.slug === activeRegion)?.name}.`
+              : " Ingen region vald."}
+          </span>
         </div>
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Område</label>
+          <label
+            htmlFor={areaSelectId}
+            className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground"
+          >
+            Område
+          </label>
           <select
+            id={areaSelectId}
             value={search.omrade ?? ""}
+            aria-describedby={areaHintId}
             onChange={(e) => updateSearch({ omrade: e.target.value || undefined })}
-            className="w-full bg-transparent py-1 text-sm text-foreground outline-none"
+            onKeyDown={(e) => {
+              if (e.key === "Escape" && search.omrade) {
+                e.preventDefault();
+                updateSearch({ omrade: undefined });
+              }
+            }}
+            className="w-full rounded-md bg-transparent py-1 text-sm text-foreground outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           >
             <option value="">Alla områden</option>
             {activeRegion
@@ -361,6 +394,14 @@ function SearchPage() {
                   </optgroup>
                 ))}
           </select>
+          <span id={areaHintId} className="sr-only">
+            {areaCount} områden att välja mellan
+            {activeRegion ? ` i ${regions.find((r) => r.slug === activeRegion)?.name}` : ""}.
+            Använd piltangenterna för att välja. Tryck Escape för att rensa valet.
+            {search.omrade
+              ? ` Valt område: ${areas.find((a) => a.slug === search.omrade)?.name}.`
+              : ""}
+          </span>
         </div>
         <div>
           <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Min. gäster</label>

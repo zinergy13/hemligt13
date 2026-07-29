@@ -1,4 +1,5 @@
 import { Link } from "@tanstack/react-router";
+import { useId, useRef } from "react";
 import { regions, areasByRegion, type RegionSlug } from "@/data/areas";
 
 // Hand-drawn stylized map of northern Sweden with clickable regions.
@@ -26,9 +27,11 @@ type ZoneProps = ZoneShape & {
   selected: boolean;
   index: number;
   onSelect?: (slug: RegionSlug) => void;
+  onArrow?: (direction: 1 | -1) => void;
+  zoneRef?: (el: SVGGElement | null) => void;
 };
 
-function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneProps, "slug" | "onSelect">) {
+function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneProps, "slug" | "onSelect" | "onArrow" | "zoneRef">) {
   return (
     <g className="cursor-pointer transition-transform duration-300 ease-out group-hover:-translate-y-1 group-focus-visible:-translate-y-1">
       <path
@@ -41,6 +44,15 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
         strokeWidth={selected ? 3 : 2.5}
         strokeLinejoin="round"
         style={{ filter: "drop-shadow(0 4px 12px color-mix(in oklab, hsl(var(--primary)) 15%, transparent))" }}
+      />
+      {/* Focus ring - only visible when the region receives keyboard focus */}
+      <path
+        d={d}
+        fill="none"
+        strokeWidth={4}
+        strokeLinejoin="round"
+        strokeDasharray="6 4"
+        className="pointer-events-none stroke-ring opacity-0 group-focus-visible:opacity-100"
       />
       {/* Numbered badge that ties the region to the legend */}
       <g className="pointer-events-none">
@@ -85,22 +97,32 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
 }
 
 function Zone(props: ZoneProps) {
-  const { slug, label, count, onSelect, selected } = props;
+  const { slug, label, count, onSelect, selected, onArrow, zoneRef } = props;
   const ariaLabel = `${label} - ${count} områden${selected ? " (valt)" : ""}`;
 
   if (onSelect) {
     return (
       <g
+        ref={zoneRef}
         role="button"
         tabIndex={0}
         aria-label={ariaLabel}
         aria-pressed={selected}
-        className="group outline-none"
+        aria-keyshortcuts="Enter Space ArrowUp ArrowDown ArrowLeft ArrowRight Home End"
+        className="group outline-none focus:outline-none"
         onClick={() => onSelect(slug)}
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
             onSelect(slug);
+            return;
+          }
+          if (onArrow && (e.key === "ArrowDown" || e.key === "ArrowRight")) {
+            e.preventDefault();
+            onArrow(1);
+          } else if (onArrow && (e.key === "ArrowUp" || e.key === "ArrowLeft")) {
+            e.preventDefault();
+            onArrow(-1);
           }
         }}
       >
@@ -110,7 +132,12 @@ function Zone(props: ZoneProps) {
   }
 
   return (
-    <Link to="/region/$slug" params={{ slug }} className="group outline-none" aria-label={ariaLabel}>
+    <Link
+      to="/region/$slug"
+      params={{ slug }}
+      className="group rounded-md outline-none focus-visible:outline-none"
+      aria-label={ariaLabel}
+    >
       <ZoneBody {...props} />
     </Link>
   );
@@ -161,10 +188,32 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
   const counts: Record<string, number> = Object.fromEntries(
     regions.map((r) => [r.slug, areasByRegion(r.slug).length])
   );
+  const zoneRefs = useRef<Array<SVGGElement | null>>([]);
+  const legendRefs = useRef<Array<HTMLButtonElement | null>>([]);
+  const helperId = useId();
+  const legendLabelId = useId();
 
   const defaultHelper = onSelect
     ? "Tryck på en region för att filtrera resultaten"
     : "Peka eller tryck på en region för att se alla områden och stugor";
+
+  const focusZone = (from: number, dir: 1 | -1) => {
+    const next = (from + dir + ZONES.length) % ZONES.length;
+    zoneRefs.current[next]?.focus();
+  };
+
+  const onLegendKey = (e: React.KeyboardEvent<HTMLButtonElement>, i: number) => {
+    const last = ZONES.length - 1;
+    let target = -1;
+    if (e.key === "ArrowRight" || e.key === "ArrowDown") target = (i + 1) % ZONES.length;
+    else if (e.key === "ArrowLeft" || e.key === "ArrowUp") target = (i - 1 + ZONES.length) % ZONES.length;
+    else if (e.key === "Home") target = 0;
+    else if (e.key === "End") target = last;
+    if (target >= 0) {
+      e.preventDefault();
+      legendRefs.current[target]?.focus();
+    }
+  };
 
   return (
     <div className="relative mx-auto w-full max-w-2xl">
@@ -173,6 +222,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
         className="h-auto w-full overflow-visible"
         role="img"
         aria-label="Karta över Sveriges fjällområden"
+        aria-describedby={helperId}
       >
         <path
           d="M170 20 C 220 30, 260 60, 270 110 C 285 160, 305 210, 300 260 C 295 310, 285 360, 275 410 C 265 460, 250 510, 235 560 C 220 610, 200 660, 185 690 C 170 700, 155 690, 152 670 C 148 630, 150 590, 140 550 C 125 500, 108 450, 105 400 C 102 350, 108 300, 115 250 C 122 200, 130 150, 140 100 C 150 60, 155 30, 170 20 Z"
@@ -180,30 +230,43 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
           strokeWidth={1.5}
         />
 
-        {ZONES.map((z) => (
+        {ZONES.map((z, i) => (
           <Zone
             key={z.slug}
             {...z}
             count={counts[z.slug] ?? 0}
             selected={selectedSlug === z.slug}
-            index={ZONES.findIndex((zz) => zz.slug === z.slug) + 1}
+            index={i + 1}
             onSelect={onSelect}
+            onArrow={onSelect ? (dir) => focusZone(i, dir) : undefined}
+            zoneRef={onSelect ? (el) => { zoneRefs.current[i] = el; } : undefined}
           />
         ))}
       </svg>
 
-      <p className="mt-4 text-center text-xs text-muted-foreground sm:mt-6 sm:text-sm">
+      <p
+        id={helperId}
+        aria-live="polite"
+        className="mt-4 text-center text-xs text-muted-foreground sm:mt-6 sm:text-sm"
+      >
         {helperText ?? defaultHelper}
       </p>
 
+      <h3 id={legendLabelId} className="sr-only">
+        Regioner, från norr till söder
+      </h3>
       {/* Region legend - orders regions north to south to mirror the map.
           Renders as a horizontally scrollable chip row at every width so it
           adapts to both narrow sidebars and full-width hero placements. */}
-      <ol className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mt-4">
+      <ol
+        aria-labelledby={legendLabelId}
+        className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mt-4"
+      >
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;
+          const chipLabel = `${z.label}, ${counts[z.slug] ?? 0} områden${isSelected ? ", valt" : ""}`;
           const commonClasses =
-            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors sm:text-sm";
+            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm";
           const stateClasses = isSelected
             ? "border-primary bg-primary/10 text-foreground"
             : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
@@ -231,8 +294,11 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
             <li key={z.slug} className="shrink-0">
               {onSelect ? (
                 <button
+                  ref={(el) => { legendRefs.current[i] = el; }}
                   type="button"
                   aria-pressed={isSelected}
+                  aria-label={chipLabel}
+                  onKeyDown={(e) => onLegendKey(e, i)}
                   onClick={() => onSelect(z.slug)}
                   className={`${commonClasses} ${stateClasses}`}
                 >
@@ -242,6 +308,8 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
                 <Link
                   to="/region/$slug"
                   params={{ slug: z.slug }}
+                  aria-label={chipLabel}
+                  aria-current={isSelected ? "true" : undefined}
                   className={`${commonClasses} ${stateClasses}`}
                 >
                   {inner}

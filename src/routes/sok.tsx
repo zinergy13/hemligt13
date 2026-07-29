@@ -198,8 +198,9 @@ function SearchPage() {
         <div
           ref={statusRef}
           tabIndex={-1}
-          role="status"
+          role="region"
           aria-live="polite"
+          aria-atomic="true"
           aria-label="Vald region. Tryck Escape för att gå tillbaka till kartan."
           onKeyDown={(e) => {
             if (e.key === "Escape" || e.key === "Enter") {

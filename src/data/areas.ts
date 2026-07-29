@@ -87,7 +87,10 @@ export type AreaSlug =
   | "rorbacksnas"
   | "idre"
   | "grovelsjon"
-  | "vemdalen"
+  | "vemdalsskalet"
+  | "bjornrike"
+  | "storhogna"
+  | "klovsjo"
   | "funasdalen"
   | "ramundberget"
   | "bruksvallarna"
@@ -96,7 +99,10 @@ export type AreaSlug =
   | "duved"
   | "storlien"
   | "bydalen"
-  | "trillevallen";
+  | "trillevallen"
+  | "tarnaby"
+  | "hemavan"
+  | "kittelfjall";
 
 export type Area = {
   slug: AreaSlug;

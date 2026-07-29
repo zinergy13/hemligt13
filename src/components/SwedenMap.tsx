@@ -246,7 +246,6 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
 
       <p
         id={helperId}
-        aria-live="polite"
         className="mt-4 text-center text-xs text-muted-foreground sm:mt-6 sm:text-sm"
       >
         {helperText ?? defaultHelper}

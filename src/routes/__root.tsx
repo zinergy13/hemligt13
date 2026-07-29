@@ -77,6 +77,8 @@ export const Route = createRootRoute({
         rel: "stylesheet",
         href: appCss,
       },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
+      { rel: "apple-touch-icon", href: "/favicon.png" },
       {
         rel: "preconnect",
         href: "https://fonts.googleapis.com",
@@ -97,7 +99,7 @@ export const Route = createRootRoute({
               "@id": "https://fjallportalen.com/#organization",
               name: "Fjällportalen",
               url: "https://fjallportalen.com",
-              logo: "https://fjallportalen.com/favicon.ico",
+              logo: "https://fjallportalen.com/favicon.png",
               description:
                 "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.",
               areaServed: "SE",

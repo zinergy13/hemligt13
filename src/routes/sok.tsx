@@ -293,9 +293,11 @@ function SearchPage() {
 
       {/* Map picker + area chips */}
       <div
+        id="fp-interaktivt-innehall"
         ref={mapWrapRef}
+        tabIndex={-1}
         onKeyDownCapture={handleMapKeyDownCapture}
-        className="mb-8 grid gap-8 rounded-3xl border border-border bg-background p-6 md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8"
+        className="mb-8 scroll-mt-4 grid gap-8 rounded-3xl border border-border bg-background p-6 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8"
       >
         <div>
           <SwedenMap

@@ -52,6 +52,54 @@ function SearchPage() {
   const activeRegion = search.region && regions.some((r) => r.slug === search.region)
     ? (search.region as RegionSlug)
     : undefined;
+
+  // Restore last region/area from localStorage when URL has no filters set.
+  useEffect(() => {
+    if (search.region || search.omrade) return;
+    if (typeof window === "undefined") return;
+    try {
+      const raw = window.localStorage.getItem("fp:lastRegion");
+      if (!raw) return;
+      const saved = JSON.parse(raw) as { region?: string; omrade?: string };
+      const regionOk = saved.region && regions.some((r) => r.slug === saved.region);
+      const areaOk =
+        saved.omrade &&
+        areas.some((a) => a.slug === saved.omrade && (!regionOk || a.region === saved.region));
+      if (regionOk || areaOk) {
+        navigate({
+          to: "/sok",
+          replace: true,
+          search: (prev: SearchParams) => ({
+            ...prev,
+            region: regionOk ? saved.region : prev.region,
+            omrade: areaOk ? saved.omrade : prev.omrade,
+          }),
+        });
+      }
+    } catch {
+      // ignore malformed storage
+    }
+    // Only on mount - subsequent edits should not re-hydrate from storage.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Persist current region/area choice (or clear when the user resets).
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+    try {
+      if (search.region || search.omrade) {
+        window.localStorage.setItem(
+          "fp:lastRegion",
+          JSON.stringify({ region: search.region, omrade: search.omrade }),
+        );
+      } else {
+        window.localStorage.removeItem("fp:lastRegion");
+      }
+    } catch {
+      // storage may be unavailable (private mode / quota)
+    }
+  }, [search.region, search.omrade]);
+
   const areasInRegion = activeRegion ? areas.filter((a) => a.region === activeRegion) : areasSorted;
   const selectedArea = search.omrade ? areas.find((a) => a.slug === search.omrade) : undefined;
   // If area no longer belongs to region, clear it on next render.

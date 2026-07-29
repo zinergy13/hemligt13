@@ -1,12 +1,13 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { SlidersHorizontal, MapPin, Loader2, Search } from "lucide-react";
-import { areas } from "@/data/areas";
+import { areas, regions, type RegionSlug } from "@/data/areas";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import type { CabinWithImages } from "@/lib/cabins";
 
 type SearchParams = {
+  region?: string;
   omrade?: string;
   gaster?: number;
   prismax?: number;
@@ -14,6 +15,7 @@ type SearchParams = {
 
 export const Route = createFileRoute("/sok")({
   validateSearch: (search: Record<string, unknown>): SearchParams => ({
+    region: typeof search.region === "string" ? search.region : undefined,
     omrade: typeof search.omrade === "string" ? search.omrade : undefined,
     gaster: search.gaster ? Number(search.gaster) || undefined : undefined,
     prismax: search.prismax ? Number(search.prismax) || undefined : undefined,
@@ -46,7 +48,19 @@ function SearchPage() {
   const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
   const [loading, setLoading] = useState(true);
 
+  const activeRegion = search.region && regions.some((r) => r.slug === search.region)
+    ? (search.region as RegionSlug)
+    : undefined;
+  const areasInRegion = activeRegion ? areas.filter((a) => a.region === activeRegion) : areas;
+  const selectedArea = search.omrade ? areas.find((a) => a.slug === search.omrade) : undefined;
+  // If area no longer belongs to region, clear it on next render.
+  const areaMismatch = !!(activeRegion && selectedArea && selectedArea.region !== activeRegion);
+
   useEffect(() => {
+    if (areaMismatch) {
+      navigate({ to: "/sok", search: (prev: SearchParams) => ({ ...prev, omrade: undefined }) });
+      return;
+    }
     let active = true;
     setLoading(true);
     (async () => {
@@ -57,6 +71,10 @@ function SearchPage() {
         .order("created_at", { ascending: false });
 
       if (search.omrade) query = query.eq("area_slug", search.omrade);
+      else if (activeRegion) {
+        const slugs = areas.filter((a) => a.region === activeRegion).map((a) => a.slug);
+        query = query.in("area_slug", slugs);
+      }
       if (search.gaster) query = query.gte("max_guests", search.gaster);
       if (search.prismax) query = query.lte("price_per_night", search.prismax);
 
@@ -69,7 +87,7 @@ function SearchPage() {
     return () => {
       active = false;
     };
-  }, [search.omrade, search.gaster, search.prismax]);
+  }, [search.omrade, search.gaster, search.prismax, activeRegion, areaMismatch]);
 
   const updateSearch = (patch: Partial<SearchParams>) =>
     navigate({ to: "/sok", search: (prev: SearchParams) => ({ ...prev, ...patch }) });
@@ -82,7 +100,20 @@ function SearchPage() {
       </div>
 
       {/* Filter bar */}
-      <div className="mb-8 grid gap-3 rounded-2xl border border-border bg-background p-4 md:grid-cols-[1fr_auto_auto_auto]">
+      <div className="mb-8 grid gap-3 rounded-2xl border border-border bg-background p-4 md:grid-cols-[1fr_1fr_auto_auto_auto]">
+        <div>
+          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Region</label>
+          <select
+            value={search.region ?? ""}
+            onChange={(e) => updateSearch({ region: e.target.value || undefined, omrade: undefined })}
+            className="w-full bg-transparent py-1 text-sm text-foreground outline-none"
+          >
+            <option value="">Alla regioner</option>
+            {regions.map((r) => (
+              <option key={r.slug} value={r.slug}>{r.name}</option>
+            ))}
+          </select>
+        </div>
         <div>
           <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Område</label>
           <select
@@ -91,9 +122,17 @@ function SearchPage() {
             className="w-full bg-transparent py-1 text-sm text-foreground outline-none"
           >
             <option value="">Alla områden</option>
-            {areas.map((a) => (
-              <option key={a.slug} value={a.slug}>{a.name}</option>
-            ))}
+            {activeRegion
+              ? areasInRegion.map((a) => (
+                  <option key={a.slug} value={a.slug}>{a.name}</option>
+                ))
+              : regions.map((r) => (
+                  <optgroup key={r.slug} label={r.name}>
+                    {areas.filter((a) => a.region === r.slug).map((a) => (
+                      <option key={a.slug} value={a.slug}>{a.name}</option>
+                    ))}
+                  </optgroup>
+                ))}
           </select>
         </div>
         <div>
@@ -166,9 +205,13 @@ function SearchPage() {
 
       {/* Areas browse */}
       <div className="mt-16">
-        <h2 className="mb-6 font-serif text-2xl text-foreground">Eller bläddra per område</h2>
+        <h2 className="mb-6 font-serif text-2xl text-foreground">
+          {activeRegion
+            ? `Områden i ${regions.find((r) => r.slug === activeRegion)?.name}`
+            : "Eller bläddra per område"}
+        </h2>
         <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-          {areas.map((area) => (
+          {areasInRegion.map((area) => (
             <Link
               key={area.slug}
               to="/omrade/$slug"

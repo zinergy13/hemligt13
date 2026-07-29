@@ -47,9 +47,9 @@ export const cabinReviewsQuery = (cabinId: string) =>
       if (rows.length === 0) return [];
       const guestIds = Array.from(new Set(rows.map((r) => r.guest_id)));
       const { data: profs } = await supabase
-        .from("profiles")
+        .from("public_profiles" as any)
         .select("id, full_name, avatar_url")
-        .in("id", guestIds);
+        .in("id", guestIds) as { data: Array<{ id: string; full_name: string | null; avatar_url: string | null }> | null };
       const map = new Map((profs ?? []).map((p) => [p.id, { full_name: p.full_name, avatar_url: p.avatar_url }]));
       return rows.map((r) => ({ ...r, profiles: map.get(r.guest_id) ?? null }));
     },

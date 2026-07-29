@@ -54,7 +54,7 @@ function WishlistDetailPage() {
     // Load member names
     const memberIds = ((wm as any[]) || []).map((m) => m.user_id);
     if (memberIds.length) {
-      const { data: profs } = await supabase.from("profiles").select("id, full_name").in("id", memberIds);
+      const { data: profs } = await supabase.from("public_profiles" as any).select("id, full_name").in("id", memberIds);
       setMembers(((profs as any[]) || []).map((p) => ({ user_id: p.id, full_name: p.full_name })));
     } else {
       setMembers([]);

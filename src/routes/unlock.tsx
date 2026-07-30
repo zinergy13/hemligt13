@@ -1,7 +1,8 @@
 import { createFileRoute, useRouter } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
 import { useState, type FormEvent } from "react";
-import { Mountain, Lock, Loader2 } from "lucide-react";
+import { Lock, Loader2 } from "lucide-react";
+import logoMark from "@/assets/logo-mark.png";
 import { unlockSite } from "@/lib/gate.functions";
 
 export const Route = createFileRoute("/unlock")({
@@ -46,9 +47,13 @@ function UnlockPage() {
   return (
     <section className="mx-auto flex min-h-[80vh] max-w-md flex-col justify-center px-4 py-16">
       <div className="mb-8 text-center">
-        <div className="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground">
-          <Mountain className="h-6 w-6" />
-        </div>
+        <img
+          src={logoMark}
+          alt="Fjällportalens logotyp"
+          width={1024}
+          height={1024}
+          className="mx-auto mb-4 h-14 w-14 rounded-2xl"
+        />
         <h1 className="font-serif text-3xl text-foreground">Fjällportalen - demoläge</h1>
         <p className="mt-2 text-sm text-muted-foreground">
           Sajten är under uppbyggnad. Ange lösenordet för att fortsätta.

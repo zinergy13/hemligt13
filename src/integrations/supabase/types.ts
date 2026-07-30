@@ -1564,6 +1564,7 @@ export type Database = {
           postal_code: string
         }[]
       }
+      can_manage_cabin_image: { Args: { _name: string }; Returns: boolean }
       complete_past_bookings: { Args: never; Returns: number }
       delete_email: {
         Args: { message_id: number; queue_name: string }

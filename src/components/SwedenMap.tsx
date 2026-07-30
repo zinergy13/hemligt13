@@ -250,7 +250,7 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
           reachable; the old scroll row clipped regions 3 and 4 out of sight. */}
       <ol
         aria-labelledby={legendLabelId}
-        className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:grid-cols-4"
+        className="mt-3 grid grid-cols-2 gap-2 sm:mt-4"
       >
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;

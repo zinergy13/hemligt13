@@ -41,9 +41,8 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
             ? "fill-primary/45 stroke-primary transition-all duration-300"
             : "fill-primary/15 stroke-primary/70 transition-all duration-300 group-hover:fill-primary/35 group-hover:stroke-primary group-focus-visible:fill-primary/35 group-focus-visible:stroke-primary"
         }
-        strokeWidth={selected ? 3 : 2.5}
+        strokeWidth={selected ? 3 : 2}
         strokeLinejoin="round"
-        style={{ filter: "drop-shadow(0 4px 12px color-mix(in oklab, hsl(var(--primary)) 15%, transparent))" }}
       />
       {/* Focus ring - only visible when the region receives keyboard focus */}
       <path
@@ -57,41 +56,41 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
       {/* Numbered badge that ties the region to the legend */}
       <g className="pointer-events-none">
         <circle
-          cx={cx - 78}
-          cy={cy - 22}
-          r={16}
+          cx={cx - 96}
+          cy={cy - 4}
+          r={15}
           className="fill-background stroke-primary"
           strokeWidth={2}
         />
         <text
-          x={cx - 78}
-          y={cy - 17}
+          x={cx - 96}
+          y={cy + 1}
           textAnchor="middle"
-          className="fill-primary text-[15px] font-bold"
+          className="fill-primary text-[14px] font-bold"
         >
           {index}
         </text>
       </g>
       <text
-        x={cx}
-        y={cy - 6}
+        x={cx + 10}
+        y={cy}
         textAnchor="middle"
-        className="pointer-events-none fill-foreground font-serif text-[22px] font-semibold"
-        style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 5 }}
+        className="pointer-events-none fill-foreground font-serif text-[19px] font-semibold"
+        style={{ paintOrder: "stroke", stroke: "var(--background)", strokeWidth: 5 }}
       >
         {label}
       </text>
       <text
-        x={cx}
-        y={cy + 14}
+        x={cx + 10}
+        y={cy + 20}
         textAnchor="middle"
-        className="pointer-events-none fill-muted-foreground text-[12px] font-medium"
-        style={{ paintOrder: "stroke", stroke: "hsl(var(--background))", strokeWidth: 4 }}
+        className="pointer-events-none fill-muted-foreground text-[13px] font-medium"
+        style={{ paintOrder: "stroke", stroke: "var(--background)", strokeWidth: 4 }}
       >
         {count} områden
       </text>
       {/* Oversized transparent hit path - must come LAST so it captures pointer events */}
-      <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={40} strokeLinejoin="round" />
+      <path d={hitD} fill="transparent" stroke="transparent" strokeWidth={24} strokeLinejoin="round" />
     </g>
   );
 }
@@ -143,39 +142,31 @@ function Zone(props: ZoneProps) {
   );
 }
 
+// Blob geometry is generated from a single center line so every region gets
+// the same generous width (x 96 -> 344 in a 440-wide viewBox). That width is
+// what lets the longest label, "Lapplandsfjällen", sit inside its shape at
+// every screen size instead of spilling out the sides.
+const blob = (cy: number, pad = 0) =>
+  `M${116 - pad} ${cy - 46 - pad} ` +
+  `C ${158 - pad} ${cy - 74 - pad}, ${284 + pad} ${cy - 74 - pad}, ${324 + pad} ${cy - 44 - pad} ` +
+  `C ${350 + pad} ${cy - 14 - pad}, ${342 + pad} ${cy + 44 + pad}, ${300 + pad} ${cy + 62 + pad} ` +
+  `C ${250} ${cy + 78 + pad}, ${168 - pad} ${cy + 76 + pad}, ${132 - pad} ${cy + 58 + pad} ` +
+  `C ${98 - pad} ${cy + 40 + pad}, ${92 - pad} ${cy - 22 - pad}, ${116 - pad} ${cy - 46 - pad} Z`;
+
+const zone = (slug: RegionSlug, label: string, cy: number): ZoneShape => ({
+  slug,
+  label,
+  cx: 220,
+  cy,
+  d: blob(cy),
+  hitD: blob(cy, 8),
+});
+
 const ZONES: ZoneShape[] = [
-  {
-    slug: "lappland",
-    d: "M130 45 C 165 30, 220 32, 255 55 C 275 80, 268 125, 240 145 C 200 160, 150 155, 125 135 C 105 115, 108 65, 130 45 Z",
-    hitD: "M115 30 C 160 10, 230 12, 270 40 C 295 68, 288 140, 250 165 C 200 185, 140 180, 110 155 C 85 130, 82 55, 115 30 Z",
-    cx: 182,
-    cy: 95,
-    label: "Lapplandsfjällen",
-  },
-  {
-    slug: "jamtland",
-    d: "M115 205 C 150 185, 210 190, 250 215 C 270 245, 265 295, 235 320 C 195 340, 145 335, 118 310 C 95 285, 92 235, 115 205 Z",
-    hitD: "M100 190 C 145 165, 220 170, 265 205 C 290 240, 285 305, 245 335 C 195 360, 135 355, 105 325 C 78 295, 75 220, 100 190 Z",
-    cx: 182,
-    cy: 265,
-    label: "Jämtland",
-  },
-  {
-    slug: "harjedalen",
-    d: "M110 360 C 150 342, 215 348, 255 368 C 275 395, 268 438, 238 458 C 195 472, 140 465, 115 440 C 92 415, 88 385, 110 360 Z",
-    hitD: "M95 345 C 145 322, 225 328, 270 355 C 295 385, 288 450, 250 475 C 200 495, 130 488, 100 458 C 72 425, 70 370, 95 345 Z",
-    cx: 182,
-    cy: 405,
-    label: "Härjedalen",
-  },
-  {
-    slug: "dalafjallen",
-    d: "M105 495 C 150 475, 220 480, 260 500 C 282 530, 275 575, 242 595 C 200 610, 140 605, 115 580 C 90 555, 85 520, 105 495 Z",
-    hitD: "M90 480 C 145 455, 230 460, 275 488 C 302 520, 295 590, 255 615 C 205 635, 130 628, 100 598 C 72 565, 68 505, 90 480 Z",
-    cx: 182,
-    cy: 540,
-    label: "Dalafjällen",
-  },
+  zone("lappland", "Lapplandsfjällen", 108),
+  zone("jamtland", "Jämtland", 268),
+  zone("harjedalen", "Härjedalen", 428),
+  zone("dalafjallen", "Dalafjällen", 588),
 ];
 
 export type SwedenMapProps = {
@@ -216,16 +207,16 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl">
+    <div className="relative mx-auto w-full min-w-0 max-w-xl">
       <svg
-        viewBox="0 0 400 720"
-        className="h-auto w-full overflow-visible"
+        viewBox="0 0 440 700"
+        className="mx-auto block h-auto w-full max-w-[440px]"
         role="img"
         aria-label="Karta över Sveriges fjällområden"
         aria-describedby={helperId}
       >
         <path
-          d="M170 20 C 220 30, 260 60, 270 110 C 285 160, 305 210, 300 260 C 295 310, 285 360, 275 410 C 265 460, 250 510, 235 560 C 220 610, 200 660, 185 690 C 170 700, 155 690, 152 670 C 148 630, 150 590, 140 550 C 125 500, 108 450, 105 400 C 102 350, 108 300, 115 250 C 122 200, 130 150, 140 100 C 150 60, 155 30, 170 20 Z"
+          d="M218 12 C 280 20, 336 56, 354 118 C 374 188, 388 256, 380 326 C 372 398, 352 468, 334 536 C 318 600, 292 656, 266 684 C 246 698, 226 692, 220 672 C 210 626, 204 580, 188 536 C 162 466, 122 396, 110 326 C 98 256, 100 186, 112 124 C 124 62, 162 20, 218 12 Z"
           className="fill-muted/30 stroke-border"
           strokeWidth={1.5}
         />
@@ -255,17 +246,17 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
         Regioner, från norr till söder
       </h3>
       {/* Region legend - orders regions north to south to mirror the map.
-          Renders as a horizontally scrollable chip row at every width so it
-          adapts to both narrow sidebars and full-width hero placements. */}
+          A wrapping grid (2 columns on phones, 4 from sm up) keeps every chip
+          reachable; the old scroll row clipped regions 3 and 4 out of sight. */}
       <ol
         aria-labelledby={legendLabelId}
-        className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mt-4"
+        className="mt-3 grid grid-cols-2 gap-2 sm:mt-4"
       >
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;
           const chipLabel = `${z.label}, ${counts[z.slug] ?? 0} områden${isSelected ? ", valt" : ""}`;
           const commonClasses =
-            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm";
+            "flex h-full w-full min-w-0 items-center gap-2 rounded-2xl border px-3 py-2 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
           const stateClasses = isSelected
             ? "border-primary bg-primary/10 text-foreground"
             : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
@@ -281,16 +272,16 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
               >
                 {i + 1}
               </span>
-              <span className="flex items-baseline gap-1 leading-tight">
-                <span className="font-medium">{z.label}</span>
-                <span className="text-[11px] text-muted-foreground sm:text-xs">
-                  ({counts[z.slug] ?? 0})
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate font-medium">{z.label}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  {counts[z.slug] ?? 0} områden
                 </span>
               </span>
             </>
           );
           return (
-            <li key={z.slug} className="shrink-0">
+            <li key={z.slug} className="min-w-0">
               {onSelect ? (
                 <button
                   ref={(el) => { legendRefs.current[i] = el; }}

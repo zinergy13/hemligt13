@@ -117,9 +117,11 @@ function HomePage() {
           </p>
         </div>
 
-        <div className="grid gap-12 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-          <SwedenMap />
-          <div className="grid gap-4">
+        <div className="grid grid-cols-1 gap-12 lg:grid-cols-[minmax(0,1fr)_minmax(0,1.1fr)] lg:items-center">
+          <div className="min-w-0">
+            <SwedenMap />
+          </div>
+          <div className="grid min-w-0 gap-4">
             {regions.map((r) => (
               <Link
                 key={r.slug}

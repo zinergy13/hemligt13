@@ -56,14 +56,14 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
       {/* Numbered badge that ties the region to the legend */}
       <g className="pointer-events-none">
         <circle
-          cx={cx - 88}
+          cx={cx - 96}
           cy={cy - 4}
           r={15}
           className="fill-background stroke-primary"
           strokeWidth={2}
         />
         <text
-          x={cx - 88}
+          x={cx - 96}
           y={cy + 1}
           textAnchor="middle"
           className="fill-primary text-[14px] font-bold"
@@ -72,7 +72,7 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
         </text>
       </g>
       <text
-        x={cx}
+        x={cx + 10}
         y={cy}
         textAnchor="middle"
         className="pointer-events-none fill-foreground font-serif text-[19px] font-semibold"
@@ -81,7 +81,7 @@ function ZoneBody({ d, hitD, cx, cy, label, count, selected, index }: Omit<ZoneP
         {label}
       </text>
       <text
-        x={cx}
+        x={cx + 10}
         y={cy + 20}
         textAnchor="middle"
         className="pointer-events-none fill-muted-foreground text-[13px] font-medium"

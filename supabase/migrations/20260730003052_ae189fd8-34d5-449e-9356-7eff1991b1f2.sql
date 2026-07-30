@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Profiles: public can read basic fields" ON public.profiles;

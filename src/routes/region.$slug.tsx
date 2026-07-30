@@ -11,13 +11,17 @@ export const Route = createFileRoute("/region/$slug")({
   head: ({ loaderData }) => {
     const region = loaderData?.region;
     if (!region) return { meta: [{ title: "Region - Fjällportalen" }] };
-    const url = `https://klappen-fjall-share.lovable.app/region/${region.slug}`;
+    const url = `https://fjallportalen.com/region/${region.slug}`;
+    const shortDescription =
+      region.description.length > 150
+        ? `${region.description.slice(0, 147).trimEnd()}...`
+        : region.description;
     return {
       meta: [
         { title: `Stugor i ${region.name} - Fjällportalen` },
-        { name: "description", content: `${region.tagline}. ${region.description}` },
+        { name: "description", content: shortDescription },
         { property: "og:title", content: `Stugor i ${region.name} - Fjällportalen` },
-        { property: "og:description", content: region.description },
+        { property: "og:description", content: shortDescription },
         { property: "og:image", content: region.image },
         { property: "og:url", content: url },
         { property: "og:type", content: "website" },

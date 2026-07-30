@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import type {} from "@tanstack/react-start";
 import { regions, areas } from "@/data/areas";
 
-const BASE_URL = "https://klappen-fjall-share.lovable.app";
+const BASE_URL = "https://fjallportalen.com";
 
 interface SitemapEntry {
   path: string;
@@ -21,6 +21,7 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/hyr-ut", changefreq: "monthly", priority: "0.7" },
           { path: "/om-oss", changefreq: "monthly", priority: "0.5" },
           { path: "/kontakt", changefreq: "monthly", priority: "0.5" },
+          { path: "/listor", changefreq: "weekly", priority: "0.6" },
           ...regions.map((r) => ({
             path: `/region/${r.slug}`,
             changefreq: "weekly" as const,

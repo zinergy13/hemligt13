@@ -142,39 +142,31 @@ function Zone(props: ZoneProps) {
   );
 }
 
+// Blob geometry is generated from a single center line so every region gets
+// the same generous width (x 96 -> 344 in a 440-wide viewBox). That width is
+// what lets the longest label, "Lapplandsfjällen", sit inside its shape at
+// every screen size instead of spilling out the sides.
+const blob = (cy: number, pad = 0) =>
+  `M${116 - pad} ${cy - 46 - pad} ` +
+  `C ${158 - pad} ${cy - 74 - pad}, ${284 + pad} ${cy - 74 - pad}, ${324 + pad} ${cy - 44 - pad} ` +
+  `C ${350 + pad} ${cy - 14 - pad}, ${342 + pad} ${cy + 44 + pad}, ${300 + pad} ${cy + 62 + pad} ` +
+  `C ${250} ${cy + 78 + pad}, ${168 - pad} ${cy + 76 + pad}, ${132 - pad} ${cy + 58 + pad} ` +
+  `C ${98 - pad} ${cy + 40 + pad}, ${92 - pad} ${cy - 22 - pad}, ${116 - pad} ${cy - 46 - pad} Z`;
+
+const zone = (slug: RegionSlug, label: string, cy: number): ZoneShape => ({
+  slug,
+  label,
+  cx: 220,
+  cy,
+  d: blob(cy),
+  hitD: blob(cy, 8),
+});
+
 const ZONES: ZoneShape[] = [
-  {
-    slug: "lappland",
-    d: "M130 45 C 165 30, 220 32, 255 55 C 275 80, 268 125, 240 145 C 200 160, 150 155, 125 135 C 105 115, 108 65, 130 45 Z",
-    hitD: "M115 30 C 160 10, 230 12, 270 40 C 295 68, 288 140, 250 165 C 200 185, 140 180, 110 155 C 85 130, 82 55, 115 30 Z",
-    cx: 182,
-    cy: 95,
-    label: "Lapplandsfjällen",
-  },
-  {
-    slug: "jamtland",
-    d: "M115 205 C 150 185, 210 190, 250 215 C 270 245, 265 295, 235 320 C 195 340, 145 335, 118 310 C 95 285, 92 235, 115 205 Z",
-    hitD: "M100 190 C 145 165, 220 170, 265 205 C 290 240, 285 305, 245 335 C 195 360, 135 355, 105 325 C 78 295, 75 220, 100 190 Z",
-    cx: 182,
-    cy: 265,
-    label: "Jämtland",
-  },
-  {
-    slug: "harjedalen",
-    d: "M110 360 C 150 342, 215 348, 255 368 C 275 395, 268 438, 238 458 C 195 472, 140 465, 115 440 C 92 415, 88 385, 110 360 Z",
-    hitD: "M95 345 C 145 322, 225 328, 270 355 C 295 385, 288 450, 250 475 C 200 495, 130 488, 100 458 C 72 425, 70 370, 95 345 Z",
-    cx: 182,
-    cy: 405,
-    label: "Härjedalen",
-  },
-  {
-    slug: "dalafjallen",
-    d: "M105 495 C 150 475, 220 480, 260 500 C 282 530, 275 575, 242 595 C 200 610, 140 605, 115 580 C 90 555, 85 520, 105 495 Z",
-    hitD: "M90 480 C 145 455, 230 460, 275 488 C 302 520, 295 590, 255 615 C 205 635, 130 628, 100 598 C 72 565, 68 505, 90 480 Z",
-    cx: 182,
-    cy: 540,
-    label: "Dalafjällen",
-  },
+  zone("lappland", "Lapplandsfjällen", 108),
+  zone("jamtland", "Jämtland", 268),
+  zone("harjedalen", "Härjedalen", 428),
+  zone("dalafjallen", "Dalafjällen", 588),
 ];
 
 export type SwedenMapProps = {

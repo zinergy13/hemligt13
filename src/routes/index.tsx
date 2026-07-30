@@ -10,11 +10,12 @@ export const Route = createFileRoute("/")({
   head: () => ({
     meta: [
       { title: "Fjällportalen - Hyr stuga i svenska fjällen" },
-      { name: "description", content: "Sveriges samlade plats för stuguthyrning. Sök stugor och lägenheter i Sälen, Åre, Vemdalen, Idre, Funäsdalen och hela svenska fjällkedjan - med trygg betalning via Fjällportalen." },
+      { name: "description", content: "Hyr stuga i svenska fjällen - Sälen, Åre, Vemdalen, Idre och Funäsdalen. Trygg betalning och lokala värdar via Fjällportalen." },
       { property: "og:title", content: "Fjällportalen - Hyr stuga i svenska fjällen" },
       { property: "og:description", content: "Från Sälen till Åre - Sveriges samlade plats där värd möter gäst, med trygg betalning och lokal förankring." },
     ],
     links: [
+      { rel: "canonical", href: "https://fjallportalen.com/" },
       { rel: "preload", as: "image", href: heroCabin, fetchpriority: "high" },
     ],
   }),

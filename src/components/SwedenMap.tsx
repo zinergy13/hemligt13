@@ -207,16 +207,16 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
   };
 
   return (
-    <div className="relative mx-auto w-full max-w-2xl">
+    <div className="relative mx-auto w-full min-w-0 max-w-xl">
       <svg
-        viewBox="0 0 400 720"
-        className="h-auto w-full overflow-visible"
+        viewBox="0 0 440 700"
+        className="mx-auto block h-auto w-full max-w-[440px]"
         role="img"
         aria-label="Karta över Sveriges fjällområden"
         aria-describedby={helperId}
       >
         <path
-          d="M170 20 C 220 30, 260 60, 270 110 C 285 160, 305 210, 300 260 C 295 310, 285 360, 275 410 C 265 460, 250 510, 235 560 C 220 610, 200 660, 185 690 C 170 700, 155 690, 152 670 C 148 630, 150 590, 140 550 C 125 500, 108 450, 105 400 C 102 350, 108 300, 115 250 C 122 200, 130 150, 140 100 C 150 60, 155 30, 170 20 Z"
+          d="M218 12 C 280 20, 336 56, 354 118 C 374 188, 388 256, 380 326 C 372 398, 352 468, 334 536 C 318 600, 292 656, 266 684 C 246 698, 226 692, 220 672 C 210 626, 204 580, 188 536 C 162 466, 122 396, 110 326 C 98 256, 100 186, 112 124 C 124 62, 162 20, 218 12 Z"
           className="fill-muted/30 stroke-border"
           strokeWidth={1.5}
         />

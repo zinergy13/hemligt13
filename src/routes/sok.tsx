@@ -54,6 +54,8 @@ function SearchPage() {
   const regionHintId = useId();
   const areaSelectId = useId();
   const areaHintId = useId();
+  const guestsInputId = useId();
+  const priceInputId = useId();
   // Marks whether the most recent region/area change came from a keyboard
   // interaction inside the map or legend, so we only auto-focus the status
   // banner in that case (mouse users stay where they clicked).
@@ -438,8 +440,9 @@ function SearchPage() {
           </span>
         </div>
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Min. gäster</label>
+          <label htmlFor={guestsInputId} className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Min. gäster</label>
           <input
+            id={guestsInputId}
             type="number"
             min={1}
             value={search.gaster ?? ""}
@@ -449,8 +452,9 @@ function SearchPage() {
           />
         </div>
         <div>
-          <label className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Max pris/natt</label>
+          <label htmlFor={priceInputId} className="block text-[10px] font-medium uppercase tracking-wide text-muted-foreground">Max pris/natt</label>
           <input
+            id={priceInputId}
             type="number"
             min={0}
             step={500}
@@ -521,7 +525,7 @@ function SearchPage() {
               className="group overflow-hidden rounded-xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5"
             >
               <div className="aspect-[4/3] overflow-hidden">
-                <img src={area.image} alt={area.name} loading="lazy" width={1024} height={768} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={area.image} alt={`Vintervy över fjällområdet ${area.name}`} loading="lazy" width={1024} height={768} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
               <div className="p-4">
                 <h3 className="font-serif text-lg text-foreground">{area.name}</h3>

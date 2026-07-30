@@ -11,4 +11,4 @@ Disallow: /logga-in
 Disallow: /aterstall-losenord
 Disallow: /api/
 
-Sitemap: https://klappen-fjall-share.lovable.app/sitemap.xml
+Sitemap: https://fjallportalen.com/sitemap.xml

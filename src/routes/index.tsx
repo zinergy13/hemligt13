@@ -133,7 +133,7 @@ function HomePage() {
                 <div className="aspect-[16/7] overflow-hidden">
                   <img
                     src={r.image}
-                    alt={r.name}
+                    alt={`Vinterlandskap i ${r.name} - fjällregion i Sverige`}
                     loading="lazy"
                     width={1920}
                     height={1080}

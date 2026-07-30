@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "Reviews are public" ON public.reviews;

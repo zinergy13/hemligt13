@@ -246,17 +246,17 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
         Regioner, från norr till söder
       </h3>
       {/* Region legend - orders regions north to south to mirror the map.
-          Renders as a horizontally scrollable chip row at every width so it
-          adapts to both narrow sidebars and full-width hero placements. */}
+          A wrapping grid (2 columns on phones, 4 from sm up) keeps every chip
+          reachable; the old scroll row clipped regions 3 and 4 out of sight. */}
       <ol
         aria-labelledby={legendLabelId}
-        className="mt-3 -mx-2 flex snap-x snap-mandatory gap-2 overflow-x-auto px-2 pb-1 sm:mt-4"
+        className="mt-3 grid grid-cols-2 gap-2 sm:mt-4 sm:grid-cols-4"
       >
         {ZONES.map((z, i) => {
           const isSelected = selectedSlug === z.slug;
           const chipLabel = `${z.label}, ${counts[z.slug] ?? 0} områden${isSelected ? ", valt" : ""}`;
           const commonClasses =
-            "flex shrink-0 snap-start items-center gap-2 rounded-full border px-3 py-1.5 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:text-sm";
+            "flex h-full w-full min-w-0 items-center gap-2 rounded-2xl border px-3 py-2 text-left text-xs transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background";
           const stateClasses = isSelected
             ? "border-primary bg-primary/10 text-foreground"
             : "border-border bg-background/60 text-foreground hover:border-primary/60 hover:bg-primary/5";
@@ -272,16 +272,16 @@ export function SwedenMap({ selectedSlug, onSelect, helperText }: SwedenMapProps
               >
                 {i + 1}
               </span>
-              <span className="flex items-baseline gap-1 leading-tight">
-                <span className="font-medium">{z.label}</span>
-                <span className="text-[11px] text-muted-foreground sm:text-xs">
-                  ({counts[z.slug] ?? 0})
+              <span className="flex min-w-0 flex-col leading-tight">
+                <span className="truncate font-medium">{z.label}</span>
+                <span className="text-[11px] text-muted-foreground">
+                  {counts[z.slug] ?? 0} områden
                 </span>
               </span>
             </>
           );
           return (
-            <li key={z.slug} className="shrink-0">
+            <li key={z.slug} className="min-w-0">
               {onSelect ? (
                 <button
                   ref={(el) => { legendRefs.current[i] = el; }}

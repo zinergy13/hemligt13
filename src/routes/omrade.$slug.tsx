@@ -171,7 +171,7 @@ function AreaPage() {
           {others.map((o) => (
             <Link key={o.slug} to="/omrade/$slug" params={{ slug: o.slug }} className="group overflow-hidden rounded-xl bg-background shadow-[var(--shadow-soft)] transition-transform hover:-translate-y-0.5">
               <div className="aspect-[4/3] overflow-hidden">
-                <img src={o.image} alt={o.name} loading="lazy" width={1024} height={768} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
+                <img src={o.image} alt={`Vintervy över fjällområdet ${o.name}`} loading="lazy" width={1024} height={768} className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105" />
               </div>
               <div className="p-4">
                 <h3 className="font-serif text-lg text-foreground">{o.name}</h3>

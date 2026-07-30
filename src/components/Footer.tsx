@@ -1,6 +1,6 @@
 import { Link } from "@tanstack/react-router";
-import { Mountain } from "lucide-react";
 import { regions, areasByRegion } from "@/data/areas";
+import logoMark from "@/assets/logo-mark.png";
 
 export function Footer() {
   return (
@@ -9,9 +9,14 @@ export function Footer() {
         <div className="grid gap-12 md:grid-cols-5">
           <div className="md:col-span-1">
             <Link to="/" className="flex items-center gap-2 font-serif text-xl font-semibold">
-              <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-                <Mountain className="h-5 w-5" />
-              </span>
+              <img
+                src={logoMark}
+                alt="Fjällportalens logotyp"
+                loading="lazy"
+                width={1024}
+                height={1024}
+                className="h-9 w-9 rounded-xl"
+              />
               <span>Fjällportalen</span>
             </Link>
             <p className="mt-4 text-sm leading-relaxed text-secondary-foreground/75">

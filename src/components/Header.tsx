@@ -1,6 +1,7 @@
 import { Link, useNavigate } from "@tanstack/react-router";
-import { Mountain, Menu, X, User as UserIcon, LogOut, Home, Calendar } from "lucide-react";
+import { Menu, X, User as UserIcon, LogOut, Home, Calendar } from "lucide-react";
 import { useState } from "react";
+import logoMark from "@/assets/logo-mark.png";
 import { useAuth } from "@/hooks/useAuth";
 import { toast } from "sonner";
 import { NotificationBell } from "@/components/NotificationBell";
@@ -37,9 +38,13 @@ export function Header() {
     <header className="sticky top-0 z-40 w-full border-b border-border/60 bg-background/85 backdrop-blur-md">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 md:px-6">
         <Link to="/" className="flex items-center gap-2 font-serif text-xl font-semibold text-foreground">
-          <span className="flex h-9 w-9 items-center justify-center rounded-full bg-primary text-primary-foreground">
-            <Mountain className="h-5 w-5" />
-          </span>
+          <img
+            src={logoMark}
+            alt="Fjällportalens logotyp"
+            width={1024}
+            height={1024}
+            className="h-9 w-9 rounded-xl"
+          />
           <span>Fjällportalen</span>
         </Link>
 

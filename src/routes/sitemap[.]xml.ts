@@ -22,7 +22,6 @@ export const Route = createFileRoute("/sitemap.xml")({
           { path: "/om-oss", changefreq: "monthly", priority: "0.5" },
           { path: "/kontakt", changefreq: "monthly", priority: "0.5" },
           { path: "/listor", changefreq: "weekly", priority: "0.6" },
-          { path: "/logga-in", changefreq: "yearly", priority: "0.3" },
           ...regions.map((r) => ({
             path: `/region/${r.slug}`,
             changefreq: "weekly" as const,

@@ -297,9 +297,9 @@ function SearchPage() {
         ref={mapWrapRef}
         tabIndex={-1}
         onKeyDownCapture={handleMapKeyDownCapture}
-        className="mb-8 scroll-mt-4 grid gap-8 rounded-3xl border border-border bg-background p-6 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background md:grid-cols-[minmax(0,320px)_1fr] md:items-start md:p-8"
+        className="mb-8 scroll-mt-4 grid grid-cols-1 gap-8 rounded-3xl border border-border bg-background p-4 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:p-6 md:grid-cols-[minmax(0,340px)_minmax(0,1fr)] md:items-start md:p-8"
       >
-        <div>
+        <div className="min-w-0">
           <SwedenMap
             selectedSlug={activeRegion ?? null}
             onSelect={(slug) =>

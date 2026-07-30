@@ -9,12 +9,34 @@ import { FavoriteButton } from "@/components/FavoriteButton";
 import { ReviewsSection } from "@/components/ReviewsSection";
 
 export const Route = createFileRoute("/stuga/$slug")({
-  head: ({ params }) => ({
-    meta: [
-      { title: `Stuga - Fjällportalen` },
-      { name: "description", content: `Stuga ${params.slug} - boka tryggt via Fjällportalen med utbetalning till värden 24 timmar efter incheckning.` },
-    ],
-    scripts: [
+  loader: async ({ params }) => {
+    const { data } = await supabase
+      .from("cabins")
+      .select("title, description, price_per_night, cabin_images(url, is_cover, sort_order)")
+      .eq("slug", params.slug)
+      .eq("status", "published")
+      .maybeSingle();
+    if (!data) return { seo: null };
+    const images = (data.cabin_images ?? []) as { url: string; is_cover: boolean | null }[];
+    const cover = images.find((i) => i.is_cover)?.url ?? images[0]?.url ?? null;
+    const raw = (data.description ?? "").replace(/\s+/g, " ").trim();
+    return {
+      seo: {
+        title: data.title as string,
+        description: raw.length > 150 ? `${raw.slice(0, 147).trimEnd()}...` : raw,
+        image: cover,
+        price: data.price_per_night as number | null,
+      },
+    };
+  },
+  head: ({ params, loaderData }) => {
+    const seo = loaderData?.seo ?? null;
+    const url = `https://fjallportalen.com/stuga/${params.slug}`;
+    const title = seo ? `${seo.title} - Fjällportalen` : "Stuga - Fjällportalen";
+    const description = seo?.description
+      ? seo.description
+      : `Boka stuga tryggt via Fjällportalen - utbetalning till värden 24 timmar efter incheckning.`;
+    const scripts: Array<{ type: string; children: string }> = [
       {
         type: "application/ld+json",
         children: JSON.stringify({
@@ -23,12 +45,55 @@ export const Route = createFileRoute("/stuga/$slug")({
           itemListElement: [
             { "@type": "ListItem", position: 1, name: "Hem", item: "https://fjallportalen.com/" },
             { "@type": "ListItem", position: 2, name: "Sök", item: "https://fjallportalen.com/sok" },
-            { "@type": "ListItem", position: 3, name: "Stuga", item: `https://fjallportalen.com/stuga/${params.slug}` },
+            { "@type": "ListItem", position: 3, name: seo?.title ?? "Stuga", item: url },
           ],
         }),
       },
-    ],
-  }),
+    ];
+    if (seo) {
+      scripts.push({
+        type: "application/ld+json",
+        children: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Accommodation",
+          name: seo.title,
+          description: seo.description,
+          url,
+          ...(seo.image ? { image: seo.image } : {}),
+          ...(seo.price
+            ? {
+                offers: {
+                  "@type": "Offer",
+                  price: seo.price,
+                  priceCurrency: "SEK",
+                  availability: "https://schema.org/InStock",
+                  url,
+                },
+              }
+            : {}),
+        }),
+      });
+    }
+    return {
+      meta: [
+        { title },
+        { name: "description", content: description },
+        { property: "og:title", content: title },
+        { property: "og:description", content: description },
+        { property: "og:type", content: "website" },
+        { property: "og:url", content: url },
+        { name: "twitter:card", content: "summary_large_image" },
+        ...(seo?.image && seo.image.startsWith("https://")
+          ? [
+              { property: "og:image", content: seo.image },
+              { name: "twitter:image", content: seo.image },
+            ]
+          : []),
+      ],
+      links: [{ rel: "canonical", href: url }],
+      scripts,
+    };
+  },
   notFoundComponent: () => (
     <div className="mx-auto max-w-2xl px-4 py-24 text-center">
       <h1 className="font-serif text-4xl text-foreground">Stugan hittades inte</h1>

@@ -2,7 +2,8 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AlertTriangle, Globe, ImageOff } from "lucide-react";
 import { CabinCard } from "@/components/CabinCard";
 import { coverImage } from "@/lib/cabins";
-import { listPublicCabins } from "@/lib/public-cabins.functions";
+import type { CabinWithImages } from "@/lib/cabins";
+import { listPublicCabins, type PublicCabinsResult } from "@/lib/public-cabins.functions";
 
 export const Route = createFileRoute("/stugor")({
   loader: () => listPublicCabins(),
@@ -59,8 +60,8 @@ function ErrorPanel({ title, message, hint }: { title: string; message: string; 
 }
 
 function PublicCabinsPage() {
-  const { cabins, error, checkedAt } = Route.useLoaderData();
-  const missingImages = cabins.filter((c) => !coverImage(c));
+  const { cabins, error, checkedAt } = Route.useLoaderData() as PublicCabinsResult;
+  const missingImages = cabins.filter((c: CabinWithImages) => !coverImage(c));
 
   return (
     <div className="mx-auto max-w-7xl px-4 py-12 md:px-6 md:py-16">
@@ -105,7 +106,7 @@ function PublicCabinsPage() {
 
       {cabins.length > 0 && (
         <div className="mt-8 grid gap-6 sm:grid-cols-2 lg:grid-cols-4">
-          {cabins.map((c) => (
+          {cabins.map((c: CabinWithImages) => (
             <CabinCard key={c.id} cabin={c} />
           ))}
         </div>

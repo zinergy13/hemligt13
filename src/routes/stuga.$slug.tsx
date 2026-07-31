@@ -2,7 +2,7 @@ import { createFileRoute, Link, notFound } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
 import { ArrowLeft, MapPin, Users, Bed, Bath, Home, Loader2, Check, Zap, Clock, Languages } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
-import { coverImage, AMENITY_OPTIONS, type CabinWithImages } from "@/lib/cabins";
+import { coverImage, AMENITY_OPTIONS, PUBLIC_CABIN_SELECT, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
 import { BookingForm } from "@/components/BookingForm";
 import { FavoriteButton } from "@/components/FavoriteButton";
@@ -124,7 +124,7 @@ function CabinPage() {
     (async () => {
       const { data } = await supabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
+        .select(PUBLIC_CABIN_SELECT)
         .eq("slug", slug)
         .eq("status", "published")
         .maybeSingle();

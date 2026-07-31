@@ -60,6 +60,11 @@ export type CabinWithImages = {
   cabin_images: { url: string; is_cover: boolean; sort_order: number }[];
 };
 
+// Keep public listing queries explicit: `ical_token` is intentionally private,
+// so `select("*")` is rejected for visitors even when the cabin is published.
+export const PUBLIC_CABIN_SELECT =
+  "id, host_id, slug, title, description, area_slug, address, bedrooms, beds, bathrooms, max_guests, price_per_night, cleaning_fee, amenities, status, instant_book, min_nights, check_in_weekday, size_sqm, title_en, title_de, description_en, description_de, translated_at, created_at, updated_at, cabin_images(url, is_cover, sort_order)";
+
 export function coverImage(cabin: { cabin_images?: { url: string; is_cover: boolean; sort_order: number }[] }): string | null {
   const imgs = cabin.cabin_images ?? [];
   if (imgs.length === 0) return null;

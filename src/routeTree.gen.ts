@@ -27,6 +27,7 @@ import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VardRouteImport } from './routes/vard'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminAtkomstRouteImport } from './routes/admin.atkomst'
 import { Route as AdminBokforingRouteImport } from './routes/admin.bokforing'
 import { Route as AdminDashboardRouteImport } from './routes/admin.dashboard'
 import { Route as AdminEpostStatusRouteImport } from './routes/admin.epost-status'
@@ -152,6 +153,11 @@ const VardRoute = VardRouteImport.update({
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminAtkomstRoute = AdminAtkomstRouteImport.update({
+  id: '/atkomst',
+  path: '/atkomst',
   getParentRoute: () => AdminRoute,
 } as any)
 const AdminBokforingRoute = AdminBokforingRouteImport.update({
@@ -362,6 +368,7 @@ export interface FileRoutesByFullPath {
   '/unlock': typeof UnlockRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/atkomst': typeof AdminAtkomstRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/epost-status': typeof AdminEpostStatusRouteWithChildren
@@ -416,6 +423,7 @@ export interface FileRoutesByTo {
   '/sok': typeof SokRoute
   '/unlock': typeof UnlockRoute
   '/unsubscribe': typeof UnsubscribeRoute
+  '/admin/atkomst': typeof AdminAtkomstRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/epost-status': typeof AdminEpostStatusRouteWithChildren
@@ -473,6 +481,7 @@ export interface FileRoutesById {
   '/unlock': typeof UnlockRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
+  '/admin/atkomst': typeof AdminAtkomstRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
   '/admin/epost-status': typeof AdminEpostStatusRouteWithChildren
@@ -531,6 +540,7 @@ export interface FileRouteTypes {
     | '/unlock'
     | '/unsubscribe'
     | '/vard'
+    | '/admin/atkomst'
     | '/admin/bokforing'
     | '/admin/dashboard'
     | '/admin/epost-status'
@@ -585,6 +595,7 @@ export interface FileRouteTypes {
     | '/sok'
     | '/unlock'
     | '/unsubscribe'
+    | '/admin/atkomst'
     | '/admin/bokforing'
     | '/admin/dashboard'
     | '/admin/epost-status'
@@ -641,6 +652,7 @@ export interface FileRouteTypes {
     | '/unlock'
     | '/unsubscribe'
     | '/vard'
+    | '/admin/atkomst'
     | '/admin/bokforing'
     | '/admin/dashboard'
     | '/admin/epost-status'
@@ -846,6 +858,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/admin/'
       preLoaderRoute: typeof AdminIndexRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/atkomst': {
+      id: '/admin/atkomst'
+      path: '/atkomst'
+      fullPath: '/admin/atkomst'
+      preLoaderRoute: typeof AdminAtkomstRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/bokforing': {
@@ -1115,6 +1134,7 @@ const AdminEpostStatusRouteWithChildren =
   AdminEpostStatusRoute._addFileChildren(AdminEpostStatusRouteChildren)
 
 interface AdminRouteChildren {
+  AdminAtkomstRoute: typeof AdminAtkomstRoute
   AdminBokforingRoute: typeof AdminBokforingRoute
   AdminDashboardRoute: typeof AdminDashboardRoute
   AdminEpostStatusRoute: typeof AdminEpostStatusRouteWithChildren
@@ -1126,6 +1146,7 @@ interface AdminRouteChildren {
 }
 
 const AdminRouteChildren: AdminRouteChildren = {
+  AdminAtkomstRoute: AdminAtkomstRoute,
   AdminBokforingRoute: AdminBokforingRoute,
   AdminDashboardRoute: AdminDashboardRoute,
   AdminEpostStatusRoute: AdminEpostStatusRouteWithChildren,
@@ -1215,13 +1236,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

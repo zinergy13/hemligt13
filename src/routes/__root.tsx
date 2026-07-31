@@ -8,6 +8,7 @@ import { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { installPerfMonitor, isPerfEnabled } from "../lib/perf";
+import { installAccessDenialLogger } from "../lib/access-log";
 import { PerfOverlay } from "../components/PerfOverlay";
 import { RouteProgressBar } from "../components/RouteProgressBar";
 
@@ -18,6 +19,10 @@ import appCss from "../styles.css?url";
 // (extra work per request, console spam, retained arrays) that made the
 // site feel sluggish for regular visitors. Activate with ?perf=1.
 if (typeof window !== "undefined" && isPerfEnabled()) installPerfMonitor();
+
+// Logga nekad åtkomst (RLS/rättigheter) så att vi ser varför t.ex. stugor
+// inte syns för en besökare. Körs bara i webbläsaren.
+if (typeof window !== "undefined") installAccessDenialLogger();
 
 // Single QueryClient for the app. All authenticated data is keyed by user id,
 // so re-using one client between users is safe - the keys differ. We also

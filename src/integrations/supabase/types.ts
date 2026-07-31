@@ -14,6 +14,54 @@ export type Database = {
   }
   public: {
     Tables: {
+      access_denials: {
+        Row: {
+          code: string | null
+          details: string | null
+          hint: string | null
+          id: string
+          is_authenticated: boolean
+          message: string | null
+          occurred_at: string
+          operation: string | null
+          resource: string | null
+          route: string | null
+          source: string
+          user_agent: string | null
+          user_id: string | null
+        }
+        Insert: {
+          code?: string | null
+          details?: string | null
+          hint?: string | null
+          id?: string
+          is_authenticated?: boolean
+          message?: string | null
+          occurred_at?: string
+          operation?: string | null
+          resource?: string | null
+          route?: string | null
+          source: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          code?: string | null
+          details?: string | null
+          hint?: string | null
+          id?: string
+          is_authenticated?: boolean
+          message?: string | null
+          occurred_at?: string
+          operation?: string | null
+          resource?: string | null
+          route?: string | null
+          source?: string
+          user_agent?: string | null
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       app_settings: {
         Row: {
           cleaning_markup_percent: number
@@ -1565,6 +1613,14 @@ export type Database = {
         }[]
       }
       can_manage_cabin_image: { Args: { _name: string }; Returns: boolean }
+      check_public_visibility: {
+        Args: never
+        Returns: {
+          cabin_images: number
+          caller_role: string
+          published_cabins: number
+        }[]
+      }
       complete_past_bookings: { Args: never; Returns: number }
       delete_email: {
         Args: { message_id: number; queue_name: string }

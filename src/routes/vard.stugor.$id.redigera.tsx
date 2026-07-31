@@ -5,7 +5,7 @@ import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinForm, type CabinFormImage, type CabinFormValues } from "@/components/CabinForm";
-import type { CabinStatus, CabinWithImages } from "@/lib/cabins";
+import { CABIN_COLUMNS, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
 
 export const Route = createFileRoute("/vard/stugor/$id/redigera")({
   head: () => ({ meta: [{ title: "Redigera stuga - Fjällportalen" }] }),
@@ -30,7 +30,7 @@ function EditCabinPage() {
     (async () => {
       const { data, error } = await supabase
         .from("cabins")
-        .select("*, cabin_images(id, url, is_cover, sort_order)")
+        .select(`${CABIN_COLUMNS}, cabin_images(id, url, is_cover, sort_order)`)
         .eq("id", id)
         .eq("host_id", user.id)
         .maybeSingle();

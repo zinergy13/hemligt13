@@ -23,6 +23,7 @@ import { Route as MinaBokningarRouteImport } from './routes/mina-bokningar'
 import { Route as OmOssRouteImport } from './routes/om-oss'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SokRouteImport } from './routes/sok'
+import { Route as StugorRouteImport } from './routes/stugor'
 import { Route as UnlockRouteImport } from './routes/unlock'
 import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VardRouteImport } from './routes/vard'
@@ -133,6 +134,11 @@ const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
 const SokRoute = SokRouteImport.update({
   id: '/sok',
   path: '/sok',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const StugorRoute = StugorRouteImport.update({
+  id: '/stugor',
+  path: '/stugor',
   getParentRoute: () => rootRouteImport,
 } as any)
 const UnlockRoute = UnlockRouteImport.update({
@@ -365,6 +371,7 @@ export interface FileRoutesByFullPath {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/stugor': typeof StugorRoute
   '/unlock': typeof UnlockRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
@@ -421,6 +428,7 @@ export interface FileRoutesByTo {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/stugor': typeof StugorRoute
   '/unlock': typeof UnlockRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/admin/atkomst': typeof AdminAtkomstRoute
@@ -478,6 +486,7 @@ export interface FileRoutesById {
   '/om-oss': typeof OmOssRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
   '/sok': typeof SokRoute
+  '/stugor': typeof StugorRoute
   '/unlock': typeof UnlockRoute
   '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
@@ -537,6 +546,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/stugor'
     | '/unlock'
     | '/unsubscribe'
     | '/vard'
@@ -593,6 +603,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/stugor'
     | '/unlock'
     | '/unsubscribe'
     | '/admin/atkomst'
@@ -649,6 +660,7 @@ export interface FileRouteTypes {
     | '/om-oss'
     | '/sitemap.xml'
     | '/sok'
+    | '/stugor'
     | '/unlock'
     | '/unsubscribe'
     | '/vard'
@@ -707,6 +719,7 @@ export interface RootRouteChildren {
   OmOssRoute: typeof OmOssRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   SokRoute: typeof SokRoute
+  StugorRoute: typeof StugorRoute
   UnlockRoute: typeof UnlockRoute
   UnsubscribeRoute: typeof UnsubscribeRoute
   VardRoute: typeof VardRouteWithChildren
@@ -830,6 +843,13 @@ declare module '@tanstack/react-router' {
       path: '/sok'
       fullPath: '/sok'
       preLoaderRoute: typeof SokRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/stugor': {
+      id: '/stugor'
+      path: '/stugor'
+      fullPath: '/stugor'
+      preLoaderRoute: typeof StugorRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/unlock': {
@@ -1207,6 +1227,7 @@ const rootRouteChildren: RootRouteChildren = {
   OmOssRoute: OmOssRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   SokRoute: SokRoute,
+  StugorRoute: StugorRoute,
   UnlockRoute: UnlockRoute,
   UnsubscribeRoute: UnsubscribeRoute,
   VardRoute: VardRouteWithChildren,

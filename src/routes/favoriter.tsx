@@ -6,7 +6,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import { myFavoritesQuery } from "@/lib/social";
-import type { CabinWithImages } from "@/lib/cabins";
+import { PUBLIC_CABIN_SELECT, type CabinWithImages } from "@/lib/cabins";
 
 export const Route = createFileRoute("/favoriter")({
   head: () => ({
@@ -37,7 +37,7 @@ function FavoritesPage() {
     queryFn: async (): Promise<CabinWithImages[]> => {
       const { data } = await supabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
+        .select(PUBLIC_CABIN_SELECT)
         .in("id", ids)
         .eq("status", "published");
       return (data ?? []) as CabinWithImages[];

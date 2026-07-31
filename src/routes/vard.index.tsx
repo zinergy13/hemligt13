@@ -4,7 +4,7 @@ import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, C
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
-import { coverImage, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
+import { coverImage, CABIN_COLUMNS, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
 import { CabinGridSkeleton } from "@/components/Skeleton";
 
@@ -29,11 +29,12 @@ function HostDashboard() {
     if (!user) return;
     let active = true;
     (async () => {
-      const { data } = await supabase
+      const { data, error } = await supabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
+        .select(`${CABIN_COLUMNS}, cabin_images(url, is_cover, sort_order)`)
         .eq("host_id", user.id)
         .order("created_at", { ascending: false });
+      if (error) toast.error("Kunde inte hämta dina stugor: " + error.message);
       if (active) setCabins((data as CabinWithImages[]) ?? []);
     })();
     return () => {

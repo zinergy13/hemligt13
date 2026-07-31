@@ -92,6 +92,14 @@ function HostDashboard() {
         <div>
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mina stugor</h1>
           <p className="mt-1 text-sm text-muted-foreground">Hantera dina annonser, status och bilder.</p>
+          {isAdmin && (
+            <button
+              onClick={() => setShowAll((v) => !v)}
+              className="mt-3 inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+            >
+              {showAll ? "Visa bara mina stugor" : "Visa alla stugor (admin)"}
+            </button>
+          )}
         </div>
         <div className="flex flex-wrap gap-2">
           <Link

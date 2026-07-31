@@ -3,6 +3,7 @@ import { useEffect, useState } from "react";
 import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
+import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { coverImage, CABIN_COLUMNS, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";

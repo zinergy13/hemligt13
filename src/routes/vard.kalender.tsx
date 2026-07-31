@@ -43,15 +43,24 @@ function HostCalendarPage() {
     (async () => {
       const { data: c } = await supabase
         .from("cabins")
-        .select("id, title, ical_token, area_slug")
+        .select("id, title, area_slug")
         .eq("host_id", user.id)
         .order("title");
+      const { data: tokens } = await supabase.rpc("get_my_cabin_ical_tokens");
       const { data: f } = await supabase
         .from("cabin_ical_feeds")
         .select("id, cabin_id, url, label, active, last_synced_at, last_error, last_event_count")
         .order("created_at", { ascending: false });
       if (!active) return;
-      setCabins((c as Cabin[]) ?? []);
+      const tokenMap = new Map<string, string>(
+        ((tokens as { cabin_id: string; ical_token: string }[]) ?? []).map((t) => [t.cabin_id, t.ical_token]),
+      );
+      setCabins(
+        ((c as Omit<Cabin, "ical_token">[]) ?? []).map((cab) => ({
+          ...cab,
+          ical_token: tokenMap.get(cab.id) ?? "",
+        })),
+      );
       setFeeds((f as Feed[]) ?? []);
     })();
     return () => {

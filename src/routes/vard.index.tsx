@@ -3,7 +3,6 @@ import { useEffect, useState } from "react";
 import { Plus, Loader2, Pencil, Eye, Pause, Play, Trash2, Home, Inbox, Wallet, Calendar as CalendarIcon, BarChart3 } from "lucide-react";
 import { toast } from "sonner";
 import { useAuth } from "@/hooks/useAuth";
-import { useIsAdmin } from "@/hooks/useIsAdmin";
 import { supabase } from "@/integrations/supabase/client";
 import { coverImage, CABIN_COLUMNS, type CabinStatus, type CabinWithImages } from "@/lib/cabins";
 import { areaBySlug } from "@/data/areas";
@@ -15,9 +14,10 @@ export const Route = createFileRoute("/vard/")({
 });
 
 function HostDashboard() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -30,18 +30,19 @@ function HostDashboard() {
     if (!user) return;
     let active = true;
     (async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("cabins")
         .select(`${CABIN_COLUMNS}, cabin_images(url, is_cover, sort_order)`)
-        .eq("host_id", user.id)
         .order("created_at", { ascending: false });
+      if (!(isAdmin && showAll)) query = query.eq("host_id", user.id);
+      const { data, error } = await query;
       if (error) toast.error("Kunde inte hämta dina stugor: " + error.message);
       if (active) setCabins((data as CabinWithImages[]) ?? []);
     })();
     return () => {
       active = false;
     };
-  }, [user, refreshKey]);
+  }, [user, refreshKey, isAdmin, showAll]);
 
   if (loading || !user) {
     return (
@@ -51,7 +52,7 @@ function HostDashboard() {
     );
   }
 
-  if (!profile?.is_host) {
+  if (!profile?.is_host && !isAdmin) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center">
         <Home className="mx-auto mb-4 h-10 w-10 text-primary" />

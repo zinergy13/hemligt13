@@ -1649,6 +1649,13 @@ export type Database = {
         }[]
       }
       get_cron_secret: { Args: { _key: string }; Returns: string }
+      get_my_cabin_ical_tokens: {
+        Args: never
+        Returns: {
+          cabin_id: string
+          ical_token: string
+        }[]
+      }
       get_my_phone: { Args: never; Returns: string }
       get_my_profile: {
         Args: never

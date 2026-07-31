@@ -5,7 +5,7 @@ import { areas, areasSorted, regions, type RegionSlug } from "@/data/areas";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
 import { SwedenMap } from "@/components/SwedenMap";
-import type { CabinWithImages } from "@/lib/cabins";
+import { PUBLIC_CABIN_SELECT, type CabinWithImages } from "@/lib/cabins";
 
 type SearchParams = {
   region?: string;
@@ -170,7 +170,7 @@ function SearchPage() {
     (async () => {
       let query = supabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
+        .select(PUBLIC_CABIN_SELECT)
         .eq("status", "published")
         .order("created_at", { ascending: false });
 

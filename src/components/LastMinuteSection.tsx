@@ -3,7 +3,7 @@ import { Link } from "@tanstack/react-router";
 import { Clock, ArrowRight } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
-import type { CabinWithImages } from "@/lib/cabins";
+import { PUBLIC_CABIN_SELECT, type CabinWithImages } from "@/lib/cabins";
 
 function addDays(days: number): string {
   const d = new Date();
@@ -31,7 +31,7 @@ export function LastMinuteSection() {
 
       let query = supabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
+        .select(PUBLIC_CABIN_SELECT)
         .eq("status", "published")
         .order("price_per_night", { ascending: true })
         .limit(8);

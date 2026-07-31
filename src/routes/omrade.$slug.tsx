@@ -4,7 +4,7 @@ import { ArrowLeft, MapPin, Check, Loader2 } from "lucide-react";
 import { areaBySlug, areas, regionBySlug } from "../data/areas";
 import { supabase } from "@/integrations/supabase/client";
 import { CabinCard } from "@/components/CabinCard";
-import type { CabinWithImages } from "@/lib/cabins";
+import { PUBLIC_CABIN_SELECT, type CabinWithImages } from "@/lib/cabins";
 
 export const Route = createFileRoute("/omrade/$slug")({
   loader: ({ params }) => {
@@ -77,7 +77,7 @@ function AreaPage() {
     (async () => {
       const { data } = await supabase
         .from("cabins")
-        .select("*, cabin_images(url, is_cover, sort_order)")
+        .select(PUBLIC_CABIN_SELECT)
         .eq("status", "published")
         .eq("area_slug", area.slug)
         .order("created_at", { ascending: false });

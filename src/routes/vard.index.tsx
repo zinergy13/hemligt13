@@ -14,9 +14,10 @@ export const Route = createFileRoute("/vard/")({
 });
 
 function HostDashboard() {
-  const { user, profile, loading } = useAuth();
+  const { user, profile, loading, isAdmin } = useAuth();
   const navigate = useNavigate();
   const [cabins, setCabins] = useState<CabinWithImages[] | null>(null);
+  const [showAll, setShowAll] = useState(false);
   const [refreshKey, setRefreshKey] = useState(0);
 
   useEffect(() => {
@@ -29,18 +30,19 @@ function HostDashboard() {
     if (!user) return;
     let active = true;
     (async () => {
-      const { data, error } = await supabase
+      let query = supabase
         .from("cabins")
         .select(`${CABIN_COLUMNS}, cabin_images(url, is_cover, sort_order)`)
-        .eq("host_id", user.id)
         .order("created_at", { ascending: false });
+      if (!(isAdmin && showAll)) query = query.eq("host_id", user.id);
+      const { data, error } = await query;
       if (error) toast.error("Kunde inte hämta dina stugor: " + error.message);
       if (active) setCabins((data as CabinWithImages[]) ?? []);
     })();
     return () => {
       active = false;
     };
-  }, [user, refreshKey]);
+  }, [user, refreshKey, isAdmin, showAll]);
 
   if (loading || !user) {
     return (
@@ -50,7 +52,7 @@ function HostDashboard() {
     );
   }
 
-  if (!profile?.is_host) {
+  if (!profile?.is_host && !isAdmin) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-16 text-center">
         <Home className="mx-auto mb-4 h-10 w-10 text-primary" />
@@ -90,6 +92,14 @@ function HostDashboard() {
         <div>
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mina stugor</h1>
           <p className="mt-1 text-sm text-muted-foreground">Hantera dina annonser, status och bilder.</p>
+          {isAdmin && (
+            <button
+              onClick={() => setShowAll((v) => !v)}
+              className="mt-3 inline-flex rounded-full border border-border px-3 py-1.5 text-xs font-medium text-foreground hover:bg-muted"
+            >
+              {showAll ? "Visa bara mina stugor" : "Visa alla stugor (admin)"}
+            </button>
+          )}
         </div>
         <div className="flex flex-wrap gap-2">
           <Link

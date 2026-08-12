@@ -1,10 +1,10 @@
 import { createFileRoute, Link, useNavigate } from '@tanstack/react-router';
 import { useEffect, useState } from 'react';
 import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe-js';
-import { getStripe, getStripeEnvironment, isPaymentsConfigured } from '@/lib/stripe';
+import { getStripe, isPaymentsConfigured, PAYMENTS_FROZEN_MESSAGE } from '@/lib/stripe';
 import { createBookingCheckout } from '@/lib/payments.functions';
 import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
-import { EscrowFAQ } from '@/components/EscrowFAQ';
+import { PaymentFAQ } from '@/components/PaymentFAQ';
 import { PaymentPayoutTimeline } from '@/components/PaymentPayoutTimeline';
 import { useAuth } from '@/hooks/useAuth';
 import { useLiveBooking } from '@/hooks/useLiveBooking';
@@ -37,14 +37,13 @@ function CheckoutPage() {
       return;
     }
     if (!isPaymentsConfigured()) {
-      setError('Betalningar är inte konfigurerade för denna miljö.');
+      setError(PAYMENTS_FROZEN_MESSAGE);
       return;
     }
     createBookingCheckout({
       data: {
         bookingId,
         returnUrl: `${window.location.origin}/checkout/klar?session_id={CHECKOUT_SESSION_ID}&booking_id=${bookingId}`,
-        environment: getStripeEnvironment(),
       },
     })
       .then((r) => {
@@ -60,7 +59,7 @@ function CheckoutPage() {
       <div className="mx-auto max-w-3xl px-4 py-8">
         <h1 className="mb-2 text-2xl font-semibold">Slutför betalning</h1>
         <p className="mb-6 text-sm text-muted-foreground">
-          Pengarna hålls tryggt hos Fjällportalen och betalas ut till värden 24 timmar efter incheckning.
+          Betalningen hanteras av Stripe. Utbetalningen till värden schemaläggs efter incheckning.
           Vid avbokning mer än 48 timmar innan incheckning återbetalas hela beloppet.
         </p>
         {error && (
@@ -84,7 +83,7 @@ function CheckoutPage() {
         <div className="mt-6">
           <PaymentPayoutTimeline booking={liveBooking} />
         </div>
-        <EscrowFAQ compact />
+        <PaymentFAQ compact />
       </div>
     </div>
   );

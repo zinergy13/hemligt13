@@ -28,31 +28,25 @@ const Email = ({
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Betalningen till {hostName} är nu släppt - tack för att du bokade via {BRAND_NAME}</Preview>
+    <Preview>Din vistelse i {cabinName} är avslutad - tack för att du bokade via {BRAND_NAME}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
         <Heading style={styles.h1}>Vi hoppas du hade en fin vistelse</Heading>
         <Text style={styles.text}>
           Hej{guestName ? ` ${guestName}` : ''},<br />
-          Det har nu gått <strong>24 timmar sedan din incheckning
-          {checkInLabel ? ` ${checkInLabel}` : ''}</strong> i {cabinName}, och därmed har
-          {BRAND_NAME} släppt betalningen till {hostName}
-          {payoutAtLabel ? ` (${payoutAtLabel})` : ''}. Din bokning är därmed helt slutförd.
+          Din vistelse i {cabinName} hos {hostName}
+          {checkInLabel ? ` (incheckning ${checkInLabel})` : ''} är nu avslutad och din bokning är
+          slutförd.
         </Text>
 
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
           <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
-            Utbetalt till värden{bookingRef ? ` · Bokning #${bookingRef}` : ''}
+            Totalt betalt{bookingRef ? ` · Bokning #${bookingRef}` : ''}
           </Text>
           <Text style={{ ...styles.h1, fontSize: 22, margin: '0 0 10px' }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
           <Text style={{ ...styles.muted, margin: 0 }}>
             Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
-            {payoutAtLabel ? (
-              <>
-                Utbetalning: <strong>{payoutAtLabel}</strong><br />
-              </>
-            ) : null}
             Betalning hanterad av {BRAND_NAME}
           </Text>
         </Section>
@@ -77,7 +71,7 @@ export const template = {
   component: Email,
   subject: (d: Record<string, any>) =>
     `Bokningen är slutförd${d?.bookingRef ? ` #${d.bookingRef}` : ''} · ${d?.cabinName ?? 'din stuga'} · ${BRAND_NAME}`,
-  displayName: 'Utbetalning släppt till gäst',
+  displayName: 'Bokning slutförd (gäst)',
   previewData: {
     guestName: 'Erik',
     cabinName: 'Renvallen',

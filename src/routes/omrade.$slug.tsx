@@ -156,7 +156,7 @@ function AreaPage() {
                 </Link>
               </div>
               <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-                Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.
+                Trygg betalning via Fjällportalen - utbetalningen till värden schemaläggs efter incheckning.
               </p>
             </div>
           )}

@@ -1,7 +1,7 @@
 import { createFileRoute } from '@tanstack/react-router';
 import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
-import { type StripeEnv, verifyWebhook } from '@/lib/stripe.server';
+import { resolvePaymentEnv, verifyWebhook } from '@/lib/stripe.server';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
 import { buildBookingEmailFields } from '@/lib/email/booking-fields';
 
@@ -151,11 +151,14 @@ export const Route = createFileRoute('/api/public/payments/webhook')({
   server: {
     handlers: {
       POST: async ({ request }) => {
-        const rawEnv = new URL(request.url).searchParams.get('env');
-        if (rawEnv !== 'sandbox' && rawEnv !== 'live') {
-          return Response.json({ received: true, ignored: 'invalid env' });
+        // WP-000: the payment mode is derived from server configuration only.
+        // Any ?env query parameter is ignored.
+        let env;
+        try {
+          env = resolvePaymentEnv();
+        } catch {
+          return Response.json({ received: true, ignored: 'payments frozen' });
         }
-        const env: StripeEnv = rawEnv;
         try {
           const event = await verifyWebhook(request, env);
           switch (event.type) {

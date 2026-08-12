@@ -88,7 +88,7 @@ function MyBookingsPage() {
             Sök stugor
           </Link>
           <p className="mx-auto mt-4 max-w-md text-xs text-muted-foreground">
-            Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.
+            Trygg betalning via Fjällportalen - utbetalningen till värden schemaläggs efter incheckning.
           </p>
         </div>
       ) : (
@@ -165,7 +165,7 @@ function MyBookingsPage() {
                       return (
                         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
                           <div className="text-xs text-muted-foreground">
-                            Betala tryggt via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.
+                            Betala tryggt via Fjällportalen - utbetalningen till värden schemaläggs efter incheckning.
                           </div>
                           <Link
                             to="/checkout/$bookingId"
@@ -180,7 +180,7 @@ function MyBookingsPage() {
                     if (b.status === "confirmed" && paymentStatus === "paid") {
                       return (
                         <p className="mt-3 rounded-lg bg-muted/50 px-3 py-2 text-xs text-muted-foreground">
-                          ✓ Betald. Pengarna hålls tryggt hos Fjällportalen och betalas ut till värden 24 timmar efter incheckning.
+                          ✓ Betald. Betalningen hanteras av Stripe och utbetalningen till värden schemaläggs efter incheckning.
                         </p>
                       );
                     }

@@ -1,6 +1,6 @@
 import { createServerFn } from '@tanstack/react-start';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
-import { createStripeClient, getStripeErrorMessage, type StripeEnv } from '@/lib/stripe.server';
+import { createStripeClient, getStripeErrorMessage, resolvePaymentEnv } from '@/lib/stripe.server';
 
 type CheckoutResult = { clientSecret: string } | { error: string };
 
@@ -12,7 +12,7 @@ type CheckoutResult = { clientSecret: string } | { error: string };
  */
 export const createBookingCheckout = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { bookingId: string; returnUrl: string; environment: StripeEnv; giftCardCode?: string }) => {
+  .inputValidator((data: { bookingId: string; returnUrl: string; giftCardCode?: string }) => {
     if (!/^[0-9a-f-]{36}$/.test(data.bookingId)) throw new Error('Invalid bookingId');
     return data;
   })
@@ -49,7 +49,8 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
       giftDiscountOre = (row?.applied_ore as number) ?? 0;
     }
 
-    const stripe = createStripeClient(data.environment);
+    // WP-000: payment environment is server-owned and frozen to sandbox.
+    const stripe = createStripeClient(resolvePaymentEnv());
     const cabinTitle = cabin?.title ?? 'Stugbokning';
 
     const lineItems: any[] = [
@@ -238,7 +239,7 @@ export const getBookingReceipt = createServerFn({ method: 'GET' })
  */
 export const cancelBookingWithRefund = createServerFn({ method: 'POST' })
   .middleware([requireSupabaseAuth])
-  .inputValidator((data: { bookingId: string; reason?: string; environment: StripeEnv }) => data)
+  .inputValidator((data: { bookingId: string; reason?: string }) => data)
   .handler(async ({ data, context }): Promise<RefundResult> => {
     const { supabase, userId } = context;
     const { data: booking, error } = await supabase
@@ -260,7 +261,7 @@ export const cancelBookingWithRefund = createServerFn({ method: 'POST' })
     let refundedOre = 0;
     if (eligibleForRefund && booking.payment_status === 'paid' && booking.stripe_payment_intent) {
       try {
-        const stripe = createStripeClient(data.environment);
+        const stripe = createStripeClient(resolvePaymentEnv());
         const refund = await stripe.refunds.create({
           payment_intent: booking.stripe_payment_intent,
           reason: 'requested_by_customer',

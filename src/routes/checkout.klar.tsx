@@ -94,6 +94,7 @@ function CheckoutReceipt() {
   const totalOre = booking.total_price * 100;
 
   const checkIn = new Date(booking.check_in);
+  // Indicative earliest payout date only - never presented as a guarantee (WP-000).
   const payoutDate = new Date(checkIn.getTime() + 24 * 3600 * 1000);
   const fmtDate = (d: Date) => d.toLocaleDateString('sv-SE', { weekday: 'short', day: 'numeric', month: 'long', year: 'numeric' });
 
@@ -106,8 +107,8 @@ function CheckoutReceipt() {
         </div>
         <h1 className="text-3xl font-semibold">Tack - din bokning är {isPaid ? 'bekräftad' : 'registrerad'}</h1>
         <p className="mt-2 max-w-xl text-muted-foreground">
-          Pengarna ligger tryggt hos Fjällportalen och betalas ut till värden{' '}
-          <strong>24 timmar efter din incheckning ({fmtDate(payoutDate)})</strong>.
+          Betalningen hanteras av Stripe. Utbetalningen till värden schemaläggs efter din incheckning
+          ({fmtDate(payoutDate)} tidigast).
         </p>
       </div>
 
@@ -207,17 +208,16 @@ function CheckoutReceipt() {
         </div>
       </div>
 
-      {/* Escrow explanation */}
+      {/* Payment explanation */}
       <div className="mt-6 rounded-lg border bg-primary/5 p-5">
         <div className="flex items-start gap-3">
           <ShieldCheck className="mt-0.5 h-5 w-5 shrink-0 text-primary" />
           <div className="text-sm">
             <div className="mb-1 font-semibold">Så fungerar din betalning</div>
             <p className="text-muted-foreground">
-              Hela beloppet på <strong>{kr(totalOre)}</strong> hålls tryggt hos Fjällportalen fram till din
-              vistelse. Värden får utbetalning först{' '}
-              <strong>{fmtDate(payoutDate)}</strong> - 24 timmar efter din incheckning. Om något är fel med
-              stugan hjälper vi dig innan pengarna släpps.
+              Hela beloppet på <strong>{kr(totalOre)}</strong> betalas via Fjällportalen och hanteras av
+              Stripe. Värden får sin utbetalning tidigast <strong>{fmtDate(payoutDate)}</strong>, efter din
+              incheckning. Om något är fel med stugan hjälper vi dig innan utbetalningen görs.
             </p>
           </div>
         </div>

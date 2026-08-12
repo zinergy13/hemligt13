@@ -729,7 +729,7 @@ Lovable must update this table after each work packet. Evidence should be a migr
 | D-002 | Guest-paid 400 SEK service fee | P0 | — | DECIDED | VAT-inclusive baseline; accountant approval required before live mode |
 | D-003 | Remove guest personnummer at launch | P0 | — | DECIDED | Minimize guest PII; Stripe handles host KYC |
 | D-004 | Use and validate 27 canonical areas | P1 | — | DECIDED | Generate counts from canonical data |
-| WP-000 | Freeze unsafe claims/real-money behavior | P0 | — | TODO | Keep site gated; update architecture/copy |
+| WP-000 | Freeze unsafe claims/real-money behavior | P0 | — | DONE 2026-08-12 | `docs/decisions/WP-000-safety-freeze.md`; migration unscheduling `release-escrow-hourly` + no-op `release_eligible_escrow()`; `src/test/wp000-payment-claims.test.ts` (11 tests pass); site remains password-gated |
 | WP-001 | Reconcile live Supabase state | P0 | WP-000 | TODO | Live access required |
 | WP-002 | Reproducible build and CI | P0 | — | TODO | npm lock currently fails clean install |
 | WP-003 | Authoritative quote + atomic hold/booking | P0 | WP-001/002 | TODO | Replace client-authoritative totals |
@@ -920,6 +920,7 @@ Append entries; do not rewrite historical entries.
 | 2026-07-31 | Codex audit | Initial audit | Created master audit, decisions, ordered roadmap, acceptance criteria, test matrix, and launch gates | Repository `e2df26e`; public site inspection; PRD v2.0 | Live Lovable Cloud/Supabase/provider state remains unverified |
 | 2026-07-31 | Codex audit | Private demo walkthrough | Verified signed-out home, search, cabin, host, how-it-works, contact, and login UX; added public-claims, area-count, address-disclosure, and description-rendering findings | Credentialed read-only walkthrough; no account, booking, payment, or form submitted | Authenticated dashboards and live provider/backend state remain unverified |
 | 2026-07-31 | Product direction + Codex architecture | D-001..D-004 | Replaced PRD-literal branching with one controlled marketplace target: Stripe Connect destination charges, hosted onboarding, staged T-30 accommodation collection, manual payout schedule, guest-paid 400 SEK fee, no guest personnummer, 27 canonical areas | Product-owner direction to optimize coherence/control; current Stripe marketplace/manual-payout guidance | Stripe platform profile/sandbox, Swedish legal/accounting, and live Supabase state still require validation |
+| 2026-08-12 | Lovable agent | WP-000 | Froze real-money behavior (server-owned sandbox-only payment env, client `environment` input removed, webhook `?env` ignored, live publishable key disabled), disabled timer-based payout release (`cron.unschedule('release-escrow-hourly')`, `release_eligible_escrow()` no-op, payout emails off), removed escrow/segregated-funds/24-hour payout claims from UI and email templates, renamed `EscrowFAQ` to `PaymentFAQ`, set Private Beta status in README and admin banner, recorded D-001..D-004 | `docs/decisions/WP-000-safety-freeze.md`, `docs/decisions/D-001-D-004-baselines.md`, `src/test/wp000-payment-claims.test.ts` (17/17 suite tests pass), migration applied 2026-08-12 | No live Stripe access or accountant validation available, so live mode stays hard-blocked; `bookings.escrow_status` fields remain until WP-004 replaces them |
 
 ### Decision record template
 

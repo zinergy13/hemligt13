@@ -6,11 +6,11 @@ type FAQ = { q: string; a: string };
 const FAQS: FAQ[] = [
   {
     q: "Vem tar emot min betalning - värden eller Fjällportalen?",
-    a: "Du betalar alltid till Fjällportalen, aldrig direkt till värden. Vi håller pengarna säkert på ett separat konto under hela bokningen. Det finns inga andra mellanhänder inblandade.",
+    a: "Du betalar via Fjällportalen och betalningen hanteras av vår betalpartner Stripe, aldrig direkt till värden. Fjällportalen styr när utbetalningen till värden görs.",
   },
   {
     q: "När får värden pengarna?",
-    a: "Värden får sin utbetalning 24 timmar efter incheckning, förutsatt att inget problem rapporterats. På så vis kan både du och värden känna er trygga - värden vet att pengarna är säkrade, och du vet att du kommit fram till en stuga som stämmer.",
+    a: "Utbetalningen till värden schemaläggs efter din incheckning, förutsatt att inget problem rapporterats. Exakta tider och villkor bekräftas när betalflödet är i drift under vår privata beta.",
   },
   {
     q: "Vad händer om jag behöver avboka?",
@@ -18,19 +18,19 @@ const FAQS: FAQ[] = [
   },
   {
     q: "Vad händer om stugan inte stämmer med annonsen?",
-    a: "Kontakta oss direkt vid incheckning. Eftersom pengarna ännu inte släppts till värden kan vi hjälpa till att lösa situationen - antingen genom överenskommelse med värden eller full återbetalning innan utbetalningen sker.",
+    a: "Kontakta oss direkt vid incheckning. Eftersom utbetalningen till värden ännu inte är gjord kan vi hjälpa till att lösa situationen - antingen genom överenskommelse med värden eller återbetalning.",
   },
   {
     q: "Vilken avgift tar Fjällportalen?",
-    a: "Gästen betalar det pris värden satt - inga påslag. Fjällportalen tar en fast serviceavgift på 400 kr (inkl. moms) per bokning som faktureras värden månadsvis. Inga procentavgifter, inga dolda kostnader.",
+    a: "Gästen betalar det pris värden satt plus en transparent serviceavgift på 400 kr per bokning som redovisas separat. Inga procentavgifter, inga dolda kostnader.",
   },
   {
     q: "Är mina kortuppgifter säkra?",
-    a: "Ja. All betalning hanteras av Stripe (PCI-DSS Level 1) och Fjällportalen ser aldrig ditt fulla kortnummer. Vi lagrar bara det som behövs för att kunna återbetala om det skulle behövas.",
+    a: "Ja. All betalning hanteras av Stripe (PCI-DSS Level 1) och Fjällportalen ser aldrig ditt fulla kortnummer.",
   },
 ];
 
-export function EscrowFAQ({ compact = false }: { compact?: boolean }) {
+export function PaymentFAQ({ compact = false }: { compact?: boolean }) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (
@@ -44,7 +44,7 @@ export function EscrowFAQ({ compact = false }: { compact?: boolean }) {
             </div>
             <h2 className="font-serif text-3xl text-foreground md:text-4xl">Så fungerar betalningen</h2>
             <p className="mt-3 text-muted-foreground">
-              Inga mellanhänder mellan dig och värden - bara ett tryggt betalningsflöde. Pengarna hålls hos oss tills du checkat in.
+              Ett tryggt betalningsflöde. Betalningen hanteras av Stripe och utbetalningen till värden schemaläggs efter din incheckning.
             </p>
           </div>
         )}

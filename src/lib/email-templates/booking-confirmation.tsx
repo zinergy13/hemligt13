@@ -64,16 +64,16 @@ const Email = ({
           <Text style={{ ...styles.h1, fontSize: 24, margin: 0 }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
           {payoutAtLabel ? (
             <Text style={{ ...styles.muted, margin: '10px 0 0' }}>
-              Utbetalning till värden: <strong>{payoutAtLabel}</strong> (24 timmar efter incheckning)
+              Utbetalning till värden: <strong>tidigast {payoutAtLabel}</strong> (efter incheckning)
             </Text>
           ) : null}
         </Section>
 
         <Text style={styles.text}>
-          <strong>Så fungerar betalningen:</strong> Beloppet hålls tryggt hos {BRAND_NAME} fram till
-          din vistelse. Värden får sin utbetalning först <strong>24 timmar efter incheckning</strong>,
-          förutsatt att allt är som det ska. Skulle något inte stämma - kontakta oss direkt så hjälper vi dig
-          innan pengarna släpps.
+          <strong>Så fungerar betalningen:</strong> Betalningen görs via {BRAND_NAME} och hanteras av
+          Stripe. Värden får sin utbetalning <strong>efter din incheckning</strong>, förutsatt att allt
+          är som det ska. Skulle något inte stämma - kontakta oss direkt så hjälper vi dig innan
+          utbetalningen görs.
         </Text>
 
         <Button href={bookingUrl} style={styles.button}>Se min bokning</Button>

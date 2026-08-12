@@ -10,13 +10,33 @@ export type StripeEnv = 'sandbox' | 'live';
 
 const GATEWAY_STRIPE_BASE = 'https://connector-gateway.lovable.dev/stripe';
 
+/**
+ * WP-000 safety freeze.
+ *
+ * The payment environment is server-owned. It is NEVER accepted from a browser
+ * request (see P0-004 in docs/LOVABLE_MASTER_AUDIT_AND_IMPLEMENTATION_PLAN.md).
+ * Until WP-004 is verified and D-002 accountant validation is recorded, only
+ * sandbox/test mode may be reached: live mode is hard-blocked here.
+ */
+export const PAYMENTS_FROZEN_MESSAGE =
+  'Betalningar är i testläge (privat beta). Riktiga betalningar är avstängda tills betalningsflödet är verifierat.';
+
+export function resolvePaymentEnv(): StripeEnv {
+  const configured = (process.env['PAYMENTS_ENV'] ?? 'sandbox').toLowerCase();
+  if (configured !== 'sandbox') {
+    throw new Error(PAYMENTS_FROZEN_MESSAGE);
+  }
+  return 'sandbox';
+}
+
 export function getConnectionApiKey(env: StripeEnv): string {
   return env === 'sandbox'
     ? getEnv('STRIPE_SANDBOX_API_KEY')
     : getEnv('STRIPE_LIVE_API_KEY');
 }
 
-export function createStripeClient(env: StripeEnv): Stripe {
+export function createStripeClient(env: StripeEnv = resolvePaymentEnv()): Stripe {
+  if (env !== 'sandbox') throw new Error(PAYMENTS_FROZEN_MESSAGE);
   const connectionApiKey = getConnectionApiKey(env);
   const lovableApiKey = getEnv('LOVABLE_API_KEY');
 
@@ -47,7 +67,11 @@ export function getStripeErrorMessage(error: unknown): string {
   return 'Stripe request failed';
 }
 
-export async function verifyWebhook(req: Request, env: StripeEnv): Promise<{ type: string; data: { object: any } }> {
+export async function verifyWebhook(
+  req: Request,
+  env: StripeEnv = resolvePaymentEnv(),
+): Promise<{ type: string; data: { object: any } }> {
+  if (env !== 'sandbox') throw new Error(PAYMENTS_FROZEN_MESSAGE);
   const signature = req.headers.get('stripe-signature');
   const body = await req.text();
   const secret = env === 'sandbox'

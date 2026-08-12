@@ -8,8 +8,8 @@ type Props = {
 export function TrustPaymentBanner({ variant = "guest", className = "" }: Props) {
   const text =
     variant === "host"
-      ? "Gästen betalar tryggt via Fjällportalen. Vi håller pengarna säkert och betalar ut till dig 24 timmar efter incheckning."
-      : "Du betalar tryggt via Fjällportalen - aldrig direkt till värden. Pengarna hålls säkert hos oss och släpps till värden först 24 timmar efter incheckning.";
+      ? "Gästen betalar tryggt via Fjällportalen. Betalningen hanteras av Stripe och din utbetalning schemaläggs efter incheckning."
+      : "Du betalar tryggt via Fjällportalen - aldrig direkt till värden. Betalningen hanteras av Stripe och utbetalningen till värden schemaläggs efter incheckning.";
 
   return (
     <div

@@ -4,12 +4,17 @@ type StripeEnv = 'sandbox' | 'live';
 
 const clientToken = import.meta.env.VITE_PAYMENTS_CLIENT_TOKEN as string | undefined;
 
+/**
+ * WP-000 safety freeze: only test mode is reachable from the browser.
+ * A live publishable key is treated as "not configured" so that no visitor can
+ * start a real-money payment before WP-004 is verified.
+ */
+export const PAYMENTS_FROZEN_MESSAGE =
+  'Betalningar är i testläge (privat beta). Riktiga betalningar är avstängda tills betalningsflödet är verifierat.';
+
 function paymentsEnvironment(): StripeEnv {
   if (clientToken?.startsWith('pk_test_')) return 'sandbox';
-  if (clientToken?.startsWith('pk_live_')) return 'live';
-  throw new Error(
-    'Stripe är inte konfigurerad för denna miljö. Slutför Stripe go-live i projektet.',
-  );
+  throw new Error(PAYMENTS_FROZEN_MESSAGE);
 }
 
 let stripePromise: Promise<Stripe | null> | undefined;
@@ -27,5 +32,10 @@ export function getStripeEnvironment(): StripeEnv {
 }
 
 export function isPaymentsConfigured(): boolean {
-  return !!clientToken && (clientToken.startsWith('pk_test_') || clientToken.startsWith('pk_live_'));
+  return !!clientToken && clientToken.startsWith('pk_test_');
+}
+
+/** True when payments run in Stripe test mode (always true during the freeze). */
+export function isPaymentsTestMode(): boolean {
+  return isPaymentsConfigured();
 }

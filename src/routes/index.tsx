@@ -4,7 +4,7 @@ import heroCabin from "../assets/hero-cabin.jpg";
 import { regions } from "../data/areas";
 import { SwedenMap } from "../components/SwedenMap";
 import { LastMinuteSection } from "../components/LastMinuteSection";
-import { EscrowFAQ } from "../components/EscrowFAQ";
+import { PaymentFAQ } from "../components/PaymentFAQ";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -168,7 +168,7 @@ function HomePage() {
           <div className="grid gap-6 md:grid-cols-3">
             {[
               { icon: MapPin, title: "Hela fjällkedjan samlad", text: "Dalafjällen, Härjedalen och Jämtland - 21 fjällområden från Grövelsjön i söder till Storlien i norr." },
-              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort eller Swish via Fjällportalen. Vi håller pengarna och släpper dem till värden 24 timmar efter incheckning." },
+              { icon: ShieldCheck, title: "Tryggt betalningsflöde", text: "Betala med kort via Fjällportalen. Betalningen hanteras av Stripe och utbetalningen till värden schemaläggs efter incheckning." },
               { icon: Heart, title: "Lokalt och äkta", text: "Fjällets egna stugägare bakom varje annons - inga stora förmedlare, inga onödiga avgifter." },
             ].map(({ icon: Icon, title, text }) => (
               <div key={title} className="rounded-2xl bg-background p-7 shadow-[var(--shadow-soft)]">
@@ -184,7 +184,7 @@ function HomePage() {
       </section>
 
       {/* HOST CTA */}
-      <EscrowFAQ />
+      <PaymentFAQ />
 
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
         <div
@@ -208,7 +208,7 @@ function HomePage() {
                 <ArrowRight className="h-4 w-4" />
               </Link>
               <p className="mt-3 max-w-xs text-xs text-primary-foreground/85 md:text-right">
-                Gästen betalar tryggt via Fjällportalen - utbetalning till dig 24 timmar efter incheckning.
+                Gästen betalar tryggt via Fjällportalen - din utbetalning schemaläggs efter incheckning.
               </p>
             </div>
           </div>

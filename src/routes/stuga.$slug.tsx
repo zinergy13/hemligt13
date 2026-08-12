@@ -35,7 +35,7 @@ export const Route = createFileRoute("/stuga/$slug")({
     const title = seo ? `${seo.title} - Fjällportalen` : "Stuga - Fjällportalen";
     const description = seo?.description
       ? seo.description
-      : `Boka stuga tryggt via Fjällportalen - utbetalning till värden 24 timmar efter incheckning.`;
+      : `Boka stuga tryggt via Fjällportalen - utbetalningen till värden schemaläggs efter incheckning.`;
     const scripts: Array<{ type: string; children: string }> = [
       {
         type: "application/ld+json",

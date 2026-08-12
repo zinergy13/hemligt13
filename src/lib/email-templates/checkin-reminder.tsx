@@ -52,16 +52,16 @@ const Email = ({
             Utcheckning: <strong>{checkOutLabel || checkOut}</strong>
             {payoutAtLabel ? (
               <>
-                <br />Utbetalning till {hostName}: <strong>{payoutAtLabel}</strong>
+                <br />Utbetalning till {hostName}: <strong>tidigast {payoutAtLabel}</strong>
               </>
             ) : null}
           </Text>
         </Section>
 
         <Text style={styles.text}>
-          <strong>Så fungerar betalningen fram till incheckning:</strong> Ditt betalda belopp ligger
-          fortfarande tryggt hos {BRAND_NAME}. Först <strong>24 timmar efter din incheckning
-          {payoutAtLabel ? ` (${payoutAtLabel})` : ''}</strong> släpps pengarna till {hostName}. Om
+          <strong>Så fungerar betalningen fram till incheckning:</strong> Betalningen görs via{' '}
+          {BRAND_NAME} och hanteras av Stripe. Utbetalningen till {hostName} schemaläggs
+          <strong> efter din incheckning{payoutAtLabel ? ` (tidigast ${payoutAtLabel})` : ''}</strong>. Om
           något inte stämmer vid ankomst - hör av dig till oss direkt så hjälper vi dig innan
           utbetalningen sker.
         </Text>

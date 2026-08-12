@@ -82,46 +82,21 @@ async function sendCheckinNotifications(origin: string) {
   return results;
 }
 
-async function sendPayoutNotifications(origin: string) {
-  const { data: rows, error } = await admin()
-    .from('bookings')
-    .select('id, guest_id, cabin_id, host_id, check_in, total_price')
-    .eq('escrow_status', 'released')
-    .is('payout_notified_at', null)
-    .limit(50);
-  if (error) throw error;
-  const results: Array<{ id: string; sent: boolean }> = [];
-  for (const b of rows ?? []) {
-    const [{ email, firstName }, { data: cabin }, { data: hostProfile }] = await Promise.all([
-      guestEmailAndName(b.guest_id),
-      admin().from('cabins').select('title').eq('id', b.cabin_id).maybeSingle(),
-      admin().from('profiles').select('full_name').eq('id', b.host_id).maybeSingle(),
-    ]);
-    if (!email) {
-      await admin().from('bookings').update({ payout_notified_at: new Date().toISOString() }).eq('id', b.id);
-      results.push({ id: b.id, sent: false });
-      continue;
-    }
-    const res = await sendInternalTemplatedEmail({
-      templateName: 'payout-released',
-      recipientEmail: email,
-      idempotencyKey: `payout-${b.id}`,
-      bookingId: b.id,
-      origin,
-      templateData: {
-        guestName: firstName,
-        cabinName: cabin?.title ?? 'din stuga',
-        hostName: hostProfile?.full_name?.split(' ')[0] ?? 'värden',
-        ...buildBookingEmailFields({ id: b.id, check_in: b.check_in }),
-        totalKr: b.total_price,
-      },
-    });
-    if (res.ok) {
-      await admin().from('bookings').update({ payout_notified_at: new Date().toISOString() }).eq('id', b.id);
-    }
-    results.push({ id: b.id, sent: res.ok });
-  }
-  return results;
+/**
+ * WP-000 safety freeze (P0-002).
+ *
+ * Payout-released messaging is DISABLED. A database status change is not proof
+ * that money moved: no Stripe transfer/payout object exists yet. This job may
+ * only be re-enabled by WP-004, and then only when a verified `payout.paid`
+ * provider event is persisted for the booking.
+ */
+export const PAYOUT_NOTIFICATIONS_ENABLED = false;
+
+async function sendPayoutNotifications(): Promise<{ disabled: true; reason: string }> {
+  return {
+    disabled: true,
+    reason: 'WP-000: payout-released email requires a verified Stripe payout event',
+  };
 }
 
 /**
@@ -210,7 +185,7 @@ export const Route = createFileRoute('/api/public/hooks/booking-notifications')(
           const [confirmation, checkin, payout] = await Promise.all([
             sendMissedBookingConfirmations(origin),
             sendCheckinNotifications(origin),
-            sendPayoutNotifications(origin),
+            sendPayoutNotifications(),
           ]);
           return Response.json({ ok: true, confirmation, checkin, payout });
         } catch (e) {

@@ -1,6 +1,12 @@
 # Fjällportalen
 
-vi ska bygga en app där alla i sälen kläppen och stöten kan hyra ut sina fj
+**Project status: Private Beta.** The site is password-gated, payments run in Stripe
+test mode only, and host payouts are not yet implemented. See
+`docs/LOVABLE_MASTER_AUDIT_AND_IMPLEMENTATION_PLAN.md` (v2.0) for the authoritative
+plan and `docs/decisions/` for recorded decisions.
+
+Fjällportalen is a managed Swedish cabin-rental marketplace for the mountain areas
+(Sälen, Kläppen, Stöten and 24 more), where owners can rent out their cabins.
 
 This project was built with [Lovable](https://lovable.dev).
 

@@ -729,7 +729,7 @@ Lovable must update this table after each work packet. Evidence should be a migr
 | D-002 | Guest-paid 400 SEK service fee | P0 | — | DECIDED | VAT-inclusive baseline; accountant approval required before live mode |
 | D-003 | Remove guest personnummer at launch | P0 | — | DECIDED | Minimize guest PII; Stripe handles host KYC |
 | D-004 | Use and validate 27 canonical areas | P1 | — | DECIDED | Generate counts from canonical data |
-| WP-000 | Freeze unsafe claims/real-money behavior | P0 | — | TODO | Keep site gated; update architecture/copy |
+| WP-000 | Freeze unsafe claims/real-money behavior | P0 | — | DONE 2026-08-12 | `docs/decisions/WP-000-safety-freeze.md`; migration unscheduling `release-escrow-hourly` + no-op `release_eligible_escrow()`; `src/test/wp000-payment-claims.test.ts` (11 tests pass); site remains password-gated |
 | WP-001 | Reconcile live Supabase state | P0 | WP-000 | TODO | Live access required |
 | WP-002 | Reproducible build and CI | P0 | — | TODO | npm lock currently fails clean install |
 | WP-003 | Authoritative quote + atomic hold/booking | P0 | WP-001/002 | TODO | Replace client-authoritative totals |

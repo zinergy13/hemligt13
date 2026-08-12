@@ -14,15 +14,15 @@ const steps: Step[] = [
     icon: CreditCard,
     title: "Du betalar",
     description:
-      "Betala tryggt med kort eller Swish när bokningen bekräftas. Full summa reserveras direkt.",
+      "Betala tryggt med kort när bokningen bekräftas. Full summa reserveras direkt.",
     when: "Vid bokning",
   },
   {
     key: "escrow",
     icon: ShieldCheck,
-    title: "Fjällportalen håller pengarna",
+    title: "Fjällportalen styr betalningen",
     description:
-      "Beloppet ligger säkert hos oss fram till din vistelse - värden får inget förrän du checkat in.",
+      "Betalningen hanteras av Stripe och värden får ingen utbetalning förrän du checkat in.",
     when: "Fram till incheckning",
   },
   {
@@ -38,8 +38,8 @@ const steps: Step[] = [
     icon: Wallet,
     title: "Värden får betalt",
     description:
-      "24 timmar efter incheckning släpps pengarna till värden. Avbokning >48h före incheckning ger full återbetalning.",
-    when: "24h efter incheckning",
+      "Utbetalningen till värden schemaläggs efter incheckning. Avbokning >48h före incheckning ger full återbetalning.",
+    when: "Efter incheckning",
   },
 ];
 
@@ -115,7 +115,7 @@ export function PaymentPayoutTimeline({ booking }: { booking?: TimelineBooking }
           <p className="mt-0.5 text-xs text-muted-foreground">
             {anyCancelled
               ? "Bokningen är avbokad - betalningen återbetalas enligt villkoren."
-              : "Trygg betalning via Fjällportalen - utbetalning 24h efter incheckning."}
+              : "Trygg betalning via Fjällportalen - utbetalning schemaläggs efter incheckning."}
           </p>
         </div>
         <span
@@ -125,7 +125,7 @@ export function PaymentPayoutTimeline({ booking }: { booking?: TimelineBooking }
               : "bg-primary/10 text-primary"
           }`}
         >
-          {anyCancelled ? "Avbokad" : "Escrow"}
+          {anyCancelled ? "Avbokad" : "Trygg betalning"}
         </span>
       </header>
 

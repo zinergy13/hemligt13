@@ -27,6 +27,7 @@ The PRD is reference material, not the implementation authority. When it conflic
 Lovable must execute one work packet at a time and update the tracker and change log in the master document:
 
 1. `WP-000` — freeze unsafe payment/payout claims and live money behavior.
+   Status: DONE 2026-08-12 — evidence in `docs/decisions/WP-000-safety-freeze.md`.
 2. `WP-001` — reconcile actual Lovable Cloud/Supabase production state.
 3. `WP-002` — repair package manager, lockfile, build, and CI reproducibility. This may run alongside WP-001.
 4. `WP-003` — build server-authoritative quotes and atomic reservation holds.

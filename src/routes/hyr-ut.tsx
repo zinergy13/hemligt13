@@ -41,7 +41,7 @@ function HostPage() {
   const steps = [
     { icon: Camera, title: "Lägg upp din stuga", text: "Bilder, beskrivning, faciliteter och läge - vi guidar dig steg för steg." },
     { icon: Calendar, title: "Sätt pris & kalender", text: "Du bestämmer pris per vecka, helg eller dygn. Blockera datum när du vill bo själv." },
-    { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Vi håller pengarna och betalar ut till dig 24 timmar efter incheckning." },
+    { icon: Wallet, title: "Få betalt tryggt", text: "Gästen betalar via Fjällportalen. Betalningen hanteras av Stripe och din utbetalning schemaläggs efter incheckning." },
   ];
 
   return (
@@ -69,7 +69,7 @@ function HostPage() {
               </Link>
             </div>
             <p className="mt-4 text-sm text-secondary-foreground/75">
-              Gratis att lägga upp. Gästen betalar tryggt via Fjällportalen - utbetalning till dig 24 timmar efter incheckning.
+              Gratis att lägga upp. Gästen betalar tryggt via Fjällportalen - din utbetalning schemaläggs efter incheckning.
             </p>
           </div>
         </div>

@@ -79,7 +79,7 @@ export const Route = createRootRoute({
       { name: "author", content: "Fjällportalen" },
       { property: "og:site_name", content: "Fjällportalen" },
       { property: "og:title", content: "Fjällportalen - Hyr stuga i svenska fjällen" },
-      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt - vi håller betalningen och släpper den till värden 24 timmar efter incheckning." },
+      { property: "og:description", content: "Sveriges samlade plats för stuguthyrning i fjällen. Hyr eller hyr ut din stuga tryggt - betalningen hanteras av Stripe och utbetalningen till värden schemaläggs efter incheckning." },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
     ],
@@ -113,7 +113,7 @@ export const Route = createRootRoute({
               url: "https://fjallportalen.com",
               logo: "https://fjallportalen.com/favicon.png",
               description:
-                "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.",
+                "Sveriges samlade plats för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - utbetalningen till värden schemaläggs efter incheckning.",
               areaServed: "SE",
               contactPoint: {
                 "@type": "ContactPoint",

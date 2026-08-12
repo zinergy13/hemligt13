@@ -105,7 +105,7 @@ function HostInvoicePage() {
         <div>
           <h1 className="font-serif text-3xl text-foreground md:text-4xl">Mitt saldo</h1>
           <p className="mt-1 max-w-2xl text-sm text-muted-foreground">
-            Fjällportalen tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen betalar tryggt via Fjällportalen - vi betalar ut till dig 24 timmar efter incheckning och du betalar plattformsavgiften månadsvis via faktura.
+            Fjällportalen tar {formatOre(feePerBooking)} per genomförd uthyrning. Gästen betalar tryggt via Fjällportalen - din utbetalning schemaläggs efter incheckning och du betalar plattformsavgiften månadsvis via faktura.
           </p>
         </div>
         <div className="flex flex-wrap gap-2">

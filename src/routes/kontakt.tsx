@@ -22,7 +22,7 @@ export const Route = createFileRoute("/kontakt")({
           email: "info@fjallportalen.com",
           priceRange: "$$",
           description:
-            "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - pengarna släpps till värden 24 timmar efter incheckning.",
+            "Sveriges samlade plattform för stuguthyrning i fjällen. Trygg betalning via Fjällportalen - utbetalningen till värden schemaläggs efter incheckning.",
           address: {
             "@type": "PostalAddress",
             streetAddress: "Storgatan 12",

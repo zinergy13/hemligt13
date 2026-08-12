@@ -1,16 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { describe, it, expect } from "vitest";
-import { EscrowFAQ } from "./EscrowFAQ";
+import { PaymentFAQ } from "./PaymentFAQ";
 
 /**
  * Guardrail: FAQPage JSON-LD MUST match the rendered FAQ text 1:1.
  * Google flags mismatches as spammy structured data.
  */
-describe("EscrowFAQ structured data", () => {
+describe("PaymentFAQ structured data", () => {
   it("has FAQPage JSON-LD matching the rendered questions and answers exactly", async () => {
     const user = userEvent.setup();
-    const { container } = render(<EscrowFAQ />);
+    const { container } = render(<PaymentFAQ />);
 
     // Parse the JSON-LD script emitted by the component.
     const script = container.querySelector('script[type="application/ld+json"]');

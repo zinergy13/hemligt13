@@ -4,7 +4,7 @@ import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe
 import { getStripe, isPaymentsConfigured, PAYMENTS_FROZEN_MESSAGE } from '@/lib/stripe';
 import { createBookingCheckout } from '@/lib/payments.functions';
 import { PaymentTestModeBanner } from '@/components/PaymentTestModeBanner';
-import { EscrowFAQ } from '@/components/EscrowFAQ';
+import { PaymentFAQ } from '@/components/PaymentFAQ';
 import { PaymentPayoutTimeline } from '@/components/PaymentPayoutTimeline';
 import { useAuth } from '@/hooks/useAuth';
 import { useLiveBooking } from '@/hooks/useLiveBooking';
@@ -83,7 +83,7 @@ function CheckoutPage() {
         <div className="mt-6">
           <PaymentPayoutTimeline booking={liveBooking} />
         </div>
-        <EscrowFAQ compact />
+        <PaymentFAQ compact />
       </div>
     </div>
   );

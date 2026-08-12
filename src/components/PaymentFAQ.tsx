@@ -30,7 +30,7 @@ const FAQS: FAQ[] = [
   },
 ];
 
-export function EscrowFAQ({ compact = false }: { compact?: boolean }) {
+export function PaymentFAQ({ compact = false }: { compact?: boolean }) {
   const [openIdx, setOpenIdx] = useState<number | null>(0);
 
   return (

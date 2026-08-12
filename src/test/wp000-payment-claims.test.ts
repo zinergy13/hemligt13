@@ -13,8 +13,8 @@ const ROOTS = ['src/components', 'src/routes', 'src/lib'];
 const ALLOWLIST = [
   // Internal identifiers / DB columns, not customer claims.
   'src/components/PaymentPayoutTimeline.tsx',
-  'src/components/EscrowFAQ.tsx',
-  'src/components/EscrowFAQ.test.tsx',
+  'src/components/PaymentFAQ.tsx',
+  'src/components/PaymentFAQ.test.tsx',
   'src/lib/email-templates/registry.ts',
   'src/lib/email-templates/escrow-activated.tsx',
   'src/lib/payments.functions.ts',

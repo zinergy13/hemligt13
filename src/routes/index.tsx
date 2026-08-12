@@ -4,7 +4,7 @@ import heroCabin from "../assets/hero-cabin.jpg";
 import { regions } from "../data/areas";
 import { SwedenMap } from "../components/SwedenMap";
 import { LastMinuteSection } from "../components/LastMinuteSection";
-import { EscrowFAQ } from "../components/EscrowFAQ";
+import { PaymentFAQ } from "../components/PaymentFAQ";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -184,7 +184,7 @@ function HomePage() {
       </section>
 
       {/* HOST CTA */}
-      <EscrowFAQ />
+      <PaymentFAQ />
 
       <section className="mx-auto max-w-7xl px-4 py-20 md:px-6 md:py-28">
         <div

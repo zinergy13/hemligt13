@@ -4,15 +4,15 @@ import { HelpCircle } from 'lucide-react';
 const items = [
   {
     q: 'Är Fjällportalen en mellanhand som tar extra betalt?',
-    a: 'Nej. Fjällportalen är en trygghetsplattform - inte en mellanhand som lägger på extra pålägg. Priset du ser är priset du betalar. Vi tar en transparent serviceavgift som redovisas separat i kvittot.',
+    a: 'Fjällportalen är en trygghetsplattform. Priset värden satt är det pris du betalar, plus en transparent serviceavgift som redovisas separat i kvittot.',
   },
   {
     q: 'Varför får inte värden pengarna direkt?',
-    a: 'För att skydda dig som gäst. Om stugan inte stämmer med annonsen eller nyckeln inte fungerar kan vi hjälpa dig innan pengarna släpps. Utan escrow är det svårt att få tillbaka en betalning.',
+    a: 'För att skydda dig som gäst. Om stugan inte stämmer med annonsen eller nyckeln inte fungerar kan vi hjälpa dig innan utbetalningen till värden görs.',
   },
   {
-    q: 'När exakt släpps pengarna till värden?',
-    a: '24 timmar efter din incheckningsdag. Har du inte hört av dig med problem inom det fönstret betalas värden ut automatiskt. Du ser exakt datum i tidslinjen ovan.',
+    q: 'När får värden sin utbetalning?',
+    a: 'Utbetalningen schemaläggs efter din incheckning. Under vår privata beta bekräftas exakta tider innan betalflödet öppnas för riktiga betalningar.',
   },
   {
     q: 'Vad händer om jag avbokar?',
@@ -20,11 +20,11 @@ const items = [
   },
   {
     q: 'Vad händer om det är fel på stugan vid incheckning?',
-    a: 'Kontakta oss direkt via chatten eller support@fjallportalen.com inom 24 timmar. Vi pausar utbetalningen och hjälper dig få rätt - antingen en lösning med värden eller full/delvis återbetalning.',
+    a: 'Kontakta oss direkt via chatten eller support@fjallportalen.com. Vi pausar utbetalningen och hjälper dig få rätt - antingen en lösning med värden eller full/delvis återbetalning.',
   },
   {
     q: 'Hur vet jag att betalningen är säker?',
-    a: 'Betalningen sker via Stripe med samma säkerhet som storbanker (PCI DSS Level 1, 3D Secure). Fjällportalen ser aldrig ditt kortnummer och pengarna ligger på ett separat klientmedelskonto fram till utbetalning.',
+    a: 'Betalningen sker via Stripe med samma säkerhet som storbanker (PCI DSS Level 1, 3D Secure). Fjällportalen ser aldrig ditt kortnummer.',
   },
 ];
 

@@ -15,5 +15,10 @@ export function PaymentTestModeBanner() {
       </div>
     );
   }
-  return null;
+  // WP-000: live mode is frozen - never present a real-money checkout.
+  return (
+    <div className="w-full bg-destructive/10 border-b border-destructive/30 px-4 py-2 text-center text-sm text-destructive">
+      Riktiga betalningar är avstängda under privat beta. Endast testläge är tillgängligt.
+    </div>
+  );
 }

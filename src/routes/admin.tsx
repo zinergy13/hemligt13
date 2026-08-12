@@ -17,5 +17,16 @@ export const Route = createFileRoute("/admin")({
       throw redirect({ to: "/" });
     }
   },
-  component: () => <Outlet />,
+  component: AdminLayout,
 });
+
+function AdminLayout() {
+  return (
+    <>
+      <div className="w-full border-b border-amber-300 bg-amber-100 px-4 py-2 text-center text-xs font-medium text-amber-900">
+        Privat beta - betalningar körs i testläge och utbetalningar till värdar är inte aktiverade.
+      </div>
+      <Outlet />
+    </>
+  );
+}

@@ -24,36 +24,36 @@ const Email = ({
 }: Props) => (
   <Html lang="sv" dir="ltr">
     <Head />
-    <Preview>Din betalning ligger nu tryggt hos {BRAND_NAME}</Preview>
+    <Preview>Din betalning är mottagen via {BRAND_NAME}</Preview>
     <Body style={styles.main}>
       <Container style={styles.container}>
         <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h1}>Pengarna är säkra hos oss</Heading>
+        <Heading style={styles.h1}>Din betalning är mottagen</Heading>
         <Text style={styles.text}>
           Hej{guestName ? ` ${guestName}` : ''},<br />
-          Din betalning för {cabinName} är mottagen och ligger nu tryggt hos {BRAND_NAME}
-          - värden får ingen del av pengarna förrän 24 timmar efter din incheckning.
+          Din betalning för {cabinName} är mottagen och hanteras av vår betalpartner Stripe
+          - värden får ingen utbetalning förrän efter din incheckning.
         </Text>
 
         <Section style={{ backgroundColor: '#ffffff', border: `1px solid ${brand.border}`, borderRadius: 10, padding: '16px 20px', margin: '0 0 20px' }}>
           <Text style={{ ...styles.muted, margin: '0 0 6px' }}>
-            Belopp i förvar{bookingRef ? ` · Bokning #${bookingRef}` : ''}
+            Betalt belopp{bookingRef ? ` · Bokning #${bookingRef}` : ''}
           </Text>
           <Text style={{ ...styles.h1, fontSize: 22, margin: '0 0 10px' }}>{totalKr.toLocaleString('sv-SE')} kr</Text>
           <Text style={{ ...styles.muted, margin: 0 }}>
             Incheckning: <strong>{checkInLabel || checkIn}</strong><br />
-            Utbetalning till värden: <strong>{payoutAtLabel || '24 timmar efter incheckning'}</strong>
+            Utbetalning till värden: <strong>{payoutAtLabel ? `tidigast ${payoutAtLabel}` : 'schemaläggs efter incheckning'}</strong>
           </Text>
         </Section>
 
         <Text style={styles.text}>
           Är något inte som förväntat vid ankomst? Kontakta oss direkt så pausar vi utbetalningen
-          och hjälper till innan pengarna släpps till värden.{bookingRef ? ` Ange bokning #${bookingRef}.` : ''}
+          och hjälper till innan värden får betalt.{bookingRef ? ` Ange bokning #${bookingRef}.` : ''}
         </Text>
 
         <div style={styles.divider} />
         <Text style={styles.footer}>
-          Detta är ditt kvitto på att betalningen tagits emot och förvaras säkert.
+          Detta är ditt kvitto på att betalningen tagits emot.
         </Text>
       </Container>
     </Body>
@@ -62,8 +62,8 @@ const Email = ({
 
 export const template = {
   component: Email,
-  subject: 'Din betalning ligger tryggt hos Fjällportalen',
-  displayName: 'Escrow aktiverat',
+  subject: 'Din betalning är mottagen - Fjällportalen',
+  displayName: 'Betalning mottagen',
   previewData: {
     guestName: 'Anna',
     cabinName: 'Björkstugan',

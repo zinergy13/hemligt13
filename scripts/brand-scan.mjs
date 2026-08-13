@@ -35,6 +35,7 @@ const WHITELIST_PATHS = [
   ".vinxi",
   ".tanstack",
   ".lovable",
+  "docs",
   "scripts/brand-scan.mjs",
   "src/integrations/lovable",
   "src/integrations/supabase",

@@ -209,7 +209,7 @@ function MyBookingsPage() {
                             params={{ bookingId: b.id }}
                             className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
                           >
-                            Betala {Math.max(0, Math.round(payableOre / 100)).toLocaleString("sv-SE")} kr
+                            Betala {Math.max(0, Math.round(payableKr)).toLocaleString("sv-SE")} kr
                           </Link>
                         </div>
                       );

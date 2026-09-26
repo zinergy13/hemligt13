@@ -197,6 +197,7 @@ function MyBookingsPage() {
                     const paymentStatus = (b as unknown as { payment_status?: string }).payment_status;
                     const needsPayment = (b.status === "confirmed" || b.status === "pending") && paymentStatus !== "paid" && paymentStatus !== "refunded";
                     if (needsPayment) {
+                      const payableOre = b.total_price + (payableAdjust[b.id] ?? 0);
                       return (
                         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
                           <div className="text-xs text-muted-foreground">
@@ -207,7 +208,7 @@ function MyBookingsPage() {
                             params={{ bookingId: b.id }}
                             className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
                           >
-                            Betala {b.total_price.toLocaleString("sv-SE")} kr
+                            Betala {Math.max(0, Math.round(payableOre / 100)).toLocaleString("sv-SE")} kr
                           </Link>
                         </div>
                       );

@@ -422,15 +422,8 @@ export function applyDynamicRules(quote: Quote, rule: PricingRule | null, opts: 
     );
   }
 
-  // High-demand markup (applied as informational - hosts opt in per season in practice)
-  if (rule.high_demand_markup_pct > 0) {
-    pushAdj(
-      `Högsäsongstillägg (+${rule.high_demand_markup_pct}%)`,
-      rule.high_demand_markup_pct,
-      1,
-      "Aktivt när efterfrågan är hög",
-    );
-  }
+  // High-demand markup: there is no demand signal yet, so it is never applied
+  // automatically. Hosts raise prices for peak periods via season pricing.
 
   return {
     ...quote,

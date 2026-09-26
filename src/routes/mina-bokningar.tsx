@@ -29,6 +29,38 @@ function ReviewCTA({ bookingId, cabinId }: { bookingId: string; cabinId: string 
   return <ReviewForm bookingId={bookingId} cabinId={cabinId} onDone={() => setOpen(false)} />;
 }
 
+/**
+ * Total amount the guest is actually charged per booking: total_price plus
+ * extras, minus redeemed gift cards. Used so the "Betala" button matches the
+ * Stripe charge.
+ */
+const payableAmountsQuery = (bookingIds: string[]) =>
+  queryOptions({
+    queryKey: ["guest", "payable-amounts", bookingIds],
+    staleTime: 60_000,
+    enabled: bookingIds.length > 0,
+    queryFn: async (): Promise<Record<string, number>> => {
+      const [{ data: extras }, { data: gifts }] = await Promise.all([
+        supabase
+          .from("booking_extras")
+          .select("booking_id, quantity, guest_price")
+          .in("booking_id", bookingIds),
+        supabase
+          .from("gift_card_redemptions")
+          .select("booking_id, amount_ore")
+          .in("booking_id", bookingIds),
+      ]);
+      const map: Record<string, number> = {};
+      for (const e of extras ?? []) {
+        map[e.booking_id] = (map[e.booking_id] ?? 0) + (e.quantity ?? 1) * (e.guest_price ?? 0);
+      }
+      for (const g of gifts ?? []) {
+        map[g.booking_id] = (map[g.booking_id] ?? 0) - (g.amount_ore ?? 0);
+      }
+      return map;
+    },
+  });
+
 export const Route = createFileRoute("/mina-bokningar")({
   head: () => ({ meta: [{ title: "Mina bokningar - Fjällportalen" }] }),
   component: MyBookingsPage,

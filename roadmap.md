@@ -1,0 +1,4 @@
+- [x] Spärra inaktuella och förbjudna mejlåterförsök.
+- [ ] Avsluta fyra gamla mejlposter — blockerad: Lovable Cloud startar fortfarande.
+- [ ] Sätt servergräns för stugbilder — blockerad: Lovable Cloud startar fortfarande. Lokal validering klar.
+- [x] Kör tester och dokumentera kvarvarande hinder.

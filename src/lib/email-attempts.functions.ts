@@ -1,6 +1,7 @@
 import { createServerFn } from '@tanstack/react-start';
 import { z } from 'zod';
 import { requireSupabaseAuth } from '@/integrations/supabase/auth-middleware';
+import { retryBlockReason } from '@/lib/email/retry-eligibility';
 
 const ListInput = z.object({
   status: z.enum(['all', 'pending', 'failed', 'sent']).default('all'),
@@ -71,11 +72,25 @@ export const retryEmailAttempt = createServerFn({ method: 'POST' })
     if (error) throw new Error(error.message);
     if (!row) throw new Error('Not found');
 
+    let checkIn: string | null = null;
+    if (row.template_name === 'checkin-reminder' && row.booking_id) {
+      const { data: booking, error: bookingError } = await supabaseAdmin
+        .from('bookings')
+        .select('check_in')
+        .eq('id', row.booking_id)
+        .maybeSingle();
+      if (bookingError) throw new Error(bookingError.message);
+      checkIn = booking?.check_in ?? null;
+    }
+    const block = retryBlockReason(row, checkIn);
+    if (block) throw new Error(block);
+
     // Reset attempts so send-internal can persist a fresh outcome
-    await supabaseAdmin
+    const { error: resetError } = await supabaseAdmin
       .from('email_attempts')
       .update({ status: 'pending', attempts: 0, next_retry_at: null, last_error: null })
       .eq('id', row.id);
+    if (resetError) throw new Error(resetError.message);
 
     const { sendInternalTemplatedEmail } = await import('@/lib/email/send-internal');
     const res = await sendInternalTemplatedEmail({

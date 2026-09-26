@@ -12,6 +12,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.functions';
+import { Button } from '@/components/ui/button';
+import { retryBlockReason } from '@/lib/email/retry-eligibility';
 
 export const Route = createFileRoute('/admin/epost-status/$bookingId')({
   head: () => ({
@@ -140,13 +142,13 @@ function BookingEmailDetail() {
                     </span>
                   </div>
                   {latest.status !== 'sent' && (
-                    <button
+                     <Button variant="outline" size="sm"
                       onClick={() => retryMut.mutate(latest.id)}
-                      disabled={retryMut.isPending}
-                      className="inline-flex items-center gap-1 rounded-md border bg-background px-3 py-1.5 text-xs hover:bg-muted disabled:opacity-50"
+                       disabled={retryMut.isPending || Boolean(retryBlockReason(latest))}
+                       title={retryBlockReason(latest) ?? 'Försök skicka igen'}
                     >
                       <RefreshCw className="h-3 w-3" /> Försök igen
-                    </button>
+                     </Button>
                   )}
                 </header>
 
@@ -194,13 +196,13 @@ function BookingEmailDetail() {
                           </td>
                           <td className="px-3 py-2 text-right">
                             {r.status !== 'sent' && (
-                              <button
+                               <Button variant="outline" size="sm"
                                 onClick={() => retryMut.mutate(r.id)}
-                                disabled={retryMut.isPending}
-                                className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
+                                 disabled={retryMut.isPending || Boolean(retryBlockReason(r))}
+                                 title={retryBlockReason(r) ?? 'Försök skicka igen'}
                               >
                                 <RefreshCw className="h-3 w-3" /> Försök igen
-                              </button>
+                               </Button>
                             )}
                           </td>
                         </tr>

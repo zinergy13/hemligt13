@@ -3,6 +3,7 @@ import { createClient } from '@supabase/supabase-js';
 import type { Database } from '@/integrations/supabase/types';
 import { timingSafeEqual, createHash } from 'node:crypto';
 import { sendInternalTemplatedEmail } from '@/lib/email/send-internal';
+import { retryBlockReason } from '@/lib/email/retry-eligibility';
 
 function safeEqual(a: string, b: string): boolean {
   const ha = createHash('sha256').update(a, 'utf8').digest();
@@ -46,6 +47,14 @@ export const Route = createFileRoute('/api/public/hooks/email-retry')({
 
         const results: Array<{ id: string; ok: boolean; status: number }> = [];
         for (const r of rows ?? []) {
+          let checkIn: string | null = null;
+          if (r.template_name === 'checkin-reminder' && r.booking_id) {
+            const { data: booking, error: bookingError } = await admin()
+              .from('bookings').select('check_in').eq('id', r.booking_id).maybeSingle();
+            if (bookingError) return Response.json({ ok: false }, { status: 500 });
+            checkIn = booking?.check_in ?? null;
+          }
+          if (retryBlockReason(r, checkIn)) continue;
           const res = await sendInternalTemplatedEmail({
             templateName: r.template_name,
             recipientEmail: r.recipient_email,

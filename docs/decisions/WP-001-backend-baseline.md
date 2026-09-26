@@ -53,3 +53,16 @@ En bucket: `cabin-images` (publik läsning, ingen storleksgräns satt).
 3. Tabeller med bara en policy bör granskas rollvis.
 4. Momsbehandling av gästavgiften (D-002) väntar fortfarande på revisorsgodkännande;
    live-läge förblir blockerat.
+
+## Uppföljning 2026-09-26
+
+Den tidigare baslinjen gäller läsningen 2026-09-10, inte nödvändigtvis nuvarande
+databasinstans. Fyra då fastnade poster: en försenad incheckningspåminnelse, ett
+utbetalningsbesked som WP-000 förbjuder, samt två administrativa varningar.
+Inget av dessa ska skickas om. Administrativa och automatiska återförsök spärras
+i koden för permanent nekade utskick, gamla varningar och utbetalningsbesked;
+incheckningsdatum kontrolleras på servern. Bildformuläret begränsas till JPEG,
+PNG och WebP, högst 10 MB. Databasens gamla poster och lagringsbucketens faktiska
+inställningar måste kontrolleras/uppdateras när Lovable Cloud åter är helt redo.
+WP-009 återstår: konsolidera `email_attempts` med den befintliga mejlkön och
+verifiera skickat/levererat mot mejlloggens senaste status per meddelande.

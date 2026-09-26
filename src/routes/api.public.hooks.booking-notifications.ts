@@ -42,6 +42,7 @@ async function sendCheckinNotifications(origin: string) {
   const { data: rows, error } = await admin()
     .from('bookings')
     .select('id, guest_id, cabin_id, check_in, check_out, host_id')
+    .gte('check_in', new Date().toISOString().slice(0, 10))
     .lte('check_in', windowEnd)
     .eq('payment_status', 'paid')
     .in('escrow_status', ['holding', 'released'])

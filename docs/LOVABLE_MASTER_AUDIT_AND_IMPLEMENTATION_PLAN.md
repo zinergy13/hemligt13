@@ -730,7 +730,7 @@ Lovable must update this table after each work packet. Evidence should be a migr
 | D-003 | Remove guest personnummer at launch | P0 | — | DECIDED | Minimize guest PII; Stripe handles host KYC |
 | D-004 | Use and validate 27 canonical areas | P1 | — | DECIDED | Generate counts from canonical data |
 | WP-000 | Freeze unsafe claims/real-money behavior | P0 | — | DONE 2026-08-12 | `docs/decisions/WP-000-safety-freeze.md`; migration unscheduling `release-escrow-hourly` + no-op `release_eligible_escrow()`; `src/test/wp000-payment-claims.test.ts` (11 tests pass); site remains password-gated |
-| WP-001 | Reconcile live Supabase state | P0 | WP-000 | TODO | Live access required |
+| WP-001 | Reconcile live Supabase state | P0 | WP-000 | IN PROGRESS | `docs/decisions/WP-001-backend-baseline.md` contains 2026-09-10 snapshot; 2026-09-26 database startup blocks current-state verification |
 | WP-002 | Reproducible build and CI | P0 | — | TODO | npm lock currently fails clean install |
 | WP-003 | Authoritative quote + atomic hold/booking | P0 | WP-001/002 | TODO | Replace client-authoritative totals |
 | WP-004 | Controlled Stripe marketplace flow | P0 | WP-003 | TODO | Sandbox first; live blocked by provider/accounting/legal validation |
@@ -738,7 +738,7 @@ Lovable must update this table after each work packet. Evidence should be a migr
 | WP-006 | Automatic iCal + availability operations | P1 | WP-001/003 | TODO | Manual sync exists |
 | WP-007 | Complete search/guest journey | P1 | WP-003/006 | TODO | Current filters incomplete |
 | WP-008 | Extras fulfillment operations | P1 | WP-003/004 | TODO | Sales UI only partial |
-| WP-009 | Email/cron stabilization | P1 | WP-004 | TODO | Disable false payout email first |
+| WP-009 | Email/cron stabilization | P1 | WP-004 | TODO | Historic attempt retry guards added; canonical queue model and delivery reconciliation remain |
 | WP-010 | Ledger/accounting/Fortnox | P1 | WP-004, D-002 | TODO | Accountant review required |
 | WP-011 | Full i18n/content governance | P1/P2 | Stable core | TODO | Cabin text only is partial |
 | WP-012 | SEO/public launch | P1 | Launch-critical work | TODO | Site remains password-gated |
@@ -921,6 +921,7 @@ Append entries; do not rewrite historical entries.
 | 2026-07-31 | Codex audit | Private demo walkthrough | Verified signed-out home, search, cabin, host, how-it-works, contact, and login UX; added public-claims, area-count, address-disclosure, and description-rendering findings | Credentialed read-only walkthrough; no account, booking, payment, or form submitted | Authenticated dashboards and live provider/backend state remain unverified |
 | 2026-07-31 | Product direction + Codex architecture | D-001..D-004 | Replaced PRD-literal branching with one controlled marketplace target: Stripe Connect destination charges, hosted onboarding, staged T-30 accommodation collection, manual payout schedule, guest-paid 400 SEK fee, no guest personnummer, 27 canonical areas | Product-owner direction to optimize coherence/control; current Stripe marketplace/manual-payout guidance | Stripe platform profile/sandbox, Swedish legal/accounting, and live Supabase state still require validation |
 | 2026-08-12 | Lovable agent | WP-000 | Froze real-money behavior (server-owned sandbox-only payment env, client `environment` input removed, webhook `?env` ignored, live publishable key disabled), disabled timer-based payout release (`cron.unschedule('release-escrow-hourly')`, `release_eligible_escrow()` no-op, payout emails off), removed escrow/segregated-funds/24-hour payout claims from UI and email templates, renamed `EscrowFAQ` to `PaymentFAQ`, set Private Beta status in README and admin banner, recorded D-001..D-004 | `docs/decisions/WP-000-safety-freeze.md`, `docs/decisions/D-001-D-004-baselines.md`, `src/test/wp000-payment-claims.test.ts` (17/17 suite tests pass), migration applied 2026-08-12 | No live Stripe access or accountant validation available, so live mode stays hard-blocked; `bookings.escrow_status` fields remain until WP-004 replaces them |
+| 2026-09-26 | Lovable agent | WP-001 follow-up | Added retry eligibility checks for historic/permanently rejected email attempts and client image validation | Six focused tests pass; database reported startup and current rows/bucket were not verified | Old rows and bucket settings require a healthy backend; WP-009 queue reconciliation remains |
 
 ### Decision record template
 

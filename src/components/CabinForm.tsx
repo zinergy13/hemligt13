@@ -4,6 +4,7 @@ import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { areas } from "@/data/areas";
 import { AMENITY_OPTIONS, slugify, publicImageUrl, type CabinStatus } from "@/lib/cabins";
+import { CABIN_IMAGE_TYPES, validateCabinImage } from "@/lib/cabin-image-validation";
 
 export type CabinFormValues = {
   id?: string;
@@ -72,7 +73,12 @@ export function CabinForm({
       const cabinFolder = v.id ?? "draft-" + Date.now();
       const next: CabinFormImage[] = [];
       for (const file of Array.from(files)) {
-        const ext = file.name.split(".").pop() || "jpg";
+        const invalid = validateCabinImage(file);
+        if (invalid) {
+          toast.error(`${file.name}: ${invalid}`);
+          continue;
+        }
+        const ext = CABIN_IMAGE_TYPES[file.type];
         const path = `${userId}/${cabinFolder}/${crypto.randomUUID()}.${ext}`;
         const { error } = await supabase.storage.from("cabin-images").upload(path, file, {
           cacheControl: "3600",
@@ -355,10 +361,10 @@ export function CabinForm({
         <label className="flex cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border-2 border-dashed border-border bg-muted/30 px-4 py-10 text-center hover:bg-muted/60">
           <Upload className="h-6 w-6 text-muted-foreground" />
           <span className="text-sm font-medium text-foreground">Klicka för att ladda upp bilder</span>
-          <span className="text-xs text-muted-foreground">JPG/PNG, flera samtidigt</span>
+           <span className="text-xs text-muted-foreground">JPG, PNG eller WebP - högst 10 MB per bild</span>
           <input
             type="file"
-            accept="image/*"
+             accept="image/jpeg,image/png,image/webp"
             multiple
             className="hidden"
             onChange={(e) => handleFiles(e.target.files)}

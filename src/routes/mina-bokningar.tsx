@@ -83,6 +83,8 @@ function MyBookingsPage() {
   const rows = bookingsQ.data;
   const bookingIds = (rows ?? []).map((b) => b.id);
   const unread = useUnreadCounts(user?.id, bookingIds);
+  const payableQ = useQuery(payableAmountsQuery(bookingIds));
+  const payableAdjust = payableQ.data ?? {};
 
   if (loading || !user) {
     return (

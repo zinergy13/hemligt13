@@ -88,10 +88,11 @@ function CheckoutReceipt() {
   const { booking, cabin, extras, gift_card_ore } = data;
   const isPaid = booking.payment_status === 'paid';
 
-  const nightlyOre = booking.nightly_total * 100;
+  // Matches the Stripe line items: stay (incl. adjustments) + cleaning + extras - gift card.
+  const nightlyOre = Math.max(0, booking.total_price - booking.cleaning_fee) * 100;
   const cleaningOre = booking.cleaning_fee * 100;
   const extrasOre = extras.reduce((s, e) => s + e.guest_price_ore * e.quantity, 0);
-  const totalOre = booking.total_price * 100;
+  const totalOre = Math.max(0, booking.total_price * 100 + extrasOre - gift_card_ore);
 
   const checkIn = new Date(booking.check_in);
   // Indicative earliest payout date only - never presented as a guarantee (WP-000).

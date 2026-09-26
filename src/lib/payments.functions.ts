@@ -58,7 +58,8 @@ export const createBookingCheckout = createServerFn({ method: 'POST' })
         quantity: 1,
         price_data: {
           currency: 'sek',
-          unit_amount: booking.nightly_total * 100,
+          // Stay amount incl. dynamic adjustments, so the charge matches total_price + extras.
+          unit_amount: Math.max(0, booking.total_price - booking.cleaning_fee) * 100,
           product_data: {
             name: `${cabinTitle} - ${booking.nights} nätter`,
             description: `Incheckning ${booking.check_in} → ${booking.check_out}`,

@@ -14,6 +14,8 @@ import {
 } from 'lucide-react';
 import { toast } from 'sonner';
 import { listEmailAttempts, retryEmailAttempt } from '@/lib/email-attempts.functions';
+import { Button } from '@/components/ui/button';
+import { retryBlockReason } from '@/lib/email/retry-eligibility';
 
 export const Route = createFileRoute('/admin/epost-status')({
   head: () => ({
@@ -177,9 +179,7 @@ function EmailStatusPage() {
         <h1 className="font-serif text-2xl text-foreground md:text-3xl">E-poststatus</h1>
       </div>
       <p className="mb-6 text-sm text-muted-foreground">
-        Alla utskick loggas per bokning och mall. Misslyckade försök retryas automatiskt med
-        exponentiell backoff upp till 5 försök - därefter markeras de som misslyckade och kräver
-        manuellt återförsök.
+        Här visas registrerade utskicksförsök. Äldre eller permanent nekade mejl skickas inte om.
       </p>
 
       <div className="mb-6 grid grid-cols-3 gap-3">
@@ -236,13 +236,13 @@ function EmailStatusPage() {
             className="rounded-md border bg-background px-2 py-1.5 text-sm"
           />
         </label>
-        <button
+        <Button variant="outline" size="sm"
           onClick={() => qc.invalidateQueries({ queryKey: ['email-attempts'] })}
           className="ml-auto inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted"
         >
           <RefreshCw className="h-3.5 w-3.5" /> Uppdatera
-        </button>
-        <button
+        </Button>
+        <Button variant="outline" size="sm"
           onClick={handleExportCsv}
           disabled={exporting || total === 0}
           className="inline-flex items-center gap-1 rounded-md border px-3 py-1.5 text-sm hover:bg-muted disabled:opacity-50"
@@ -254,7 +254,7 @@ function EmailStatusPage() {
             <Download className="h-3.5 w-3.5" />
           )}
           Exportera CSV
-        </button>
+        </Button>
       </div>
 
       <div className="overflow-hidden rounded-xl border bg-card">
@@ -316,13 +316,13 @@ function EmailStatusPage() {
                     </td>
                     <td className="px-3 py-2 text-right">
                       {r.status !== 'sent' && (
-                        <button
+                        <Button variant="outline" size="sm"
                           onClick={() => retryMut.mutate(r.id)}
-                          disabled={retryMut.isPending}
-                          className="inline-flex items-center gap-1 rounded-md border px-2 py-1 text-xs hover:bg-muted disabled:opacity-50"
+                          disabled={retryMut.isPending || Boolean(retryBlockReason(r))}
+                          title={retryBlockReason(r) ?? 'Försök skicka igen'}
                         >
                           <RefreshCw className="h-3 w-3" /> Försök igen
-                        </button>
+                        </Button>
                       )}
                     </td>
                   </tr>

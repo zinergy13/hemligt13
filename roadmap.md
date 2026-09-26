@@ -1,0 +1,4 @@
+- [ ] Spärra inaktuella och förbjudna mejlåterförsök.
+- [ ] Avsluta fyra gamla mejlposter när databasen är tillgänglig.
+- [ ] Begränsa stugbilder till 10 MB och JPEG/PNG/WebP.
+- [ ] Verifiera och dokumentera resultatet.

@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, queryOptions } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Loader2, CalendarDays, MapPin, Inbox, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { areaBySlug } from "@/data/areas";
@@ -28,6 +29,40 @@ function ReviewCTA({ bookingId, cabinId }: { bookingId: string; cabinId: string 
   return <ReviewForm bookingId={bookingId} cabinId={cabinId} onDone={() => setOpen(false)} />;
 }
 
+/**
+ * Total amount the guest is actually charged per booking: total_price plus
+ * extras, minus redeemed gift cards. Used so the "Betala" button matches the
+ * Stripe charge.
+ */
+const payableAmountsQuery = (bookingIds: string[]) =>
+  queryOptions({
+    queryKey: ["guest", "payable-amounts", bookingIds],
+    staleTime: 60_000,
+    enabled: bookingIds.length > 0,
+    queryFn: async (): Promise<Record<string, number>> => {
+      const [{ data: extras }, { data: gifts }] = await Promise.all([
+        supabase
+          .from("booking_extras")
+          .select("booking_id, quantity, guest_price")
+          .in("booking_id", bookingIds),
+        supabase
+          .from("gift_card_redemptions")
+          .select("booking_id, amount_ore")
+          .in("booking_id", bookingIds),
+      ]);
+      const map: Record<string, number> = {};
+      for (const e of extras ?? []) {
+        if (!e.booking_id) continue;
+        map[e.booking_id] = (map[e.booking_id] ?? 0) + (e.quantity ?? 1) * (e.guest_price ?? 0);
+      }
+      for (const g of gifts ?? []) {
+        if (!g.booking_id) continue;
+        map[g.booking_id] = (map[g.booking_id] ?? 0) - (g.amount_ore ?? 0);
+      }
+      return map;
+    },
+  });
+
 export const Route = createFileRoute("/mina-bokningar")({
   head: () => ({ meta: [{ title: "Mina bokningar - Fjällportalen" }] }),
   component: MyBookingsPage,
@@ -50,6 +85,8 @@ function MyBookingsPage() {
   const rows = bookingsQ.data;
   const bookingIds = (rows ?? []).map((b) => b.id);
   const unread = useUnreadCounts(user?.id, bookingIds);
+  const payableQ = useQuery(payableAmountsQuery(bookingIds));
+  const payableAdjust = payableQ.data ?? {};
 
   if (loading || !user) {
     return (
@@ -162,6 +199,8 @@ function MyBookingsPage() {
                     const paymentStatus = (b as unknown as { payment_status?: string }).payment_status;
                     const needsPayment = (b.status === "confirmed" || b.status === "pending") && paymentStatus !== "paid" && paymentStatus !== "refunded";
                     if (needsPayment) {
+                      // total_price is in kr; extras/gift-card adjustments are in öre.
+                      const payableKr = b.total_price + (payableAdjust[b.id] ?? 0) / 100;
                       return (
                         <div className="mt-3 flex flex-wrap items-center justify-between gap-2 rounded-lg border border-primary/30 bg-primary/5 p-3">
                           <div className="text-xs text-muted-foreground">
@@ -172,7 +211,7 @@ function MyBookingsPage() {
                             params={{ bookingId: b.id }}
                             className="rounded-full bg-primary px-4 py-2 text-xs font-semibold text-primary-foreground hover:bg-primary/90"
                           >
-                            Betala {b.total_price.toLocaleString("sv-SE")} kr
+                            Betala {Math.max(0, Math.round(payableKr)).toLocaleString("sv-SE")} kr
                           </Link>
                         </div>
                       );

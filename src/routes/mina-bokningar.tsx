@@ -52,9 +52,11 @@ const payableAmountsQuery = (bookingIds: string[]) =>
       ]);
       const map: Record<string, number> = {};
       for (const e of extras ?? []) {
+        if (!e.booking_id) continue;
         map[e.booking_id] = (map[e.booking_id] ?? 0) + (e.quantity ?? 1) * (e.guest_price ?? 0);
       }
       for (const g of gifts ?? []) {
+        if (!g.booking_id) continue;
         map[g.booking_id] = (map[g.booking_id] ?? 0) - (g.amount_ore ?? 0);
       }
       return map;

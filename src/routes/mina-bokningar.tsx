@@ -1,6 +1,7 @@
 import { createFileRoute, Link, useNavigate } from "@tanstack/react-router";
 import { useEffect, useState } from "react";
-import { useQuery } from "@tanstack/react-query";
+import { useQuery, queryOptions } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 import { Loader2, CalendarDays, MapPin, Inbox, Star } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { areaBySlug } from "@/data/areas";

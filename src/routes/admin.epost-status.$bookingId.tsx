@@ -145,7 +145,7 @@ function BookingEmailDetail() {
                      <Button variant="outline" size="sm"
                       onClick={() => retryMut.mutate(latest.id)}
                        disabled={retryMut.isPending || Boolean(retryBlockReason(latest, latest.check_in))}
-                       title={retryBlockReason(latest) ?? 'Försök skicka igen'}
+                       title={retryBlockReason(latest, latest.check_in) ?? 'Försök skicka igen'}
                     >
                       <RefreshCw className="h-3 w-3" /> Försök igen
                      </Button>
@@ -199,7 +199,7 @@ function BookingEmailDetail() {
                                <Button variant="outline" size="sm"
                                 onClick={() => retryMut.mutate(r.id)}
                                  disabled={retryMut.isPending || Boolean(retryBlockReason(r, r.check_in))}
-                                 title={retryBlockReason(r) ?? 'Försök skicka igen'}
+                                 title={retryBlockReason(r, r.check_in) ?? 'Försök skicka igen'}
                               >
                                 <RefreshCw className="h-3 w-3" /> Försök igen
                                </Button>

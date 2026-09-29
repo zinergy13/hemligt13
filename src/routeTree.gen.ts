@@ -25,7 +25,6 @@ import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as SokRouteImport } from './routes/sok'
 import { Route as StugorRouteImport } from './routes/stugor'
 import { Route as UnlockRouteImport } from './routes/unlock'
-import { Route as UnsubscribeRouteImport } from './routes/unsubscribe'
 import { Route as VardRouteImport } from './routes/vard'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
 import { Route as AdminAtkomstRouteImport } from './routes/admin.atkomst'
@@ -141,11 +140,6 @@ const StugorRoute = StugorRouteImport.update({
 const UnlockRoute = UnlockRouteImport.update({
   id: '/unlock',
   path: '/unlock',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const UnsubscribeRoute = UnsubscribeRouteImport.update({
-  id: '/unsubscribe',
-  path: '/unsubscribe',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VardRoute = VardRouteImport.update({
@@ -353,7 +347,6 @@ export interface FileRoutesByFullPath {
   '/sok': typeof SokRoute
   '/stugor': typeof StugorRoute
   '/unlock': typeof UnlockRoute
-  '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/atkomst': typeof AdminAtkomstRoute
   '/admin/bokforing': typeof AdminBokforingRoute
@@ -407,7 +400,6 @@ export interface FileRoutesByTo {
   '/sok': typeof SokRoute
   '/stugor': typeof StugorRoute
   '/unlock': typeof UnlockRoute
-  '/unsubscribe': typeof UnsubscribeRoute
   '/admin/atkomst': typeof AdminAtkomstRoute
   '/admin/bokforing': typeof AdminBokforingRoute
   '/admin/dashboard': typeof AdminDashboardRoute
@@ -462,7 +454,6 @@ export interface FileRoutesById {
   '/sok': typeof SokRoute
   '/stugor': typeof StugorRoute
   '/unlock': typeof UnlockRoute
-  '/unsubscribe': typeof UnsubscribeRoute
   '/vard': typeof VardRouteWithChildren
   '/admin/atkomst': typeof AdminAtkomstRoute
   '/admin/bokforing': typeof AdminBokforingRoute
@@ -519,7 +510,6 @@ export interface FileRouteTypes {
     | '/sok'
     | '/stugor'
     | '/unlock'
-    | '/unsubscribe'
     | '/vard'
     | '/admin/atkomst'
     | '/admin/bokforing'
@@ -573,7 +563,6 @@ export interface FileRouteTypes {
     | '/sok'
     | '/stugor'
     | '/unlock'
-    | '/unsubscribe'
     | '/admin/atkomst'
     | '/admin/bokforing'
     | '/admin/dashboard'
@@ -627,7 +616,6 @@ export interface FileRouteTypes {
     | '/sok'
     | '/stugor'
     | '/unlock'
-    | '/unsubscribe'
     | '/vard'
     | '/admin/atkomst'
     | '/admin/bokforing'
@@ -683,7 +671,6 @@ export interface RootRouteChildren {
   SokRoute: typeof SokRoute
   StugorRoute: typeof StugorRoute
   UnlockRoute: typeof UnlockRoute
-  UnsubscribeRoute: typeof UnsubscribeRoute
   VardRoute: typeof VardRouteWithChildren
   CheckoutBookingIdRoute: typeof CheckoutBookingIdRoute
   CheckoutKlarRoute: typeof CheckoutKlarRoute
@@ -816,13 +803,6 @@ declare module '@tanstack/react-router' {
       path: '/unlock'
       fullPath: '/unlock'
       preLoaderRoute: typeof UnlockRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/unsubscribe': {
-      id: '/unsubscribe'
-      path: '/unsubscribe'
-      fullPath: '/unsubscribe'
-      preLoaderRoute: typeof UnsubscribeRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vard': {
@@ -1167,7 +1147,6 @@ const rootRouteChildren: RootRouteChildren = {
   SokRoute: SokRoute,
   StugorRoute: StugorRoute,
   UnlockRoute: UnlockRoute,
-  UnsubscribeRoute: UnsubscribeRoute,
   VardRoute: VardRouteWithChildren,
   CheckoutBookingIdRoute: CheckoutBookingIdRoute,
   CheckoutKlarRoute: CheckoutKlarRoute,

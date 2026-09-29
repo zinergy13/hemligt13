@@ -68,12 +68,7 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
         try {
           const rows = (data ?? []) as Array<{ invoice_id: string; host_id: string; total_amount: number; booking_count: number }>;
           if (rows.length > 0) {
-            const [{ render }, React, { template: hostInvoiceTemplate }] = await Promise.all([
-              import("@react-email/render"),
-              import("react"),
-              import("@/lib/email-templates/host-invoice"),
-            ]);
-            const origin = new URL(request.url).origin;
+                        const origin = new URL(request.url).origin;
             const { data: invoiceRows } = await admin
               .from("host_invoices")
               .select("id, invoice_number, period_start, period_end, total_amount, due_date, ocr_reference, host_id")
@@ -94,36 +89,18 @@ export const Route = createFileRoute("/api/public/hooks/generate-monthly-invoice
                 ocrReference: inv.ocr_reference ?? undefined,
                 downloadUrl: `${origin}/api/invoice/${inv.id}/pdf`,
               };
-              const html = await render(React.createElement(hostInvoiceTemplate.component, props));
-              const subject = typeof hostInvoiceTemplate.subject === "function"
-                ? hostInvoiceTemplate.subject(props)
-                : hostInvoiceTemplate.subject;
-              const messageId = crypto.randomUUID();
-              await admin.from("email_send_log").insert({
-                message_id: messageId,
-                template_name: "host-invoice",
-                recipient_email: email,
-                status: "pending",
+              const { sendTemplatedEmailCore } = await import("@/lib/email/send-core.server");
+              const res = await sendTemplatedEmailCore({
+                templateName: "host-invoice",
+                recipientEmail: email,
+                idempotencyKey: `host-invoice-${inv.id}`,
+                templateData: props,
               });
-              await admin.rpc("enqueue_email", {
-                queue_name: "transactional_emails",
-                payload: {
-                  message_id: messageId,
-                  to: email,
-                  from: `Fjällportalen <fakturor@fjallportalen.com>`,
-                  sender_domain: "notify.fjallportalen.com",
-                  subject,
-                  html,
-                  purpose: "transactional",
-                  label: "host-invoice",
-                  idempotency_key: `host-invoice-${inv.id}`,
-                  queued_at: new Date().toISOString(),
-                },
-              });
+              if (res.status >= 300) console.error("host-invoice send failed", { invoice: inv.id, status: res.status });
             }
           }
         } catch (e) {
-          console.error("Failed to enqueue invoice emails", e);
+          console.error("Failed to send invoice emails", e);
         }
 
         return new Response(

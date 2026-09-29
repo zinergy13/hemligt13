@@ -66,7 +66,7 @@ function NotFoundComponent() {
 
 export const Route = createRootRoute({
   beforeLoad: async ({ location }) => {
-    if (location.pathname.startsWith("/unlock") || location.pathname.startsWith("/api/")) return;
+    if (location.pathname.startsWith("/unlock") || location.pathname.startsWith("/api/") || location.pathname.startsWith("/lovable/")) return;
     const { unlocked } = await isUnlocked();
     if (!unlocked) throw redirect({ to: "/unlock" });
   },

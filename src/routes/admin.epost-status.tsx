@@ -318,8 +318,8 @@ function EmailStatusPage() {
                       {r.status !== 'sent' && (
                         <Button variant="outline" size="sm"
                           onClick={() => retryMut.mutate(r.id)}
-                          disabled={retryMut.isPending || Boolean(retryBlockReason(r))}
-                          title={retryBlockReason(r) ?? 'Försök skicka igen'}
+                          disabled={retryMut.isPending || Boolean(retryBlockReason(r, r.check_in))}
+                          title={retryBlockReason(r, r.check_in) ?? 'Försök skicka igen'}
                         >
                           <RefreshCw className="h-3 w-3" /> Försök igen
                         </Button>

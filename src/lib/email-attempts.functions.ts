@@ -39,6 +39,28 @@ export const listEmailAttempts = createServerFn({ method: 'POST' })
     const { data: rows, error, count } = await q;
     if (error) throw new Error(error.message);
 
+    // Attach check_in for checkin-reminder rows so the admin UI can apply the
+    // same retry-eligibility rules as the server (retryBlockReason needs it).
+    const reminderBookingIds = [
+      ...new Set(
+        (rows ?? [])
+          .filter((r) => r.template_name === 'checkin-reminder' && r.booking_id)
+          .map((r) => r.booking_id as string),
+      ),
+    ];
+    let checkInByBooking: Record<string, string | null> = {};
+    if (reminderBookingIds.length > 0) {
+      const { data: bookings } = await context.supabase
+        .from('bookings')
+        .select('id, check_in')
+        .in('id', reminderBookingIds);
+      for (const b of bookings ?? []) checkInByBooking[b.id] = b.check_in;
+    }
+    const rowsWithCheckIn = (rows ?? []).map((r) => ({
+      ...r,
+      check_in: r.booking_id ? (checkInByBooking[r.booking_id] ?? null) : null,
+    }));
+
     const { data: summaryRows } = await context.supabase
       .from('email_attempts')
       .select('status');
@@ -48,7 +70,7 @@ export const listEmailAttempts = createServerFn({ method: 'POST' })
       if (s in summary) summary[s]++;
     }
 
-    return { rows: rows ?? [], total: count ?? 0, summary };
+    return { rows: rowsWithCheckIn, total: count ?? 0, summary };
   });
 
 const RetryInput = z.object({ id: z.string().uuid() });

@@ -106,45 +106,35 @@ async function markAttempt(
 export async function sendInternalTemplatedEmail(
   args: InternalSendArgs,
 ): Promise<InternalSendResult> {
-  const { templateName, recipientEmail, idempotencyKey, templateData, origin } = args;
+  const { templateName, recipientEmail, idempotencyKey, templateData } = args;
   const attempt = await upsertAttempt(args);
 
-  const secret = process.env.EMAIL_RELAY_INTERNAL_SECRET;
-  if (!secret) {
-    console.error('EMAIL_RELAY_INTERNAL_SECRET is not set - skipping send', { templateName });
-    if (attempt) await markAttempt(attempt.id, attempt.attempts, false, 0, 'missing_secret');
-    return { ok: false, status: 0, body: { error: 'missing_secret' }, attemptId: attempt?.id };
-  }
-  const base = origin || process.env.SITE_URL || 'https://fjallportalen.com';
-  const url = `${base.replace(/\/$/, '')}/lovable/email/transactional/send`;
+  // Send in-process via the shared core. Server-side callers (cron hooks,
+  // webhooks, admin retries) must not rely on an HTTP self-call guarded by
+  // EMAIL_RELAY_INTERNAL_SECRET - a missing/mismatched secret in any
+  // deployment silently 403s every send.
   try {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'x-internal-secret': secret,
-      },
-      body: JSON.stringify({
-        templateName,
-        recipientEmail,
-        idempotencyKey,
-        templateData: templateData ?? {},
-      }),
+    const { sendTemplatedEmailCore } = await import('@/lib/email/send-core.server');
+    const res = await sendTemplatedEmailCore({
+      templateName,
+      recipientEmail,
+      idempotencyKey,
+      templateData: templateData ?? {},
     });
-    const body = await res.json().catch(() => ({}));
-    if (!res.ok) {
-      console.error('Internal email send failed', { status: res.status, templateName, body });
+    const ok = res.status >= 200 && res.status < 300;
+    if (!ok) {
+      console.error('Internal email send failed', { status: res.status, templateName, body: res.body });
     }
     if (attempt) {
-      const errText = res.ok ? null : (() => {
-        try { return JSON.stringify(body).slice(0, 2000); } catch { return String(body); }
+      const errText = ok ? null : (() => {
+        try { return JSON.stringify(res.body).slice(0, 2000); } catch { return String(res.body); }
       })();
-      await markAttempt(attempt.id, attempt.attempts, res.ok, res.status, errText);
+      await markAttempt(attempt.id, attempt.attempts, ok, res.status, errText);
     }
-    return { ok: res.ok, status: res.status, body, attemptId: attempt?.id };
+    return { ok, status: res.status, body: res.body, attemptId: attempt?.id };
   } catch (err) {
     console.error('Internal email send threw', { templateName, err });
     if (attempt) await markAttempt(attempt.id, attempt.attempts, false, 0, String(err).slice(0, 2000));
-    return { ok: false, status: 0, body: { error: 'network_error' }, attemptId: attempt?.id };
+    return { ok: false, status: 0, body: { error: 'send_error' }, attemptId: attempt?.id };
   }
 }

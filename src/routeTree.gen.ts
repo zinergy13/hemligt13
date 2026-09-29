@@ -38,7 +38,6 @@ import { Route as AdminRecensionerRouteImport } from './routes/admin.recensioner
 import { Route as AdminStadfirmorRouteImport } from './routes/admin.stadfirmor'
 import { Route as CheckoutBookingIdRouteImport } from './routes/checkout.$bookingId'
 import { Route as CheckoutKlarRouteImport } from './routes/checkout.klar'
-import { Route as EmailUnsubscribeRouteImport } from './routes/email/unsubscribe'
 import { Route as ListorIdRouteImport } from './routes/listor.$id'
 import { Route as MeddelandenBookingIdRouteImport } from './routes/meddelanden.$bookingId'
 import { Route as OmradeSlugRouteImport } from './routes/omrade.$slug'
@@ -50,7 +49,6 @@ import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as AdminEpostStatusBookingIdRouteImport } from './routes/admin.epost-status.$bookingId'
 import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
-import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
 import { Route as ApiPublicHooksBookingNotificationsRouteImport } from './routes/api.public.hooks.booking-notifications'
@@ -61,9 +59,7 @@ import { Route as ApiPublicIcalTokenRouteImport } from './routes/api.public.ical
 import { Route as ApiPublicPaymentsWebhookRouteImport } from './routes/api.public.payments.webhook'
 import { Route as LovableEmailAuthPreviewRouteImport } from './routes/lovable/email/auth/preview'
 import { Route as LovableEmailAuthWebhookRouteImport } from './routes/lovable/email/auth/webhook'
-import { Route as LovableEmailQueueProcessRouteImport } from './routes/lovable/email/queue/process'
 import { Route as LovableEmailTransactionalPreviewRouteImport } from './routes/lovable/email/transactional/preview'
-import { Route as LovableEmailTransactionalSendRouteImport } from './routes/lovable/email/transactional/send'
 import { Route as VardStugorIdInsikterRouteImport } from './routes/vard.stugor.$id.insikter'
 import { Route as VardStugorIdRedigeraRouteImport } from './routes/vard.stugor.$id.redigera'
 
@@ -212,11 +208,6 @@ const CheckoutKlarRoute = CheckoutKlarRouteImport.update({
   path: '/checkout/klar',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EmailUnsubscribeRoute = EmailUnsubscribeRouteImport.update({
-  id: '/email/unsubscribe',
-  path: '/email/unsubscribe',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const ListorIdRoute = ListorIdRouteImport.update({
   id: '/$id',
   path: '/$id',
@@ -271,11 +262,6 @@ const AdminEpostStatusBookingIdRoute =
 const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
   id: '/lovable/email/events',
   path: '/lovable/email/events',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
-  id: '/lovable/email/suppression',
-  path: '/lovable/email/suppression',
   getParentRoute: () => rootRouteImport,
 } as any)
 const VardStugorNyRoute = VardStugorNyRouteImport.update({
@@ -333,22 +319,10 @@ const LovableEmailAuthWebhookRoute = LovableEmailAuthWebhookRouteImport.update({
   path: '/lovable/email/auth/webhook',
   getParentRoute: () => rootRouteImport,
 } as any)
-const LovableEmailQueueProcessRoute =
-  LovableEmailQueueProcessRouteImport.update({
-    id: '/lovable/email/queue/process',
-    path: '/lovable/email/queue/process',
-    getParentRoute: () => rootRouteImport,
-  } as any)
 const LovableEmailTransactionalPreviewRoute =
   LovableEmailTransactionalPreviewRouteImport.update({
     id: '/lovable/email/transactional/preview',
     path: '/lovable/email/transactional/preview',
-    getParentRoute: () => rootRouteImport,
-  } as any)
-const LovableEmailTransactionalSendRoute =
-  LovableEmailTransactionalSendRouteImport.update({
-    id: '/lovable/email/transactional/send',
-    path: '/lovable/email/transactional/send',
     getParentRoute: () => rootRouteImport,
   } as any)
 const VardStugorIdInsikterRoute = VardStugorIdInsikterRouteImport.update({
@@ -391,7 +365,6 @@ export interface FileRoutesByFullPath {
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/checkout/$bookingId': typeof CheckoutBookingIdRoute
   '/checkout/klar': typeof CheckoutKlarRoute
-  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -404,7 +377,6 @@ export interface FileRoutesByFullPath {
   '/vard/': typeof VardIndexRoute
   '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
@@ -415,9 +387,7 @@ export interface FileRoutesByFullPath {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
@@ -448,7 +418,6 @@ export interface FileRoutesByTo {
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/checkout/$bookingId': typeof CheckoutBookingIdRoute
   '/checkout/klar': typeof CheckoutKlarRoute
-  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -461,7 +430,6 @@ export interface FileRoutesByTo {
   '/vard': typeof VardIndexRoute
   '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
@@ -472,9 +440,7 @@ export interface FileRoutesByTo {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
@@ -508,7 +474,6 @@ export interface FileRoutesById {
   '/admin/stadfirmor': typeof AdminStadfirmorRoute
   '/checkout/$bookingId': typeof CheckoutBookingIdRoute
   '/checkout/klar': typeof CheckoutKlarRoute
-  '/email/unsubscribe': typeof EmailUnsubscribeRoute
   '/listor/$id': typeof ListorIdRoute
   '/meddelanden/$bookingId': typeof MeddelandenBookingIdRoute
   '/omrade/$slug': typeof OmradeSlugRoute
@@ -521,7 +486,6 @@ export interface FileRoutesById {
   '/vard/': typeof VardIndexRoute
   '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
   '/lovable/email/events': typeof LovableEmailEventsRoute
-  '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
   '/api/public/hooks/booking-notifications': typeof ApiPublicHooksBookingNotificationsRoute
@@ -532,9 +496,7 @@ export interface FileRoutesById {
   '/api/public/payments/webhook': typeof ApiPublicPaymentsWebhookRoute
   '/lovable/email/auth/preview': typeof LovableEmailAuthPreviewRoute
   '/lovable/email/auth/webhook': typeof LovableEmailAuthWebhookRoute
-  '/lovable/email/queue/process': typeof LovableEmailQueueProcessRoute
   '/lovable/email/transactional/preview': typeof LovableEmailTransactionalPreviewRoute
-  '/lovable/email/transactional/send': typeof LovableEmailTransactionalSendRoute
   '/vard/stugor/$id/insikter': typeof VardStugorIdInsikterRoute
   '/vard/stugor/$id/redigera': typeof VardStugorIdRedigeraRoute
 }
@@ -569,7 +531,6 @@ export interface FileRouteTypes {
     | '/admin/stadfirmor'
     | '/checkout/$bookingId'
     | '/checkout/klar'
-    | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
     | '/omrade/$slug'
@@ -582,7 +543,6 @@ export interface FileRouteTypes {
     | '/vard/'
     | '/admin/epost-status/$bookingId'
     | '/lovable/email/events'
-    | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/booking-notifications'
@@ -593,9 +553,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
-    | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
     | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   fileRoutesByTo: FileRoutesByTo
@@ -626,7 +584,6 @@ export interface FileRouteTypes {
     | '/admin/stadfirmor'
     | '/checkout/$bookingId'
     | '/checkout/klar'
-    | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
     | '/omrade/$slug'
@@ -639,7 +596,6 @@ export interface FileRouteTypes {
     | '/vard'
     | '/admin/epost-status/$bookingId'
     | '/lovable/email/events'
-    | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/booking-notifications'
@@ -650,9 +606,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
-    | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
     | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   id:
@@ -685,7 +639,6 @@ export interface FileRouteTypes {
     | '/admin/stadfirmor'
     | '/checkout/$bookingId'
     | '/checkout/klar'
-    | '/email/unsubscribe'
     | '/listor/$id'
     | '/meddelanden/$bookingId'
     | '/omrade/$slug'
@@ -698,7 +651,6 @@ export interface FileRouteTypes {
     | '/vard/'
     | '/admin/epost-status/$bookingId'
     | '/lovable/email/events'
-    | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
     | '/api/public/hooks/booking-notifications'
@@ -709,9 +661,7 @@ export interface FileRouteTypes {
     | '/api/public/payments/webhook'
     | '/lovable/email/auth/preview'
     | '/lovable/email/auth/webhook'
-    | '/lovable/email/queue/process'
     | '/lovable/email/transactional/preview'
-    | '/lovable/email/transactional/send'
     | '/vard/stugor/$id/insikter'
     | '/vard/stugor/$id/redigera'
   fileRoutesById: FileRoutesById
@@ -737,13 +687,11 @@ export interface RootRouteChildren {
   VardRoute: typeof VardRouteWithChildren
   CheckoutBookingIdRoute: typeof CheckoutBookingIdRoute
   CheckoutKlarRoute: typeof CheckoutKlarRoute
-  EmailUnsubscribeRoute: typeof EmailUnsubscribeRoute
   MeddelandenBookingIdRoute: typeof MeddelandenBookingIdRoute
   OmradeSlugRoute: typeof OmradeSlugRoute
   RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
   LovableEmailEventsRoute: typeof LovableEmailEventsRoute
-  LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksBookingNotificationsRoute: typeof ApiPublicHooksBookingNotificationsRoute
   ApiPublicHooksEmailAlertRoute: typeof ApiPublicHooksEmailAlertRoute
@@ -753,9 +701,7 @@ export interface RootRouteChildren {
   ApiPublicPaymentsWebhookRoute: typeof ApiPublicPaymentsWebhookRoute
   LovableEmailAuthPreviewRoute: typeof LovableEmailAuthPreviewRoute
   LovableEmailAuthWebhookRoute: typeof LovableEmailAuthWebhookRoute
-  LovableEmailQueueProcessRoute: typeof LovableEmailQueueProcessRoute
   LovableEmailTransactionalPreviewRoute: typeof LovableEmailTransactionalPreviewRoute
-  LovableEmailTransactionalSendRoute: typeof LovableEmailTransactionalSendRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -963,13 +909,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CheckoutKlarRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/email/unsubscribe': {
-      id: '/email/unsubscribe'
-      path: '/email/unsubscribe'
-      fullPath: '/email/unsubscribe'
-      preLoaderRoute: typeof EmailUnsubscribeRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/listor/$id': {
       id: '/listor/$id'
       path: '/$id'
@@ -1047,13 +986,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailEventsRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/suppression': {
-      id: '/lovable/email/suppression'
-      path: '/lovable/email/suppression'
-      fullPath: '/lovable/email/suppression'
-      preLoaderRoute: typeof LovableEmailSuppressionRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/vard/stugor/ny': {
       id: '/vard/stugor/ny'
       path: '/stugor/ny'
@@ -1124,25 +1056,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof LovableEmailAuthWebhookRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/lovable/email/queue/process': {
-      id: '/lovable/email/queue/process'
-      path: '/lovable/email/queue/process'
-      fullPath: '/lovable/email/queue/process'
-      preLoaderRoute: typeof LovableEmailQueueProcessRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/lovable/email/transactional/preview': {
       id: '/lovable/email/transactional/preview'
       path: '/lovable/email/transactional/preview'
       fullPath: '/lovable/email/transactional/preview'
       preLoaderRoute: typeof LovableEmailTransactionalPreviewRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/lovable/email/transactional/send': {
-      id: '/lovable/email/transactional/send'
-      path: '/lovable/email/transactional/send'
-      fullPath: '/lovable/email/transactional/send'
-      preLoaderRoute: typeof LovableEmailTransactionalSendRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/vard/stugor/$id/insikter': {
@@ -1253,13 +1171,11 @@ const rootRouteChildren: RootRouteChildren = {
   VardRoute: VardRouteWithChildren,
   CheckoutBookingIdRoute: CheckoutBookingIdRoute,
   CheckoutKlarRoute: CheckoutKlarRoute,
-  EmailUnsubscribeRoute: EmailUnsubscribeRoute,
   MeddelandenBookingIdRoute: MeddelandenBookingIdRoute,
   OmradeSlugRoute: OmradeSlugRoute,
   RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
   LovableEmailEventsRoute: LovableEmailEventsRoute,
-  LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksBookingNotificationsRoute:
     ApiPublicHooksBookingNotificationsRoute,
@@ -1271,9 +1187,7 @@ const rootRouteChildren: RootRouteChildren = {
   ApiPublicPaymentsWebhookRoute: ApiPublicPaymentsWebhookRoute,
   LovableEmailAuthPreviewRoute: LovableEmailAuthPreviewRoute,
   LovableEmailAuthWebhookRoute: LovableEmailAuthWebhookRoute,
-  LovableEmailQueueProcessRoute: LovableEmailQueueProcessRoute,
   LovableEmailTransactionalPreviewRoute: LovableEmailTransactionalPreviewRoute,
-  LovableEmailTransactionalSendRoute: LovableEmailTransactionalSendRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

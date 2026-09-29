@@ -1,4 +1,4 @@
-// Server-only helper: POST to /lovable/email/transactional/send using the
+// Server-only helper: sends templated emails in-process (managed email API) using the
 // EMAIL_RELAY_INTERNAL_SECRET so server-side triggers (webhooks, cron) can
 // send templated emails without a user JWT. Each attempt is persisted in
 // public.email_attempts keyed by idempotencyKey so failures can be inspected

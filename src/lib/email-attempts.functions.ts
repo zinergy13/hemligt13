@@ -70,7 +70,7 @@ export const listEmailAttempts = createServerFn({ method: 'POST' })
       if (s in summary) summary[s]++;
     }
 
-    return { rows: rows ?? [], total: count ?? 0, summary };
+    return { rows: rowsWithCheckIn, total: count ?? 0, summary };
   });
 
 const RetryInput = z.object({ id: z.string().uuid() });

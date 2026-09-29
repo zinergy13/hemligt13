@@ -49,6 +49,7 @@ import { Route as VardBokningarRouteImport } from './routes/vard.bokningar'
 import { Route as VardFakturaRouteImport } from './routes/vard.faktura'
 import { Route as VardKalenderRouteImport } from './routes/vard.kalender'
 import { Route as AdminEpostStatusBookingIdRouteImport } from './routes/admin.epost-status.$bookingId'
+import { Route as LovableEmailEventsRouteImport } from './routes/lovable/email/events'
 import { Route as LovableEmailSuppressionRouteImport } from './routes/lovable/email/suppression'
 import { Route as VardStugorNyRouteImport } from './routes/vard.stugor.ny'
 import { Route as ApiInvoiceIdPdfRouteImport } from './routes/api.invoice.$id.pdf'
@@ -267,6 +268,11 @@ const AdminEpostStatusBookingIdRoute =
     path: '/$bookingId',
     getParentRoute: () => AdminEpostStatusRoute,
   } as any)
+const LovableEmailEventsRoute = LovableEmailEventsRouteImport.update({
+  id: '/lovable/email/events',
+  path: '/lovable/email/events',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const LovableEmailSuppressionRoute = LovableEmailSuppressionRouteImport.update({
   id: '/lovable/email/suppression',
   path: '/lovable/email/suppression',
@@ -397,6 +403,7 @@ export interface FileRoutesByFullPath {
   '/admin/': typeof AdminIndexRoute
   '/vard/': typeof VardIndexRoute
   '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
+  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
@@ -453,6 +460,7 @@ export interface FileRoutesByTo {
   '/admin': typeof AdminIndexRoute
   '/vard': typeof VardIndexRoute
   '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
+  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
@@ -512,6 +520,7 @@ export interface FileRoutesById {
   '/admin/': typeof AdminIndexRoute
   '/vard/': typeof VardIndexRoute
   '/admin/epost-status/$bookingId': typeof AdminEpostStatusBookingIdRoute
+  '/lovable/email/events': typeof LovableEmailEventsRoute
   '/lovable/email/suppression': typeof LovableEmailSuppressionRoute
   '/vard/stugor/ny': typeof VardStugorNyRoute
   '/api/invoice/$id/pdf': typeof ApiInvoiceIdPdfRoute
@@ -572,6 +581,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/vard/'
     | '/admin/epost-status/$bookingId'
+    | '/lovable/email/events'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
@@ -628,6 +638,7 @@ export interface FileRouteTypes {
     | '/admin'
     | '/vard'
     | '/admin/epost-status/$bookingId'
+    | '/lovable/email/events'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
@@ -686,6 +697,7 @@ export interface FileRouteTypes {
     | '/admin/'
     | '/vard/'
     | '/admin/epost-status/$bookingId'
+    | '/lovable/email/events'
     | '/lovable/email/suppression'
     | '/vard/stugor/ny'
     | '/api/invoice/$id/pdf'
@@ -730,6 +742,7 @@ export interface RootRouteChildren {
   OmradeSlugRoute: typeof OmradeSlugRoute
   RegionSlugRoute: typeof RegionSlugRoute
   StugaSlugRoute: typeof StugaSlugRoute
+  LovableEmailEventsRoute: typeof LovableEmailEventsRoute
   LovableEmailSuppressionRoute: typeof LovableEmailSuppressionRoute
   ApiInvoiceIdPdfRoute: typeof ApiInvoiceIdPdfRoute
   ApiPublicHooksBookingNotificationsRoute: typeof ApiPublicHooksBookingNotificationsRoute
@@ -1027,6 +1040,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminEpostStatusBookingIdRouteImport
       parentRoute: typeof AdminEpostStatusRoute
     }
+    '/lovable/email/events': {
+      id: '/lovable/email/events'
+      path: '/lovable/email/events'
+      fullPath: '/lovable/email/events'
+      preLoaderRoute: typeof LovableEmailEventsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/lovable/email/suppression': {
       id: '/lovable/email/suppression'
       path: '/lovable/email/suppression'
@@ -1238,6 +1258,7 @@ const rootRouteChildren: RootRouteChildren = {
   OmradeSlugRoute: OmradeSlugRoute,
   RegionSlugRoute: RegionSlugRoute,
   StugaSlugRoute: StugaSlugRoute,
+  LovableEmailEventsRoute: LovableEmailEventsRoute,
   LovableEmailSuppressionRoute: LovableEmailSuppressionRoute,
   ApiInvoiceIdPdfRoute: ApiInvoiceIdPdfRoute,
   ApiPublicHooksBookingNotificationsRoute:

@@ -1,4 +1,5 @@
 import * as React from 'react'
+
 import {
   Body,
   Button,
@@ -10,7 +11,6 @@ import {
   Preview,
   Text,
 } from '@react-email/components'
-import { BRAND_NAME, BRAND_TAGLINE, styles } from './_brand'
 
 interface SignupEmailProps {
   siteName: string
@@ -19,35 +19,39 @@ interface SignupEmailProps {
   confirmationUrl: string
 }
 
-export const SignupEmail = ({ siteUrl, recipient, confirmationUrl }: SignupEmailProps) => (
-  <Html lang="sv" dir="ltr">
-    <Head />
-    <Preview>Bekräfta din e-post för {BRAND_NAME}</Preview>
-    <Body style={styles.main}>
-      <Container style={styles.container}>
-        <Text style={styles.brandRow}>{BRAND_NAME}</Text>
-        <Heading style={styles.h1}>Välkommen till fjällen</Heading>
-        <Text style={styles.text}>
-          Tack för att du skapar konto på{' '}
-          <Link href={siteUrl} style={styles.link}>
-            <strong>{BRAND_NAME}</strong>
+export const SignupEmail = ({
+  siteName,
+  siteUrl,
+  recipient,
+  confirmationUrl,
+}: SignupEmailProps) => (
+  <Html lang="en" dir="ltr">
+    <Head>
+      <style>{darkModeCss}</style>
+    </Head>
+    <Preview>Confirm your email for {siteName}</Preview>
+    <Body style={main}>
+      <Container style={container}>
+        <Heading style={h1}>Confirm your email</Heading>
+        <Text style={text}>
+          Thanks for signing up for{' '}
+          <Link href={siteUrl} style={link}>
+            <strong>{siteName}</strong>
           </Link>
-          . Bekräfta din e-postadress{' '}
-          <Link href={`mailto:${recipient}`} style={styles.link}>{recipient}</Link>{' '}
-          genom att klicka på knappen nedan.
+          !
         </Text>
-        <Text style={{ ...styles.text, textAlign: 'center' as const }}>
-          <Button style={styles.button} href={confirmationUrl}>
-            Bekräfta e-post
-          </Button>
+        <Text style={text}>
+          Please confirm your email address (
+          <Link href={`mailto:${recipient}`} style={link}>
+            {recipient}
+          </Link>
+          ) by clicking the button below:
         </Text>
-        <Text style={styles.muted}>
-          Länken är giltig i 24 timmar. Om knappen inte fungerar kan du kopiera adressen och klistra in i din webbläsare.
-        </Text>
-        <div style={styles.divider} />
-        <Text style={styles.footer}>
-          Om du inte skapade ett konto kan du ignorera det här mejlet.<br />
-          {BRAND_NAME} - {BRAND_TAGLINE}
+        <Button className="dm-btn" style={button} href={confirmationUrl}>
+          Verify Email
+        </Button>
+        <Text style={footer}>
+          If you didn't create an account, you can safely ignore this email.
         </Text>
       </Container>
     </Body>
@@ -55,3 +59,37 @@ export const SignupEmail = ({ siteUrl, recipient, confirmationUrl }: SignupEmail
 )
 
 export default SignupEmail
+
+const main = { backgroundColor: '#ffffff', fontFamily: 'Arial, sans-serif' }
+const container = { padding: '20px 25px' }
+const h1 = {
+  fontSize: '22px',
+  fontWeight: 'bold' as const,
+  color: '#000000',
+  margin: '0 0 20px',
+}
+const text = {
+  fontSize: '14px',
+  color: '#55575d',
+  lineHeight: '1.5',
+  margin: '0 0 25px',
+}
+const link = { color: 'inherit', textDecoration: 'underline' }
+const button = {
+  backgroundColor: '#000000',
+  color: '#ffffff',
+  fontSize: '14px',
+  border: '1px solid #000000',
+  borderRadius: '8px',
+  padding: '12px 20px',
+  textDecoration: 'none',
+}
+const footer = { fontSize: '12px', color: '#999999', margin: '30px 0 0' }
+// Rendered as a text child, which React may HTML-escape: keep this CSS free of >, &, and quotes.
+const darkModeCss = `
+  @media (prefers-color-scheme: dark) {
+    .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+  }
+  [data-ogsc] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+  [data-ogsb] .dm-btn { background-color: #ffffff !important; color: #000000 !important; }
+`

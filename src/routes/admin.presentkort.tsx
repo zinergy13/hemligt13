@@ -6,6 +6,8 @@ import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
+import { useServerFn } from "@tanstack/react-start";
+import { sendGiftCardEmail } from "@/lib/gift-card-email.functions";
 
 export const Route = createFileRoute("/admin/presentkort")({
   head: () => ({
@@ -56,6 +58,7 @@ function AdminGiftCardsPage() {
     setLoading(false);
   };
 
+  const sendGiftEmail = useServerFn(sendGiftCardEmail);
   const create = async (e: FormEvent) => {
     e.preventDefault();
     const kr = parseInt(amount, 10);
@@ -77,30 +80,10 @@ function AdminGiftCardsPage() {
     const recipient = email.trim();
     if (recipient) {
       try {
-        const { data: { session } } = await supabase.auth.getSession();
-        const res = await fetch("/lovable/email/transactional/send", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            ...(session?.access_token ? { Authorization: `Bearer ${session.access_token}` } : {}),
-          },
-          body: JSON.stringify({
-            templateName: "gift-card",
-            recipientEmail: recipient,
-            idempotencyKey: `gift-card-${code}`,
-            templateData: {
-              recipientName: name.trim() || undefined,
-              code,
-              amountKr: kr,
-              expiresAt: new Date(expiresAt).toLocaleDateString("sv-SE"),
-              message: message.trim() || undefined,
-            },
-          }),
-        });
-        const body = await res.json().catch(() => ({}));
-        if (!res.ok || body?.success === false) {
+        const body = await sendGiftEmail({ data: { code } });
+        if (!body?.success) {
           toast.success(`Presentkort skapat: ${code}`);
-          toast.error(`Kunde inte skicka e-post: ${body?.error || body?.reason || res.statusText}`);
+          toast.error(`Kunde inte skicka e-post: ${body?.error}`);
         } else {
           toast.success(`Presentkort skapat och skickat till ${recipient}`);
         }
